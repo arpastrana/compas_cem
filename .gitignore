@@ -112,3 +112,4 @@ temp/**
 !temp/PLACEHOLDER
 
 .DS_Store
+*.code-workspace

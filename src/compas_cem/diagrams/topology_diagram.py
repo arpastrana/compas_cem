@@ -36,7 +36,7 @@ class TopologyDiagram(Diagram):
 
         self.update_default_edge_attributes({
                                             "type": None,  # trail, devi
-                                            "comb_state": 1,  # 1, -1
+                                            "comb_state": None,  # 1, -1
                                             "length": 0.0,  # only positive
                                             "force": 0.0,  # only positive
                                             })
