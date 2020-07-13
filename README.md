@@ -2,7 +2,7 @@
 
 A **compas**-flavored implementation of the Combinatorial Equilibrium Modelling (CEM) method.
 
-![alt text](https://github.com/arpastrana/compas_cem/tree/master/docs/images/swap_dev_6fps.gif "Deviation edges changing force state between -1.0 and 1.0")
+![](https://github.com/arpastrana/compas_cem/tree/master/docs/images/swap_dev_6fps.gif)
 
 ## Getting Started
 
@@ -60,12 +60,3 @@ please help us tackle it by [filing a report](https://github.com/arpastrana/comp
 ## License
 
 The contents of this repository are under an MIT license.
-
-	
-
-
-
-
-
-
-
