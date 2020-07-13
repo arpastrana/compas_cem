@@ -2,7 +2,7 @@
 
 A **compas**-flavored implementation of the Combinatorial Equilibrium Modelling (CEM) method.
 
-![](https://github.com/arpastrana/compas_cem/tree/master/docs/images/swap_dev_6fps.gif)
+![](https://github.com/arpastrana/compas_cem/tree/master/docs/images/swap_dev_00.png)
 
 ## Getting Started
 
