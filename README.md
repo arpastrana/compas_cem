@@ -44,7 +44,7 @@ To verify that everything is running like a charm, still in your command line in
 python -c "import compas_cem"
 ```
 
-If no errors arise, celebrate! You have a working installation of `compas_cem`.
+If no errors arise, celebrate 🎉! You have a working installation of `compas_cem`.
 
 ## Contributing
 
