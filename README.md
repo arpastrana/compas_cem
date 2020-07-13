@@ -11,7 +11,7 @@ CEM is a new form-finding approach to generate mixed tension-compression, spatia
 
 To have a better grasp of the algorithm running under the hood, we refer you these three excellent resources: to the CEM's [journal paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342), to the [condensed notes](https://github.com/arpastrana/compas_cem/tree/master/cem_method.md)  in this repository, and to the [first CEM repository](https://github.com/OleOhlbrock/CEM/) created by the authors.
 
-Additionally, feel free to check this [hello world example]((https://github.com/arpastrana/compas_cem/tree/master/scripts/01_hello_world.py)) to get a feeling of what `compas_cem` can do for you.
+Additionally, feel free to check this [first example](https://github.com/arpastrana/compas_cem/tree/master/scripts/01_hello_world.py) to get a sense of what `compas_cem` can do for you.
 
 ## Installation
 
