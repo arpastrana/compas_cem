@@ -21,7 +21,6 @@ class TopologyDiagram(Diagram):
     def __init__(self, *args, **kwargs):
         super(TopologyDiagram, self).__init__(*args, **kwargs)
 
-        self.name = None
         self.g_vertex = {}
 
         self.update_default_node_attributes({
@@ -36,39 +35,117 @@ class TopologyDiagram(Diagram):
 
         self.update_default_edge_attributes({
                                             "type": None,  # trail, devi
-                                            "comb_state": None,  # 1, -1
+                                            "state": None,  # 1, -1
                                             "length": 0.0,  # only positive
                                             "force": 0.0,  # only positive
                                             })
 
 # ==============================================================================
-# Additions
+# Nodes
 # ==============================================================================
 
-    def add_support(self, load):
+    def support(self, node):
         """
+        Sets a node to a support node.
+        
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
         """
-        return
+        self.node_attribute(node, "type", "support")
 
-    def add_point_load(self, load):
+    def root(self, node):
         """
-        """
-        return
+        Sets a node to a root node.
 
-    def add_trail_edge(self, edge):
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        position : ``list``
+            The node xyz coordinates.
         """
-        """
-        return
+        self.node_attribute(node, "type", "root")
 
-    def add_direct_deviation_edge(self, edge):
+    def add_load(self, node, load):
         """
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        load : ``list``
+            A load xyz vector.
         """
-        return
+        for q, attr in zip(load, ["qx", "qy", "qz"]):
+            self.node_attribute(node, attr, q)
+    
+    def add_node_from_xyz(self, node, xyz):
+        """
+        Adds a node from xyz coordinates.
 
-    def add_indirect_deviation_edge(self, edge):
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        xyx : ``list``
+            The node xyz coordinates.
+        
+        Returns
+        -------
+        node : ``int``
+            The node key.
         """
+        x, y, z = xyz
+        return self.add_node(key=node, x=x, y=y, z=z)
+
+# ==============================================================================
+# Edges
+# ==============================================================================
+
+    def add_trail_edge(self, edge, state, length):
         """
-        return
+        Adds a trail edge.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            An edge key.
+        state : ``int``
+            A combinatorial state. ``1`` if tension. ``-1`` if compression.
+        length : ``float``
+            The length of the edge.
+
+        Returns
+        -------
+        edge : ``tuple``
+            The edge key.
+        """
+        u, v = edge
+        kwargs = {"type": "trail", "state": state, "length": length}
+        return self.add_edge(u, v, **kwargs)
+
+    def add_deviation_edge(self, edge, state, force):
+        """
+        Adds a deviation edge.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            An edge key.
+        state : ``int``
+            A combinatorial state. ``1`` if tension. ``-1`` if compression.
+        force : ``float``
+            The force assigned to the edge.
+
+        Returns
+        -------
+        edge : ``tuple``
+            The edge key.
+        """
+        u, v = edge
+        kwargs = {"type": "deviation", "state": state, "force": force}
+        return self.add_edge(u, v, **kwargs)
 
 # ==============================================================================
 # Trails
@@ -120,7 +197,7 @@ class TopologyDiagram(Diagram):
         return tr
 
 # ==============================================================================
-#  Nodes
+#  Node Queries
 # ==============================================================================
 
     def root_nodes(self):
