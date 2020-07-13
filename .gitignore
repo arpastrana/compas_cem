@@ -113,3 +113,4 @@ temp/**
 
 .DS_Store
 *.code-workspace
+.obsidian

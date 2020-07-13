@@ -2,7 +2,8 @@
 
 A **compas**-flavored implementation of the Combinatorial Equilibrium Modelling (CEM) method.
 
-![](https://github.com/arpastrana/compas_cem/tree/master/docs/images/swap_dev_00.png)
+![hello_world](./docs/images/swap_dev_6fps.gif)
+
 
 ## Getting Started
 
@@ -40,7 +41,7 @@ pip install -e .
 To verify that everything is running like a charm, still in your command line interface, type the following and hit enter:
 
 ```bash
->>> python -c "import compas_cem"
+python -c "import compas_cem"
 ```
 
 If no errors arise, celebrate! You have a working installation of `compas_cem`.
