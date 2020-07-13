@@ -1,160 +1,65 @@
 # compas_cem
 
-A compas-flavored implementation of the Combinatorial Equilibrium Modelling (CEM).
+A **compas**-flavored implementation of the Combinatorial Equilibrium Modelling (CEM) method.
 
-## Overview
-0. Initial State
-1. Initialize $\mathbf{T}_0$ and $\mathbf{X}_0$
-2. Check compatibility
-3. Input $\mathbf{T}$ and $\mathbf{X}$
-4. CEM Algorithm
-5. Output $\mathbf{F}$ and $\mathbf{F}^*$
-6. Evaluation
-	7. Yes -> Further Design
-	8. No -> Transformation -> Back to 3.
-9. Final State
+![alt text](https://github.com/arpastrana/compas_cem/tree/master/docs/images/swap_dev_6fps.gif "Deviation edges changing force state between -1.0 and 1.0")
 
-Constraints injected to 1., 3., and 6.
+## Getting Started
 
-## Components
+CEM is a new form-finding approach to generate mixed tension-compression, spatial structures in equilibrium. This method is developed by Patrick Ole Ohlbrock and Pierluigi D'Acunto at the [Chair of Structural Design at the ETH Zurich](http://www.schwartz.arch.ethz.ch/). 
 
-1. Form Diagram $\mathbf{F}$
-2. Force Diagram $\mathbf{F}^*$
-3. Topological Diagram $\mathbf{T}$
+To have a better grasp of the algorithm running under the hood, we refer you these three excellent resources: to the CEM's [journal paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342), to the [condensed notes](https://github.com/arpastrana/compas_cem/tree/master/cem_method.md)  in this repository, and to the [first CEM repository](https://github.com/OleOhlbrock/CEM/) created by the authors.
 
-	_Graph of $\mathbf{F}$, depicts connectivity and combinatorial state of internal forces._
-4. List of Design Parameters $\mathbf{X}$
+Additionally, feel free to check this [hello world example]((https://github.com/arpastrana/compas_cem/tree/master/scripts/01_hello_world.py)) to get a feeling of what `compas_cem` can do for you.
 
-## Topological Diagram $\mathbf{T}$
+## Installation
 
-Two edge types:
-- Trails (Avenues), $t_{ij}$
-- Deviations (Streets), $d_{D_{ij}}$ , $d_{I_{ij}}$ 
+The preferred way to install `compas_cem` is to build it from source in only four simple steps.
 
-One force state:
-- Combinatorial state $c_{ij}$.
+First, create a new `conda` environment from your command line. The only requirements (until now) are `python` version **3.7** and `compas` version **0.16.1**.
 
-### Trail Edges
-A _trail_ is a polyline with vertices $v_i$ made from individual _trail edges_ $t_{ij}$. It is the direct load path that transfers applied loads to a support.
-
-- _origin vertices_: start points, correspond to origin nodes of form Diagram $\mathbf{F}$.
-- _support vertices_: support points in $\mathbf{F}$.
-- _topological distance_ $w$: number of trail segments between vertex $v_i$ and trail's support vertex. 
-- _sequence_ $k$: Set of vertices with the same topological distance $w$. 
-
-Two fundamental conditions:
-1. Every vertex $v_i$ in $\mathbf{T}$ belongs exclusively to one trail.
-2. Only a single support vertex exists at one extreme of a trail.
-
-An equilibrium state will be found for any topological diagram $\mathbf{T}$ that fulfils the two rules above.
-
-### Deviation Edges
-
-Edge formed connecting two vertices from two different trails. Two types exist:
-
-1. **Direct**: A direct deviation edge $d_{D_{ij}}$ connects two vertices $v_i$ in $\mathbf{T}$ that belong to the same sequence $k$.
-2. **Indirect**: An indirect deviation edge $d_{I_{ij}}$ connects two vertices $v_i$ in $\mathbf{T}$ that belong to the different sequences $k$.
-
-### Combinatorial states
-
-A _combinatorial state_ $c_{ij}$ is used-defined for every trail and deviation edges of $\mathbf{T}$.
-
-
-## Design Parameters $\mathbf{X}$
-
-A list of design parameters of $\mathbf{F}$ that contains:
-- position vectors, $\mathbf{p}$ of the origin nodes (one entry per trail).
-- trail edges lengths, $\lambda_{ij}$
-- deviation edges absolute force magnitudes, $\mu_{ij}*$
-- external forces, $\mathbf{q}_{E, i}*$.
-
---- 
-
-## Form-finding Algorithm
-
-Inputs: 
--  Topological Diagram $\mathbf{T}$
-- Design Parameters $\mathbf{X}$
-
-Algebraical or geometrical process
-1. Extract topological properties of the network (?)
-2. Impose equilibrium **sequentially** based on $\mathbf{X}$.
-3. Update iteratively equilibrium state if indirect deviation edges $d_{I_{ij}}$ or form-dependent load cases exists $\mathbf{q}_{E, i}^{(t)*}$.
-
-
-### Step 1: Graph analysis
-
-- Adjacency matrix $\mathbf{C}$
-
-	Based on a topological Diagram $\mathbf{T}$, extract a symmetric adjacency matrix $\mathbf{C}$. Rows and columns correspond to vertices $v_i$, and entries correspond to combinatorial states of the edges: +1 for tension and -1 for compression.
-
-- Sorted Adjacency matrix $\mathbf{C}'$
-
-	Adjacency matrix $\mathbf{C}$ sorted by vertices $v_i$ topological distance $w_i$.
-	
-- Submatrix $\mathbf{D}_D$
-
-	Direct deviation edges combinatorial states.
-
-- Submatrix $\mathbf{D}_I$
-
-	Indirect deviation edges combinatorial states.
-	
-- Submatrix $\mathbf{T}_{out}$
-
-	Combinatorial states of the **outgoing*‌* trail edges
-	
-	
-### Step 2: Explicit equilibrium imposition
-
-If submatrix $\mathbf{D}_I$ is empty, e.g. no indirect deviation edges $d_{I_{ij}}$ exist, equilibrium can be calculated sequence-by-sequence, **without iterations**.
-
-```
-for sequence in sequences:
-	for node in sequence:
-		impose_equilibrium(node)
+```bash
+conda create -n cem python=3.7 COMPAS=0.16.1
+conda activate cam
 ```
 
+We need to fetch `compas_cem` from this repository. Go to the folder where you want to store it and run the following. For example, if you are a mac user and want to put it in the pre-existing `~/code/` folder:
 
-#### Outgoing trail **force** vector $\mathbf{t}_{i-out}^*$
+```bash
+cd ~/code/
+git clone https://github.com/arpastrana/compas_cem.git
+```
 
-For vertex $v_i$, an _outgoing trail **force** vector_, $\mathbf{t}_{i-out}^*$, is computed as:
+Next, Move into the the repository's folder (the one you've just cloned) and install `compas_cem` using `pip`:
 
-$$\mathbf{t}_{i-out}^* = -\mathbf{t}_{i-in}^* -\mathbf{r} \mathbf{d}_{i-D}^* - \mathbf{q}_{E, i}^*$$
+```bash
+cd compas_cem
+pip install -e .
+```
 
-where:
+To verify that everything is running like a charm, still in your command line interface, type the following and hit enter:
 
-- $\mathbf{t}_{i-in}^* = 0$ (if $k = 0$), or $= -\mathbf{t}_{i-out}^*$ (if $k > 0$).
+```bash
+>>> python -c "import compas_cem"
+```
 
-- The resultant direct deviation vector, $\mathbf{r} \mathbf{d}_{i-D}^*$.
+If no errors arise, celebrate! You have a working installation of `compas_cem`.
 
+## Contributing
 
-The resultant direct deviation vector, $\mathbf{r} \mathbf{d}_{i-D}^*$ is the sum of all direct deviation forces incoming to vertex $v_i$:
+Contributions and pull requests are welcome! Make sure to read our [contribution guide](https://github.com/arpastrana/compas_cem/tree/master/CONTRIBUTING.md).
 
-$$\mathbf{r} \mathbf{d}_{i-D}^* = \sum_{j=0}^m d_{ij}^* \mathbf{u}_{ij} = \sum_{j=0}^m c_{ij} \mu_{ij}^* \mathbf{u}_{ij}$$ 
+Additionally, please don't forget to do ``invoke test`` in your command line to double check that the package is working before you make a pull request.
 
-where:
+## Issue tracker
 
-- Unit vector $\mathbf{u}_{ij}$ is:
-
-$$\mathbf{u}_{ij} = \frac{\mathbf{p}_j - \mathbf{p}_i}{|| \mathbf{p}_j - \mathbf{p}_i || }$$
-
-
-#### Outgoing vertex **position** vector $\mathbf{p}_{i-out}$
-
-The resulting position of vertex $v_i$ can be determined using the combinatorial state $c_{i-out}$ registered in $\mathbf{T}_out$, the absolute length $\lambda_{out}$ from design parameters $\mathbf{X}$, and the outgoing unit vector $\mathbf{u}_{i-out}$ obtained with $\mathbf{t}_{i-out}^*$:
-
-$$\mathbf{p}_{i-out} = \mathbf{p}_{i-in} + t_{i-out} \mathbf{u}_{i-out}$$ 
-
-$$\mathbf{p}_{i-out} = \mathbf{p}_{i-in} + c_{i-out} \lambda_{i-out} \frac{\mathbf{t}_{i-out}^*}{||\mathbf{t}_{i-out}^*||}$$
-
-Consider that $\mathbf{p}_{i-in}$ in sequence $k$ is equal to $\mathbf{p}_{i-out}$ in previous sequence $k-1$, and that $\mathbf{p}_{i-in}$ equals to the initial position vectors at the origin nodes,  $\mathbf{p}$.
-
-Reaction forces $\mathbf{s}_i^*$, missing edge lengths and force magnified can be obtained unequivocally.
+If you find a bug or want to suggest a potential enhancement,
+please help us tackle it by [filing a report](https://github.com/arpastrana/compas_cem/issues).
 
 
-Alternative paramterizations contemplate using a **Force Density** or a **Load Path** approach.
+## License
 
+The contents of this repository are under an MIT license.
 
 	
 
