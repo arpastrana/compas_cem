@@ -41,7 +41,7 @@ class TopologyDiagram(Diagram):
                                             })
 
 # ==============================================================================
-# Nodes
+# Node Additions
 # ==============================================================================
 
     def support(self, node):
@@ -100,7 +100,7 @@ class TopologyDiagram(Diagram):
         return self.add_node(key=node, x=x, y=y, z=z)
 
 # ==============================================================================
-# Edges
+# Edge Additions
 # ==============================================================================
 
     def add_trail_edge(self, edge, state, length):
@@ -156,12 +156,12 @@ class TopologyDiagram(Diagram):
         Collects the trails in the topology diagram.
 
         A trail is an ordered sequence of nodes with two characteristics:
-        a root node at the start, and a support node at the end
+        there is a root node at the start, and a support node at the end
 
         Returns
         -------
         trails : ``dict``
-            The trails. Keys are those  root nodes
+            The trails. Keys are those of their root nodes
         """
         tr = {}
 
@@ -211,7 +211,6 @@ class TopologyDiagram(Diagram):
         """
         return self.nodes_where({"type": "root"})
 
-
     def support_nodes(self):
         """
         Nodes whose position is fixed in space.
@@ -223,6 +222,25 @@ class TopologyDiagram(Diagram):
             The key of the next root node.
         """
         return self.nodes_where({"type": "support"})
+
+    def connected_deviation_edges(self, node):
+        """
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        deviation_edges : ``list``
+            A list with the keys of the deviation edges connected to the node.
+            If no deviation edge is attached, the list will be empty.
+        """
+        deviation_edges = []
+        for edge in self.connected_edges(node):
+            if self.edge_attribute(edge, "type") == "deviation":
+                deviation_edges.append(edge)
+        return deviation_edges
 
 # ==============================================================================
 # Edges
