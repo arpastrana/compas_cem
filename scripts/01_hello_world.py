@@ -1,6 +1,7 @@
 from compas_cem.diagrams import TopologyDiagram
-from compas_cem.equilibrium import force_equilibrium
 from compas_cem.plotters import TopologyPlotter
+
+from compas_cem.equilibrium import force_equilibrium_numpy
 
 # ------------------------------------------------------------------------------
 # Data
@@ -55,6 +56,13 @@ for edge in deviation_edges:
     topology.add_deviation_edge(edge, state=-1, force=1.0)
 
 # ------------------------------------------------------------------------------
+# Add Indirect Deviation Edges
+# ------------------------------------------------------------------------------
+
+topology.add_deviation_edge((1, 5), state=+1, force=1.0)
+topology.add_deviation_edge((1, 3), state=+1, force=1.0)
+
+# ------------------------------------------------------------------------------
 # Set Root Nodes
 # ------------------------------------------------------------------------------
 
@@ -87,16 +95,29 @@ edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
 # Force Equilibrium
 # ------------------------------------------------------------------------------
 
-force_equilibrium(topology, verbose=False)
+force_equilibrium_numpy(topology, iters=100, verbose=True)
 
 # ------------------------------------------------------------------------------
 # Visualization
 # ------------------------------------------------------------------------------
 
+
+from compas.utilities import geometric_key
+
+
+for edge, attr in topology.edges(True):
+    print("Edge: {}  Type: {}  Force: {}".format(edge, attr["type"], attr["force"]))
+
+
+
+
+edge_text = {e: round(attr["state"] * attr["force"], 6) for e, attr in topology.edges(True)}
+node_text = {n: geometric_key(topology.node_coordinates(n), precision="6f") for n in topology.nodes()}
+
 plotter = TopologyPlotter(topology, figsize=(16, 9))
 
-plotter.draw_nodes(radius=0.03, text="key")
-plotter.draw_edges(text="key")
+plotter.draw_nodes(radius=0.03, text=node_text)
+plotter.draw_edges(text=edge_text)
 plotter.draw_loads()
 plotter.draw_segments(edge_lines)
 

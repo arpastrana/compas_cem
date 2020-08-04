@@ -4,9 +4,10 @@ from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import subtract_vectors
 from compas.geometry import normalize_vector
+from compas.geometry import length_vector
 
 
-def force_equilibrium(topology, verbose=False, *args, **kwargs):
+def force_equilibrium_numpy(topology, iters=100, verbose=False):
     """
     Computes force equilibrium at the vertices of the topology diagram.
 
@@ -24,88 +25,95 @@ def force_equilibrium(topology, verbose=False, *args, **kwargs):
 
     trails = topology.trails()
     nodes_root_distances(topology, trails)
-
     k_max = max([len(trail) for trail in trails.values()])
+
     positions = {}
     trail_vectors = {}
 
-    for i in range(k_max):
+    for epoch in range(iters):
 
-        for root, trail in trails.items():
+        for i in range(k_max):
 
-            # if index is larger than available nodes in trails
-            if i > (len(trail) - 1):
-                continue
+            for root, trail in trails.items():
 
-            # select node from trail
-            node = trail[i]
+                # if index is larger than available nodes in trails
+                if i > (len(trail) - 1):
+                    continue
 
-            # set initial trail vector and position for first iteration
-            if i == 0:
-                t_vec = [0.0, 0.0, 0.0]
-                pos = topology.node_coordinates(root)
-            
-            # otherwise, select last trail vector and position from dictionary
-            else:
-                t_vec = trail_vectors[node]
-                pos = positions[node]
+                # select node from trail
+                node = trail[i]
 
-            # calculate nodal equilibrium to get trail direction
-            t_vec = node_equilibrium_numpy(topology, node, t_vec, pos, verbose)
+                # set initial trail vector and position for first iteration
+                if i == 0:
+                    t_vec = [0.0, 0.0, 0.0]
+                    pos = topology.node_coordinates(root)
+                
+                # otherwise, select last trail vector and position from dictionary
+                else:
+                    t_vec = trail_vectors[node]
+                    pos = positions[node]
 
-            # if this is the last node, exit
-            if i == (len(trail) - 1):
-                continue
-            
-            # otherwise, pick next node
-            next_node = trail[i + 1]
-            
-            # query trail edge's length and state 
-            try:
-                edge = (node, next_node)
-                length, state = topology.edge_attributes(key=edge, names=["length", "state"])
-            except KeyError:
-                edge = (next_node, node)
-                length, state = topology.edge_attributes(key=edge, names=["length", "state"])
-    
-            # add trail vector to node start position
-            next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), state * length))
+                # calculate nodal equilibrium to get trail direction
+                if epoch == 0:
+                    t_vec = node_equilibrium_numpy(topology, node, t_vec, verbose)
+                else:
+                    t_vec = iterative_node_equilibrium_numpy(topology, node, t_vec, verbose)
 
-            # store new position and trail vector
-            positions[next_node] = next_pos
-            trail_vectors[next_node] = t_vec
-            
-            # update node coordinates in topology diagram
-            topology.node_attributes(key=next_node, names=["x", "y", "z"], values=next_pos)
-            
-            if verbose:
-                print("*****")
-                print("t_vec", t_vec)
-                print("-----")
-                print("length", length)
-                print("state", state)
-                print("pos", pos)
-                print("next_pos", next_pos)
+                # if this is the last node, exit
+                if i == (len(trail) - 1):
+                    continue
+                
+                # otherwise, pick next node
+                next_node = trail[i + 1]
+                
+                # query trail edge's length and state 
+                try:
+                    edge = (node, next_node)
+                    length, state = topology.edge_attributes(key=edge, names=["length", "state"])
+                except KeyError:
+                    edge = (next_node, node)
+                    length, state = topology.edge_attributes(key=edge, names=["length", "state"])
+        
+                # add trail vector to node start position
+                next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), state * length))
+
+                # store new position and trail vector
+                positions[next_node] = next_pos
+                trail_vectors[next_node] = t_vec
+                
+                # update node coordinates in topology diagram
+                topology.node_attributes(key=next_node, names=["x", "y", "z"], values=next_pos)
+                
+                # update trail forces in topology diagram
+                force = length_vector(t_vec)
+                topology.edge_attribute(key=edge, name="force", value=force)
+                
+                if verbose:
+                    print("*****")
+                    print("t_vec", t_vec)
+                    print("-----")
+                    print("length", length)
+                    print("state", state)
+                    print("pos", pos)
+                    print("next_pos", next_pos)
 
     if verbose:
         for key, pos in positions.items():
             print("node: {}, pos: {}".format(key, pos))
 
 
-def node_equilibrium_numpy(topology, node, t_vec, pos, verbose=False):
+def node_equilibrium_numpy(topology, node, t_vec, verbose=False):
     """
     Calculates equilibrium at a node using numpy.
 
     Parameters
     ----------
     topology : ``TopologyDiagram``
-        A topology diagram
+        A topology diagram.
     node : ``int``
         A node key.
     t_vec : ``list``
         A trail vector.
-    pos : ``list``
-        An xyz position vector.
     verbose : ``bool``
         Flag to print out internal operations. Defaults to ``False``.
     
@@ -125,15 +133,14 @@ def node_equilibrium_numpy(topology, node, t_vec, pos, verbose=False):
     if verbose:
         print("-----")
         print("node", node)
-        print("edges", edges)
         print("qvec", q_vec)
         print("r_vec", r_vec)
-        print("t vec np", tvec_np)
+        print("t vec out", tvec_out)
 
     return tvec_out
 
 
-def iterative_node_equilibrium_numpy(topology, node, t_vec, pos, verbose=False):
+def iterative_node_equilibrium_numpy(topology, node, t_vec, verbose=False):
     """
     Calculates equilibrium at a node using numpy.
 
@@ -145,8 +152,6 @@ def iterative_node_equilibrium_numpy(topology, node, t_vec, pos, verbose=False):
         A node key.
     t_vec : ``list``
         A trail vector.
-    pos : ``list``
-        An xyz position vector.
     verbose : ``bool``
         Flag to print out internal operations. Defaults to ``False``.
     
@@ -161,16 +166,16 @@ def iterative_node_equilibrium_numpy(topology, node, t_vec, pos, verbose=False):
     rd_vec = direct_deviation_vector_numpy(topology, node)  # direct edges 
     ri_vec = indirect_deviation_vector_numpy(topology, node)  # indirect edges 
 
-    tvec_out = trail_vector_out_numpy(t_vec, q_vec, r_vec, ri_vec)
+    tvec_out = trail_vector_out_numpy(t_vec, q_vec, rd_vec, ri_vec)
     tvec_out = tvec_out.tolist()
 
     if verbose:
         print("-----")
         print("node", node)
-        print("edges", edges)
         print("qvec", q_vec)
-        print("r_vec", r_vec)
-        print("t vec np", tvec_np)
+        print("rd_vec", rd_vec)
+        print("ri_vec", rd_vec)
+        print("t vec np", tvec_out)
 
     return tvec_out
 
@@ -215,10 +220,13 @@ def indirect_deviation_vector_numpy(topology, node):
     return r_vec
 
 
-def trail_vector_out_numpy(t_vec, q_vec, r_vec, ):
+def trail_vector_out_numpy(t_vec, q_vec, rd_vec, ri_vec=None):
     """
     """
-    tvec_np = - np.array(t_vec) - np.array(r_vec) - np.array(q_vec)
+    if ri_vec is None:
+        ri_vec = np.zeros(3)
+
+    tvec_np = - np.array(t_vec) - np.array(rd_vec) - np.array(q_vec) - np.array(ri_vec)
     return tvec_np
 
 
