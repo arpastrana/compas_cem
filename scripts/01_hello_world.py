@@ -1,7 +1,7 @@
 from compas_cem.diagrams import TopologyDiagram
 from compas_cem.plotters import TopologyPlotter
 
-from compas_cem.equilibrium import force_equilibrium_numpy
+from compas_cem.equilibrium import force_equilibrium
 
 # ------------------------------------------------------------------------------
 # Data
@@ -61,6 +61,7 @@ for edge in deviation_edges:
 
 topology.add_deviation_edge((1, 5), state=+1, force=1.0)
 topology.add_deviation_edge((1, 3), state=+1, force=1.0)
+topology.add_deviation_edge((2, 4), state=+1, force=1.0)
 
 # ------------------------------------------------------------------------------
 # Set Root Nodes
@@ -81,8 +82,8 @@ topology.support(3)
 # ------------------------------------------------------------------------------
 
 load = [0.0, -1.0, 0.0]
-topology.add_load(2, load)
-topology.add_load(5, load)
+topology.node_load(2, load)
+topology.node_load(5, load)
 
 # ------------------------------------------------------------------------------
 # Collect Trails and Edge lines
@@ -95,21 +96,13 @@ edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
 # Force Equilibrium
 # ------------------------------------------------------------------------------
 
-force_equilibrium_numpy(topology, iters=100, verbose=True)
+force_equilibrium(topology, kmax=100, verbose=True)
 
 # ------------------------------------------------------------------------------
 # Visualization
 # ------------------------------------------------------------------------------
 
-
 from compas.utilities import geometric_key
-
-
-for edge, attr in topology.edges(True):
-    print("Edge: {}  Type: {}  Force: {}".format(edge, attr["type"], attr["force"]))
-
-
-
 
 edge_text = {e: round(attr["state"] * attr["force"], 6) for e, attr in topology.edges(True)}
 node_text = {n: geometric_key(topology.node_coordinates(n), precision="6f") for n in topology.nodes()}

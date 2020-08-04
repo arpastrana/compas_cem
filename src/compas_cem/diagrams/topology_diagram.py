@@ -1,6 +1,14 @@
 from compas_cem.diagrams import Diagram
 
 
+__all__ = [
+    "TopologyDiagram"
+]
+
+# ==============================================================================
+# Topology Diagram
+# ==============================================================================
+
 class TopologyDiagram(Diagram):
     """
     The heart of life.
@@ -21,8 +29,6 @@ class TopologyDiagram(Diagram):
     def __init__(self, *args, **kwargs):
         super(TopologyDiagram, self).__init__(*args, **kwargs)
 
-        self.g_vertex = {}
-
         self.update_default_node_attributes({
                                             "x": 0.0,
                                             "y": 0.0,
@@ -41,12 +47,12 @@ class TopologyDiagram(Diagram):
                                             })
 
 # ==============================================================================
-# Node Additions
+# Node Attributes
 # ==============================================================================
 
     def support(self, node):
         """
-        Sets a node to a support node.
+        Assigns a support attribute to a node.
         
         Parameters
         ----------
@@ -57,7 +63,7 @@ class TopologyDiagram(Diagram):
 
     def root(self, node):
         """
-        Sets a node to a root node.
+        Marks a node as the starting point of a continuous trail.
 
         Parameters
         ----------
@@ -68,8 +74,37 @@ class TopologyDiagram(Diagram):
         """
         self.node_attribute(node, "type", "root")
 
+    def node_load(self, node, load=None):
+        """
+        Gets or sets a load at a node.
+        
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        load : ``list``
+            A vector with xyz components.
+            If load is ``None``, this function queries the load vector at the
+            node.
+            Otherwise, it assigns it.
+            Defaults to ``None``.
+        
+        Returns
+        -------
+        load_vector: ``list``
+            A vector with xyz components, if ``load`` is ``None``.
+        """
+        attrs = ["qx", "qy", "qz"]
+        return self.node_attributes(key=node, names=attrs, values=load)
+
+# ==============================================================================
+# Node Additions
+# ==============================================================================
+
     def add_load(self, node, load):
         """
+        Adds a nodal load.
+
         Parameters
         ----------
         node : ``int``
@@ -223,18 +258,18 @@ class TopologyDiagram(Diagram):
         """
         return self.nodes_where({"type": "support"})
 
-    def connected_deviation_edges(self, node, mode="all"):
+# ==============================================================================
+#  Connected Edges
+# ==============================================================================
+
+    def connected_deviation_edges(self, node):
         """
+        Finds the deviation edges connected to a node.
+
         Parameters
         ----------
         node : ``int``
             A node key.
-        mode : ``str``
-            Flag to specify whether deviation edge type.
-            - "direct" will return only direct deviation edges.
-            - "indirect will return indirect deviaton edges.
-            - "all" wil return direct and indirect deviation edges.
-            Defaults to "all".
         
         Returns
         -------
@@ -242,17 +277,87 @@ class TopologyDiagram(Diagram):
             The keys of the connected deviation edges.
             If no deviation edge is attached, the list will be empty.
         """
-        supported_types = {
-            "all": self.is_deviation_edge,
-            "direct": self.is_direct_deviation_edge,
-            "indirect": self.is_indirect_deviation_edge
-        }
+        return self._connected_edges_predicate(node, self.is_deviation_edge)
 
-        is_edge_type = supported_types[mode]
+    def connected_trail_edges(self, node):
+        """
+        Finds the trail edges connected to a node.
 
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        trail_edges : ``list``
+            The keys of the connected trail edges.
+            If no trail edge is attached, the list will be empty.
+        """
+        return self._connected_edges_predicate(node, self.is_trail_edge)
+
+    def _connected_direct_deviation_edges(self, node):
+        """
+        Finds the direct deviation edges connected to a node.
+
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        deviation_edges : ``list``
+            The keys of the connected deviation edges.
+            If no deviation edge is attached, the list will be empty.
+
+        Note
+        ----
+            Direct deviation edges have both end-nodes with equal topological distance to a root node. Distances must be precomputed.
+        """
+        return self._connected_edges_predicate(node, self._is_direct_deviation_edge)
+
+    def _connected_indirect_deviation_edges(self, node):
+        """
+        Finds the indirect deviation edges connected to a node.
+
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        deviation_edges : ``list``
+            The keys of the connected deviation edges.
+            If no deviation edge is attached, the list will be empty.
+
+        Note
+        ----
+            Indirect deviation edges have both end-nodes with unequal topological distance to a root node. Distances must be precomputed.
+        """
+        return self._connected_edges_predicate(node, self._is_indirect_deviation_edge)
+
+    def _connected_edges_predicate(self, node, predicate):
+        """
+        Finds the edges connected to a node.
+
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        predicate : ``func``
+            A predicate function to search for a specific edge type.
+        
+        Returns
+        -------
+        selected_edges : ``list``
+            The keys of the selected edges.
+            If no edge of the given type is attached, the list will be empty.
+        """
         deviation_edges = []
         for edge in self.connected_edges(node):
-            if is_edge_type(edge):
+            if predicate(edge):
                 deviation_edges.append(edge)
         return deviation_edges
 
@@ -299,37 +404,122 @@ class TopologyDiagram(Diagram):
         return self.edges_where({"type": "deviation"}, data)
 
 # ==============================================================================
-# Edge Queries
+# Edge Selections
 # ==============================================================================
+
+    def is_trail_edge(self, edge):
+        """
+        Tests whether or not an edge is a trail edge.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            The key of the edge to test.
+        
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the edge is a trail edge. ``False`` otherwise.
+        """
+        if self.edge_attribute(edge, "type") == "trail":
+            return True
+        return False
 
     def is_deviation_edge(self, edge):
         """
+        Tests whether or not an edge is a deviation edge.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            The key of the edge to test.
+        
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the edge is a deviation edge. ``False`` otherwise.
         """
         if self.edge_attribute(edge, "type") == "deviation":
             return True
         return False
 
-    def is_direct_deviation_edge(self, edge):
+    def _is_direct_deviation_edge(self, edge):
         """
+        Tests if a deviation edge is direct.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            The key of the edge to test.
+        
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the deviation edge is direct.
+            ``False`` otherwise.
+        """
+        def predicate(x):
+            a, b = self.nodes_attribute(name="_w", keys=edge)
+            if a == b:
+                return True
+
+        return self._is_deviation_edge_predicate(edge, predicate)
+
+    def _is_indirect_deviation_edge(self, edge):
+        """
+        Tests if a deviation edge is indirect.
+        
+        Parameters
+        ----------
+        edge : ``tuple``
+            The key of the edge to test.
+        
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the deviation edge is indirect.
+            ``False`` otherwise.
+        """
+        def predicate(x):
+            a, b = self.nodes_attribute(name="_w", keys=edge)
+            if a != b:
+                return True
+
+        return self._is_deviation_edge_predicate(edge, predicate)
+    
+    def _is_deviation_edge_predicate(self, edge, predicate):
+        """
+        Tests whether or not a deviation edge fulfills a set of conditions.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            The key of the edge to test.
+        predicate : ``func``
+            A function that for user-defined test conditions.
+            Predicate must take in a single edge key as argument.
+        
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the deviation edge meets the predicate condition.
+            ``False`` otherwise.
+        
+        Notes
+        -----
+        Similar to ``TopologyDiagram.edges_where_predicate()``.
         """
         if not self.is_deviation_edge(edge):
             return False
-        nd_u, nd_v = self.nodes_attribute(name="_w", keys=edge)
-        if nd_u == nd_v:
+        if predicate(edge):
             return True
         return False
 
-    def is_indirect_deviation_edge(self, edge):
-        """
-        """
-        if not self.is_deviation_edge(edge):
-            return False
-        nd_u, nd_v = self.nodes_attribute(name="_w", keys=edge)
-        if nd_u != nd_v:
-            return True
-        return False
-
+# ==============================================================================
+# Main
+# ==============================================================================
 
 if __name__ == "__main__":
     topology = TopologyDiagram()
+    topology.edges_where_predicate()
     print(topology)

@@ -7,6 +7,11 @@ from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 
 
+__all__ = [
+    "force_equilibrium"
+]
+
+
 def force_equilibrium(topology, kmax=100, verbose=False):
     """
     Computes force equilibrium at the vertices of the topology diagram.
@@ -131,8 +136,8 @@ def node_equilibrium(topology, node, t_vec, indirect=False, verbose=False):
         The resulting new trail vector.
 
     """
-    tvec_in = scale_vector(t_vec, -1.0)  # incoming trail vector
-    q_vec = topology.node_load(node)  # node load
+    tvec_in = scale_vector(t_vec, -1.0)
+    q_vec = topology.node_load(node)
     rd_vec = direct_deviation_edges_resultant_vector(topology, node)
 
     if indirect:
@@ -160,7 +165,7 @@ def deviation_edges_resultant_vector(topology, node, deviation_edges):
     if not deviation_edges:
         return r_vec
 
-    vectors = incoming_edge_vectors(topology, node, deviation_edges)
+    vectors = topology.incoming_edge_vectors(node, deviation_edges, True)
     states = topology.edges_attribute(name="state", keys=deviation_edges)
     forces = topology.edges_attribute(name="force", keys=deviation_edges)
 
@@ -192,27 +197,6 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     for vec in vectors:
         tvec = add_vectors(tvec, vec)
     return scale_vector(tvec, -1.0)
-
-
-def incoming_edge_vectors(topology, node, edges):
-    """
-    """
-    vectors = []
-    for u, v in edges:
-        other_node = u if u != node else v
-        vector = edge_vector(topology, (other_node, node), True)
-        vectors.append(vector)
-
-    return vectors
-
-
-def edge_vector(topology, edge, normalize=False):
-    """
-    """
-    vector = subtract_vectors(*[topology.node_coordinates(n) for n in edge])
-    if not normalize:
-        return vector
-    return normalize_vector(vector)
 
 
 def nodes_root_distances(topology, trails):
