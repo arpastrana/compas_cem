@@ -223,22 +223,36 @@ class TopologyDiagram(Diagram):
         """
         return self.nodes_where({"type": "support"})
 
-    def connected_deviation_edges(self, node):
+    def connected_deviation_edges(self, node, mode="all"):
         """
         Parameters
         ----------
         node : ``int``
             A node key.
+        mode : ``str``
+            Flag to specify whether deviation edge type.
+            - "direct" will return only direct deviation edges.
+            - "indirect will return indirect deviaton edges.
+            - "all" wil return direct and indirect deviation edges.
+            Defaults to "all".
         
         Returns
         -------
         deviation_edges : ``list``
-            A list with the keys of the deviation edges connected to the node.
+            The keys of the connected deviation edges.
             If no deviation edge is attached, the list will be empty.
         """
+        supported_types = {
+            "all": self.is_deviation_edge,
+            "direct": self.is_direct_deviation_edge,
+            "indirect": self.is_indirect_deviation_edge
+        }
+
+        is_edge_type = supported_types[mode]
+
         deviation_edges = []
         for edge in self.connected_edges(node):
-            if self.edge_attribute(edge, "type") == "deviation":
+            if is_edge_type(edge):
                 deviation_edges.append(edge)
         return deviation_edges
 
@@ -283,6 +297,37 @@ class TopologyDiagram(Diagram):
             The attributes of the next deviation edge if ``data=True``.
         """
         return self.edges_where({"type": "deviation"}, data)
+
+# ==============================================================================
+# Edge Queries
+# ==============================================================================
+
+    def is_deviation_edge(self, edge):
+        """
+        """
+        if self.edge_attribute(edge, "type") == "deviation":
+            return True
+        return False
+
+    def is_direct_deviation_edge(self, edge):
+        """
+        """
+        if not self.is_deviation_edge(edge):
+            return False
+        nd_u, nd_v = self.nodes_attribute(name="_w", keys=edge)
+        if nd_u == nd_v:
+            return True
+        return False
+
+    def is_indirect_deviation_edge(self, edge):
+        """
+        """
+        if not self.is_deviation_edge(edge):
+            return False
+        nd_u, nd_v = self.nodes_attribute(name="_w", keys=edge)
+        if nd_u != nd_v:
+            return True
+        return False
 
 
 if __name__ == "__main__":
