@@ -86,8 +86,7 @@ class TopologyDiagram(Diagram):
             A vector with xyz components.
             If load is ``None``, this function queries the load vector at the
             node.
-            Otherwise, it assigns it.
-            Defaults to ``None``.
+            Otherwise, it assigns it. Defaults to ``None``.
         
         Returns
         -------
@@ -199,14 +198,14 @@ class TopologyDiagram(Diagram):
             The trails. Keys are those of their root nodes
         """
         tr = {}
-
+        # breakpoint()
         for root in self.root_nodes():
             trail = []
+            visited = set()
 
             node = root
 
             while True:
-                visited = set()
                 
                 for neighbor in self.neighbors(node):
 
@@ -214,14 +213,17 @@ class TopologyDiagram(Diagram):
                         continue
                     
                     try:
-                        edge_type = self.edge_attribute((node, neighbor), "type")
+                        is_trail = self.is_trail_edge((node, neighbor))
                     except KeyError:
-                        edge_type = self.edge_attribute((neighbor, node), "type")
+                        is_trail = self.is_trail_edge((neighbor, node))
 
-                    if edge_type == "trail":
-                        trail.append(node)
-                        node = neighbor
-                        break
+                    if not is_trail:
+                        continue
+                    
+                    trail.append(node)
+                    visited.add(node)
+                    node = neighbor
+                    break
 
                 if self.node_attribute(node, "type") == "support":
                     trail.append(node)
