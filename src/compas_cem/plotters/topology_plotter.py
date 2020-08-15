@@ -1,3 +1,5 @@
+from math import copysign
+
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
 from compas.geometry import normalize_vector
@@ -48,8 +50,7 @@ class TopologyPlotter(NetworkPlotter):
         """
         cmap = self.edge_state_colors
         ds = self.datastructure
-        cmap[0.0] = (0, 0, 0)
-        ec = {e: cmap[attr.get("state", "d")] for e, attr in ds.edges(True)}
+        ec = {e: cmap[copysign(1.0, attr["force"])] for e, attr in ds.edges(True)}
 
         super(TopologyPlotter, self).draw_edges(color=ec, *args, **kwargs)
 
@@ -73,7 +74,7 @@ class TopologyPlotter(NetworkPlotter):
 
         for node, attr in ds.nodes(True):
             q_vec = ds.node_attributes(node, ["qx", "qy", "qz"])
-            if length_vector(q_vec) < 1e-3:
+            if length_vector(q_vec) < tol:
                 continue
 
             arrow = {}

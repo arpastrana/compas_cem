@@ -41,7 +41,6 @@ class TopologyDiagram(Diagram):
 
         self.update_default_edge_attributes({
                                             "type": None,  # trail, devi
-                                            "state": None,  # 1, -1
                                             "length": 0.0,  # only positive
                                             "force": 0.0,  # only positive
                                             })
@@ -137,7 +136,7 @@ class TopologyDiagram(Diagram):
 # Edge Additions
 # ==============================================================================
 
-    def add_trail_edge(self, edge, state, length):
+    def add_trail_edge(self, edge, length):
         """
         Adds a trail edge.
 
@@ -145,10 +144,9 @@ class TopologyDiagram(Diagram):
         ----------
         edge : ``tuple``
             An edge key.
-        state : ``int``
-            A combinatorial state. ``1`` if tension. ``-1`` if compression.
         length : ``float``
             The length of the edge.
+            A positive value denotes tension. A negative one, compression.
 
         Returns
         -------
@@ -156,10 +154,10 @@ class TopologyDiagram(Diagram):
             The edge key.
         """
         u, v = edge
-        kwargs = {"type": "trail", "state": state, "length": length}
+        kwargs = {"type": "trail", "length": length}
         return self.add_edge(u, v, **kwargs)
 
-    def add_deviation_edge(self, edge, state, force):
+    def add_deviation_edge(self, edge, force):
         """
         Adds a deviation edge.
 
@@ -167,10 +165,9 @@ class TopologyDiagram(Diagram):
         ----------
         edge : ``tuple``
             An edge key.
-        state : ``int``
-            A combinatorial state. ``1`` if tension. ``-1`` if compression.
         force : ``float``
             The force assigned to the edge.
+            A positive value denotes tension. A negative one, compression.
 
         Returns
         -------
@@ -178,7 +175,7 @@ class TopologyDiagram(Diagram):
             The edge key.
         """
         u, v = edge
-        kwargs = {"type": "deviation", "state": state, "force": force}
+        kwargs = {"type": "deviation", "force": force}
         return self.add_edge(u, v, **kwargs)
 
 # ==============================================================================
@@ -204,8 +201,11 @@ class TopologyDiagram(Diagram):
             visited = set()
 
             node = root
-
-            while True:
+            
+            # possibly change to for _ in range(self.number_of_edges())
+            # worst case, it is a model with a single trail, no deviation edges
+            # would avoid memory runoffs
+            while True:  
                 
                 for neighbor in self.neighbors(node):
 

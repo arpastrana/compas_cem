@@ -46,22 +46,22 @@ for node, xyz in vertices:
 # ------------------------------------------------------------------------------
 
 for edge in trail_edges:
-    topology.add_trail_edge(edge, state=-1, length=1.0)
+    topology.add_trail_edge(edge, length=-1.0)
 
 # ------------------------------------------------------------------------------
 # Add Deviation Edges
 # ------------------------------------------------------------------------------
 
 for edge in deviation_edges:
-    topology.add_deviation_edge(edge, state=-1, force=1.0)
+    topology.add_deviation_edge(edge, force=-1.0)
 
 # ------------------------------------------------------------------------------
 # Add Indirect Deviation Edges
 # ------------------------------------------------------------------------------
 
-topology.add_deviation_edge((1, 5), state=+1, force=1.0)
-topology.add_deviation_edge((1, 3), state=+1, force=1.0)
-topology.add_deviation_edge((2, 4), state=+1, force=1.0)
+topology.add_deviation_edge((1, 5), force=1.0)
+topology.add_deviation_edge((1, 3), force=1.0)
+topology.add_deviation_edge((2, 4), force=1.0)
 
 # ------------------------------------------------------------------------------
 # Set Root Nodes
@@ -104,7 +104,7 @@ force_equilibrium(topology, kmax=100, verbose=True)
 
 from compas.utilities import geometric_key
 
-edge_text = {e: round(attr["state"] * attr["force"], 6) for e, attr in topology.edges(True)}
+edge_text = {e: round(attr["force"], 6) for e, attr in topology.edges(True)}
 node_text = {n: geometric_key(topology.node_coordinates(n), precision="6f") for n in topology.nodes()}
 
 plotter = TopologyPlotter(topology, figsize=(16, 9))
