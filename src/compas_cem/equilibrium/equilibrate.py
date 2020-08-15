@@ -1,10 +1,11 @@
-import numpy as np
-
 from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import subtract_vectors
 from compas.geometry import normalize_vector
 from compas.geometry import length_vector
+from compas.geometry import distance_point_point
+
+from copy import deepcopy
 
 
 __all__ = [
@@ -34,13 +35,14 @@ def force_equilibrium(topology, kmax=100, verbose=False):
 
     positions = {}
     trail_vectors = {}
+    eps = 1e-5
 
-    for k in range(kmax):
+    for k in range(kmax):  # max iterations
 
-        if verbose:
-            print("====== Iteration: {} ======".format(k))
+        # store last positions for residual
+        last_positions = deepcopy(positions)
 
-        for i in range(w_max):
+        for i in range(w_max):  # layers
 
             for root, trail in trails.items():
 
@@ -63,27 +65,27 @@ def force_equilibrium(topology, kmax=100, verbose=False):
 
                 # calculate nodal equilibrium to get trail direction
                 if k == 0:
-                    t_vec = node_equilibrium(topology, node, t_vec, verbose)
+                    t_vec = node_equilibrium(topology, node, t_vec, False)
                 else:
-                    t_vec = node_equilibrium(topology, node, t_vec, True, verbose)
+                    t_vec = node_equilibrium(topology, node, t_vec, True, False)
 
                 # if this is the last node, exit
                 if i == (len(trail) - 1):
                     continue
                 
-                # otherwise, pick next node
+                # otherwise, pick next node in the trail
                 next_node = trail[i + 1]
                 
-                # query trail edge's length and state 
+                # query trail edge's length
                 try:
                     edge = (node, next_node)
-                    length, state = topology.edge_attributes(key=edge, names=["length", "state"])
+                    length = topology.edge_attribute(key=edge, name="length")
                 except KeyError:
                     edge = (next_node, node)
-                    length, state = topology.edge_attributes(key=edge, names=["length", "state"])
+                    length = topology.edge_attribute(key=edge, name="length")
         
                 # add trail vector to node start position
-                next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), state * length))
+                next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), length))
 
                 # store new position and trail vector
                 positions[next_node] = next_pos
@@ -95,21 +97,31 @@ def force_equilibrium(topology, kmax=100, verbose=False):
                 # update trail forces in topology diagram
                 force = length_vector(t_vec)
                 topology.edge_attribute(key=edge, name="force", value=force)
-                
-                if verbose:
-                    print("*****")
-                    print("t_vec", t_vec)
-                    print("-----")
-                    print("length", length)
-                    print("state", state)
-                    print("pos", pos)
-                    print("next_pos", next_pos)
+
+        # if this is the first iteration, move directly to the next one
+        if k == 0:
+            continue
+
+        # calculate residual
+        residual = 0.0
+        for key, pos in positions.items():
+            last_pos = last_positions[key]
+            residual += distance_point_point(last_pos, pos)
+
+        # if residual smaller than threshold, stop iterating
+        if residual < eps:
+            break
+
+    # if residual smaller than threshold, stop iterating
+    if residual > eps:
+        raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
 
     if verbose:
-        print("====== Completed Equilibrium Calculation ======")
+        msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
+        print(msg.format(k, residual))
         print("\n")
-        for key, pos in positions.items():
-            print("node: {}, pos: {}".format(key, pos))
+
+    return residual
 
 
 def node_equilibrium(topology, node, t_vec, indirect=False, verbose=False):
@@ -166,11 +178,10 @@ def deviation_edges_resultant_vector(topology, node, deviation_edges):
         return r_vec
 
     vectors = topology.incoming_edge_vectors(node, deviation_edges, True)
-    states = topology.edges_attribute(name="state", keys=deviation_edges)
     forces = topology.edges_attribute(name="force", keys=deviation_edges)
 
-    for state, force, dev_vec in zip(states, forces, vectors):
-        r_vec = add_vectors(r_vec, scale_vector(dev_vec, state * force))
+    for force, dev_vec in zip(forces, vectors):
+        r_vec = add_vectors(r_vec, scale_vector(dev_vec, force))
 
     return r_vec
 

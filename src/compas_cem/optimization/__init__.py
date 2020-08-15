@@ -31,6 +31,9 @@ from __future__ import print_function
 from .bound import *
 from .constraint import *
 from .target import *
-from .optimizer import *
+
+import compas
+if not compas.IPY:
+    from .optimizer import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]
