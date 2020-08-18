@@ -220,7 +220,7 @@ from nlopt import LD_SLSQP
 
 # optimization constants
 opt_algorithm = LD_LBFGS  # LN_BOBYQA / LD_LBFGS
-max_iterations = 50  # 100
+max_iterations = 100  # 100
 relative_tol = 1e-4  # 1e-4
 learning_rate = 1e-4  # 1e-4
 
@@ -265,25 +265,8 @@ deviation_forces = topology.edges_attribute(name="force", keys=d_edges)
 dd_forces = topology.edges_attribute(name="force", keys=dd_edges)
 di_forces = topology.edges_attribute(name="force", keys=di_edges)
 
-# x = (np.array(deviation_forces + trail_lengths))
 x = (np.array(dd_forces + trail_lengths + di_forces))
 print("x", x)
-
-# # bounds up
-# # all edges are optimizable
-# bounds_up = np.ones(num_edges, dtype=np.float)
-# bounds_up[:num_d_edges] *= bound_deviation
-# bounds_up[num_d_edges:] *= bound_trail
-# bounds_up += x
-# print("bounds_up", bounds_up)
-
-# # bounds low
-# # all edges are optimizable
-# bounds_low = np.ones(num_edges, dtype=np.float)
-# bounds_low[:num_d_edges] *= -bound_deviation
-# bounds_low[num_d_edges:] *= -bound_trail
-# bounds_low += x
-# print("bounds_low", bounds_low)
 
 # bounds up
 # all edges are optimizable
@@ -321,11 +304,9 @@ error = loss_numpy(y, y_hat)
 print("error", error)
 
 # create partial functions
-# main_partial = partial(main, t_edges=t_edges, d_edges=d_edges, target_nodes=target_nodes)
 main_partial = partial(main, t_edges=t_edges, dd_edges=dd_edges, di_edges=di_edges, target_nodes=target_nodes)
 
 fx_partial = partial(f_fd, func=main_partial, lr=learning_rate)
-# fx_partial = partial(f, func=main_partial, lr=learning_rate)
 
 # optimization numpy
 x_opt, l_opt = optimization_numpy(x, fx_partial, opt_algorithm, bounds_up, bounds_low, relative_tol, max_iterations)
@@ -334,9 +315,6 @@ print("Optimized weights: {}".format(x_opt))
 print("Optimized loss: {}".format(l_opt))
 
 # doing equilibrium once more after optimization
-# update_topology_edges(topology, xopt, t_edges, dd_edges, di_edges)
-# force_equilibrium(topology, kmax=100, verbose=False)
-
 # can origin nodes be optimized?
 # in the script doesn't look like it
 # or maybe that's why they are part of the x parameter vector?
@@ -354,7 +332,7 @@ print("okay!")
 print("Elapsed time: {}".format(time() - start))
 
 # ------------------------------------------------------------------------------
-# Visualization
+# Plotter
 # ------------------------------------------------------------------------------
 
 from compas.utilities import geometric_key
@@ -372,8 +350,6 @@ for e, attr in topology.edges(True):
     msg = "{} / f: {}".format(e, round(attr["force"], 3))
     edge_text[e] = msg
 
-# edge_text = {e: attr["type"] for e, attr in topology.edges(True)}
-
 plotter = TopologyPlotter(topology, figsize=(16, 9))
 
 plotter.draw_nodes(radius=0.25, text=node_text)
@@ -382,3 +358,42 @@ plotter.draw_edges(text=edge_text)
 plotter.draw_loads(scale=2.0)
 plotter.draw_segments(edge_lines)
 plotter.show()
+
+# ------------------------------------------------------------------------------
+# Viewer
+# ------------------------------------------------------------------------------
+
+from math import copysign
+
+from compas.utilities import rgb_to_hex
+from compas.geometry import Point
+from compas.geometry import Line
+from compas.geometry import Polyline
+from compas.geometry import Plane
+from compas.geometry import Circle
+
+from compas.utilities import rgb_to_hex
+
+from compas_viewers.objectviewer import ObjectViewer
+
+
+viewer = ObjectViewer()
+
+forces = topology.edges_attribute(name="force")
+minforce = min(forces)
+maxforce = max(forces) - minforce
+maxwidth = 10.0
+minwidth = 1.0
+
+cmap = {-1: (0, 0, 255), 1: (255, 0, 0)}
+for edge, attr in topology.edges(True):
+    start, end = topology.edge_coordinates(*edge)
+    f = attr["force"]
+    f = (f - minforce) / maxforce
+
+    s = {}
+    s["edges.color"] = rgb_to_hex(cmap[copysign(1.0, attr["force"])])
+    s["edges.width"] = f * maxwidth + minwidth
+    viewer.add(Line(start, end), settings=s)
+
+# viewer.show()
