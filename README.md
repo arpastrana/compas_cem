@@ -1,17 +1,30 @@
 # compas_cem
 
-A **compas**-flavored implementation of the Combinatorial Equilibrium Modelling (CEM) method.
+A **COMPAS**-flavored implementation of the Combinatorial Equilibrium Modelling (CEM) method.
 
-![hello_world](./docs/images/swap_dev_6fps.gif)
+![simple_bridge_optimization](./docs/images/simple_bridge_opt_4_fps.gif)
 
 
 ## Getting Started
 
-CEM is a new form-finding approach to generate mixed tension-compression, spatial structures in equilibrium. This method is developed by Patrick Ole Ohlbrock and Pierluigi D'Acunto at the [Chair of Structural Design at the ETH Zurich](http://www.schwartz.arch.ethz.ch/). 
+CEM is a form-finding technique to generate mixed tension-compression, spatial
+structures in equilibrium. This **COMPAS** package is developed by Rafael
+Pastrana from the CREATE Laboratory at
+[Princeton University](https://soa.princeton.edu/), in collaboration with
+Patrick Ole Ohlbrock and Pierluigi D'Acunto, the CEM creators, from the [Chair of Structural
+Design at the ETH Zurich](http://www.schwartz.arch.ethz.ch/). 
 
-To have a better grasp of the algorithm running under the hood, we refer you these three excellent resources: to the CEM's [journal paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342), to the [condensed notes](https://github.com/arpastrana/compas_cem/tree/master/cem_method.md)  in this repository, and to the [first CEM repository](https://github.com/OleOhlbrock/CEM/) created by the authors.
+To best picture what is happening under the hood, we refer you to these three
+excellent resources: the CEM's [journal
+paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342),
+the [condensed
+notes](https://github.com/arpastrana/compas_cem/tree/master/cem_method.md) in
+this repository, and to the [first CEM
+implementation](https://github.com/OleOhlbrock/CEM/) created by the Ole and Pierluigi.
 
-Additionally, feel free to check this [first example](https://github.com/arpastrana/compas_cem/tree/master/scripts/01_hello_world.py) to get a sense of what `compas_cem` can do for you.
+Additionally, feel free to check this [first
+example](https://github.com/arpastrana/compas_cem/tree/master/scripts/01_hello_world.py)
+to get a first impression of what `compas_cem` can do for you.
 
 ## Installation
 
