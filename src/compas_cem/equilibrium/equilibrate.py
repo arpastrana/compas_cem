@@ -5,28 +5,34 @@ from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 from compas.geometry import distance_point_point
 
-from copy import deepcopy
-
+from math import copysign
 
 __all__ = [
     "force_equilibrium"
 ]
 
 
-def force_equilibrium(topology, kmax=100, verbose=False):
+def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=None):
     """
-    Computes force equilibrium at the vertices of the topology diagram.
+    Computes force equilibrium on the vertices of the topology diagram.
 
     Parameters
     ----------
     topology : ``TopologyDiagram``
         A topology diagram
-    verbose : ``bool``
+    kmax : ``int``. Optional.
+        Maximum number of iterations the algorithm will run for.
+        Defaults to ``100``.
+    eps : ``float``. Optional.
+        Distance threshold that marks equilibrium convergence.
+        This threshold is compared against the sum of distances of the nodes'
+        positions from one iteration to the next one.
+        If ``eps`` is hit before consuming ``kmax`` iterations, calculations
+        will stop early. Defaults to ``1e-5``.
+    verbose : ``bool``. Optional.
         Flag to print out internal operations. Defaults to ``False``.
-    *args : ``list``
-        Additional arguments
-    **kwargs : ``dict``
-        Additional keyword arguments
+    callback : ``function``. Optional.
+        An optional callback function to run at every iteration.
     """
 
     trails = topology.trails()
@@ -35,12 +41,11 @@ def force_equilibrium(topology, kmax=100, verbose=False):
 
     positions = {}
     trail_vectors = {}
-    eps = 1e-5
 
     for k in range(kmax):  # max iterations
 
         # store last positions for residual
-        last_positions = deepcopy(positions)
+        last_positions = {k: v for k, v in positions.items()}
 
         for i in range(w_max):  # layers
 
@@ -95,8 +100,12 @@ def force_equilibrium(topology, kmax=100, verbose=False):
                 topology.node_attributes(key=next_node, names=["x", "y", "z"], values=next_pos)
                 
                 # update trail forces in topology diagram
-                force = length_vector(t_vec)
+                force = copysign(length_vector(t_vec), length)
                 topology.edge_attribute(key=edge, name="force", value=force)
+
+                # do callback
+                if callback:
+                    callback()
 
         # if this is the first iteration, move directly to the next one
         if k == 0:
@@ -112,6 +121,11 @@ def force_equilibrium(topology, kmax=100, verbose=False):
         if residual < eps:
             break
 
+    # assign lengths to deviation edges
+    for u, v in topology.deviation_edges():
+        length = topology.edge_length(u, v)
+        topology.edge_attribute(key=(u, v), name="length", value=length)
+
     # if residual smaller than threshold, stop iterating
     if residual > eps:
         raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
@@ -121,12 +135,10 @@ def force_equilibrium(topology, kmax=100, verbose=False):
         print(msg.format(k, residual))
         print("\n")
 
-    return residual
-
 
 def node_equilibrium(topology, node, t_vec, indirect=False, verbose=False):
     """
-    Calculates equilibrium at a node using numpy.
+    Calculates equilibrium of trail and deviation forces at a node.
 
     Parameters
     ----------
@@ -140,7 +152,7 @@ def node_equilibrium(topology, node, t_vec, indirect=False, verbose=False):
         Flag to consider indirect deviation edges in the calculation.
         Defaults to ``False``.
     verbose : ``bool``
-        Flag to print out internal operations. Defaults to ``False``.
+        Flag to print out internal output. Defaults to ``False``.
     
     Returns
     -------
