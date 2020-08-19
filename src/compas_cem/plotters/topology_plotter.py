@@ -17,7 +17,7 @@ class TopologyPlotter(NetworkPlotter):
 
         self.node_colors = {"support": (255, 0, 0), "root": (255, 255, 0)}
         self.edge_colors = {"trail": (255, 0, 255), "deviation": (0, 255, 0)}
-        self.edge_state_colors = {-1: (0, 0, 255), 1: (255, 0, 0)}
+        self.edge_state_colors = {-1: (0, 0, 255), 1: (255, 0, 0), 0: (0, 0, 0)}
         
     def draw_nodes(self, *args, **kwargs):
         """
@@ -50,7 +50,7 @@ class TopologyPlotter(NetworkPlotter):
         """
         cmap = self.edge_state_colors
         ds = self.datastructure
-        ec = {e: cmap[copysign(1.0, attr["force"])] for e, attr in ds.edges(True)}
+        ec = {e: cmap[copysign(1.0, attr.get("force", 0.0))] for e, attr in ds.edges(True)}
 
         super(TopologyPlotter, self).draw_edges(color=ec, *args, **kwargs)
 
