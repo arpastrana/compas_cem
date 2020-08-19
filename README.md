@@ -1,28 +1,27 @@
 # compas_cem
 
-A **COMPAS**-flavored implementation of the Combinatorial Equilibrium Modeling
-(CEM) method.
+A **COMPAS**-flavored combinatorial equilibrium modeling (CEM).
 
 ![simple_bridge_optimization](./docs/images/simple_bridge_opt_4_fps.gif)
 
 
 ## Getting Started
 
-CEM is a form-finding technique to generate mixed tension-compression structures in equilibrium created by Patrick Ole Ohlbrock and Pierluigi D'Acunto
-at the [Chair of Structural Design at ETH
-Zurich](http://www.schwartz.arch.ethz.ch/). 
-This **COMPAS** package is developed by Rafael Pastrana at the CREATE Laboratory at
-[Princeton University](https://soa.princeton.edu/) in collaboration with CEM's authors.
+CEM is a geometric form-finding technique to create mixed tension-compression structures
+in equilibrium. This **COMPAS** package is developed by Rafael Pastrana at the
+[CREATE Laboratory at Princeton University](https://soa.princeton.edu/) in
+collaboration with CEM's
+original authors, Patrick Ole Ohlbrock and Pierluigi D'Acunto, from the [Chair of Structural Design at ETH Zürich](http://www.schwartz.arch.ethz.ch/).
 
 If you are curious about CEM's underpinnings, we refer you to these three
 excellent resources:
 
-- [The journal
+- The [journal
 paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342),
 - the [condensed
 notes](https://github.com/arpastrana/compas_cem/tree/master/cem_method.md) in
 this repository
-- the [first CEM
+- the first Rhino/Grasshopper [CEM
 implementation](https://github.com/OleOhlbrock/CEM/) by Ole and Pierluigi.
 
 Additionally, feel free to check this [first
@@ -60,7 +59,7 @@ To verify that everything is running like a charm, still in your command line in
 python -c "import compas_cem"
 ```
 
-If no errors arise, celebrate 🎉! You have a working installation of `compas_cem`.
+If no errors show up, celebrate 🎉! You have a working installation of `compas_cem`.
 
 ## Contributing
 
@@ -79,4 +78,4 @@ please help us tackle it by [filing a report](https://github.com/arpastrana/comp
 
 ## License
 
-MIT license. Of course.
+MIT. Of course.

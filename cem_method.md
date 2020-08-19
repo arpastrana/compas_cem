@@ -1,5 +1,7 @@
 # Combinatorial Equilibrium Modelling
 
+Ole Ohlbrock and Pierluigi D'Acunto, 2020 / Computer-Aided Design / ETH Zürich
+
 ## Overview
 0. Initial State
 1. Initialize $\mathbf{T}_0$ and $\mathbf{X}_0$
@@ -118,7 +120,7 @@ for sequence in sequences:
 
 For vertex $v_i$, an _outgoing trail **force** vector_, $\mathbf{t}_{i-out}^*$, is computed as:
 
-$$\mathbf{t}_{i-out}^* = -\mathbf{t}_{i-in}^* -\mathbf{r} \mathbf{d}_{i-D}^* - \mathbf{q}_{E, i}^*$$
+$$\mathbf{t}_{i-out}^* = -\mathbf{t}_{i-in}^* -\mathbf{r} \mathbf{d}_{i-D}^* - \mathbf{q}_{E, i}^* \tag{1}$$
 
 where:
 
@@ -129,22 +131,22 @@ where:
 
 The resultant direct deviation vector, $\mathbf{r} \mathbf{d}_{i-D}^*$ is the sum of all direct deviation forces incoming to vertex $v_i$:
 
-$$\mathbf{r} \mathbf{d}_{i-D}^* = \sum_{j=0}^m d_{ij}^* \mathbf{u}_{ij} = \sum_{j=0}^m c_{ij} \mu_{ij}^* \mathbf{u}_{ij}$$ 
+$$\mathbf{r} \mathbf{d}_{i-D}^* = \sum_{j=0}^m d_{ij}^* \mathbf{u}_{ij} = \sum_{j=0}^m c_{ij} \mu_{ij}^* \mathbf{u}_{ij}\tag{2}$$ 
 
 where:
 
 - Unit vector $\mathbf{u}_{ij}$ is:
 
-$$\mathbf{u}_{ij} = \frac{\mathbf{p}_j - \mathbf{p}_i}{|| \mathbf{p}_j - \mathbf{p}_i || }$$
+$$\mathbf{u}_{ij} = \frac{\mathbf{p}_j - \mathbf{p}_i}{|| \mathbf{p}_j - \mathbf{p}_i ||} \tag{3}$$
 
 
 #### Outgoing vertex **position** vector $\mathbf{p}_{i-out}$
 
 The resulting position of vertex $v_i$ can be determined using the combinatorial state $c_{i-out}$ registered in $\mathbf{T}_out$, the absolute length $\lambda_{out}$ from design parameters $\mathbf{X}$, and the outgoing unit vector $\mathbf{u}_{i-out}$ obtained with $\mathbf{t}_{i-out}^*$:
 
-$$\mathbf{p}_{i-out} = \mathbf{p}_{i-in} + t_{i-out} \mathbf{u}_{i-out}$$ 
+$$\mathbf{p}_{i-out} = \mathbf{p}_{i-in} + t_{i-out} \mathbf{u}_{i-out}\tag{4}$$ 
 
-$$\mathbf{p}_{i-out} = \mathbf{p}_{i-in} + c_{i-out} \lambda_{i-out} \frac{\mathbf{t}_{i-out}^*}{||\mathbf{t}_{i-out}^*||}$$
+$$\mathbf{p}_{i-out} = \mathbf{p}_{i-in} + c_{i-out} \lambda_{i-out} \frac{\mathbf{t}_{i-out}^*}{||\mathbf{t}_{i-out}^*||}\tag{5}$$
 
 Consider that $\mathbf{p}_{i-in}$ in sequence $k$ is equal to $\mathbf{p}_{i-out}$ in previous sequence $k-1$, and that $\mathbf{p}_{i-in}$ equals to the initial position vectors at the origin nodes,  $\mathbf{p}$.
 
@@ -154,11 +156,18 @@ Reaction forces $\mathbf{s}_i^*$, missing edge lengths and force magnified can b
 Alternative paramterizations contemplate using a **Force Density** or a **Load Path** approach.
 
 
-	
+### Step 3: Iterative equilibrium
 
+In the presence of indirect deviation edges, it is necessary to iterate a few times over the complete structure so that global equilibrium converges. This is because it is not possible to know in advance the direction of a deviation edge that connects two vertices which are part of two different sequences. The remedy to this is to go over equation (1) $n$ number of times until the total average position of the vertices of $\mathbf{T}$  are displaced less than a user-defined threshold. 
 
+Equation (1) is extended to account for indirect deviation edges, $d_{I_{ij}}$, as follows: 
 
+$$\mathbf{t}_{i-out}^{n} = -\mathbf{t}_{i-in}^{n} -\mathbf{r} \mathbf{d}_{i-D}^{n} - \mathbf{q}_{E, i}^{n} -\mathbf{r} \mathbf{d}_{i-I}^{n} \tag{6}$$
 
+The resultant vector of indirect deviation edges $\mathbf{r} \mathbf{d}_{i-I}^{n}$ is homologous to equation 2 and set to **zero** in the first iteration step.
 
+The convergence criteria to exit the iterative loop is set to:
 
+$$\sum_i^{m} |\mathbf{p}_i^{t} - \mathbf{p}_i^{t-1}| < \epsilon \tag{7}$$
 
+where $\epsilon = 1e-5$ from experimental tests.
