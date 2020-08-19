@@ -1,26 +1,29 @@
 # compas_cem
 
-A **COMPAS**-flavored implementation of the Combinatorial Equilibrium Modelling (CEM) method.
+A **COMPAS**-flavored implementation of the Combinatorial Equilibrium Modeling
+(CEM) method.
 
 ![simple_bridge_optimization](./docs/images/simple_bridge_opt_4_fps.gif)
 
 
 ## Getting Started
 
-CEM is a form-finding technique to generate mixed tension-compression, spatial
-structures in equilibrium. This **COMPAS** package is developed by Rafael
-Pastrana from the CREATE Laboratory at
-[Princeton University](https://soa.princeton.edu/), in collaboration with
-Patrick Ole Ohlbrock and Pierluigi D'Acunto, the CEM creators, from the [Chair of Structural
-Design at the ETH Zurich](http://www.schwartz.arch.ethz.ch/). 
+CEM is a form-finding technique to generate mixed tension-compression structures in equilibrium created by Patrick Ole Ohlbrock and Pierluigi D'Acunto
+at the [Chair of Structural Design at ETH
+Zurich](http://www.schwartz.arch.ethz.ch/). 
+This **COMPAS** package is developed by Rafael Pastrana at the CREATE Laboratory at
+[Princeton University](https://soa.princeton.edu/) in collaboration with CEM's authors.
 
-To best picture what is happening under the hood, we refer you to these three
-excellent resources: the CEM's [journal
+If you are curious about CEM's underpinnings, we refer you to these three
+excellent resources:
+
+- [The journal
 paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342),
-the [condensed
+- the [condensed
 notes](https://github.com/arpastrana/compas_cem/tree/master/cem_method.md) in
-this repository, and to the [first CEM
-implementation](https://github.com/OleOhlbrock/CEM/) created by the Ole and Pierluigi.
+this repository
+- the [first CEM
+implementation](https://github.com/OleOhlbrock/CEM/) by Ole and Pierluigi.
 
 Additionally, feel free to check this [first
 example](https://github.com/arpastrana/compas_cem/tree/master/scripts/01_hello_world.py)
@@ -61,9 +64,12 @@ If no errors arise, celebrate 🎉! You have a working installation of `compas_c
 
 ## Contributing
 
-Contributions and pull requests are welcome! Make sure to read our [contribution guide](https://github.com/arpastrana/compas_cem/tree/master/CONTRIBUTING.md).
+Contributions and pull requests are welcome! 
 
-Additionally, please don't forget to do ``invoke test`` in your command line to double check that the package is working before you make a pull request.
+Make sure to read our [contribution
+guide](https://github.com/arpastrana/compas_cem/tree/master/CONTRIBUTING.md).
+Please don't forget to run ``invoke test`` in your command line to double check
+that your contribution doesn't break anything before you make a pull request.
 
 ## Issue tracker
 
@@ -73,4 +79,4 @@ please help us tackle it by [filing a report](https://github.com/arpastrana/comp
 
 ## License
 
-The contents of this repository are under an MIT license.
+MIT license. Of course.
