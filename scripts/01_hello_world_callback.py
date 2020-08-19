@@ -2,12 +2,17 @@ from compas_cem.diagrams import TopologyDiagram
 from compas_cem.plotters import TopologyPlotter
 
 from compas_cem.equilibrium import force_equilibrium
-
 from compas.utilities import geometric_key
+
+from time import time
+
+import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------------------------
 # Data
 #-------------------------------------------------------------------------------
+
+IMG_OUT = "/Users/arpj/Desktop/cem_bin/presentation/gif/hello_world/feq_{}.png"
 
 vertices = [
     (0, [0.0, 0.0, 0.0]),
@@ -95,31 +100,60 @@ tr = topology.trails()
 edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
 
 # ------------------------------------------------------------------------------
+# Initialize Plotter
+# ------------------------------------------------------------------------------
+
+plotter = TopologyPlotter(topology, figsize=(16, 9))
+pause = 0.1
+radius = 0.03
+
+plotter.draw_nodes(radius=radius)
+plotter.draw_loads()
+plotter.draw_segments(edge_lines)
+plotter.draw_edges()
+
+plotter.axes.set_aspect(aspect="equal", adjustable="datalim", anchor="C")
+plotter.axes.autoscale()
+
+plt.tight_layout()
+plt.pause(pause)
+plt.savefig(IMG_OUT.format(time()))
+
+
+# ------------------------------------------------------------------------------
+# Visualization Callback
+# ------------------------------------------------------------------------------
+
+def update_plotter():
+    plotter.clear()
+    plotter.draw_nodes(radius=radius)
+    plotter.draw_loads()
+    plotter.draw_segments(edge_lines)
+    plotter.draw_edges()
+    
+
+    plt.tight_layout()
+    plt.pause(pause)
+    plt.savefig(IMG_OUT.format(time()))
+
+
+# ------------------------------------------------------------------------------
 # Force Equilibrium
 # ------------------------------------------------------------------------------
 
-force_equilibrium(topology, eps=1e-5, kmax=100, verbose=True)
+force_equilibrium(topology, kmax=100, verbose=True, callback=update_plotter)
 
 # ------------------------------------------------------------------------------
 # Visualization
 # ------------------------------------------------------------------------------
 
-edge_text = {e: round(attr.get("force", attr.get("length")), 3) for e, attr in topology.edges(True)}
-
-edge_text = {}
-for e, attr in topology.deviation_edges(True):
-    edge_text[e] = round(attr["length"], 3)
-for e, attr in topology.trail_edges(True):
-    edge_text[e] = round(attr["force"], 3)
-
+edge_text = {e: round(attr["force"], 6) for e, attr in topology.edges(True)}
 node_text = {n: geometric_key(topology.node_coordinates(n), precision="3f") for n in topology.nodes()}
-node_text = None
 
-plotter = TopologyPlotter(topology, figsize=(16, 9))
+plotter.clear()
 
 plotter.draw_nodes(radius=0.03, text=node_text)
 plotter.draw_edges(text=edge_text)
 plotter.draw_loads()
 plotter.draw_segments(edge_lines)
-
 plotter.show()

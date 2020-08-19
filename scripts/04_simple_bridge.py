@@ -16,6 +16,11 @@ from functools import partial
 
 IN = "/Users/arpj/code/libraries/compas_cem/data/json/w1_cem_2d_bridge.json"
 
+goal_points = [[29.13,22.20,0.00], [42.99,-14.17,0.00]]
+target_nodes = [7, 2]
+
+optimize = False
+
 # ------------------------------------------------------------------------------
 # Topology Diagram
 # ------------------------------------------------------------------------------
@@ -23,13 +28,17 @@ IN = "/Users/arpj/code/libraries/compas_cem/data/json/w1_cem_2d_bridge.json"
 topology = TopologyDiagram.from_json(IN)
 
 # ------------------------------------------------------------------------------
-# Topology Diagram
+# Store initial lines
 # ------------------------------------------------------------------------------
 
 keys = list(topology.deviation_edges())
 deviation_force = 1.0
 topology.edges_attribute(name="force", value=deviation_force, keys=keys)
 
+load = [-2.0, 0.0, 0.0]
+keys = list(topology.root_nodes()) 
+for node in topology.root_nodes():
+    topology.node_load(node, load)
 
 # ------------------------------------------------------------------------------
 # Collect Trails and Edge lines
@@ -42,58 +51,21 @@ edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
 # Initial Force Equilibrium
 # ------------------------------------------------------------------------------
 
-# should we do this before optimization?
 force_equilibrium(topology, kmax=100, verbose=False)
 
 # ------------------------------------------------------------------------------
-# Optimization? - Numpy!
+# Optimization - Numpy!
 # ------------------------------------------------------------------------------
 
 def loss_numpy(y, y_hat):
     """
-    Returned values hould be positive
+    Returned values must be positive
     """
-    # distance to points
     diff = y - y_hat
     rownorms = np.linalg.norm(diff, axis=1)
     rownorms = np.square(rownorms)
     error = np.sum(rownorms)
-    
-    # print("y", y)
-    # print("y hat", y_hat)
-    # print("diff", diff)
-    # print("norm rows", rownorms)
-    # print("sq", sq)
-    # print("error", error)
     return error
-
-
-def f(x, grad, func, lr):
-    """
-    Gradient
-    """
-    if grad.size > 0:
-        # finite difference
-        
-        # fx 0
-        fx0 = func(x, topology, y_hat)
-        _x = np.copy(x)
-        _x += lr
-
-        # fx 1
-        fx1 = func(_x, topology, y_hat)
-
-        delta_fx = (fx1 - fx0) / lr
-        print("delta fx", delta_fx)
-        print("grad pre", grad)
-        grad[:] = delta_fx
-        print("grad post", grad)
-
-    # fx
-    print("====== Computing Loss ======")
-    fx = func(x, topology, y_hat)
-    print("Loss: {}".format(fx))
-    return fx
 
 
 def f_fd(x, grad, func, lr):
@@ -145,7 +117,6 @@ def optimization_numpy(x, fx, algorithm, bounds_up, bounds_low, tol, maxeval):
     
     solver.set_maxeval(maxeval)
     # solver.set_ftol_rel(tol)  # or set_ftol_rel
-
     # what happens when a variable is "unbounded"?
     # is it just not part of the optimization parameters?
     solver.set_lower_bounds(bounds_low)
@@ -191,7 +162,7 @@ def generate_goals(topology, target_nodes):
     return y
 
 
-def main(x, topology, y_hat, t_edges, dd_edges, di_edges, target_nodes):
+def main(x, topology, y_hat, t_edges, dd_edges, di_edges, target_nodes, callback=None, **kwargs):
     """
     Combo breaker.
     """
@@ -199,123 +170,114 @@ def main(x, topology, y_hat, t_edges, dd_edges, di_edges, target_nodes):
     force_equilibrium(topology, kmax=100, verbose=False)  # need to change?
     y = generate_goals(topology, target_nodes)
     loss = loss_numpy(y, y_hat)
+    if callback:
+        callback(*kwargs)
     return loss
-
 
 # ------------------------------------------------------------------------------
 # Work
 # ------------------------------------------------------------------------------
 
-from time import time
+if optimize:
 
-start = time()
+    from time import time
 
-# algorithms
-from nlopt import LD_MMA
-from nlopt import LN_COBYLA
-from nlopt import LN_BOBYQA
-from nlopt import LD_LBFGS
-from nlopt import LD_SLSQP
+    # algorithms
+    from nlopt import LD_MMA
+    from nlopt import LN_COBYLA
+    from nlopt import LN_BOBYQA
+    from nlopt import LD_LBFGS
+    from nlopt import LD_SLSQP
 
 
-# optimization constants
-opt_algorithm = LD_LBFGS  # LN_BOBYQA / LD_LBFGS
-max_iterations = 100  # 100
-relative_tol = 1e-4  # 1e-4
-learning_rate = 1e-4  # 1e-4
+    # record starting time
+    start = time()
 
-# bounds
-bound_trail = 10.0  # 10.0
-bound_deviation = 5.0 # 10.0 
+    # optimization constants
+    opt_algorithm = LD_LBFGS  # LN_BOBYQA / LD_LBFGS
+    max_iterations = 100  # 100
+    relative_tol = 1e-4  # 1e-4
+    learning_rate = 1e-4  # 1e-4
 
-# targets
-goal_points = [[65.33, -8.84, 0.00], [65.33, 8.84, 0.00]]
-target_nodes = [2, 7]
+    # bounds
+    bound_trail = 10.0  # 10.0
+    bound_deviation = 5.0 # 10.0 
 
-target_points = {k: target for k, target in zip(target_nodes, goal_points)}
-uv_target = {index: k for index, k in enumerate(target_points.keys())}
+    # topology stuff
+    num_edges = topology.number_of_edges()
 
-# topology stuff
-num_edges = topology.number_of_edges()
+    # parameters to optimize - x
+    t_edges = list(topology.trail_edges())  
+    d_edges = list(topology.deviation_edges())
 
-# parameters to optimize - x
-# all edges are optimizable here
-# later consider only optimizable
+    dd_edges = [uv for uv in d_edges if topology._is_direct_deviation_edge(uv)]
+    di_edges = [uv for uv in d_edges if topology._is_indirect_deviation_edge(uv)]
 
-t_edges = list(topology.trail_edges())  
-d_edges = list(topology.deviation_edges())
+    print("t_edges", t_edges)
+    print("d_edges", d_edges)
+    print("dd_edges", dd_edges)
+    print("di_edges", di_edges)
 
-dd_edges = [uv for uv in d_edges if topology._is_direct_deviation_edge(uv)]
-di_edges = [uv for uv in d_edges if topology._is_indirect_deviation_edge(uv)]
+    num_t_edges = len(t_edges)
+    num_d_edges = len(d_edges)
+    num_dd_edges = len(dd_edges)
+    num_di_edges = len(di_edges)
 
-print("t_edges", t_edges)
-print("d_edges", d_edges)
-print("dd_edges", dd_edges)
-print("di_edges", di_edges)
+    assert num_dd_edges + num_di_edges == num_d_edges, "Edges don't match!"
 
-num_t_edges = len(t_edges)
-num_d_edges = len(d_edges)
-num_dd_edges = len(dd_edges)
-num_di_edges = len(di_edges)
+    trail_lengths = topology.edges_attribute(name="length", keys=t_edges)
+    deviation_forces = topology.edges_attribute(name="force", keys=d_edges)
+    dd_forces = topology.edges_attribute(name="force", keys=dd_edges)
+    di_forces = topology.edges_attribute(name="force", keys=di_edges)
 
-assert num_dd_edges + num_di_edges == num_d_edges, "Edges don't match!"
+    x = (np.array(dd_forces + trail_lengths + di_forces))
+    print("x", x)
 
-trail_lengths = topology.edges_attribute(name="length", keys=t_edges)
-deviation_forces = topology.edges_attribute(name="force", keys=d_edges)
-dd_forces = topology.edges_attribute(name="force", keys=dd_edges)
-di_forces = topology.edges_attribute(name="force", keys=di_edges)
+    # bounds up
+    # all edges are optimizable
+    bounds_up = np.ones(num_edges, dtype=np.float)
+    bounds_up[:num_dd_edges] *= bound_deviation
+    bounds_up[num_dd_edges:num_dd_edges+num_t_edges] *= bound_trail
+    bounds_up[num_dd_edges+num_t_edges:] *= bound_deviation
+    bounds_up += x
+    print("bounds_up", bounds_up)
 
-x = (np.array(dd_forces + trail_lengths + di_forces))
-print("x", x)
+    # bounds low
+    # all edges are optimizable
+    bounds_low = np.ones(num_edges, dtype=np.float)
+    bounds_low[:num_dd_edges] *= -bound_deviation
+    bounds_low[num_dd_edges:num_dd_edges+num_t_edges] *= -bound_trail
+    bounds_low[num_dd_edges+num_t_edges:] *= -bound_deviation
+    bounds_low += x
+    print("bounds_low", bounds_low)
 
-# bounds up
-# all edges are optimizable
-bounds_up = np.ones(num_edges, dtype=np.float)
-bounds_up[:num_dd_edges] *= bound_deviation
-bounds_up[num_dd_edges:num_dd_edges+num_t_edges] *= bound_trail
-bounds_up[num_dd_edges+num_t_edges:] *= bound_deviation
-bounds_up += x
-print("bounds_up", bounds_up)
+    # generate goal array
+    y = generate_goals(topology, target_nodes)
+    print("y", y)
 
-# bounds low
-# all edges are optimizable
-bounds_low = np.ones(num_edges, dtype=np.float)
-bounds_low[:num_dd_edges] *= -bound_deviation
-bounds_low[num_dd_edges:num_dd_edges+num_t_edges] *= -bound_trail
-bounds_low[num_dd_edges+num_t_edges:] *= -bound_deviation
-bounds_low += x
-print("bounds_low", bounds_low)
+    # generate target array
+    xyz = np.array([gp for gp in goal_points])
+    y_hat = np.reshape(xyz, (-1, 3))
+    print("y_hat", y_hat)
 
-# generate goal array
-y = generate_goals(topology, target_nodes)
-print("y", y)
+    # update topology
+    update_topology_edges(topology, x, t_edges, dd_edges, di_edges)
 
-# generate target array
-xyz = np.array([gp for gp in goal_points])
-y_hat = np.reshape(xyz, (-1, 3))
-print("y_hat", y_hat)
+    # test loss
+    error = loss_numpy(y, y_hat)
+    print("error", error)
 
-# update topology
-# update_topology_edges(topology, x, t_edges, d_edges)
-update_topology_edges(topology, x, t_edges, dd_edges, di_edges)
+    # create partial functions
+    main_partial = partial(main, t_edges=t_edges, dd_edges=dd_edges, di_edges=di_edges, target_nodes=target_nodes)
 
-# test loss
-error = loss_numpy(y, y_hat)
-print("error", error)
+    fx_partial = partial(f_fd, func=main_partial, lr=learning_rate)
 
-# create partial functions
-main_partial = partial(main, t_edges=t_edges, dd_edges=dd_edges, di_edges=di_edges, target_nodes=target_nodes)
+    # optimization numpy
+    x_opt, l_opt = optimization_numpy(x, fx_partial, opt_algorithm, bounds_up, bounds_low, relative_tol, max_iterations)
 
-fx_partial = partial(f_fd, func=main_partial, lr=learning_rate)
-
-# optimization numpy
-x_opt, l_opt = optimization_numpy(x, fx_partial, opt_algorithm, bounds_up, bounds_low, relative_tol, max_iterations)
-
-print("Optimized weights: {}".format(x_opt))
-print("Optimized loss: {}".format(l_opt))
-
-print("okay!")
-print("Elapsed time: {}".format(time() - start))
+    print("Optimized weights: {}".format(x_opt))
+    print("Optimized loss: {}".format(l_opt))
+    print("Elapsed time: {}".format(time() - start))
 
 # ------------------------------------------------------------------------------
 # Plotter
@@ -324,19 +286,35 @@ print("Elapsed time: {}".format(time() - start))
 from compas.utilities import geometric_key
 
 edge_text = None
-node_text = "key"
+node_text = None
 
-node_text = {}
-for n in topology.nodes():
-    msg = "{} / {}".format(n, geometric_key(topology.node_coordinates(n)))
-    node_text[n] = msg
+# node_text = {}
+# for n in topology.nodes():
+#     msg = "{} / {}".format(n, geometric_key(topology.node_coordinates(n)))
+#     node_text[n] = msg
 
 edge_text = {}
-for e, attr in topology.edges(True):
-    msg = "{} / f: {}".format(e, round(attr["force"], 3))
-    edge_text[e] = msg
+# for e, attr in topology.edges(True):
+#     msg = "{} / f: {}".format(e, round(attr["force"], 3))
+#     edge_text[e] = msg
+
+for e, attr in topology.deviation_edges(True):
+    edge_text[e] = round(attr["force"], 3)
+for e, attr in topology.trail_edges(True):
+    edge_text[e] = round(attr["length"], 3)
 
 plotter = TopologyPlotter(topology, figsize=(16, 9))
+
+points = []
+for pt in goal_points:
+    points.append({
+        "pos": pt[:2],
+        "radius": 0.40,
+        "facecolor": (0, 255, 0)
+    }
+    )
+
+plotter.draw_points(points)
 
 plotter.draw_nodes(radius=0.25, text=node_text)
 plotter.draw_edges(text=edge_text)
@@ -344,42 +322,3 @@ plotter.draw_edges(text=edge_text)
 plotter.draw_loads(scale=2.0)
 plotter.draw_segments(edge_lines)
 plotter.show()
-
-# ------------------------------------------------------------------------------
-# Viewer
-# ------------------------------------------------------------------------------
-
-# from math import copysign
-
-# from compas.utilities import rgb_to_hex
-# from compas.geometry import Point
-# from compas.geometry import Line
-# from compas.geometry import Polyline
-# from compas.geometry import Plane
-# from compas.geometry import Circle
-
-# from compas.utilities import rgb_to_hex
-
-# from compas_viewers.objectviewer import ObjectViewer
-
-
-# viewer = ObjectViewer()
-
-# forces = topology.edges_attribute(name="force")
-# minforce = min(forces)
-# maxforce = max(forces) - minforce
-# maxwidth = 10.0
-# minwidth = 1.0
-
-# cmap = {-1: (0, 0, 255), 1: (255, 0, 0)}
-# for edge, attr in topology.edges(True):
-#     start, end = topology.edge_coordinates(*edge)
-#     f = attr["force"]
-#     f = (f - minforce) / maxforce
-
-#     s = {}
-#     s["edges.color"] = rgb_to_hex(cmap[copysign(1.0, attr["force"])])
-#     s["edges.width"] = f * maxwidth + minwidth
-#     viewer.add(Line(start, end), settings=s)
-
-# viewer.show()
