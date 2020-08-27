@@ -7,21 +7,21 @@ A **COMPAS**-flavored combinatorial equilibrium modeling (CEM).
 
 ## Getting Started
 
-CEM is a geometric form-finding technique to create mixed tension-compression structures
-in equilibrium. This **COMPAS** package is developed by Rafael Pastrana at the
+CEM is a geometric form-finding technique to create mixed tension-compression
+structures. This **COMPAS** package is developed by Rafael Pastrana at the
 [CREATE Laboratory at Princeton University](https://soa.princeton.edu/) in
-collaboration with CEM's
-original authors, Patrick Ole Ohlbrock and Pierluigi D'Acunto, from the [Chair of Structural Design at ETH Zürich](http://www.schwartz.arch.ethz.ch/).
+collaboration with CEM's original authors, Patrick Ole Ohlbrock and Pierluigi
+D'Acunto, from the [Chair of Structural Design at ETH Zürich](http://www.schwartz.arch.ethz.ch/).
 
 If you are curious about CEM's underpinnings, we refer you to these three
 excellent resources:
 
 - The [journal
-paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342),
-- the [condensed
+paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342)
+- The [condensed
 notes](https://github.com/arpastrana/compas_cem/tree/master/cem_method.md) in
 this repository
-- the first Rhino/Grasshopper [CEM
+- The first Rhino/Grasshopper [CEM
 implementation](https://github.com/OleOhlbrock/CEM/) by Ole and Pierluigi.
 
 Additionally, feel free to check this [first
