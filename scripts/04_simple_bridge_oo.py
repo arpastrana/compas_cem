@@ -102,25 +102,12 @@ print("Elapsed time: {}".format(time() - start))
 
 from compas.utilities import geometric_key
 
-edge_text = None
-node_text = None
-
-node_text = {}
-for n in topology.nodes():
-    msg = "{} / {}".format(n, geometric_key(topology.node_coordinates(n)))
-    node_text[n] = msg
-
-edge_text = {}
-# for e, attr in topology.edges(True):
-#     msg = "{} / f: {}".format(e, round(attr["force"], 3))
-#     edge_text[e] = msg
-
-for e, attr in topology.deviation_edges(True):
-    edge_text[e] = round(attr["force"], 3)
-for e, attr in topology.trail_edges(True):
-    edge_text[e] = round(attr["length"], 3)
-
 plotter = TopologyPlotter(topology, figsize=(16, 9))
+
+plotter.draw_nodes(radius=0.25, text="key")
+plotter.draw_edges(text="attr")
+plotter.draw_loads(scale=2.0)
+plotter.draw_segments(edge_lines)
 
 points = []
 for key, goal in optimizer.goals.items():
@@ -136,9 +123,4 @@ for key, goal in optimizer.goals.items():
 
 plotter.draw_points(points)
 
-plotter.draw_nodes(radius=0.25, text=node_text)
-plotter.draw_edges(text=edge_text)
-
-plotter.draw_loads(scale=2.0)
-plotter.draw_segments(edge_lines)
 plotter.show()
