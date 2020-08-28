@@ -28,6 +28,7 @@ from __future__ import print_function
 
 
 # from .<module> import *
+from .edge import *
 from .trail import *
 from .deviation import *
 

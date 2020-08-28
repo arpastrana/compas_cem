@@ -1,15 +1,9 @@
 from compas.geometry import Line
 
 
-class TrailElement(Line):
+class TrailEdge(Line):
     """
-    A trail element.
-
-    Parameters
-    ----------
-
-    Returns
-    -------
+    A trail edge.
     """
 
     def __init__(self, *args, **kwargs):

@@ -61,16 +61,9 @@ for edge in deviation_edges:
 # Add Indirect Deviation Edges
 # ------------------------------------------------------------------------------
 
-# topology.add_deviation_edge((1, 5), force=1.0)
-# topology.add_deviation_edge((1, 3), force=1.0)
-# topology.add_deviation_edge((2, 4), force=1.0)
-
-# ------------------------------------------------------------------------------
-# Set Root Nodes
-# ------------------------------------------------------------------------------
-
-topology.root(2)
-topology.root(5)
+topology.add_deviation_edge((1, 5), force=1.0)
+topology.add_deviation_edge((1, 3), force=1.0)
+topology.add_deviation_edge((2, 4), force=1.0)
 
 # ------------------------------------------------------------------------------
 # Set Supports Nodes
@@ -92,13 +85,14 @@ topology.node_load(5, load)
 # ------------------------------------------------------------------------------
 
 tr = topology.trails()
+print(list(topology.root_nodes()))
 edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
 
 # ------------------------------------------------------------------------------
 # Force Equilibrium
 # ------------------------------------------------------------------------------
 
-force_equilibrium(topology, eps=1e-5, kmax=100, verbose=True)
+# force_equilibrium(topology, eps=1e-5, kmax=100, verbose=True)
 
 # ------------------------------------------------------------------------------
 # Visualization
@@ -113,7 +107,7 @@ for e, attr in topology.trail_edges(True):
     edge_text[e] = round(attr["force"], 3)
 
 node_text = {n: geometric_key(topology.node_coordinates(n), precision="3f") for n in topology.nodes()}
-node_text = None
+node_text = "key"
 
 plotter = TopologyPlotter(topology, figsize=(16, 9))
 
