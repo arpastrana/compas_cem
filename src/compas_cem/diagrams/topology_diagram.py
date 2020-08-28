@@ -200,8 +200,7 @@ class TopologyDiagram(Diagram):
             The trails. Keys are those of their support nodes
         """
         tr = {}
-        
-        # for root in self.root_nodes():
+
         for support in self.support_nodes():
             trail = []
             visited = set()
