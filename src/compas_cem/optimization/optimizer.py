@@ -1,69 +1,272 @@
-from nlopt import opt
-from nlopt import LN_BOBYQA
+from functools import partial
+
+import numpy as np
+
+from compas_cem.equilibrium import force_equilibrium
+
+from compas_cem.optimization import nlopt_algorithm
+from compas_cem.optimization import nlopt_solver
+
+from compas_cem.optimization import grad_finite_difference_numpy
+from compas_cem.optimization import objective_function_numpy
+from compas_cem.optimization import norm_squared_error_numpy
 
 
 __all__ = [
-    "optimize_topology"
+    "Optimizer"
 ]
 
+# ------------------------------------------------------------------------------
+# Optimizer
+# ------------------------------------------------------------------------------
 
-def optimize_topology():
-    """
-    """
-    algo = LN_BOBYQA
-    solver = opt(algo, 10)
-    print("hello world!")
+class Optimizer(object):
+    def __init__(self, topology, **kwargs):
+        self.topology = topology
+        self.constraints = {}
+        self.goals = {}
+
+# ------------------------------------------------------------------------------
+# Counters
+# ------------------------------------------------------------------------------
+
+    def number_of_constraints(self):
+        """
+        """
+        return len(self.constraints)
+
+    def number_of_goals(self):
+        """
+        """
+        return len(self.goals)
+
+# ------------------------------------------------------------------------------
+# Mappings
+# ------------------------------------------------------------------------------
+
+    def index_constraint(self):
+        """
+        A dictionary that maps indices to constraint keys.
+        """
+        return {idx: key for idx, key in enumerate(self.constraints.keys())}
+
+    def constraint_index(self):
+        """
+        A dictionary that maps indices to constraint keys.
+        """
+        return {key: idx for key, idx in self.index_constraint()}
+
+# ------------------------------------------------------------------------------
+# Additions
+# ------------------------------------------------------------------------------
+
+    def add_constraint(self, constraint):
+        """
+        Adds an edge constraint.
+        """
+        key = constraint.key()
+        self.constraints[key] = constraint
+
+    def add_goal(self, goal):
+        """
+        Adds an target/goal.
+        """
+        key = goal.key()
+        self.goals[key] = goal
+
+# ------------------------------------------------------------------------------
+# Removals
+# ------------------------------------------------------------------------------
+
+    def remove_constraint(self, key):
+        """
+        Removes an edge constraint from the optimizer.
+        """
+        if key not in self.constraints:
+            raise KeyError("Constraint not found at object key: {}".format(key))
+        del self.constraints[key]
+
+    def remove_goal(self, key):
+        """
+        Removes an target/goal from the optimizer.
+        """
+        if key not in self.goals:
+            raise KeyError("Goal not found at object key: {}".format(key))
+        del self.goals[key]
+
+# ------------------------------------------------------------------------------
+# Objective Function
+# ------------------------------------------------------------------------------
+
+    def objective_func(self, grad_func, verbose):
+        """
+        """
+        obj_func = objective_function_numpy
+        func = self._optimize_topology
+        v = verbose
+        return partial(obj_func, x_func=func, grad_func=grad_func, verbose=v) 
+    
+# ------------------------------------------------------------------------------
+# Gradient Function
+# ------------------------------------------------------------------------------
+
+    def gradient_func(self, step_size, verbose):
+        """
+        """
+        grad_func = grad_finite_difference_numpy
+        func = self._optimize_topology
+        v = verbose
+        return partial(grad_func, x_func=func, step_size=step_size, verbose=v)
+
+# ------------------------------------------------------------------------------
+# Solver
+# ------------------------------------------------------------------------------
+
+    def solve_nlopt(self, algorithm, iters, stopval, step_size, verbose=False):
+        """
+        """
+        self.check_optimization_sanity()
+
+        grad_f = self.gradient_func(step_size, verbose)
+        f = self.objective_func(grad_f, verbose)
+
+        x = self.optimization_parameters() 
+        bounds_low, bounds_up = self.optimization_bounds()
+
+        hyper_parameters = {
+            "f": f,
+            "algorithm": algorithm,
+            "dims": self.number_of_constraints(),
+            "bounds_low": bounds_low,
+            "bounds_up": bounds_up,
+            "iters": iters,
+            "stopval": stopval
+        }
+
+        solver = nlopt_solver(**hyper_parameters)
+
+        try:
+            x_opt = solver.optimize(x)
+        except RuntimeError:
+            print("Tol unreached and max iters exhausted! Try increasing them.")
+            x_opt = None
+
+        loss_opt = solver.last_optimum_value()
+        return x_opt, loss_opt
+
+# ------------------------------------------------------------------------------
+# Optimization parameters
+# ------------------------------------------------------------------------------
+
+    def optimization_parameters(self):
+        """
+        """
+        x = np.zeros(self.number_of_constraints())
+
+        for index, ckey in self.index_constraint().items():
+            constraint = self.constraints[ckey]
+            x[index] = constraint.start_value(self.topology)
+
+        return x
+
+    def optimization_bounds(self):
+        """
+        """
+        bounds_low = np.zeros(self.number_of_constraints())
+        bounds_up = np.zeros(self.number_of_constraints())
+
+        for index, ckey in self.index_constraint().items():
+            constraint = self.constraints[ckey]
+            bounds_low[index] = constraint.bound_low(self.topology)
+            bounds_up[index] = constraint.bound_up(self.topology)
+
+        return bounds_low, bounds_up
+    
+# ------------------------------------------------------------------------------
+# Updates
+# ------------------------------------------------------------------------------
+
+    def _update_topology_edges(self, x):
+        """
+        """
+        x = np.squeeze(x).tolist()
+
+        for index, ckey in self.index_constraint().items():
+            edge = ckey
+            value = x[index]
+
+            name = None
+            if self.topology.is_trail_edge(edge):
+                name = "length"
+            elif self.topology.is_deviation_edge(edge):
+                name = "force"
+    
+            self.topology.edge_attribute(key=edge, name=name, value=value)
+
+    def _update_goals(self):
+        """
+        """
+        y = []
+        y_hat = []
+
+        for goal in self.goals.values():
+            goal.update(self.topology)
+            y.append(goal.reference_geometry())
+            y_hat.append(goal.target_geometry())
+        
+        y = np.array(y, dtype=float).reshape((-1, 3))
+        y_hat = np.array(y_hat, dtype=float).reshape((-1, 3))
+
+        return y, y_hat
+
+# ------------------------------------------------------------------------------
+# Equilibrium
+# ------------------------------------------------------------------------------
+
+    def _update_topology_equilibrium(self):
+        """
+        """
+        force_equilibrium(self.topology, kmax=100, eps=1e-5)
+
+# ------------------------------------------------------------------------------
+# Loss
+# ------------------------------------------------------------------------------
+
+    def _compute_loss(self, y, y_hat):
+        """
+        """
+        return norm_squared_error_numpy(y, y_hat)
+
+# ------------------------------------------------------------------------------
+# Optimization
+# ------------------------------------------------------------------------------
+
+    def _optimize_topology(self, parameters):
+        """
+        """
+        self._update_topology_edges(parameters)
+        self._update_topology_equilibrium()
+        refs, goals = self._update_goals()
+        return self._compute_loss(refs, goals)
+
+# ------------------------------------------------------------------------------
+# Sanity Check
+# ------------------------------------------------------------------------------
+
+    def check_optimization_sanity(self):
+        """
+        """
+        if len(self.constraints) == 0:
+            msg = "No constraints defined. Optimization not possible."
+            raise ValueError(msg)
+        
+        if len(self.goals) == 0:
+            msg = "No goals defined. Optimization not possible."
+            raise ValueError(msg)
+
+# ------------------------------------------------------------------------------
+# Main
+# ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     pass
-
-"""
-db0_T = O.relativeTolerance
-int0_I = O.maxIterations
-nl0_Algo = dc_Algo["algo_name"]
-
-
-# Optimization function
-def Optimization(
-    db1_InitialValues,
-    db1_BoundUp,
-    db1_BoundLow,
-    db0_T, - ok
-    int0_I, - ok
-    nl0_Algo - ok
-    ):
-
-    # solver = opt(algo, length(initial_values))
-    # solver.set_xtol_rel(tolerance)
-    # solver.set_maxeval(max_iterations)
-    solver = nl.NLoptSolver(nl0_Algo, len(db1_InitialValues), db0_T, int0_I)
-
-    # solver.set_lower_bounds(lb)
-    solver.SetLowerBounds(Array[float]( db1_BoundLow ))  
-    
-    # solver.set_upper_bounds(ub)
-    solver.SetUpperBounds(Array[float]( db1_BoundUp ))  
-
-    # solver.set_min_objective(grad)
-    solver.SetMinObjective.Overloads[Func[Array[float], Array[float], float]](Grad)
-
-    initialValue = Array[float](db1_InitialValues)
-
-    # xopt = solver.optimize(initial_values)
-    # opt_val = opt.last_optimum_value()
-    # result = solver.last_optimize_result()
-
-    out, finalScore = solver.Optimize(initialValue)
-    return finalScore
-
-dc1_Algo = {"LD_SLSQP" : nl.NLoptAlgorithm.LD_SLSQP,
-            "LN_BOBYQA" : nl.NLoptAlgorithm.LN_BOBYQA,
-            "GD_MLSL" : nl.NLoptAlgorithm.GD_MLSL,
-            "LD_LBFGS" : nl.NLoptAlgorithm.LD_LBFGS,
-            "LD_AUGLAG" : nl.NLoptAlgorithm.LD_AUGLAG,
-            "LN_SBPLX" : nl.NLoptAlgorithm.LN_SBPLX,
-            "LN_COBYLA" : nl.NLoptAlgorithm.LN_COBYLA,
-            "LD_TNEWTON" : nl.NLoptAlgorithm.LD_TNEWTON,
-            "GN_ISRES" : nl.NLoptAlgorithm.GN_ISRES,
-            "GN_MLSL" : nl.NLoptAlgorithm.GN_MLSL}
-"""

@@ -28,12 +28,17 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .bound import *
-from .constraint import *
-from .target import *
-
 import compas
 if not compas.IPY:
+    from .pull import *
+    from .loss import *
+    from .objective_func import *
+    from .grad import *
+    from ._nlopt import *
     from .optimizer import *
+
+from .constraint import *
+from .goal import *
+from .proxy import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]
