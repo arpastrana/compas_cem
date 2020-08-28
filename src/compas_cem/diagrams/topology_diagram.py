@@ -36,13 +36,14 @@ class TopologyDiagram(Diagram):
                                             "qx": 0.0,
                                             "qy": 0.0,
                                             "qz": 0.0,
-                                            "type": None
+                                            "type": None,
+                                            "_w": None
                                             })
 
         self.update_default_edge_attributes({
                                             "type": None,  # trail, devi
                                             "length": 0.0,  # only positive
-                                            "force": 0.0,  # only positive
+                                            "force": 0.0  # only positive
                                             })
 
 # ==============================================================================
@@ -51,12 +52,16 @@ class TopologyDiagram(Diagram):
 
     def support(self, node):
         """
-        Assigns a support attribute to a node.
+        Assigns a support to a node.
         
         Parameters
         ----------
         node : ``int``
             A node key.
+
+        Notes
+        -----
+        Support nodes mark the end of a continuous trail. They aren't fixed.
         """
         self.node_attribute(node, "type", "support")
 
@@ -90,7 +95,7 @@ class TopologyDiagram(Diagram):
         Returns
         -------
         load_vector: ``list``
-            A vector with xyz components, if ``load`` is ``None``.
+            A vector with xyz components if ``load`` is ``None``.
         """
         attrs = ["qx", "qy", "qz"]
         return self.node_attributes(key=node, names=attrs, values=load)
@@ -187,31 +192,32 @@ class TopologyDiagram(Diagram):
         Collects the trails in the topology diagram.
 
         A trail is an ordered sequence of nodes with two characteristics:
-        there is a root node at the start, and a support node at the end
+        there is a root node at the start, and a support node at the end.
 
         Returns
         -------
         trails : ``dict``
-            The trails. Keys are those of their root nodes
+            The trails. Keys are those of their support nodes
         """
         tr = {}
-        # breakpoint()
-        for root in self.root_nodes():
+        
+        # for root in self.root_nodes():
+        for support in self.support_nodes():
             trail = []
             visited = set()
+            node = support
 
-            node = root
-            
-            # possibly change to for _ in range(self.number_of_edges())
-            # worst case, it is a model with a single trail, no deviation edges
-            # would avoid memory runoffs
-            while True:  
+            while True:
+
+                last_node = node
+                neighbors = self.neighbors(node)
                 
-                for neighbor in self.neighbors(node):
+                while neighbors:
+                    neighbor = neighbors.pop()
 
                     if neighbor in visited:
                         continue
-                    
+
                     try:
                         is_trail = self.is_trail_edge((node, neighbor))
                     except KeyError:
@@ -219,16 +225,19 @@ class TopologyDiagram(Diagram):
 
                     if not is_trail:
                         continue
-                    
+
                     trail.append(node)
                     visited.add(node)
                     node = neighbor
                     break
 
-                if self.node_attribute(node, "type") == "support":
-                    trail.append(node)
+                if last_node == node:
+                    root = node
+                    trail.append(root)
                     break
 
+            self.node_attribute(root, "type", "root")
+            trail.reverse()
             tr[root] = trail
 
         return tr
