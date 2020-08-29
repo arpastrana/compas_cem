@@ -1,5 +1,6 @@
 from compas_cem.diagrams import TopologyDiagram
 from compas_cem.plotters import TopologyPlotter
+from compas_cem.viewers import TopologyViewer
 
 from compas_cem.equilibrium import force_equilibrium
 
@@ -91,20 +92,20 @@ iters = 100  # 100
 stopval = 1e-4  # 1e-4
 step_size = 1e-6  # 1e-4
 
+# optimize
 x_opt, l_opt = optimizer.solve_nlopt(opt_algorithm, iters, stopval, step_size)
 
-print("Total error: {}".format(l_opt))
+# print out results
 print("Elapsed time: {}".format(time() - start))
+print("Total error: {}".format(l_opt))
 
 # ------------------------------------------------------------------------------
 # Plotter
 # ------------------------------------------------------------------------------
 
-from compas.utilities import geometric_key
-
 plotter = TopologyPlotter(topology, figsize=(16, 9))
 
-plotter.draw_nodes(radius=0.25, text="key")
+plotter.draw_nodes(radius=0.30, text="key")
 plotter.draw_edges(text="attr")
 plotter.draw_loads(scale=2.0)
 plotter.draw_segments(edge_lines)
@@ -116,11 +117,32 @@ for key, goal in optimizer.goals.items():
     pt = goal.target_geometry()
     points.append({
         "pos": pt[:2],
-        "radius": 0.40,
-        "facecolor": (0, 255, 0)
+        "radius": 0.15,
+        "facecolor": (255, 153, 0)
     }
     )
 
 plotter.draw_points(points)
 
 plotter.show()
+
+# ------------------------------------------------------------------------------
+# Viewer
+# ------------------------------------------------------------------------------
+
+viewer = TopologyViewer(topology)
+viewer.add_nodes(size=20)
+viewer.add_edges(width=(1, 5))
+viewer.add_loads(scale=5, width=15)
+
+points = []
+for key, goal in optimizer.goals.items():
+    if not isinstance(goal, PointGoal):
+        continue
+    points.append(goal.target_geometry())
+
+viewer.add_points(points, size=30)
+
+
+
+viewer.show()
