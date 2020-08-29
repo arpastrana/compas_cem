@@ -19,9 +19,22 @@ class TopologyPlotter(NetworkPlotter):
         """
         super(TopologyPlotter, self).__init__(*args, **kwargs)
         
-        self.node_colors = {"support": (255, 0, 0), "root": (255, 255, 0)}
-        self.edge_colors = {"trail": (255, 0, 255), "deviation": (0, 255, 0)}
-        self.edge_state_colors = {-1: (0, 0, 255), 1: (255, 0, 0), 0: (0, 0, 0)}
+        self.node_colors = {
+            "support": (0, 153, 0),  # green
+            "root": (153, 102, 255),  # root
+            "default": (150, 150, 150)  # gray
+            }
+
+        self.edge_colors = {
+            "trail": (255, 0, 255),
+            "deviation": (0, 255, 0)
+            }
+
+        self.edge_state_colors = {
+            -1: (0, 0, 255),
+            1: (255, 0, 0),
+            0: (0, 0, 0)
+            }
 
         self.float_precision = "3f"
 
