@@ -159,16 +159,37 @@ class TopologyViewer(ObjectViewer):
                 point = Point(x, y, z)
             self.add(point, settings=settings)
     
+    def add_mesh(
+        self,
+        mesh,
+        color=(50, 50, 50),
+        edges_color=(150, 150, 150),
+        edges_width = 5.0,
+        vertices_size = 0.5,
+        opacity=0.7,
+        vertices_on=False,
+        edges_on=True,
+        faces_on=True
+        ):
+        """
+        """
+        settings = {
+        'color': rgb_to_hex(color),
+        'edges.color': rgb_to_hex(edges_color),
+        'edges.width': edges_width,
+        'opacity': opacity,
+        'vertices.size': vertices_size,
+        'vertices.on': vertices_on,
+        'edges.on': edges_on,
+        'faces.on': faces_on
+        }
+        self.add(mesh, settings=settings)
+
     def add_lines(self):
         """
         """
         return
-    
-    def add_mesh(self):
-        """
-        """
-        return
-    
+        
     def add_polyline(self):
         """
         """
