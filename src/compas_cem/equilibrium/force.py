@@ -129,6 +129,8 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
     # if residual smaller than threshold, stop iterating
     if residual > eps:
         raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
+    
+    # TODO: assign reaction forces at supports
 
     if verbose:
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"

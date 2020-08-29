@@ -100,6 +100,22 @@ class TopologyDiagram(Diagram):
         attrs = ["qx", "qy", "qz"]
         return self.node_attributes(key=node, names=attrs, values=load)
 
+    def node_type(self, node):
+        """
+        Queries the type assigned to a node.
+        
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        type : ``str``
+            The type assigned to the node.
+        """
+        return self.node_attribute(key=node, name="type")
+
 # ==============================================================================
 # Node Additions
 # ==============================================================================
@@ -412,6 +428,42 @@ class TopologyDiagram(Diagram):
             The attributes of the next deviation edge if ``data=True``.
         """
         return self.edges_where({"type": "deviation"}, data)
+
+# ==============================================================================
+# Edge Attributes
+# ==============================================================================
+
+    def edge_force(self, edge):
+        """
+        Query the force value in an edge.
+
+        Input
+        -----
+        edge : ``tuple``
+            The u, v edge key.
+
+        Return
+        ------
+        force : ``float``
+            The force value in the edge.
+        """
+        return self.edge_attribute(key=edge, name="force")
+
+    def edge_type(self, edge):
+        """
+        Query the type assigned to an edge.
+
+        Input
+        -----
+        edge : ``tuple``
+            The u, v edge key.
+
+        Return
+        ------
+        type : ``str``
+            The type assigned to the edge.
+        """
+        return self.edge_attribute(key=edge, name="type")
 
 # ==============================================================================
 # Edge Selections
