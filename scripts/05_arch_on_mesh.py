@@ -8,6 +8,7 @@ from compas_cem.optimization import Optimizer
 
 from compas_cem.optimization import PointGoal
 from compas_cem.optimization import TrimeshGoal
+from compas_cem.optimization import DeviationEdgeLengthGoal
 
 from compas_cem.optimization import TrailEdgeConstraint
 from compas_cem.optimization import DeviationEdgeConstraint
@@ -36,9 +37,10 @@ OUT_ARCH = "/Users/arpj/code/libraries/compas_cem/data/json/arch_optimized.json"
 ref_nodes = [7, 26]
 target_points = [[0.002, 1.012, -0.020], [0.001, -1.019, 0.114]]
 
-plot = False
+optimize = False
+plot = True
 view = True
-export = True
+export = False
 
 # ------------------------------------------------------------------------------
 # Target Mesh
@@ -68,14 +70,17 @@ optimizer = Optimizer(topology, verbose=True)
 # Define goals / Targets
 # ------------------------------------------------------------------------------
 
-for node, point in zip(ref_nodes, target_points):
-    optimizer.add_goal(PointGoal(node, point))
+# for node, point in zip(ref_nodes, target_points):
+#     optimizer.add_goal(PointGoal(node, point))
 
-# record starting time
 for node in topology.nodes():
-    if topology.node_type(node) in {"root", "support"}:
+    if topology.node_type(node) in {"root"}:
         continue
     optimizer.add_goal(TrimeshGoal(node, trimesh))
+
+target_length = 0.20
+for edge in topology.deviation_edges():
+    optimizer.add_goal(DeviationEdgeLengthGoal(edge, target_length))
 
 # ------------------------------------------------------------------------------
 # Define optimization parameters / constraints
@@ -89,27 +94,28 @@ for edge in topology.trail_edges():
 
 for edge in topology.deviation_edges():
     optimizer.add_constraint(DeviationEdgeConstraint(edge, bound_d, bound_d))
-        
+
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
 
-# record starting time
-start = time()
+if optimize:
+    # record starting time
+    start = time()
 
-# optimization constants
-opt_algorithm = "LD_LBFGS"  # LN_BOBYQA / LD_LBFGS
-iters = 100  # 100
-stopval = 1e-4  # 1e-4
-step_size = 1e-6  # 1e-4
+    # optimization constants
+    opt_algorithm = "LD_LBFGS"  # LN_BOBYQA / LD_LBFGS
+    iters = 100  # 100
+    stopval = 1e-4  # 1e-4
+    step_size = 1e-6  # 1e-4
 
-# optimize
-print("Optimizing")
-x_opt, l_opt = optimizer.solve_nlopt(opt_algorithm, iters, stopval, step_size)
+    # optimize
+    print("Optimizing")
+    x_opt, l_opt = optimizer.solve_nlopt(opt_algorithm, iters, stopval, step_size)
 
-# print out results
-print("Elapsed time: {}".format(time() - start))
-print("Total error: {}".format(l_opt))
+    # print out results
+    print("Elapsed time: {} seconds".format(round((time() - start), 2)))
+    print("Total error: {}".format(l_opt))
 
 # ------------------------------------------------------------------------------
 # Export
@@ -131,7 +137,8 @@ if plot:
 
     plotter.draw_nodes(radius=0.025, text="key")
     plotter.draw_edges(text="attr")
-    plotter.draw_loads(scale=0.05)
+    plotter.draw_loads(scale=2.0)
+    plotter.draw_residuals(scale=1.0)
 
     plotter.show()
 
@@ -143,6 +150,8 @@ if view:
     viewer = TopologyViewer(topology)
     viewer.add_nodes(size=20)
     viewer.add_edges(width=(1, 5))
+    viewer.add_loads(scale=2.0, width=5)
+    viewer.add_residuals(scale=1.0, width=5)
 
     points = []
     for key, goal in optimizer.goals.items():

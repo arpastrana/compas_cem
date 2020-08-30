@@ -103,6 +103,12 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
                 force = copysign(length_vector(t_vec), length)
                 topology.edge_attribute(key=edge, name="force", value=force)
 
+                # update reaction forces in supports
+                nn = next_node
+                if topology.is_node_support(nn):  # or next_node?
+                    attrs = ["rx", "ry", "rz"]
+                    topology.node_attributes(key=nn, names=attrs, values=t_vec)
+
                 # do callback
                 if callback:
                     callback()
@@ -129,8 +135,6 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
     # if residual smaller than threshold, stop iterating
     if residual > eps:
         raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
-    
-    # TODO: assign reaction forces at supports
 
     if verbose:
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"

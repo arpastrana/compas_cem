@@ -4,7 +4,6 @@ from functools import partial
 
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
-from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
 
 from compas.utilities import geometric_key
@@ -81,33 +80,72 @@ class TopologyPlotter(NetworkPlotter):
 
         super(TopologyPlotter, self).draw_edges(color=ec, *args, **kwargs)
 
-    def draw_loads(self, scale=0.5, color=(0, 0, 0), width=4.0, tol=1e-3):
+    def draw_loads(self, scale=1.0, color=(102, 255, 51), width=2.0, tol=1e-3):
         """
-        Draws scaled arrow representations of the loads.
+        Draws the nodal loads as scaled arrows.
 
         Parameters
         ----------
         scale : ``float``
-            The uniform length of the load arrows. Defaults to ``0.5``.
+            The scale of the load arrows. Defaults to ``1.0``.
         color : ``tuple``
-            The arrows' uniform color in rgb. Defaults to black, ``(0, 0, 0)``. 
+            The arrows' uniform color in rgb. Defaults to ``(102, 255, 51)``. 
         width : ``float``
             The arrows uniform display width. Defaults to ``4.0``.
         tol : ``float``
             The minimum force magnitude to draw. Defaults to ``1e-3``. 
         """
+        attrs = ["qx", "qy", "qz"]
+        self._draw_forces(attrs, scale, color, width, tol)
+
+    def draw_residuals(self, scale=1.0, color=(0, 204, 255), width=3.0, tol=1e-3):
+        """
+        Draws the node residual forces as scaled arrows.
+
+        Parameters
+        ----------
+        scale : ``float``
+            The scale of the residual arrows. Defaults to ``1.0``.
+        color : ``tuple``
+            The arrows' uniform color in rgb. Defaults to ``(0, 204, 255)``. 
+        width : ``float``
+            The arrows uniform display width. Defaults to ``3.0``.
+        tol : ``float``
+            The minimum force magnitude to draw. Defaults to ``1e-3``. 
+        """
+        attrs = ["rx", "ry", "rz"]
+        self._draw_forces(attrs, scale, color, width, tol)
+
+    def _draw_forces(self, attrs, scale, color, width, tol):
+        """
+        Draws forces as scaled arrows.
+
+        Parameters
+        ----------
+        attrs : ``list``
+            The attribute names of the force vector to draw.
+        scale : ``float``
+            The forces scale factor.
+        color : ``tuple``
+            The forces' color in rgb.
+        width : ``float``
+            The forces  display width.
+        tol : ``float``
+            The minimum force magnitude to draw.
+        """
         ds = self.datastructure
         arrows = []
 
-        for node, attr in ds.nodes(True):
-            q_vec = ds.node_attributes(node, ["qx", "qy", "qz"])
+        for node in ds.nodes():
+            q_vec = ds.node_attributes(node, attrs)
+            
             if length_vector(q_vec) < tol:
                 continue
 
             arrow = {}
-            arrow["end"] = ds.node_coordinates(node)
-            pt = scale_vector(normalize_vector(q_vec), -scale)
-            arrow["start"] = add_vectors(arrow["end"], pt)
+            arrow["start"] = ds.node_coordinates(node)
+            pt = scale_vector(q_vec, -scale)
+            arrow["end"] = add_vectors(arrow["start"], pt)
             arrow["color"] = color
             arrow["width"] = width
             

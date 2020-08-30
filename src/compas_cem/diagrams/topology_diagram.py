@@ -36,6 +36,9 @@ class TopologyDiagram(Diagram):
                                             "qx": 0.0,
                                             "qy": 0.0,
                                             "qz": 0.0,
+                                            "rx": 0.0,
+                                            "ry": 0.0,
+                                            "rz": 0.0,
                                             "type": None,
                                             "_w": None
                                             })
@@ -115,6 +118,22 @@ class TopologyDiagram(Diagram):
             The type assigned to the node.
         """
         return self.node_attribute(key=node, name="type")
+
+    def residual_force(self, node):
+        """
+        Queries the residual force vector at a node.
+        
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        type : ``list``
+            The residual force vector.
+        """
+        return self.node_attributes(key=node, names=["rx", "ry", "rz"])
 
 # ==============================================================================
 # Node Additions
@@ -464,6 +483,42 @@ class TopologyDiagram(Diagram):
             The type assigned to the edge.
         """
         return self.edge_attribute(key=edge, name="type")
+
+# ==============================================================================
+# Node Selections
+# ==============================================================================
+
+    def is_node_root(self, node):
+        """
+        Checks if a node is a root node.
+
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the node is a root node. ``False`` otherwise.
+        """
+        return self.node_type(node) == "root"
+    
+    def is_node_support(self, node):
+        """
+        Checks if a node is a support.
+
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the node is a support. ``False`` otherwise.
+        """
+        return self.node_type(node) == "support"
 
 # ==============================================================================
 # Edge Selections

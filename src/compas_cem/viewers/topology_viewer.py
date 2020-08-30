@@ -6,7 +6,6 @@ from compas.geometry import Line
 
 from compas.geometry import length_vector
 from compas.geometry import scale_vector
-from compas.geometry import normalize_vector
 from compas.geometry import add_vectors
 
 from compas.utilities import rgb_to_hex
@@ -118,23 +117,63 @@ class TopologyViewer(ObjectViewer):
         Parameters
         ----------
         scale : ``float``
-            The uniform length of the load lines. Defaults to ``1.0``.
+            The scale of the load lines. Defaults to ``1.0``.
         color : ``tuple``
-            The arrows' uniform color in rgb. Defaults to black, ``(102, 255, 51)``. 
+            The arrows' uniform color in rgb. Defaults to ``(102, 255, 51)``. 
         width : ``float``
             The arrows uniform display width. Defaults to ``5.0``.
         tol : ``float``
             The minimum force magnitude to draw. Defaults to ``1e-3``. 
         """
+        attr = "node_load"
+        self._add_forces(attr, scale, color, width, tol)
+
+    def add_residuals(self, scale=1.0, color=(0, 204, 255), width=5.0, tol=1e-3):
+        """
+        Adds scaled line representations of the node residual forces.
+
+        Parameters
+        ----------
+        scale : ``float``
+            The scale of the residual force lines. Defaults to ``1.0``.
+        color : ``tuple``
+            The arrows' uniform color in rgb. Defaults to ``(0, 204, 255)``. 
+        width : ``float``
+            The arrows uniform display width. Defaults to ``5.0``.
+        tol : ``float``
+            The minimum force magnitude to draw. Defaults to ``1e-3``. 
+        """
+        attr = "residual_force"
+        self._add_forces(attr, scale, color, width, tol)
+
+
+    def _add_forces(self, attr, scale, color, width, tol):
+        """
+        Adds scaled line representations of forces to the scene.
+
+        Parameters
+        ----------
+        attr : ``str``
+            The node attribute to add to the scene.
+        scale : ``float``
+            The line scale.
+        color : ``tuple``
+            The line color in rgb.
+        width : ``float``
+            The line display width.
+        tol : ``float``
+            The smallest line length to draw.
+        """
         topology = self.topology
 
         for node in topology.nodes():
-            q_vec = topology.node_load(node)
+            function = getattr(topology, attr)
+            q_vec = function(node)
 
             if length_vector(q_vec) < tol:
                 continue
 
-            pt = scale_vector(normalize_vector(q_vec), scale)
+            pt = scale_vector(q_vec, -scale)
             end = topology.node_coordinates(node)
             start = add_vectors(end, pt)
             line = Line(start, end)
@@ -144,7 +183,7 @@ class TopologyViewer(ObjectViewer):
             settings["edges.width"] = width
             
             self.add(line, settings=settings)
-        
+  
     def add_points(self, points, size, color=(255, 153, 0)):
         """
         """

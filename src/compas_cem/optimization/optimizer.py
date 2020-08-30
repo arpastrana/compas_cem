@@ -2,6 +2,8 @@ from functools import partial
 
 import numpy as np
 
+from compas_cem.diagrams import TopologyDiagram
+
 from compas_cem.equilibrium import force_equilibrium
 
 from compas_cem.optimization import nlopt_algorithm
@@ -9,7 +11,6 @@ from compas_cem.optimization import nlopt_solver
 
 from compas_cem.optimization import grad_finite_difference_numpy
 from compas_cem.optimization import objective_function_numpy
-from compas_cem.optimization import norm_squared_error_numpy
 
 
 __all__ = [

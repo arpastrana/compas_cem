@@ -13,6 +13,7 @@ from compas_cem.optimization import TrailEdgeConstraint
 from compas_cem.optimization import DeviationEdgeConstraint
 
 from compas.geometry import Plane
+from compas.geometry import length_vector
 
 from time import time
 
@@ -100,14 +101,23 @@ print("Elapsed time: {}".format(time() - start))
 print("Total error: {}".format(l_opt))
 
 # ------------------------------------------------------------------------------
+# Obtain residual forces
+# ------------------------------------------------------------------------------
+
+for node in topology.support_nodes():
+    residual = length_vector(topology.residual_force(node))
+    print("node: {} residual: {}".format(node, residual))
+
+# ------------------------------------------------------------------------------
 # Plotter
 # ------------------------------------------------------------------------------
 
 plotter = TopologyPlotter(topology, figsize=(16, 9))
 
 plotter.draw_nodes(radius=0.30, text="key")
-plotter.draw_edges(text="attr")
-plotter.draw_loads(scale=2.0)
+plotter.draw_edges(text="force")
+plotter.draw_loads(scale=-2.0)
+plotter.draw_residuals(scale=-0.25)
 plotter.draw_segments(edge_lines)
 
 points = []
@@ -133,7 +143,8 @@ plotter.show()
 viewer = TopologyViewer(topology)
 viewer.add_nodes(size=20)
 viewer.add_edges(width=(1, 5))
-viewer.add_loads(scale=5, width=15)
+viewer.add_loads(scale=-2, width=15)
+viewer.add_residuals(scale=-0.25, width=15)
 
 points = []
 for key, goal in optimizer.goals.items():
@@ -142,7 +153,5 @@ for key, goal in optimizer.goals.items():
     points.append(goal.target_geometry())
 
 viewer.add_points(points, size=30)
-
-
 
 viewer.show()

@@ -34,10 +34,10 @@ from .proxy import *
 
 import compas
 if not compas.IPY:
+    from ._nlopt import *
     from .loss import *
     from .objective_func import *
     from .grad import *
-    from ._nlopt import *
     from .optimizer import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]
