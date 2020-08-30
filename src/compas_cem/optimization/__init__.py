@@ -28,6 +28,10 @@ from __future__ import print_function
 
 
 # from .<module> import *
+from .constraint import *
+from .goals import *
+from .proxy import *
+
 import compas
 if not compas.IPY:
     from .loss import *
@@ -35,9 +39,5 @@ if not compas.IPY:
     from .grad import *
     from ._nlopt import *
     from .optimizer import *
-
-from .constraint import *
-from .goals import *
-from .proxy import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]

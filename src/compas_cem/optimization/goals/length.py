@@ -23,6 +23,9 @@ class DeviationEdgeLengthGoal(Goal):
         u, v = self.key()
         self._ref_geo = topology.edge_length(u, v)
         
+    def error(self):
+        """
+        """
         diff = self.reference_geometry() - self.target_geometry()
         return diff * diff
 
