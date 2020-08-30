@@ -31,7 +31,7 @@ from __future__ import print_function
 from .goal import *
 from .point import *
 from .plane import *
-from .vector import *
+from .length import *
 from .mesh import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]

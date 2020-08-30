@@ -193,31 +193,21 @@ class Optimizer(object):
 
         for index, ckey in self.index_constraint().items():
             edge = ckey
-            value = x[index]
-
-            name = None
             if self.topology.is_trail_edge(edge):
                 name = "length"
-            elif self.topology.is_deviation_edge(edge):
-                name = "force"
-    
-            self.topology.edge_attribute(key=edge, name=name, value=value)
+            if self.topology.is_deviation_edge(edge):
+                name = "force"    
+            self.topology.edge_attribute(key=edge, name=name, value=x[index])
 
-    def _update_goals(self):
+    def _compute_error(self):
         """
         """
-        y = []
-        y_hat = []
-
+        error = 0.0
         for goal in self.goals.values():
             goal.update(self.topology)
-            y.append(goal.reference_geometry())
-            y_hat.append(goal.target_geometry())
-        
-        y = np.array(y, dtype=float).reshape((-1, 3))
-        y_hat = np.array(y_hat, dtype=float).reshape((-1, 3))
+            error += goal.error()
 
-        return y, y_hat
+        return error
 
 # ------------------------------------------------------------------------------
 # Equilibrium
@@ -229,15 +219,6 @@ class Optimizer(object):
         force_equilibrium(self.topology, kmax=100, eps=1e-5)
 
 # ------------------------------------------------------------------------------
-# Loss
-# ------------------------------------------------------------------------------
-
-    def _compute_loss(self, y, y_hat):
-        """
-        """
-        return norm_squared_error_numpy(y, y_hat)
-
-# ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
 
@@ -246,8 +227,7 @@ class Optimizer(object):
         """
         self._update_topology_edges(parameters)
         self._update_topology_equilibrium()
-        refs, goals = self._update_goals()
-        return self._compute_loss(refs, goals)
+        return self._compute_error()
 
 # ------------------------------------------------------------------------------
 # Sanity Check

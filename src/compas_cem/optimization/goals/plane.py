@@ -1,4 +1,5 @@
 from compas.geometry import closest_point_on_plane
+from compas.geometry import distance_point_point_sqrd
 
 from compas_cem.optimization.goals import Goal
 
@@ -25,6 +26,12 @@ class PlaneGoal(Goal):
         plane = self._target_geo
         self._target_point = closest_point_on_plane(self._ref_geo, plane)
 
+    def error(self):
+        """
+        """
+        a = self.target_geometry()
+        b = self.reference_geometry()
+        return distance_point_point_sqrd(a, b)
 
 if __name__ == "__main__":
     pass
