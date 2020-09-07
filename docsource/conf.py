@@ -12,9 +12,9 @@ import sphinx_compas_theme
 
 # -- General configuration ------------------------------------------------
 
-project = "compas_cem"
+project = "COMPAS CEM"
 copyright = ""
-author = "Ole Ohlbrock, Pierluigi D'Acunto, Rafael Pastrana"
+author = "Rafael Pastrana"
 release = "0.1.0"
 version = ".".join(release.split(".")[0:2])
 
@@ -101,6 +101,7 @@ html_theme_options = {
     "package_name"    : "compas_cem",
     "package_title"   : project,
     "package_version" : release,
+    "package_repo" : 'https://github.com/arpastrana/compas_cem'
 }
 
 html_context = {}
