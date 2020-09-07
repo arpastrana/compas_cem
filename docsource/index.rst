@@ -11,3 +11,4 @@ compas_cem
    examples
    api
    license
+   citing

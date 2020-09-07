@@ -101,6 +101,8 @@ html_theme_options = {
     "package_name"    : "compas_cem",
     "package_title"   : project,
     "package_version" : release,
+    "package_author" : author,
+    "package_description" : "A compas-flavored combinatorial equilibrium modeling",
     "package_repo" : 'https://github.com/arpastrana/compas_cem'
 }
 
