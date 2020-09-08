@@ -9,7 +9,7 @@ __all__ = [
 
 
 class TrimeshGoal(Goal):
-    def __init__(self, node, trimesh):
+    def __init__(self, node=None, trimesh=None):
         super(TrimeshGoal, self).__init__(node, trimesh)
         self.target_point = None
 

@@ -10,7 +10,7 @@ __all__ = [
 
 
 class PlaneGoal(Goal):
-    def __init__(self, node, plane):
+    def __init__(self, node=None, plane=None):
         super(PlaneGoal, self).__init__(node, plane)
         self.target_point = None
 

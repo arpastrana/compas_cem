@@ -8,7 +8,6 @@ from compas_cem.optimization import Optimizer
 
 from compas_cem.optimization import PointGoal
 from compas_cem.optimization import TrimeshGoal
-from compas_cem.optimization import DeviationEdgeLengthGoal
 
 from compas_cem.optimization import TrailEdgeConstraint
 from compas_cem.optimization import DeviationEdgeConstraint
@@ -34,13 +33,10 @@ IN_MESH = "/Users/arpj/code/libraries/compas_cem/data/json/lightvault.json"
 IN_ARCH = "/Users/arpj/code/libraries/compas_cem/data/json/arch.json"
 OUT_ARCH = "/Users/arpj/code/libraries/compas_cem/data/json/arch_optimized.json"
 
-ref_nodes = [7, 26]
-target_points = [[0.002, 1.012, -0.020], [0.001, -1.019, 0.114]]
-
-optimize = False
-plot = True
+optimize = True
+plot = False
 view = True
-export = False
+export = True
 
 # ------------------------------------------------------------------------------
 # Target Mesh
@@ -64,23 +60,16 @@ force_equilibrium(topology)
 # Initialize optimizer
 # ------------------------------------------------------------------------------
 
-optimizer = Optimizer(topology, verbose=True)
+optimizer = Optimizer()
 
 # ------------------------------------------------------------------------------
 # Define goals / Targets
 # ------------------------------------------------------------------------------
 
-# for node, point in zip(ref_nodes, target_points):
-#     optimizer.add_goal(PointGoal(node, point))
-
 for node in topology.nodes():
     if topology.node_type(node) in {"root"}:
         continue
     optimizer.add_goal(TrimeshGoal(node, trimesh))
-
-target_length = 0.20
-for edge in topology.deviation_edges():
-    optimizer.add_goal(DeviationEdgeLengthGoal(edge, target_length))
 
 # ------------------------------------------------------------------------------
 # Define optimization parameters / constraints
@@ -111,7 +100,7 @@ if optimize:
 
     # optimize
     print("Optimizing")
-    x_opt, l_opt = optimizer.solve_nlopt(opt_algorithm, iters, stopval, step_size)
+    x_opt, l_opt = optimizer.solve_nlopt(topology, opt_algorithm, iters, stopval, step_size)
 
     # print out results
     print("Elapsed time: {} seconds".format(round((time() - start), 2)))

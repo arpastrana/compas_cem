@@ -9,7 +9,7 @@ __all__ = [
     
 
 class PointGoal(Goal):
-    def __init__(self, node, point):
+    def __init__(self, node=None, point=None):
         super(PointGoal, self).__init__(node, point)
 
     def update(self, topology):

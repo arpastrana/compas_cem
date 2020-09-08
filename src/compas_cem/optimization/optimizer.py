@@ -1,16 +1,15 @@
-from functools import partial
-
 import numpy as np
 
-from compas_cem.diagrams import TopologyDiagram
+from functools import partial
 
-from compas_cem.equilibrium import force_equilibrium
-
-from compas_cem.optimization import nlopt_algorithm
 from compas_cem.optimization import nlopt_solver
 
 from compas_cem.optimization import grad_finite_difference_numpy
 from compas_cem.optimization import objective_function_numpy
+
+from compas_cem.diagrams import TopologyDiagram
+
+from compas_cem.equilibrium import force_equilibrium
 
 
 __all__ = [
@@ -21,9 +20,9 @@ __all__ = [
 # Optimizer
 # ------------------------------------------------------------------------------
 
-class Optimizer(object):
-    def __init__(self, topology, **kwargs):
-        self.topology = topology
+class Optimizer():
+    def __init__(self, **kwargs):
+        self.topology = None
         self.constraints = {}
         self.goals = {}
 
@@ -123,9 +122,11 @@ class Optimizer(object):
 # Solver
 # ------------------------------------------------------------------------------
 
-    def solve_nlopt(self, algorithm, iters, stopval, step_size, verbose=False):
+    def solve_nlopt(self, topology, algorithm, iters, stopval, step_size, verbose=False):
         """
         """
+        self.topology = topology  # TODO: this should not happen here!
+
         self.check_optimization_sanity()
 
         grad_f = self.gradient_func(step_size, verbose)

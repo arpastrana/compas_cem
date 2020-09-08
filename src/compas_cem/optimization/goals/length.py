@@ -9,7 +9,7 @@ __all__ = [
 
 
 class DeviationEdgeLengthGoal(Goal):
-    def __init__(self, node, length):
+    def __init__(self, node=None, length=None):
         super(DeviationEdgeLengthGoal, self).__init__(node, length)
 
     def target_geometry(self):

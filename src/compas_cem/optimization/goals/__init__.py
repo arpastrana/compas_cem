@@ -32,6 +32,9 @@ from .goal import *
 from .point import *
 from .plane import *
 from .length import *
-from .mesh import *
+
+import compas
+if not compas.IPY:
+    from .mesh import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]
