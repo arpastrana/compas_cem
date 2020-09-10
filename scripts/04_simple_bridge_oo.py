@@ -53,7 +53,7 @@ edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
 # Initialize optimizer
 # ------------------------------------------------------------------------------
 
-optimizer = Optimizer(topology, verbose=True)
+optimizer = Optimizer()
 
 # ------------------------------------------------------------------------------
 # Define goals / Targets
@@ -94,7 +94,7 @@ stopval = 1e-4  # 1e-4
 step_size = 1e-6  # 1e-4
 
 # optimize
-x_opt, l_opt = optimizer.solve_nlopt(opt_algorithm, iters, stopval, step_size)
+x_opt, l_opt = optimizer.solve_nlopt(topology, opt_algorithm, iters, stopval, step_size)
 
 # print out results
 print("Elapsed time: {}".format(time() - start))

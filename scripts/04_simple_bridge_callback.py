@@ -2,7 +2,6 @@ from compas_cem.diagrams import TopologyDiagram
 from compas_cem.plotters import TopologyPlotter
 
 from compas_cem.equilibrium import force_equilibrium
-from compas_cem.optimization import optimize_topology
 
 from compas.utilities import geometric_key
 
