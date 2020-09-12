@@ -69,19 +69,6 @@ class TopologyDiagram(Diagram):
         """
         self.node_attribute(node, "type", "support")
 
-    def root(self, node):
-        """
-        Marks a node as the starting point of a continuous trail.
-
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-        position : ``list``
-            The node xyz coordinates.
-        """
-        self.node_attribute(node, "type", "root")
-
     def node_load(self, node, load=None):
         """
         Gets or sets a load at a node.
@@ -103,22 +90,6 @@ class TopologyDiagram(Diagram):
         """
         attrs = ["qx", "qy", "qz"]
         return self.node_attributes(key=node, names=attrs, values=load)
-
-    def node_type(self, node):
-        """
-        Queries the type assigned to a node.
-        
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-        
-        Returns
-        -------
-        type : ``str``
-            The type assigned to the node.
-        """
-        return self.node_attribute(key=node, name="type")
 
     def residual_force(self, node):
         """
