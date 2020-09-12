@@ -28,6 +28,7 @@ class TopologyDiagram(Diagram):
 
     def __init__(self, *args, **kwargs):
         super(TopologyDiagram, self).__init__(*args, **kwargs)
+        self.tol = "3f"
 
         self.update_default_node_attributes({
                                             "x": 0.0,
@@ -153,14 +154,12 @@ class TopologyDiagram(Diagram):
         for q, attr in zip(load, ["qx", "qy", "qz"]):
             self.node_attribute(node, attr, q)
     
-    def add_node_from_xyz(self, node, xyz):
+    def add_node_from_xyz(self, xyz):
         """
         Adds a node from xyz coordinates.
 
         Parameters
         ----------
-        node : ``int``
-            A node key.
         xyx : ``list``
             The node xyz coordinates.
         
@@ -170,7 +169,7 @@ class TopologyDiagram(Diagram):
             The node key.
         """
         x, y, z = xyz
-        return self.add_node(key=node, x=x, y=y, z=z)
+        return self.add_node(x=x, y=y, z=z)
 
 # ==============================================================================
 # Edge Additions
@@ -196,6 +195,30 @@ class TopologyDiagram(Diagram):
         u, v = edge
         kwargs = {"type": "trail", "length": length}
         return self.add_edge(u, v, **kwargs)
+
+    def add_trail_edge_object(self, trail_edge):
+        """
+        Adds a trail edge object.
+
+        Parameters
+        ----------
+        trail_edge : ``TrailEdge``
+            A trail edge object.
+
+        Returns
+        -------
+        edge : ``tuple``
+            An edge key.
+        """
+        u = trail_edge.u
+        v = trail_edge.v
+        kwargs = {"type": "trail", "length": trail_edge.length}
+
+        if isinstance(u, int) and isinstance(v, int):
+            return self.add_edge(u, v, **kwargs)
+        
+        # find keys
+        
 
     def add_deviation_edge(self, edge, force):
         """
@@ -468,22 +491,6 @@ class TopologyDiagram(Diagram):
         """
         return self.edge_attribute(key=edge, name="force")
 
-    def edge_type(self, edge):
-        """
-        Query the type assigned to an edge.
-
-        Input
-        -----
-        edge : ``tuple``
-            The u, v edge key.
-
-        Return
-        ------
-        type : ``str``
-            The type assigned to the edge.
-        """
-        return self.edge_attribute(key=edge, name="type")
-
 # ==============================================================================
 # Node Selections
 # ==============================================================================
@@ -502,7 +509,7 @@ class TopologyDiagram(Diagram):
         flag : ``bool``
             ``True``if the node is a root node. ``False`` otherwise.
         """
-        return self.node_type(node) == "root"
+        return self.node_attribute(key=node, name="type") == "root"
     
     def is_node_support(self, node):
         """
@@ -518,7 +525,7 @@ class TopologyDiagram(Diagram):
         flag : ``bool``
             ``True``if the node is a support. ``False`` otherwise.
         """
-        return self.node_type(node) == "support"
+        return self.node_attribute(key=node, name="type") == "support"
 
 # ==============================================================================
 # Edge Selections
