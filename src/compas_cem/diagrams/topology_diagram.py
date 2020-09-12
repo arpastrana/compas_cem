@@ -44,9 +44,9 @@ class TopologyDiagram(Diagram):
                                             })
 
         self.update_default_edge_attributes({
-                                            "type": None,  # trail, devi
-                                            "length": 0.0,  # only positive
-                                            "force": 0.0  # only positive
+                                            "type": None,
+                                            "length": 0.0,
+                                            "force": 0.0
                                             })
 
 # ==============================================================================

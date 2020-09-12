@@ -110,5 +110,9 @@ class DeviationEdgeConstraint(EdgeConstraint):
         super(DeviationEdgeConstraint, self).__init__(key, bound_low, bound_up)
         self._attr_name = "force"
 
+# ------------------------------------------------------------------------------
+# Main
+# ------------------------------------------------------------------------------
+
 if __name__ == "__main__":
     pass

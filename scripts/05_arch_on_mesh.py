@@ -67,9 +67,8 @@ optimizer = Optimizer()
 # ------------------------------------------------------------------------------
 
 for node in topology.nodes():
-    if topology.node_type(node) in {"root"}:
-        continue
-    optimizer.add_goal(TrimeshGoal(node, trimesh))
+    if not topology.is_node_root(node):
+        optimizer.add_goal(TrimeshGoal(node, trimesh))
 
 # ------------------------------------------------------------------------------
 # Define optimization parameters / constraints

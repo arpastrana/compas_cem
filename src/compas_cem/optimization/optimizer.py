@@ -197,7 +197,7 @@ class Optimizer():
             edge = ckey
             if self.topology.is_trail_edge(edge):
                 name = "length"
-            if self.topology.is_deviation_edge(edge):
+            elif self.topology.is_deviation_edge(edge):
                 name = "force"    
             self.topology.edge_attribute(key=edge, name=name, value=x[index])
 
