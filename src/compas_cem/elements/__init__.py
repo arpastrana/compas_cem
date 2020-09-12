@@ -31,5 +31,6 @@ from __future__ import print_function
 from .edge import *
 from .trail import *
 from .deviation import *
+from .support import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]

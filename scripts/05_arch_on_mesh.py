@@ -36,7 +36,7 @@ OUT_ARCH = "/Users/arpj/code/libraries/compas_cem/data/json/arch_optimized.json"
 optimize = True
 plot = False
 view = True
-export = True
+export = False
 
 # ------------------------------------------------------------------------------
 # Target Mesh
@@ -67,8 +67,7 @@ optimizer = Optimizer()
 # ------------------------------------------------------------------------------
 
 for node in topology.nodes():
-    if not topology.is_node_root(node):
-        optimizer.add_goal(TrimeshGoal(node, trimesh))
+    optimizer.add_goal(TrimeshGoal(node, trimesh))
 
 # ------------------------------------------------------------------------------
 # Define optimization parameters / constraints

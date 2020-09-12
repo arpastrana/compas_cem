@@ -1,5 +1,5 @@
 from compas_cem.diagrams import Diagram
-
+from compas.utilities import geometric_key
 
 __all__ = [
     "TopologyDiagram"
@@ -28,8 +28,7 @@ class TopologyDiagram(Diagram):
 
     def __init__(self, *args, **kwargs):
         super(TopologyDiagram, self).__init__(*args, **kwargs)
-        self.tol = "3f"
-
+        
         self.update_default_node_attributes({
                                             "x": 0.0,
                                             "y": 0.0,
@@ -49,6 +48,31 @@ class TopologyDiagram(Diagram):
                                             "length": 0.0,
                                             "force": 0.0
                                             })
+
+        self.attributes["gkey_node"] = {}
+        self.attributes["tol"] = "3f"
+
+# ==============================================================================
+# Properties
+# ==============================================================================
+
+    @property
+    def tol(self):
+        """
+        """
+        return self.attributes["tol"]
+    
+    @tol.setter
+    def tol(self, tol):
+        """
+        """
+        self.attributes["tol"] = tol
+
+    @property
+    def gkey_node(self):
+        """
+        """
+        return self.attributes["gkey_node"]
 
 # ==============================================================================
 # Node Attributes
@@ -125,6 +149,39 @@ class TopologyDiagram(Diagram):
         for q, attr in zip(load, ["qx", "qy", "qz"]):
             self.node_attribute(node, attr, q)
     
+    def add_point_load(self, point_load):
+        """
+        Adds a point load.
+
+        Parameters
+        ----------
+        point load : ``PointLoad``
+            A point load object.
+        """
+        node = self.gkey_node.get(geometric_key(point_load.pos, self.tol))
+
+        if node is None:
+            raise ValueError("Node not defined yet at Point Load position!")
+
+        for q, attr in zip(point_load.vec, ["qx", "qy", "qz"]):
+            self.node_attribute(node, attr, q)
+
+    def add_point_support(self, point_support):
+        """
+        Adds a point support.
+
+        Parameters
+        ----------
+        point_support : ``PointSupport``
+            A point support object.
+        """
+        node = self.gkey_node.get(geometric_key(point_support.pos, self.tol))
+
+        if node is None:
+            raise ValueError("Node not defined yet at Point Load position!")
+
+        self.support(node)
+     
     def add_node_from_xyz(self, xyz):
         """
         Adds a node from xyz coordinates.
@@ -167,6 +224,27 @@ class TopologyDiagram(Diagram):
         kwargs = {"type": "trail", "length": length}
         return self.add_edge(u, v, **kwargs)
 
+    def _process_edge_keys(self, edge):
+        """
+        """
+        u, v = edge.u, edge.v
+
+        if isinstance(u, int) and isinstance(v, int):
+            return self.add_edge(u, v, **kwargs)
+
+        edge_keys = []
+        for xyz in (u, v):
+            gkey = geometric_key(xyz, self.tol)
+            key = self.gkey_node.get(gkey)
+            
+            if key is None:
+                key = self.add_node_from_xyz(xyz)
+                self.gkey_node[gkey] = key
+            
+            edge_keys.append(key)
+        
+        return edge_keys
+
     def add_trail_edge_object(self, trail_edge):
         """
         Adds a trail edge object.
@@ -181,15 +259,8 @@ class TopologyDiagram(Diagram):
         edge : ``tuple``
             An edge key.
         """
-        u = trail_edge.u
-        v = trail_edge.v
-        kwargs = {"type": "trail", "length": trail_edge.length}
-
-        if isinstance(u, int) and isinstance(v, int):
-            return self.add_edge(u, v, **kwargs)
-        
-        # find keys
-        
+        u, v = self._process_edge_keys(trail_edge)
+        return self.add_trail_edge((u, v), length=trail_edge.length)
 
     def add_deviation_edge(self, edge, force):
         """
@@ -211,6 +282,23 @@ class TopologyDiagram(Diagram):
         u, v = edge
         kwargs = {"type": "deviation", "force": force}
         return self.add_edge(u, v, **kwargs)
+
+    def add_deviation_edge_object(self, deviation_edge):
+        """
+        Adds a trail edge object.
+
+        Parameters
+        ----------
+        deviation_edge : ``Deviation``
+            A deviation edge object.
+
+        Returns
+        -------
+        edge : ``tuple``
+            An edge key.
+        """
+        u, v = self._process_edge_keys(deviation_edge)
+        return self.add_deviation_edge((u, v), force=deviation_edge.force)
 
 # ==============================================================================
 # Trails

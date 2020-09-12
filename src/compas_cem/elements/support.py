@@ -1,7 +1,7 @@
-from collections import namedtuple
+from compas_rhino.geometry import RhinoPoint
 
 
-def PointSupport(pos):
+class PointSupport(object):
     """
     A point support.
 
@@ -15,8 +15,15 @@ def PointSupport(pos):
     point_support : ``PointSupport``
         A point support.
     """
-    support = namedtuple("PointSupport", ["position"])
-    return support(pos)
+    def __init__(self, pos):
+        self.pos = pos
+
+    @classmethod
+    def from_rhino(cls, pos):
+       """
+       """
+       pos = RhinoPoint.from_geometry(pos).to_compas()
+       return cls(pos)
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ from time import time
 # Data
 #-------------------------------------------------------------------------------
 
-IN = "/Users/arpj/code/libraries/compas_cem/data/json/w1_cem_2d_bridge.json"
+IN = "/Users/arpj/code/libraries/compas_cem/data/json/w1_cem_2d_bridge_rhino.json"
 
 # ------------------------------------------------------------------------------
 # Topology Diagram

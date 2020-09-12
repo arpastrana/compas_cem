@@ -38,6 +38,7 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
     trails = topology.trails()
     nodes_root_distances(topology, trails)
     w_max = max([len(trail) for trail in trails.values()])
+    print("wmax", w_max)
 
     positions = {}
     trail_vectors = {}
@@ -132,7 +133,7 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
         length = topology.edge_length(u, v)
         topology.edge_attribute(key=(u, v), name="length", value=length)
 
-    # if residual smaller than threshold, stop iterating
+    # if residual larger than threshold after kmax iterations, raise error
     if residual > eps:
         raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
 

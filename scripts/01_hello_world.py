@@ -9,13 +9,13 @@ from compas.utilities import geometric_key
 # Data
 #-------------------------------------------------------------------------------
 
-vertices = [
-    (0, [0.0, 0.0, 0.0]),
-    (1, [0.0, 1.0, 0.0]),
-    (2, [0.0, 2.0, 0.0]),
-    (3, [1.0, 0.0, 0.0]),
-    (4, [1.0, 1.0, 0.0]),
-    (5, [1.0, 2.0, 0.0])
+points = [
+    [0.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0],
+    [0.0, 2.0, 0.0],
+    [1.0, 0.0, 0.0],
+    [1.0, 1.0, 0.0],
+    [1.0, 2.0, 0.0]
 ]
 
 trail_edges = [
@@ -40,8 +40,8 @@ topology = TopologyDiagram()
 # Add Nodes
 # ------------------------------------------------------------------------------
 
-for node, xyz in vertices:
-    topology.add_node_from_xyz(node, xyz)
+for xyz in points:
+    topology.add_node_from_xyz(xyz)
 
 # ------------------------------------------------------------------------------
 # Add Trail Edges
@@ -85,35 +85,28 @@ topology.node_load(5, load)
 # ------------------------------------------------------------------------------
 
 tr = topology.trails()
-print(list(topology.root_nodes()))
 edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
 
 # ------------------------------------------------------------------------------
 # Force Equilibrium
 # ------------------------------------------------------------------------------
 
-# force_equilibrium(topology, eps=1e-5, kmax=100, verbose=True)
+force_equilibrium(topology, eps=1e-5, kmax=100, verbose=True)
 
 # ------------------------------------------------------------------------------
 # Visualization
 # ------------------------------------------------------------------------------
 
-edge_text = {e: round(attr.get("force", attr.get("length")), 3) for e, attr in topology.edges(True)}
-
-edge_text = {}
-for e, attr in topology.deviation_edges(True):
-    edge_text[e] = round(attr["length"], 3)
-for e, attr in topology.trail_edges(True):
-    edge_text[e] = round(attr["force"], 3)
-
-node_text = {n: geometric_key(topology.node_coordinates(n), precision="3f") for n in topology.nodes()}
-node_text = "key"
+# ------------------------------------------------------------------------------
+# Plotter
+# ------------------------------------------------------------------------------
 
 plotter = TopologyPlotter(topology, figsize=(16, 9))
 
-plotter.draw_nodes(radius=0.03, text=node_text)
-plotter.draw_edges(text=edge_text)
-plotter.draw_loads()
+plotter.draw_nodes(radius=0.05, text="key")
+plotter.draw_edges(text="force")
+plotter.draw_loads(scale=0.5)
+plotter.draw_residuals(scale=0.25)
 plotter.draw_segments(edge_lines)
 
 plotter.show()
