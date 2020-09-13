@@ -15,13 +15,13 @@ from compas.geometry import Plane
 constraint = TrailEdgeConstraint((0, 1), -2, 3)
 goal = PlaneGoal(0, Plane([0, 0, 0], [0, 0, 1]))
 
-cls = cls_from_dtype(constraint.data["dtype"])
+cls = cls_from_dtype(constraint.data["datatype"])
 
 new_constraint = cls.from_data(constraint.data)
 assert new_constraint.data == constraint.data
 
 
-cls = cls_from_dtype(goal.data["dtype"])
+cls = cls_from_dtype(goal.data["datatype"])
 
 new_goal = cls.from_data(goal.data)
 

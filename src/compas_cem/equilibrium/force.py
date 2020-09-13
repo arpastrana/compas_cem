@@ -38,7 +38,6 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
     trails = topology.trails()
     nodes_root_distances(topology, trails)
     w_max = max([len(trail) for trail in trails.values()])
-    print("wmax", w_max)
 
     positions = {}
     trail_vectors = {}

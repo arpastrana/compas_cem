@@ -17,6 +17,8 @@ from compas.geometry import length_vector
 
 from time import time
 
+from compas.geometry import Point
+from compas.utilities import DataDecoder
 # ------------------------------------------------------------------------------
 # Data
 #-------------------------------------------------------------------------------
