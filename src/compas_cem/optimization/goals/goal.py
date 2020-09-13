@@ -52,10 +52,8 @@ class Goal(Serializable):
         data = {}
         data["datatype"] = self.datatype()
         data["node_key"] = str(self._key)
-        
-        target_geo = self._target_geo.to_data()
-        target_geo["datatype"] = self.object_datatype(self._target_geo)
-        data["target_geo"] = target_geo
+        data["target_datatype"] = self.object_datatype(self._target_geo)
+        data["target_geo"] = self._target_geo.to_data()
 
         return data
     
@@ -70,7 +68,7 @@ class Goal(Serializable):
             A data dictionary.
         """
         self._key = int(data["node_key"])
-        target_geo_cls = self.object_cls_from_dtype(data["target_geo"]["datatype"])
+        target_geo_cls = self.object_cls_from_dtype(data["target_datatype"])
         target_geo = target_geo_cls.from_data(data["target_geo"])
         self._target_geo = target_geo
 
