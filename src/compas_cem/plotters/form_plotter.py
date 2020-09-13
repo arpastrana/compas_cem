@@ -11,12 +11,12 @@ from compas.utilities import geometric_key
 from compas_plotters import NetworkPlotter
 
 
-class TopologyPlotter(NetworkPlotter):
+class FormPlotter(NetworkPlotter):
     def __init__(self, *args, **kwargs):
         """
-        A plotter tailored to draw topology-related matters.
+        A plotter tailored to draw form-related matters.
         """
-        super(TopologyPlotter, self).__init__(*args, **kwargs)
+        super(FormPlotter, self).__init__(*args, **kwargs)
         
         self.node_colors = {
             "support": (0, 153, 0),  # green
@@ -57,7 +57,7 @@ class TopologyPlotter(NetworkPlotter):
         if text and text != "key":
             kwargs["text"] = self._text_labels_nodes(text)
 
-        super(TopologyPlotter, self).draw_nodes(facecolor=nc, *args, **kwargs)
+        super(FormPlotter, self).draw_nodes(facecolor=nc, *args, **kwargs)
 
     def draw_edges(self, *args, **kwargs):
         """
@@ -78,7 +78,7 @@ class TopologyPlotter(NetworkPlotter):
         if text and text != "key":
             kwargs["text"] = self._text_labels_edges(text)
 
-        super(TopologyPlotter, self).draw_edges(color=ec, *args, **kwargs)
+        super(FormPlotter, self).draw_edges(color=ec, *args, **kwargs)
 
     def draw_loads(self, scale=1.0, color=(102, 255, 51), width=2.0, tol=1e-3):
         """
@@ -151,7 +151,7 @@ class TopologyPlotter(NetworkPlotter):
             
             arrows.append(arrow)
         
-        super(TopologyPlotter, self).draw_arrows(arrows)
+        super(FormPlotter, self).draw_arrows(arrows)
 
     def draw_segments(self, segments, color=(40, 40, 40), width=0.5):
         """
@@ -178,7 +178,7 @@ class TopologyPlotter(NetworkPlotter):
 
             lines.append(line)
 
-        super(TopologyPlotter, self).draw_lines(lines)
+        super(FormPlotter, self).draw_lines(lines)
     
     def _text_labels_nodes(self, text_tag):
         """

@@ -28,6 +28,6 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .topology_plotter import *
+from .form_plotter import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]

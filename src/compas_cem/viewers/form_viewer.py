@@ -15,14 +15,14 @@ from compas.utilities import normalize_values
 from compas_viewers.objectviewer import ObjectViewer
 
 
-class TopologyViewer(ObjectViewer):
-    def __init__(self, topology, *args, **kwargs):
+class FormViewer(ObjectViewer):
+    def __init__(self, form, *args, **kwargs):
         """
         A viewer tailored to display topological stuff.
         """
-        super(TopologyViewer, self).__init__(*args, **kwargs)
+        super(FormViewer, self).__init__(*args, **kwargs)
 
-        self.topology = topology
+        self.form = form
 
         self.node_colors = {
             "support": (0, 153, 0),  # green
@@ -46,7 +46,7 @@ class TopologyViewer(ObjectViewer):
 
     def add_nodes(self, size=None):
         """
-        Adds topology's nodes to the viewer's scene.
+        Adds form's nodes to the viewer's scene.
 
         Parameters
         ----------
@@ -55,15 +55,15 @@ class TopologyViewer(ObjectViewer):
             `Viewer.point_size`` will be taken if size is ``None``.
             Defaults to ``None``.
         """
-        topology = self.topology
+        form = self.form
         if not size:
             size = self.point_size
 
-        for node in topology.nodes():
-            x, y, z = topology.node_coordinates(node)
+        for node in form.nodes():
+            x, y, z = form.node_coordinates(node)
             point = Point(x, y, z)
 
-            node_type = topology.node_type(node) or "default"
+            node_type = form.node_type(node) or "default"
             color = self.node_colors[node_type]
 
             settings = {
@@ -84,22 +84,22 @@ class TopologyViewer(ObjectViewer):
             ``Viewer.line_width`` will be applied uniformly if width is ``None``.
             Defaults to ``None``.
         """
-        topology = self.topology
-        edges = list(topology.edges())
+        form = self.form
+        edges = list(form.edges())
 
         if isinstance(width, tuple):
             new_min, new_max = width
-            widths = normalize_values([fabs(topology.edge_force(e)) for e in edges], new_min, new_max)
+            widths = normalize_values([fabs(form.edge_force(e)) for e in edges], new_min, new_max)
         else:
             if not width:
                 width = self.line_width
             widths = iterable_like(edges, [width], width)
 
         for i, edge in enumerate(edges):
-            start, end = topology.edge_coordinates(*edge)
+            start, end = form.edge_coordinates(*edge)
             line = Line(start, end)
 
-            sign = copysign(1, topology.edge_force(edge))
+            sign = copysign(1, form.edge_force(edge))
             width = widths[i]
             color = self.edge_state_colors[sign]
 
@@ -164,17 +164,17 @@ class TopologyViewer(ObjectViewer):
         tol : ``float``
             The smallest line length to draw.
         """
-        topology = self.topology
+        form = self.form
 
-        for node in topology.nodes():
-            function = getattr(topology, attr)
+        for node in form.nodes():
+            function = getattr(form, attr)
             q_vec = function(node)
 
             if length_vector(q_vec) < tol:
                 continue
 
             pt = scale_vector(q_vec, -scale)
-            end = topology.node_coordinates(node)
+            end = form.node_coordinates(node)
             start = add_vectors(end, pt)
             line = Line(start, end)
 
@@ -227,12 +227,12 @@ class TopologyViewer(ObjectViewer):
     def add_lines(self):
         """
         """
-        return
+        raise NotImplementedError
         
     def add_polyline(self):
         """
         """
-        return
+        raise NotImplementedError
 
 
 if __name__ == "__main__":
