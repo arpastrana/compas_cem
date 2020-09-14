@@ -7,12 +7,7 @@ class DeviationEdge(Edge):
     """
     def __init__(self, u, v, force):
         super(DeviationEdge, self).__init__(u, v)
-        self.force = force
-
-    def __repr__(self):
-        """
-        """
-        return "{}(force={})".format(self.__class__.__name__, self.force)
+        self.attributes = {"force": force, "type": "deviation"}
 
 if __name__ == "__main__":
     pass

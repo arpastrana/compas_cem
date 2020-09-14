@@ -97,7 +97,8 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
                 trail_vectors[next_node] = t_vec
                 
                 # update node coordinates in topology diagram
-                topology.node_attributes(key=next_node, names=["x", "y", "z"], values=next_pos)
+                topology.node_xyz(key=next_node, xyz=next_pos)
+                # topology.node_attributes(key=next_node, names=["x", "y", "z"], values=next_pos)
                 
                 # update trail forces in topology diagram
                 force = copysign(length_vector(t_vec), length)
@@ -139,7 +140,6 @@ def force_equilibrium(topology, kmax=100,  eps=1e-5, verbose=False, callback=Non
     if verbose:
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
         print(msg.format(k, residual))
-        print("\n")
 
 
 def node_equilibrium(topology, node, t_vec, indirect=False, verbose=False):
