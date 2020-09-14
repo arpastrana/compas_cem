@@ -18,11 +18,11 @@ import os
 import sys
 
 
-__author__ = ['Patrick Ole Ohlbrock','Pierluigi D''Acunto' ]
-__copyright__ = 'Copyright 2019 - Chair of Structural Design, ETH Zurich'
-__license__ = 'MIT License'
-__email__ = 'ohlbrock@arch.ethz.ch'
-__version__ = "1.80"
+__author__ = ["Rafael Pastrana" ]
+__copyright__ = "Copyright 2020 - Princeton University"
+__license__ = "MIT License"
+__email__ = "arpj@princeton.edu"
+__version__ = "0.1"
 
 
 HERE = os.path.dirname(__file__)
@@ -31,6 +31,7 @@ HOME = os.path.abspath(os.path.join(HERE, "../../"))
 DATA = os.path.abspath(os.path.join(HOME, "data"))
 DOCS = os.path.abspath(os.path.join(HOME, "docs"))
 TEMP = os.path.abspath(os.path.join(HOME, "temp"))
+JSON_DATA = os.path.abspath(os.path.join(DATA, "json"))
 
 
 __all__ = ["HOME", "DATA", "DOCS", "TEMP"]

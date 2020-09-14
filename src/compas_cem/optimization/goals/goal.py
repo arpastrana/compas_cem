@@ -13,6 +13,8 @@ class Goal(Serializable):
         self._ref_geo = None
     
     def key(self):
+        """
+        """
         return self._key
     
     def reference_geometry(self):
@@ -26,9 +28,13 @@ class Goal(Serializable):
         return self._target_geo
     
     def update(self):
+        """
+        """
         return
     
     def error(self):
+        """
+        """
         return
  
 # ------------------------------------------------------------------------------

@@ -1,3 +1,4 @@
+from compas_cem.elements import Node
 
 
 __all__ = [
@@ -38,8 +39,7 @@ class EdgeMixins(object):
             xyz = None
             if not isinstance(key, int):
                 xyz = node
-            
-            key = self.add_node(key, xyz)
+            key = self.add_node(Node(key, xyz))
             edge_keys.append(key)
 
         u, v = edge_keys
