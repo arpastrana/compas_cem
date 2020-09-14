@@ -28,7 +28,6 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .point_load import *
-from .self_weight import *
+from .node_load import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]
