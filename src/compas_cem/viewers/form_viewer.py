@@ -60,10 +60,10 @@ class FormViewer(ObjectViewer):
             size = self.point_size
 
         for node in form.nodes():
-            x, y, z = form.node_coordinates(node)
+            x, y, z = form.node_xyz(node) 
             point = Point(x, y, z)
 
-            node_type = form.node_type(node) or "default"
+            node_type = form.node_attribute(key=node, name="type") or "default"
             color = self.node_colors[node_type]
 
             settings = {
@@ -143,7 +143,7 @@ class FormViewer(ObjectViewer):
         tol : ``float``
             The minimum force magnitude to draw. Defaults to ``1e-3``. 
         """
-        attr = "residual_force"
+        attr = "node_residual"
         self._add_forces(attr, scale, color, width, tol)
 
 
@@ -174,7 +174,7 @@ class FormViewer(ObjectViewer):
                 continue
 
             pt = scale_vector(q_vec, -scale)
-            end = form.node_coordinates(node)
+            end = form.node_xyz(node)
             start = add_vectors(end, pt)
             line = Line(start, end)
 

@@ -7,8 +7,6 @@ from compas_cem.optimization import nlopt_solver
 from compas_cem.optimization import grad_finite_difference_numpy
 from compas_cem.optimization import objective_function_numpy
 
-from compas_cem.diagrams import TopologyDiagram
-
 from compas_cem.equilibrium import force_equilibrium
 
 
@@ -22,7 +20,7 @@ __all__ = [
 
 class Optimizer():
     def __init__(self, **kwargs):
-        self.topology = None
+        self.form = None
         self.constraints = {}
         self.goals = {}
 
@@ -102,7 +100,7 @@ class Optimizer():
         """
         """
         obj_func = objective_function_numpy
-        func = self._optimize_topology
+        func = self._optimize_form
         v = verbose
         return partial(obj_func, x_func=func, grad_func=grad_func, verbose=v) 
     
@@ -114,7 +112,7 @@ class Optimizer():
         """
         """
         grad_func = grad_finite_difference_numpy
-        func = self._optimize_topology
+        func = self._optimize_form
         v = verbose
         return partial(grad_func, x_func=func, step_size=step_size, verbose=v)
 
@@ -122,10 +120,10 @@ class Optimizer():
 # Solver
 # ------------------------------------------------------------------------------
 
-    def solve_nlopt(self, topology, algorithm, iters, stopval, step_size, verbose=False):
+    def solve_nlopt(self, form, algorithm, iters, stopval, step_size, verbose=False):
         """
         """
-        self.topology = topology  # TODO: this should not happen here!
+        self.form = form  # TODO: this should not happen here!
 
         self.check_optimization_sanity()
 
@@ -167,7 +165,7 @@ class Optimizer():
 
         for index, ckey in self.index_constraint().items():
             constraint = self.constraints[ckey]
-            x[index] = constraint.start_value(self.topology)
+            x[index] = constraint.start_value(self.form)
 
         return x
 
@@ -179,8 +177,8 @@ class Optimizer():
 
         for index, ckey in self.index_constraint().items():
             constraint = self.constraints[ckey]
-            bounds_low[index] = constraint.bound_low(self.topology)
-            bounds_up[index] = constraint.bound_up(self.topology)
+            bounds_low[index] = constraint.bound_low(self.form)
+            bounds_up[index] = constraint.bound_up(self.form)
 
         return bounds_low, bounds_up
     
@@ -188,25 +186,25 @@ class Optimizer():
 # Updates
 # ------------------------------------------------------------------------------
 
-    def _update_topology_edges(self, x):
+    def _update_form_edges(self, x):
         """
         """
         x = np.squeeze(x).tolist()
 
         for index, ckey in self.index_constraint().items():
             edge = ckey
-            if self.topology.is_trail_edge(edge):
+            if self.form.is_trail_edge(edge):
                 name = "length"
-            elif self.topology.is_deviation_edge(edge):
+            elif self.form.is_deviation_edge(edge):
                 name = "force"    
-            self.topology.edge_attribute(key=edge, name=name, value=x[index])
+            self.form.edge_attribute(key=edge, name=name, value=x[index])
 
     def _compute_error(self):
         """
         """
         error = 0.0
         for goal in self.goals.values():
-            goal.update(self.topology)
+            goal.update(self.form)
             error += goal.error()
 
         return error
@@ -215,20 +213,20 @@ class Optimizer():
 # Equilibrium
 # ------------------------------------------------------------------------------
 
-    def _update_topology_equilibrium(self):
+    def _update_form_equilibrium(self):
         """
         """
-        force_equilibrium(self.topology, kmax=100, eps=1e-5)
+        force_equilibrium(self.form, kmax=100, eps=1e-5)
 
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
 
-    def _optimize_topology(self, parameters):
+    def _optimize_form(self, parameters):
         """
         """
-        self._update_topology_edges(parameters)
-        self._update_topology_equilibrium()
+        self._update_form_edges(parameters)
+        self._update_form_equilibrium()
         return self._compute_error()
 
 # ------------------------------------------------------------------------------

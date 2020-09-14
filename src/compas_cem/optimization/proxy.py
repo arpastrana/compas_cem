@@ -7,13 +7,13 @@ __all__ = [
 # Optimization
 # ------------------------------------------------------------------------------
 
-def solve_nlopt_proxy(topology, goals, constraints, algorithm, kmax, stopval, stepsize):
+def solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize):
     """
     """
     from compas_cem.optimization import Optimizer
 
     optimizer = Optimizer()
-    optimizer.topology = topology
+    optimizer.form = form
 
     # add goals
     for goal in goals:
@@ -23,9 +23,9 @@ def solve_nlopt_proxy(topology, goals, constraints, algorithm, kmax, stopval, st
     for constraint in constraints:
         optimizer.add_constraint(constraint)
 
-    optimizer.solve_nlopt(topology, algorithm, kmax, stopval, stepsize)
+    optimizer.solve_nlopt(form, algorithm, kmax, stopval, stepsize)
 
-    return topology
+    return form
 
 # ------------------------------------------------------------------------------
 # Main

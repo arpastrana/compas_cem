@@ -17,11 +17,11 @@ class DeviationEdgeLengthGoal(Goal):
         """
         return self._target_geo
 
-    def update(self, topology):
+    def update(self, form):
         """
         """
         u, v = self.key()
-        self._ref_geo = topology.edge_length(u, v)
+        self._ref_geo = form.edge_length(u, v)
         
     def error(self):
         """

@@ -12,10 +12,10 @@ class PointGoal(Goal):
     def __init__(self, node=None, point=None):
         super(PointGoal, self).__init__(node, point)
 
-    def update(self, topology):
+    def update(self, form):
         """
         """
-        self._ref_geo = topology.node_coordinates(self.key())
+        self._ref_geo = form.node_xyz(self.key())
 
     def error(self):
         """

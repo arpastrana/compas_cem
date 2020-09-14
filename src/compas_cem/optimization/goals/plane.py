@@ -19,10 +19,10 @@ class PlaneGoal(Goal):
         """
         return self._target_point
 
-    def update(self, topology):
+    def update(self, form):
         """
         """
-        self._ref_geo = topology.node_coordinates(self.key())
+        self._ref_geo = form.node_xyz(self.key())
         plane = self._target_geo
         self._target_point = closest_point_on_plane(self._ref_geo, plane)
 

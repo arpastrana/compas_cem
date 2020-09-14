@@ -143,7 +143,7 @@ class FormPlotter(NetworkPlotter):
                 continue
 
             arrow = {}
-            arrow["start"] = ds.node_coordinates(node)
+            arrow["start"] = ds.node_xyz(node)
             pt = scale_vector(q_vec, -scale)
             arrow["end"] = add_vectors(arrow["start"], pt)
             arrow["color"] = color
@@ -196,7 +196,7 @@ class FormPlotter(NetworkPlotter):
         """
         ds = self.datastructure
         precision = self.float_precision
-        gkey_format = lambda x: geometric_key(ds.node_coordinates(x), precision)
+        gkey_format = lambda x: geometric_key(ds.node_xyz(x), precision)
         key_gkey_format = lambda x: "{} / {}".format(x, gkey_format(x))
 
         tags_formatter = {
@@ -243,7 +243,7 @@ class FormPlotter(NetworkPlotter):
         tags_formatter = {
             "force": force_format,
             "length": length_format,
-            "parameter": parameter_format
+            "attr": parameter_format
             }
 
         if text_tag not in tags_formatter:

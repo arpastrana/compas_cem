@@ -25,21 +25,21 @@ class EdgeConstraint(Serializable):
         """
         return self._key
 
-    def start_value(self, topology):
+    def start_value(self, form):
         """
         """
-        val = topology.edge_attribute(key=self.key(), name=self._attr_name)
+        val = form.edge_attribute(key=self.key(), name=self._attr_name)
         return val
 
-    def bound_low(self, topology):
+    def bound_low(self, form):
         """
         """
-        return self.start_value(topology) - fabs(self._bound_low)
+        return self.start_value(form) - fabs(self._bound_low)
 
-    def bound_up(self, topology):
+    def bound_up(self, form):
         """
         """
-        return self.start_value(topology) + fabs(self._bound_up)
+        return self.start_value(form) + fabs(self._bound_up)
 
 # ------------------------------------------------------------------------------
 # Data

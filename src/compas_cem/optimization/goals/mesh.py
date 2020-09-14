@@ -18,10 +18,10 @@ class TrimeshGoal(Goal):
         """
         return self._target_point
 
-    def update(self, topology):
+    def update(self, form):
         """
         """
-        self._ref_geo = topology.node_coordinates(self.key())
+        self._ref_geo = form.node_xyz(self.key())
         trimesh = self._target_geo
         point = [self._ref_geo]
         
