@@ -18,7 +18,7 @@ class Edge(object):
         return edge
     
     @classmethod
-    def from_rhinoline(cls, rhino_line, *args, **kwargs):
+    def from_rhino_line(cls, rhino_line, *args, **kwargs):
         """
         """
         line = RhinoLine.from_geometry(rhino_line).to_compas()
@@ -27,13 +27,8 @@ class Edge(object):
     def __iter__(self):
         """
         """
-        for node in [self.u, self.v]:
+        for node in (self.u, self.v):
             yield node
-
-    def __repr__(self):
-        """
-        """
-        return "{}({}={})".format(self.__class__.__name__, self.attr_name, self.attr)
 
 if __name__ == "__main__":
     pass
