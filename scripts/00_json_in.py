@@ -1,21 +1,25 @@
-from compas_cem.diagrams import TopologyDiagram
-from compas_cem.plotters import TopologyPlotter
-from compas_cem.viewers import TopologyViewer
+import os
+
+from compas_cem import JSON_DATA
+
+from compas_cem.diagrams import FormDiagram
+from compas_cem.plotters import FormPlotter
+from compas_cem.viewers import FormViewer
 
 # ------------------------------------------------------------------------------
 # Data
 #-------------------------------------------------------------------------------
 
-IN = "/Users/arpj/code/libraries/compas_cem/data/json/w1_cem_2d_bridge_rhino.json"
+IN = os.path.abspath(os.path.join(JSON_DATA, "w1_cem_2d_bridge_rhino.json"))
 
 plot = True
-view = False
+view = True
 
 # ------------------------------------------------------------------------------
-# Topology Diagram
+# Form Diagram
 # ------------------------------------------------------------------------------
 
-topology = TopologyDiagram.from_json(IN)
+form = FormDiagram.from_json(IN)
 
 # ------------------------------------------------------------------------------
 # Plotter
@@ -23,7 +27,7 @@ topology = TopologyDiagram.from_json(IN)
 
 if plot:
 
-    plotter = TopologyPlotter(topology, figsize=(16, 9))
+    plotter = FormPlotter(form, figsize=(16, 9))
 
     plotter.draw_nodes(radius=0.30, text="key")
     plotter.draw_edges(text="force")
@@ -38,7 +42,7 @@ if plot:
 
 if view:
 
-    viewer = TopologyViewer(topology)
+    viewer = FormViewer(form)
     viewer.add_nodes(size=20)
     viewer.add_edges(width=(1, 5))
     viewer.add_loads(scale=-2, width=15)

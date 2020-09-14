@@ -1,16 +1,23 @@
-from compas_cem.diagrams import TopologyDiagram
-from compas_cem.plotters import TopologyPlotter
-from compas_cem.viewers import TopologyViewer
+import os
+
+from trimesh import Trimesh
+from numpy import array
+from time import time
+
+from compas_cem import JSON_DATA
+
+from compas_cem.diagrams import FormDiagram
 
 from compas_cem.equilibrium import force_equilibrium
 
 from compas_cem.optimization import Optimizer
-
 from compas_cem.optimization import PointGoal
 from compas_cem.optimization import TrimeshGoal
-
 from compas_cem.optimization import TrailEdgeConstraint
 from compas_cem.optimization import DeviationEdgeConstraint
+
+from compas_cem.plotters import FormPlotter
+from compas_cem.viewers import FormViewer
 
 from compas.datastructures import Mesh
 from compas.datastructures import network_transformed
@@ -19,24 +26,18 @@ from compas.geometry import Frame
 from compas.geometry import Plane
 from compas.geometry import Transformation
 
-from trimesh import Trimesh
-
-from numpy import array
-
-from time import time
-
 # ------------------------------------------------------------------------------
 # Data
 #-------------------------------------------------------------------------------
 
-IN_MESH = "/Users/arpj/code/libraries/compas_cem/data/json/lightvault.json"
-IN_ARCH = "/Users/arpj/code/libraries/compas_cem/data/json/arch.json"
-OUT_ARCH = "/Users/arpj/code/libraries/compas_cem/data/json/arch_optimized.json"
+IN_MESH = os.path.abspath(os.path.join(JSON_DATA, "lightvault.json"))
+IN_ARCH = os.path.abspath(os.path.join(JSON_DATA, "arch_optimized.json"))
+OUT_ARCH = os.path.abspath(os.path.join(JSON_DATA, "arch_optimized.json"))
 
 optimize = True
-plot = False
+plot = True
 view = True
-export = False
+export = True
 
 # ------------------------------------------------------------------------------
 # Target Mesh
@@ -50,11 +51,11 @@ faces = array(faces).reshape((-1, 3))
 trimesh = Trimesh(vertices=vertices, faces=faces)
 
 # ------------------------------------------------------------------------------
-# Topology Diagram
+# Form Diagram
 # ------------------------------------------------------------------------------
 
-topology = TopologyDiagram.from_json(IN_ARCH)
-force_equilibrium(topology)
+form = FormDiagram.from_json(IN_ARCH)
+force_equilibrium(form)
 
 # ------------------------------------------------------------------------------
 # Initialize optimizer
@@ -66,7 +67,7 @@ optimizer = Optimizer()
 # Define goals / Targets
 # ------------------------------------------------------------------------------
 
-for node in topology.nodes():
+for node in form.nodes():
     optimizer.add_goal(TrimeshGoal(node, trimesh))
 
 # ------------------------------------------------------------------------------
@@ -76,10 +77,10 @@ for node in topology.nodes():
 bound_t = 0.025
 bound_d = 0.07
 
-for edge in topology.trail_edges():
+for edge in form.trail_edges():
     optimizer.add_constraint(TrailEdgeConstraint(edge, bound_t, bound_t))
 
-for edge in topology.deviation_edges():
+for edge in form.deviation_edges():
     optimizer.add_constraint(DeviationEdgeConstraint(edge, bound_d, bound_d))
 
 # ------------------------------------------------------------------------------
@@ -98,7 +99,7 @@ if optimize:
 
     # optimize
     print("Optimizing")
-    x_opt, l_opt = optimizer.solve_nlopt(topology, opt_algorithm, iters, stopval, step_size)
+    x_opt, l_opt = optimizer.solve_nlopt(form, opt_algorithm, iters, stopval, step_size)
 
     # print out results
     print("Elapsed time: {} seconds".format(round((time() - start), 2)))
@@ -109,7 +110,7 @@ if optimize:
 # ------------------------------------------------------------------------------
 
 if export:
-    topology.to_json(OUT_ARCH)
+    form.to_json(OUT_ARCH)
     print("Exported json file to: {}".format(OUT_ARCH))
 
 # ------------------------------------------------------------------------------
@@ -118,9 +119,9 @@ if export:
 
 if plot:
     T = Transformation.from_frame_to_frame(Frame.worldYZ(), Frame.worldXY())
-    topology_transformed = network_transformed(topology, T)
+    form_transformed = network_transformed(form, T)
 
-    plotter = TopologyPlotter(topology_transformed, figsize=(16, 9))
+    plotter = FormPlotter(form_transformed, figsize=(16, 9))
 
     plotter.draw_nodes(radius=0.025, text="key")
     plotter.draw_edges(text="attr")
@@ -134,7 +135,7 @@ if plot:
 # ------------------------------------------------------------------------------
 
 if view:
-    viewer = TopologyViewer(topology)
+    viewer = FormViewer(form)
     viewer.add_nodes(size=20)
     viewer.add_edges(width=(1, 5))
     viewer.add_loads(scale=2.0, width=5)
