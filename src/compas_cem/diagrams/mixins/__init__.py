@@ -28,8 +28,7 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .mixins import *
-from .diagram import *
-from .form_diagram import *
+from .node_mixins import *
+from .edge_mixins import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]

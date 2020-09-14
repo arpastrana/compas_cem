@@ -1,15 +1,15 @@
 from compas_cem.diagrams import Diagram
-from compas.utilities import geometric_key
+
 
 __all__ = [
-    "TopologyDiagram"
+    "FormDiagram"
 ]
 
 # ==============================================================================
-# Topology Diagram
+# Form Diagram
 # ==============================================================================
 
-class TopologyDiagram(Diagram):
+class FormDiagram(Diagram):
     """
     The heart of life.
 
@@ -22,12 +22,12 @@ class TopologyDiagram(Diagram):
 
     Returns
     -------
-    topology : ``TopologyDiagram``
-        A topology diagram.
+    form : ``FormDiagram``
+        A form diagram.
     """
 
     def __init__(self, *args, **kwargs):
-        super(TopologyDiagram, self).__init__(*args, **kwargs)
+        super(FormDiagram, self).__init__(*args, **kwargs)
         
         self.update_default_node_attributes({
                                             "x": 0.0,
@@ -75,230 +75,49 @@ class TopologyDiagram(Diagram):
         return self.attributes["gkey_node"]
 
 # ==============================================================================
-# Node Attributes
+# Node Additions
 # ==============================================================================
 
-    def support(self, node):
+    def add_support(self, support):
         """
-        Assigns a support to a node.
-        
+        Adds a support.
+
         Parameters
         ----------
-        node : ``int``
-            A node key.
+        support : ``NodeSupport``
+            A node support object.
 
         Notes
         -----
         Support nodes mark the end of a continuous trail. They aren't fixed.
         """
+        value = support.node
+        if value is None:
+            value = support.xyz
+        node = self.node_key(value)
+        
+        if node is None:
+            raise ValueError("A node doesn't exist here yet!")
+
         self.node_attribute(node, "type", "support")
 
-    def node_load(self, node, load=None):
+    def add_load(self, load):
         """
-        Gets or sets a load at a node.
-        
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-        load : ``list``
-            A vector with xyz components.
-            If load is ``None``, this function queries the load vector at the
-            node.
-            Otherwise, it assigns it. Defaults to ``None``.
-        
-        Returns
-        -------
-        load_vector: ``list``
-            A vector with xyz components if ``load`` is ``None``.
-        """
-        attrs = ["qx", "qy", "qz"]
-        return self.node_attributes(key=node, names=attrs, values=load)
-
-    def residual_force(self, node):
-        """
-        Queries the residual force vector at a node.
-        
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-        
-        Returns
-        -------
-        type : ``list``
-            The residual force vector.
-        """
-        return self.node_attributes(key=node, names=["rx", "ry", "rz"])
-
-# ==============================================================================
-# Node Additions
-# ==============================================================================
-
-    def add_load(self, node, load):
-        """
-        Adds a nodal load.
+        Applies a load.
 
         Parameters
         ----------
-        node : ``int``
-            A node key.
-        load : ``list``
-            A load xyz vector.
+        load : ``Load``
+            A load object.
         """
-        for q, attr in zip(load, ["qx", "qy", "qz"]):
-            self.node_attribute(node, attr, q)
-    
-    def add_point_load(self, point_load):
-        """
-        Adds a point load.
-
-        Parameters
-        ----------
-        point load : ``PointLoad``
-            A point load object.
-        """
-        node = self.gkey_node.get(geometric_key(point_load.pos, self.tol))
-
+        value = load.node
+        if value is None:
+            value = load.xyz
+        node = self.node_key(value)
         if node is None:
-            raise ValueError("Node not defined yet at Point Load position!")
+            raise ValueError("A node doesn't exist here yet!")
 
-        for q, attr in zip(point_load.vec, ["qx", "qy", "qz"]):
-            self.node_attribute(node, attr, q)
-
-    def add_point_support(self, point_support):
-        """
-        Adds a point support.
-
-        Parameters
-        ----------
-        point_support : ``PointSupport``
-            A point support object.
-        """
-        node = self.gkey_node.get(geometric_key(point_support.pos, self.tol))
-
-        if node is None:
-            raise ValueError("Node not defined yet at Point Load position!")
-
-        self.support(node)
-     
-    def add_node_from_xyz(self, xyz):
-        """
-        Adds a node from xyz coordinates.
-
-        Parameters
-        ----------
-        xyx : ``list``
-            The node xyz coordinates.
-        
-        Returns
-        -------
-        node : ``int``
-            The node key.
-        """
-        x, y, z = xyz
-        return self.add_node(x=x, y=y, z=z)
-
-# ==============================================================================
-# Edge Additions
-# ==============================================================================
-
-    def add_trail_edge(self, edge, length):
-        """
-        Adds a trail edge.
-
-        Parameters
-        ----------
-        edge : ``tuple``
-            An edge key.
-        length : ``float``
-            The length of the edge.
-            A positive value denotes tension. A negative one, compression.
-
-        Returns
-        -------
-        edge : ``tuple``
-            The edge key.
-        """
-        u, v = edge
-        kwargs = {"type": "trail", "length": length}
-        return self.add_edge(u, v, **kwargs)
-
-    def _process_edge_keys(self, edge):
-        """
-        """
-        u, v = edge.u, edge.v
-
-        if isinstance(u, int) and isinstance(v, int):
-            return self.add_edge(u, v, **kwargs)
-
-        edge_keys = []
-        for xyz in (u, v):
-            gkey = geometric_key(xyz, self.tol)
-            key = self.gkey_node.get(gkey)
-            
-            if key is None:
-                key = self.add_node_from_xyz(xyz)
-                self.gkey_node[gkey] = key
-            
-            edge_keys.append(key)
-        
-        return edge_keys
-
-    def add_trail_edge_object(self, trail_edge):
-        """
-        Adds a trail edge object.
-
-        Parameters
-        ----------
-        trail_edge : ``TrailEdge``
-            A trail edge object.
-
-        Returns
-        -------
-        edge : ``tuple``
-            An edge key.
-        """
-        u, v = self._process_edge_keys(trail_edge)
-        return self.add_trail_edge((u, v), length=trail_edge.length)
-
-    def add_deviation_edge(self, edge, force):
-        """
-        Adds a deviation edge.
-
-        Parameters
-        ----------
-        edge : ``tuple``
-            An edge key.
-        force : ``float``
-            The force assigned to the edge.
-            A positive value denotes tension. A negative one, compression.
-
-        Returns
-        -------
-        edge : ``tuple``
-            The edge key.
-        """
-        u, v = edge
-        kwargs = {"type": "deviation", "force": force}
-        return self.add_edge(u, v, **kwargs)
-
-    def add_deviation_edge_object(self, deviation_edge):
-        """
-        Adds a trail edge object.
-
-        Parameters
-        ----------
-        deviation_edge : ``Deviation``
-            A deviation edge object.
-
-        Returns
-        -------
-        edge : ``tuple``
-            An edge key.
-        """
-        u, v = self._process_edge_keys(deviation_edge)
-        return self.add_deviation_edge((u, v), force=deviation_edge.force)
+        self.node_attributes(node, ["qx", "qy", "qz"], load.vector)
 
 # ==============================================================================
 # Trails
@@ -306,7 +125,7 @@ class TopologyDiagram(Diagram):
 
     def trails(self):
         """
-        Collects the trails in the topology diagram.
+        Collects the trails in the form diagram.
 
         A trail is an ordered sequence of nodes with two characteristics:
         there is a root node at the start, and a support node at the end.
@@ -314,7 +133,12 @@ class TopologyDiagram(Diagram):
         Returns
         -------
         trails : ``dict``
-            The trails. Keys are those of their support nodes
+            The trails.
+            Their keys in the dictionary correspond to the found root nodes.
+        
+        Note
+        ----
+            Root nodes are computed as part of the trail-making process.
         """
         tr = {}
 
@@ -352,7 +176,9 @@ class TopologyDiagram(Diagram):
                     trail.append(root)
                     break
 
+            # set last node to be of root type
             self.node_attribute(root, "type", "root")
+
             trail.reverse()
             tr[root] = trail
 
@@ -551,6 +377,47 @@ class TopologyDiagram(Diagram):
         return self.edge_attribute(key=edge, name="force")
 
 # ==============================================================================
+# Node Attributes
+# ==============================================================================
+
+    def node_load(self, node):
+        """
+        Gets the load applied at a node.
+        
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        load : ``list``
+            A vector with xyz components.
+            If load is ``None``, this function queries the load vector at the
+            node.
+            Otherwise, it assigns it. Defaults to ``None``.
+        
+        Returns
+        -------
+        load_vector: ``list``
+            A vector with xyz components if ``load`` is ``None``.
+        """
+        return self.node_attributes(key=node, names=["qx", "qy", "qz"])
+
+    def node_residual(self, node):
+        """
+        Gets the residual force vector at a node.
+        
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        
+        Returns
+        -------
+        type : ``list``
+            The residual force vector.
+        """
+        return self.node_attributes(key=node, names=["rx", "ry", "rz"])
+
+# ==============================================================================
 # Node Selections
 # ==============================================================================
 
@@ -690,7 +557,7 @@ class TopologyDiagram(Diagram):
         
         Notes
         -----
-        Similar to ``TopologyDiagram.edges_where_predicate()``.
+        Similar to ``FormDiagram.edges_where_predicate()``.
         """
         if not self.is_deviation_edge(edge):
             return False
@@ -703,6 +570,6 @@ class TopologyDiagram(Diagram):
 # ==============================================================================
 
 if __name__ == "__main__":
-    topology = TopologyDiagram()
-    topology.edges_where_predicate()
-    print(topology)
+    form = FormDiagram()
+    form.edges_where_predicate()
+    print(form)

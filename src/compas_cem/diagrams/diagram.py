@@ -3,6 +3,8 @@ from compas.datastructures import Network
 from compas.geometry import subtract_vectors
 from compas.geometry import normalize_vector
 
+from compas_cem.diagrams import NodeMixins
+from compas_cem.diagrams import EdgeMixins
 
 __all__ = [
     "Diagram"
@@ -12,7 +14,7 @@ __all__ = [
 # Diagram
 # ==============================================================================
 
-class Diagram(Network):
+class Diagram(NodeMixins, EdgeMixins, Network):
     """
     Base class that shares functionality across diagrams.
     """
