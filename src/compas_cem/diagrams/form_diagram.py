@@ -97,7 +97,7 @@ class FormDiagram(Diagram):
         node = self.node_key(value)
         
         if node is None:
-            raise ValueError("A node doesn't exist here yet!")
+            raise ValueError("A node doesn't exist at {} yet!".format(value))
 
         self.node_attribute(node, "type", "support")
 
@@ -115,7 +115,7 @@ class FormDiagram(Diagram):
             value = load.xyz
         node = self.node_key(value)
         if node is None:
-            raise ValueError("A node doesn't exist here yet!")
+            raise ValueError("A node doesn't exist at {} yet!".format(value))
 
         self.node_attributes(node, ["qx", "qy", "qz"], load.vector)
 

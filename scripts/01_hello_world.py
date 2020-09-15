@@ -107,7 +107,7 @@ force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
 plotter = FormPlotter(form, figsize=(16, 9))
 
 plotter.draw_nodes(radius=0.05, text="key")
-plotter.draw_edges(text="attr")
+plotter.draw_edges(text="force")
 plotter.draw_loads(scale=0.5)
 plotter.draw_residuals(scale=0.25)
 plotter.draw_segments(edge_lines)

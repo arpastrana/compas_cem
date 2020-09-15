@@ -28,7 +28,6 @@ form = FormDiagram.from_json(IN)
 if plot:
 
     plotter = FormPlotter(form, figsize=(16, 9))
-
     plotter.draw_nodes(radius=0.30, text="key")
     plotter.draw_edges(text="force")
     plotter.draw_loads(scale=-2.0)
