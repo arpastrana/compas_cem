@@ -1,11 +1,19 @@
 
 __all__ = [
+    "optimizer_solve_nlopt_proxy",
     "solve_nlopt_proxy"
 ]
 
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
+
+def optimizer_solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize):
+    """
+    A wrapper around ``Optimizer.solve_nlopt`` to be used with an ``rpc.Proxy``.
+    """
+    return self_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize)
+
 
 def solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize):
     """

@@ -1,3 +1,4 @@
-
-COMPAS>=0.16
-
+COMPAS==0.16.2
+PySide2
+pyopengl
+trimesh

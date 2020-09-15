@@ -5,21 +5,24 @@ compas_cem.elements
 .. currentmodule:: compas_cem.elements
 
 
-Classes
-=======
+Edges
+======
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
 
+    TrailEdge
+    DeviationEdge
 
-Functions
-=========
+Node
+=====
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
 
+    Node
 """
 
 from __future__ import absolute_import

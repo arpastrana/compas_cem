@@ -1,25 +1,18 @@
 """
-compas_cem.loads
+compas_cem.supports
 ****************************
 
 .. currentmodule:: compas_cem.supports
 
 
-Classes
-=======
+Supports
+========
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
 
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
+    NodeSupport
 """
 
 from __future__ import absolute_import

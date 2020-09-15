@@ -362,10 +362,10 @@ class FormDiagram(Diagram):
 
     def edge_force(self, edge):
         """
-        Query the force value in an edge.
+        Gets the force value at an edge.
 
-        Input
-        -----
+        Parameters
+        ----------
         edge : ``tuple``
             The u, v edge key.
 

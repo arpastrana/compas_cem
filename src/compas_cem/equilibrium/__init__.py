@@ -2,23 +2,17 @@
 compas_cem.equilibrium
 ****************************
 
-.. currentmodule:: compas_cem.optimization
+.. currentmodule:: compas_cem.equilibrium
 
 
-Classes
-=======
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-
-Functions
-=========
+Equilibrium
+============
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
+
+    force_equilibrium
 
 """
 

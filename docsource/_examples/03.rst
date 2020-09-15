@@ -1,0 +1,9 @@
+================================================================================
+Bridge Optimization 2d
+================================================================================
+
+.. figure:: ../_images/simple_bridge.png
+    :figclass: figure
+    :class: figure-img img-fluid
+
+.. literalinclude:: ../../examples/03_mini_bridge.py

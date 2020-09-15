@@ -12,14 +12,7 @@ Classes
     :toctree: generated/
     :nosignatures:
 
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
+    FormPlotter
 """
 
 from __future__ import absolute_import

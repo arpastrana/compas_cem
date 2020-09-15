@@ -5,21 +5,14 @@ compas_cem.diagrams
 .. currentmodule:: compas_cem.diagrams
 
 
-Classes
-=======
+Diagrams
+========
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
 
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
+    FormDiagram
 """
 
 from __future__ import absolute_import

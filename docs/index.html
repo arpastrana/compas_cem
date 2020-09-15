@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
   <meta name="author" content="Rafael Pastrana" />
-  <meta name="description" content="A compas-flavored combinatorial equilibrium modeling" />
+  <meta name="description" content="A COMPAS-flavored combinatorial equilibrium modeling" />
 
   <link rel="shortcut icon" href="_static/images/compas.ico" type="image/x-icon">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -17,7 +17,7 @@
   <link rel="stylesheet" type="text/css" href="_static/css/compas-reference.css" />
 
   
-    <link rel="next" title="Introduction" href="intro.html" />
+    <link rel="next" title="Getting Started" href="gettingstarted.html" />
   
   
   
@@ -77,16 +77,98 @@
         
         
         <div class="section" id="compas-cem">
-<h1 class="display-4 p-0 mb-5">compas_cem</h1>
+<h1 class="display-4 p-0 mb-5">COMPAS CEM</h1>
+<p class="lead">A <strong>COMPAS</strong>-flavored combinatorial equilibrium modeling (CEM).</p>
+<div class="figure align-default">
+<img alt="_images/front_cover1.png" class="figure-img img-fluid" src="_images/front_cover1.png" />
+</div>
+<div class="section" id="introduction">
+<h2>Introduction</h2>
+<p><strong>CEM</strong> is a geometric form-finding method to create mixed tension-compression
+structures. This <strong>COMPAS</strong> package is developed by <a class="reference external" href="https://github.com/arpastrana/">Rafael Pastrana</a> at the
+CREATE Laboratory at <a class="reference external" href="https://soa.princeton.edu/">Princeton University</a> in
+collaboration with Patrick Ole Ohlbrock and Pierluigi
+D’Acunto from the Chair of Structural Design at <a class="reference external" href="http://www.schwartz.arch.ethz.ch/">ETH
+Zürich</a>.</p>
+</div>
+<div class="section" id="first-example">
+<h2>First Example</h2>
+<p>With <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, you can create a tension-compression structure in
+equilibrium with little hassle.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">FormDiagram</span>
+<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">TrailEdge</span>
+<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">DeviationEdge</span>
+<span class="kn">from</span> <span class="nn">compas_cem.loads</span> <span class="kn">import</span> <span class="n">NodeLoad</span>
+<span class="kn">from</span> <span class="nn">compas_cem.supports</span> <span class="kn">import</span> <span class="n">NodeSupport</span>
+<span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">force_equilibrium</span>
+<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">FormPlotter</span>
+
+
+<span class="c1"># create a form diagram</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">FormDiagram</span><span class="p">()</span>
+
+<span class="c1"># add nodes</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
+
+<span class="c1"># add edges with negative values for a compression-only structure</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">DeviationEdge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">force</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
+
+<span class="c1"># add supports</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_support</span><span class="p">(</span><span class="n">NodeSupport</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_support</span><span class="p">(</span><span class="n">NodeSupport</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># add loads</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">NodeLoad</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
+<span class="n">form</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">NodeLoad</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
+
+<span class="c1"># calculate equilibrium</span>
+<span class="n">force_equilibrium</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">kmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">FormPlotter</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;key&quot;</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;force-length&quot;</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_loads</span><span class="p">(</span><span class="n">scale</span><span class="o">=-</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">draw_residuals</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.10</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="figure align-default">
+<img alt="_images/simplest_arch1.png" class="figure-img img-fluid" src="_images/simplest_arch1.png" />
+</div>
+</div>
+<div class="section" id="table-of-contents">
+<h2>Table of Contents</h2>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_examples/00.html">Create a FormDiagram from JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/01.html">Simple Compression Arch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/02.html">Braced Tower 2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/03.html">Bridge Optimization 2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/04.html">Long-Span Bridge 3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/05.html">Best-fit Arch</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.html">compas_cem</a><ul class="simple">
+<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.html">compas_cem</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.diagrams.html">compas_cem.diagrams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.elements.html">compas_cem.elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.loads.html">compas_cem.loads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.supports.html">compas_cem.supports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.optimization.html">compas_cem.optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.plotters.html">compas_cem.plotters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.viewers.html">compas_cem.viewers</a></li>
 </ul>
 </li>
 </ul>
@@ -94,6 +176,7 @@
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citing</a></li>
 </ul>
+</div>
 </div>
 </div>
 
@@ -113,8 +196,8 @@
         
         
           <div id="compas-navigation" class="collapse compas-navigation">
-          <ul class="nav flex-column">
-<li class="nav-item"><a class="nav-link reference internal" href="intro.html">Introduction</a></li>
+          <ul class="nav flex-column active">
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Introduction</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="gettingstarted.html">Getting Started</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="api.html">API Reference</a></li>
@@ -130,7 +213,12 @@
       <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
         
         <ul class="nav flex-column" id="compas-toc">
-<li class="nav-item"><a class="nav-link reference internal" href="#">compas_cem</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">COMPAS CEM</a><ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="#introduction">Introduction</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#first-example">First Example</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#table-of-contents">Table of Contents</a></li>
+</ul>
+</li>
 </ul>
 
       </div>

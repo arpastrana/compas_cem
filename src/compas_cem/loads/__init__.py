@@ -5,21 +5,14 @@ compas_cem.loads
 .. currentmodule:: compas_cem.loads
 
 
-Classes
-=======
+Loads
+=====
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
 
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
+    NodeLoad
 """
 
 from __future__ import absolute_import

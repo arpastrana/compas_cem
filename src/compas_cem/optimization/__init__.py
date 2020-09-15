@@ -5,20 +5,48 @@ compas_cem.optimization
 .. currentmodule:: compas_cem.optimization
 
 
-Classes
-=======
+Optimization
+============
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
 
+    Optimizer
+    optimizer_solve_nlopt_proxy
 
-Functions
-=========
+Goals
+=====
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
+
+    PointGoal
+    PlaneGoal
+    TrimeshGoal
+
+
+Constraints
+===========
+
+.. autosummary::
+    :toctree: generated/
+    :nosignatures:
+
+    TrailEdgeConstraint
+    DeviationEdgeConstraint
+
+
+NLOpt
+=====
+.. autosummary::
+    :toctree: generated/
+    :nosignatures:
+
+    nlopt_algorithm
+    nlopt_algorithms
+    nlopt_solver    
 
 """
 
@@ -35,7 +63,7 @@ from .proxy import *
 
 import compas
 if not compas.IPY:
-    from ._nlopt import *
+    from .nlopt import *
     from .objective_func import *
     from .grad import *
     from .optimizer import *

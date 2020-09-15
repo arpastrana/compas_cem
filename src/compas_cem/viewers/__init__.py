@@ -1,5 +1,5 @@
 """
-compas_cem.plotters
+compas_cem.viewers
 ****************************
 
 .. currentmodule:: compas_cem.viewers
@@ -12,14 +12,7 @@ Classes
     :toctree: generated/
     :nosignatures:
 
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
+    FormViewer
 """
 
 from __future__ import absolute_import

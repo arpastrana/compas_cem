@@ -1,0 +1,9 @@
+================================================================================
+Best-fit Arch
+================================================================================
+
+.. figure:: ../_images/best_fit_arch.png
+    :figclass: figure
+    :class: figure-img img-fluid
+
+.. literalinclude:: ../../examples/05_arch_on_mesh.py

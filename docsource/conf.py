@@ -13,7 +13,7 @@ import sphinx_compas_theme
 # -- General configuration ------------------------------------------------
 
 project = "COMPAS CEM"
-copyright = ""
+copyright = "CREATE Laboratory - Princeton University"
 author = "Rafael Pastrana"
 release = "0.1.0"
 version = ".".join(release.split(".")[0:2])
@@ -102,7 +102,7 @@ html_theme_options = {
     "package_title"   : project,
     "package_version" : release,
     "package_author" : author,
-    "package_description" : "A compas-flavored combinatorial equilibrium modeling",
+    "package_description" : "A COMPAS-flavored combinatorial equilibrium modeling",
     "package_repo" : 'https://github.com/arpastrana/compas_cem'
 }
 
