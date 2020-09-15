@@ -80,12 +80,16 @@ class FormPlotter(NetworkPlotter):
 
         super(FormPlotter, self).draw_edges(color=ec, *args, **kwargs)
 
-    def draw_loads(self, scale=1.0, color=(102, 255, 51), width=2.0, tol=1e-3):
+    def draw_loads(self, keys=None, scale=1.0, color=(102, 255, 51), width=2.0, tol=1e-3):
         """
         Draws the nodal loads as scaled arrows.
 
         Parameters
         ----------
+        keys : ``list``
+            The list of node keys where to draw forces. 
+            If nodes is ``None``, all nodes in will be considered.
+            Defaults to ``None``.
         scale : ``float``
             The scale of the load arrows. Defaults to ``1.0``.
         color : ``tuple``
@@ -95,15 +99,21 @@ class FormPlotter(NetworkPlotter):
         tol : ``float``
             The minimum force magnitude to draw. Defaults to ``1e-3``. 
         """
+        if not keys:
+            keys = list(self.datastructure.nodes())
         attrs = ["qx", "qy", "qz"]
-        self._draw_forces(attrs, scale, color, width, tol)
+        self._draw_forces(keys, attrs, scale, color, width, tol)
 
-    def draw_residuals(self, scale=1.0, color=(0, 204, 255), width=3.0, tol=1e-3):
+    def draw_residuals(self, keys=None, scale=1.0, color=(0, 204, 255), width=3.0, tol=1e-3):
         """
         Draws the node residual forces as scaled arrows.
 
         Parameters
         ----------
+        keys : ``list``
+            The list of node keys where to draw forces. 
+            If nodes is ``None``, all nodes in will be considered.
+            Defaults to ``None``.
         scale : ``float``
             The scale of the residual arrows. Defaults to ``1.0``.
         color : ``tuple``
@@ -113,15 +123,19 @@ class FormPlotter(NetworkPlotter):
         tol : ``float``
             The minimum force magnitude to draw. Defaults to ``1e-3``. 
         """
+        if not keys:
+            keys = list(self.datastructure.nodes())
         attrs = ["rx", "ry", "rz"]
-        self._draw_forces(attrs, scale, color, width, tol)
+        self._draw_forces(keys, attrs, scale, color, width, tol)
 
-    def _draw_forces(self, attrs, scale, color, width, tol):
+    def _draw_forces(self, keys, attrs, scale, color, width, tol):
         """
         Draws forces as scaled arrows.
 
         Parameters
         ----------
+        keys : ``list``
+            The list of node keys where to draw forces.
         attrs : ``list``
             The attribute names of the force vector to draw.
         scale : ``float``
@@ -201,7 +215,7 @@ class FormPlotter(NetworkPlotter):
 
         tags_formatter = {
             "xyz": gkey_format,
-            "key/xyz": key_gkey_format
+            "key-xyz": key_gkey_format
             }
 
         if text_tag not in tags_formatter:
@@ -223,7 +237,8 @@ class FormPlotter(NetworkPlotter):
         Input
         -----
         text_tag : `str`
-            Tag query. Supported tags are: "attr", "force" and "length".
+            Tag query.
+            Supported tags are: force", "length", and "force-length".
         
         Returns
         -------
@@ -243,7 +258,7 @@ class FormPlotter(NetworkPlotter):
         tags_formatter = {
             "force": force_format,
             "length": length_format,
-            "attr": parameter_format
+            "force-length": parameter_format
             }
 
         if text_tag not in tags_formatter:

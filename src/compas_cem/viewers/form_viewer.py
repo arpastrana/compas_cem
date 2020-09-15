@@ -44,12 +44,16 @@ class FormViewer(ObjectViewer):
         self.point_size = 10.0
         self.line_width = 5.0
 
-    def add_nodes(self, size=None):
+    def add_nodes(self, keys=None, size=None):
         """
         Adds form's nodes to the viewer's scene.
 
         Parameters
         ----------
+        keys : ``list``
+            A list with the keys of the nodes to add.
+            If ``None``, all the nodes in the ``FormDiagram``will be added.
+            Defaults to ``None``.
         size : ``float``, optional.
             A uniform size for the nodes visualization.
             `Viewer.point_size`` will be taken if size is ``None``.
@@ -59,7 +63,9 @@ class FormViewer(ObjectViewer):
         if not size:
             size = self.point_size
 
-        for node in form.nodes():
+        node_keys = keys or form.nodes()
+
+        for node in node_keys:
             x, y, z = form.node_xyz(node) 
             point = Point(x, y, z)
 
@@ -72,12 +78,16 @@ class FormViewer(ObjectViewer):
             }
             self.add(point, settings=settings)
 
-    def add_edges(self, width=None):
+    def add_edges(self, keys=None, width=None):
         """
         Draws the edges.
     
         Parameters
         ----------
+        keys : ``list``
+            A list with the keys of the edges to add.
+            If ``None``, all the edges in the ``FormDiagram``will be added.
+            Defaults to ``None``.
         width : ``float`` or ``tuple``, optional.
             A uniform width for the edges if a ``float`` is supplied.
             A linear size range if a (min, max)``tuple`` is input.
@@ -85,7 +95,7 @@ class FormViewer(ObjectViewer):
             Defaults to ``None``.
         """
         form = self.form
-        edges = list(form.edges())
+        edges = keys or list(form.edges())
 
         if isinstance(width, tuple):
             new_min, new_max = width
@@ -110,12 +120,16 @@ class FormViewer(ObjectViewer):
 
             self.add(line, settings=settings)
 
-    def add_loads(self, scale=1.0, color=(102, 255, 51), width=5.0, tol=1e-3):
+    def add_loads(self, keys=None, scale=1.0, color=(102, 255, 51), width=5.0, tol=1e-3):
         """
         Adds scaled line representations of the loads to the scene.
 
         Parameters
         ----------
+        keys : ``list``
+            A list with the keys of the nodes where to view loads.
+            If ``None``, all nodes in the ``FormDiagram`` will be considered.
+            Defaults to ``None``.
         scale : ``float``
             The scale of the load lines. Defaults to ``1.0``.
         color : ``tuple``
@@ -126,14 +140,19 @@ class FormViewer(ObjectViewer):
             The minimum force magnitude to draw. Defaults to ``1e-3``. 
         """
         attr = "node_load"
-        self._add_forces(attr, scale, color, width, tol)
+        node_keys = keys or list(self.form.nodes())
+        self._add_forces(node_keys, attr, scale, color, width, tol)
 
-    def add_residuals(self, scale=1.0, color=(0, 204, 255), width=5.0, tol=1e-3):
+    def add_residuals(self, keys=None, scale=1.0, color=(0, 204, 255), width=5.0, tol=1e-3):
         """
         Adds scaled line representations of the node residual forces.
 
         Parameters
         ----------
+        keys : ``list``
+            A list with the keys of the nodes where to view residual forces.
+            If ``None``, all nodes in the ``FormDiagram`` will be considered.
+            Defaults to ``None``.
         scale : ``float``
             The scale of the residual force lines. Defaults to ``1.0``.
         color : ``tuple``
@@ -144,15 +163,18 @@ class FormViewer(ObjectViewer):
             The minimum force magnitude to draw. Defaults to ``1e-3``. 
         """
         attr = "node_residual"
-        self._add_forces(attr, scale, color, width, tol)
+        node_keys = keys or list(self.form.nodes())
+        self._add_forces(node_keys, attr, scale, color, width, tol)
 
 
-    def _add_forces(self, attr, scale, color, width, tol):
+    def _add_forces(self, node_keys, attr, scale, color, width, tol):
         """
         Adds scaled line representations of forces to the scene.
 
         Parameters
         ----------
+        node_keys : ``list``
+            A list with the keys of the nodes where to view forces.
         attr : ``str``
             The node attribute to add to the scene.
         scale : ``float``
@@ -166,7 +188,7 @@ class FormViewer(ObjectViewer):
         """
         form = self.form
 
-        for node in form.nodes():
+        for node in node_keys:
             function = getattr(form, attr)
             q_vec = function(node)
 
