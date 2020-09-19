@@ -34,10 +34,10 @@ to get a first impression of what `compas_cem` can do for you.
 
 The preferred way to install `compas_cem` is to build it from source in only four simple steps.
 
-First, create a new `conda` environment from your command line. The only requirements (until now) are `python` version **3.7** and `compas` version **0.16.2**.
+First, create a new `conda` environment from your command line. The only requirements (until now) are `python`, `compas`, and `rtree` .
 
 ```bash
-conda create -n cem python=3.7 COMPAS=0.16.2
+conda create -n cem python=3.7 COMPAS=0.16.2 rtree=0.9.4
 conda activate cem
 ```
 

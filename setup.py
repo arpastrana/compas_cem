@@ -33,7 +33,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",
-    author="Ole Ohlbrock, Pierluigi D'Acunto, Rafael Pastrana",
+    author="Rafael Pastrana",
     author_email="arpj@princeton.edu",
     license="MIT license",
     classifiers=[
