@@ -1,10 +1,15 @@
 from nlopt import opt
 
-from nlopt import LD_MMA
-from nlopt import LN_COBYLA
-from nlopt import LN_BOBYQA
+from nlopt import LD_AUGLAG
 from nlopt import LD_LBFGS
+from nlopt import LD_MMA
 from nlopt import LD_SLSQP
+from nlopt import LD_TNEWTON
+
+from nlopt import LN_BOBYQA
+from nlopt import LN_COBYLA
+from nlopt import LN_SBPLX
+
 
 
 __all__ = [
@@ -12,6 +17,7 @@ __all__ = [
     "nlopt_algorithms",
     "nlopt_solver"
 ]
+
 
 def nlopt_algorithm(name):
     """
@@ -29,36 +35,63 @@ def nlopt_algorithm(name):
 
     Notes
     -----
-    Currently supported algorithms are:
+    Only the following local optimization algorithms are supported:
+
+    Gradient-based:
+
         - LD_MMA
         - LD_LBFGS
+        - LD_AUGLAG
         - LD_SLSQP
-        - LN_COBYLA
-        - LN_BOBYQA
+        - LD_TNEWTON
+    
+    Derivative-free:
 
-    For further information, please refer to nlopt's documentation.
+        - LN_BOBYQA
+        - LN_COBYLA
+        - LN_SBPLX
+
+    Refer to nlopt's docs for more details on their theoretical underpinnings.
     """
+
     algorithms = nlopt_algorithms()
     return algorithms[name]
 
 
 def nlopt_algorithms():
     """
-    A dictionary with all the supported NLOpt algorithms.
+    A dictionary with all the supported nlopt algorithms.
+
+    Returns
+    -------
+    algorithms : ``dict``
+        A dictionary that maps algorithm names to nlopt algorithm objects.
     """
-    algorithms = {
-        "LD_MMA": LD_MMA,
-        "LD_LBFGS": LD_LBFGS,
-        "LD_SLSQP": LD_SLSQP,
-        "LN_COBYLA": LN_COBYLA,
-        "LN_BOBYQA": LN_BOBYQA
+    algorithms = {}
+
+    gradient_based = {
+        "LD_MMA": LD_MMA,  # Method of moving asymptotes
+        "LD_LBFGS": LD_LBFGS,  # Low-storage BFGS
+        "LD_AUGLAG": LD_AUGLAG,  # Augmented lagrangian algorithm
+        "LD_SLSQP": LD_SLSQP,  # Sequential quadratic programming algorithm
+        "LD_TNEWTON": LD_TNEWTON,  # Preconditioned truncated Newton
     }
+
+    derivative_free = {
+        "LN_BOBYQA": LN_BOBYQA,  # BOBYQA
+        "LN_COBYLA": LN_COBYLA,  # Constrained optimization by linear approx
+        "LN_SBPLX": LN_SBPLX,  # Tom Rowan's "Subplex" algorithm
+    }
+
+    algorithms.update(derivative_free)
+    algorithms.update(gradient_based)
+
     return algorithms
 
 
 def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, stopval):
     """
-    Wrapper around a typical NLOpt solver routine.
+    Wrapper around a typical nlopt solver routine.
     """
     solver = opt(nlopt_algorithm(algorithm), dims)
 
