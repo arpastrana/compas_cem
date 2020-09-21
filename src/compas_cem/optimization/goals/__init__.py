@@ -32,6 +32,7 @@ from .goal import *
 from .point import *
 from .plane import *
 from .line import *
+from .force import *
 from .length import *
 
 import compas

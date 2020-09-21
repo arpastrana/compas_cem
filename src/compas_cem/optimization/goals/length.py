@@ -1,5 +1,3 @@
-from compas.geometry import closest_point_on_plane
-
 from compas_cem.optimization.goals import Goal
 
 
@@ -9,8 +7,9 @@ __all__ = [
 
 
 class DeviationEdgeLengthGoal(Goal):
-    def __init__(self, node=None, length=None):
-        super(DeviationEdgeLengthGoal, self).__init__(node, length)
+    def __init__(self, edge=None, length=None):
+        # TODO: needs different serialization mechanism
+        super(DeviationEdgeLengthGoal, self).__init__(edge, length)
 
     def target_geometry(self):
         """
