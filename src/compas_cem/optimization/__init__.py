@@ -57,7 +57,7 @@ from __future__ import print_function
 
 # from .<module> import *
 from ._serialization import *
-from .constraint import *
+from .constraints import *
 from .goals import *
 from .proxy import *
 
