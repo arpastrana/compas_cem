@@ -5,14 +5,16 @@ from compas_cem.optimization import Serializable
 
 
 __all__ = [
-    "RootNodeConstraint"
+    "RootNodeConstraintX",
+    "RootNodeConstraintY",
+    "RootNodeConstraintZ"
 ]
 
 # ------------------------------------------------------------------------------
 # Base Node Constraint
 # ------------------------------------------------------------------------------
 
-class BaseNodeConstraint(Serializable):
+class NodeConstraint(Serializable):
     def __init__(self, key, bound_low, bound_up):
         self._key = key
         self._bound_up = bound_up
@@ -40,6 +42,11 @@ class BaseNodeConstraint(Serializable):
         """
         return self.start_value(form) + fabs(self._bound_up)
 
+    def attr_name(self):
+        """
+        """
+        return self._attr_name
+
 # ------------------------------------------------------------------------------
 # Data
 # ------------------------------------------------------------------------------
@@ -66,6 +73,8 @@ class BaseNodeConstraint(Serializable):
         the JSON serialization format, which only allows for dict keys that are strings.
         """
 
+        # TODO: Check serialization mechanism.
+
         data = {}
 
         data["key"] = repr(self._key)
@@ -86,32 +95,126 @@ class BaseNodeConstraint(Serializable):
         data : ``dict``
             A data dictionary.
         """
-        self._key = tuple(literal_eval(data["key"]))
+        self._key = int(data["key"])
         self._bound_up = float(data["bound_up"])
         self._bound_low = float(data["bound_low"])
         self._attr_name = str(data["attr_name"])
 
 # ------------------------------------------------------------------------------
-# Trail Edge Constraint
+# Root Node Constraint on X
 # ------------------------------------------------------------------------------
 
-class RootNodeConstraint(NodeConstraint):
+class RootNodeConstraintX(NodeConstraint):
     def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(TrailEdgeConstraint, self).__init__(key, bound_low, bound_up)
+        super(RootNodeConstraintX, self).__init__(key, bound_low, bound_up)
         self._attr_name = "x"
 
 # ------------------------------------------------------------------------------
-# Deviation Edge Constraint
+# Root Node Constraint on Y
 # ------------------------------------------------------------------------------
 
-class DeviationEdgeConstraint(EdgeConstraint):
+class RootNodeConstraintY(NodeConstraint):
     def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(DeviationEdgeConstraint, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "force"
+        super(RootNodeConstraintY, self).__init__(key, bound_low, bound_up)
+        self._attr_name = "y"
 
 # ------------------------------------------------------------------------------
-# Main
+# Root Node Constraint on Z
 # ------------------------------------------------------------------------------
+
+class RootNodeConstraintZ(NodeConstraint):
+    def __init__(self, key=None, bound_low=None, bound_up=None):
+        super(RootNodeConstraintZ, self).__init__(key, bound_low, bound_up)
+        self._attr_name = "z"
+
 
 if __name__ == "__main__":
-    pass
+
+    from time import time
+
+    from compas.geometry import Point
+
+    from compas_cem.diagrams import FormDiagram
+    
+    from compas_cem.elements import Node
+    from compas_cem.elements import TrailEdge
+    from compas_cem.elements import DeviationEdge
+    
+    from compas_cem.loads import NodeLoad
+    
+    from compas_cem.supports import NodeSupport
+    
+    from compas_cem.optimization import Optimizer
+    from compas_cem.optimization import DeviationEdgeConstraint
+    from compas_cem.optimization import TrailEdgeConstraint
+    
+    from compas_cem.optimization import RootNodeConstraintY
+    
+    from compas_cem.optimization import PointGoal
+    
+    from compas_cem.equilibrium import force_equilibrium
+    
+    from compas_cem.plotters import FormPlotter
+
+
+    # create a form diagram
+    form = FormDiagram()
+
+    # add nodes
+    form.add_node(Node(0, [0.0, 0.0, 0.0]))
+    form.add_node(Node(1, [1.0, 0.0, 0.0]))
+    form.add_node(Node(2, [2.0, 0.0, 0.0]))
+    form.add_node(Node(3, [3.0, 0.0, 0.0]))
+
+    # add edges with negative values for a compression-only structure
+    form.add_edge(TrailEdge(0, 1, length=-1.0))
+    form.add_edge(DeviationEdge(1, 2, force=-1.0))
+    form.add_edge(TrailEdge(2, 3, length=-1.0))
+
+    # add supports
+    form.add_support(NodeSupport(0))
+    form.add_support(NodeSupport(3))
+
+    # add loads
+    form.add_load(NodeLoad(1, [0.0, -1.0, 0.0]))
+    form.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
+
+    # calculate equilibrium
+    force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
+
+    # optimization
+    optimizer = Optimizer()
+
+    optimizer.add_constraint(RootNodeConstraintY(1, 1.0, 1.0))
+    optimizer.add_constraint(DeviationEdgeConstraint((1, 2), 1.0, 1.0))
+    optimizer.add_constraint(TrailEdgeConstraint((2, 3), 1.0, 1.0))
+    
+    point_a = Point(1.0, -0.5, 0.0)
+    optimizer.add_goal((PointGoal(1, point_a)))
+
+    point_b = Point(3.0, -0.707, 0.0)
+    optimizer.add_goal((PointGoal(3, point_b)))
+    
+    # optimization settings
+    start = time()
+    algo = "LD_LBFGS"  # LN_BOBYQA, LD_LBFGS, LD_MMA
+    iters = 100  # 100
+    stopval = 1e-6 # 1e-4
+    step_size = 1e-6  # 1e-4
+
+    # optimize
+    x_opt, l_opt = optimizer.solve_nlopt(form, algo, iters, step_size, stopval)
+
+    # print out results
+    print("Elapsed time: {}".format(time() - start))
+    print("Total error: {}".format(l_opt))
+
+    # plot
+    plotter = FormPlotter(form, figsize=(16, 9))
+
+    plotter.draw_nodes(radius=0.03, text="key-xyz")
+    plotter.draw_edges(text="force-length")
+    plotter.draw_loads(scale=-0.25)
+    plotter.draw_residuals(scale=0.10)
+    plotter.show()
+

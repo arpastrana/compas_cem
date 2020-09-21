@@ -123,4 +123,3 @@ if __name__ == "__main__":
     plotter.draw_loads(scale=-0.25)
     plotter.draw_residuals(scale=0.10)
     plotter.show()
-

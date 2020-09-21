@@ -123,7 +123,7 @@ class Optimizer():
     def solve_nlopt(self, form, algorithm, iters, step_size, stopval=None, verbose=False):
         """
         """
-        self.form = form  # TODO: this should not happen here!
+        self.form = form  # TODO: this should not happen here! Not silently!
 
         self.check_optimization_sanity()
 
@@ -160,6 +160,9 @@ class Optimizer():
 
     def optimization_parameters(self):
         """
+        Creates optimization paremeters array.
+        Only one entry in the array per constraint.
+        Takes care of keeping the ordering.
         """
         x = np.zeros(self.number_of_constraints())
 
@@ -171,6 +174,8 @@ class Optimizer():
 
     def optimization_bounds(self):
         """
+        Creates optimization bounds array.
+        Only one entry in the array per constraint.
         """
         bounds_low = np.zeros(self.number_of_constraints())
         bounds_up = np.zeros(self.number_of_constraints())
@@ -186,17 +191,60 @@ class Optimizer():
 # Updates
 # ------------------------------------------------------------------------------
 
+    def _update_form_root_nodes(self, x):
+        """
+        """
+        map_xyz_index = {
+            "x": 0,
+            "y": 1,
+            "z": 2
+        }
+
+        x = np.squeeze(x).tolist()
+        if not isinstance(x, list):
+            x = [x]
+
+        for index, ckey in self.index_constraint().items():
+
+            node = ckey
+            
+            # TODO: weak check, needs to be handled differently
+            if not isinstance(node, int):
+                continue
+
+            # TODO: this check should happen upon assembly, not at calculation?
+            if not self.form.is_node_root(node):
+                msg = "{} is not a root node. Assigned constraint is invalid!"
+                raise ValueError(msg.format(node))
+
+            # TODO: refactor to handle xyz more transparently
+            xyz = self.form.node_xyz(key=node)
+            constraint = self.constraints[ckey]
+            j = map_xyz_index[constraint.attr_name()]
+            xyz[j] = x[index]
+
+            self.form.node_xyz(key=node, xyz=xyz)  # form.node_xyz(node, y=x[])?
+
     def _update_form_edges(self, x):
         """
         """
+        # TODO: this is duplicated
         x = np.squeeze(x).tolist()
+        if not isinstance(x, list):
+            x = [x]
 
         for index, ckey in self.index_constraint().items():
+
+            # TODO: weak check, needs to be handled differently
+            if isinstance(ckey, int):
+                continue
+
             edge = ckey
             if self.form.is_trail_edge(edge):
                 name = "length"
             elif self.form.is_deviation_edge(edge):
-                name = "force"    
+                name = "force"   
+ 
             self.form.edge_attribute(key=edge, name=name, value=x[index])
 
     def _compute_error(self):
@@ -225,6 +273,7 @@ class Optimizer():
     def _optimize_form(self, parameters):
         """
         """
+        self._update_form_root_nodes(parameters)
         self._update_form_edges(parameters)
         self._update_form_equilibrium()
         return self._compute_error()
