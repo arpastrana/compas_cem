@@ -99,7 +99,9 @@ def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, stopval):
     solver.set_upper_bounds(bounds_up)
 
     solver.set_maxeval(iters)
-    solver.set_stopval(stopval)
+
+    if stopval is not None:
+        solver.set_stopval(stopval)
 
     solver.set_min_objective(f)
 
