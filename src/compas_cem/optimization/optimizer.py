@@ -120,7 +120,7 @@ class Optimizer():
 # Solver
 # ------------------------------------------------------------------------------
 
-    def solve_nlopt(self, form, algorithm, iters, stopval, step_size, verbose=False):
+    def solve_nlopt(self, form, algorithm, iters, step_size, stopval=None, verbose=False):
         """
         """
         self.form = form  # TODO: this should not happen here!
