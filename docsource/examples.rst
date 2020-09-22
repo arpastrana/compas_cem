@@ -1,9 +1,11 @@
+.. _examples:
+
 ********************************************************************************
 Examples
 ********************************************************************************
 
 If you are excited about using ``compas_cem``, these examples may help you to
-get going.
+get started.
 
 .. toctree::
    :maxdepth: 1

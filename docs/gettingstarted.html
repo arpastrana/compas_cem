@@ -82,11 +82,11 @@
 <h1 class="display-4 p-0 mb-5">Getting Started</h1>
 <div class="section" id="installation">
 <h2>Installation</h2>
-<p>The preferred way to install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> is to build it from source in only four simple steps.</p>
+<p>The preferred way to install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> is to build it from source in only five simple steps.</p>
 <div class="section" id="create-a-virtual-environment">
 <h3>1. Create a virtual environment</h3>
-<p>First, create a new <a class="reference external" href="https://www.continuum.io/">Anaconda</a> environment from your command line. The only
-requirements (until now) are <code class="docutils literal notranslate"><span class="pre">python</span></code>, <code class="docutils literal notranslate"><span class="pre">compas</span></code>, and <code class="docutils literal notranslate"><span class="pre">rtree</span></code>.</p>
+<p>First, create and activate a new <a class="reference external" href="https://www.continuum.io/">Anaconda</a> environment from your command line.
+The only dependencies are <code class="docutils literal notranslate"><span class="pre">`python</span></code>, <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code>, and <code class="docutils literal notranslate"><span class="pre">rtree</span></code>.</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>conda create -n cem <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 <span class="nv">COMPAS</span><span class="o">=</span><span class="m">0</span>.16.2 <span class="nv">rtree</span><span class="o">=</span><span class="m">0</span>.9.4
 conda activate cem
 </code></pre></div>
@@ -94,7 +94,8 @@ conda activate cem
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Make sure you install <code class="docutils literal notranslate"><span class="pre">python</span></code> version <code class="docutils literal notranslate"><span class="pre">3.7</span></code>, <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> version
-<code class="docutils literal notranslate"><span class="pre">0.16.4</span></code>, and <code class="docutils literal notranslate"><span class="pre">rtree</span></code> version <code class="docutils literal notranslate"><span class="pre">0.9.4</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">0.16.4</span></code>, and <code class="docutils literal notranslate"><span class="pre">rtree</span></code> version <code class="docutils literal notranslate"><span class="pre">0.9.4</span></code>. The name of the new environment
+is <code class="docutils literal notranslate"><span class="pre">cem</span></code>.</p>
 </div>
 </div>
 <div class="section" id="get-the-compas-cem-repo">
@@ -109,7 +110,8 @@ git clone https://github.com/arpastrana/compas_cem.git
 </div>
 <div class="section" id="install-compas-cem-from-source">
 <h3>3. Install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> from source</h3>
-<p>Next, Move into the the repository’s folder (the one you’ve just cloned) and install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> using <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<p>Next, move into the the repository’s folder (the one we’ve just cloned) and
+install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> as an editable package via <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><code><span></span><span class="nb">cd</span> compas_cem
 pip install -e .
 </code></pre></div>
@@ -124,34 +126,45 @@ pip install -e .
 <p>If no errors show up, celebrate 🎉! You have a working installation of
 <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>.</p>
 </div>
+<div class="section" id="optional-dependencies">
+<h3>5. Optional Dependencies</h3>
+<p>As a CAD-agnostic framework, <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> has developed <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code>, a
+standalone package to display 3d geometry from the command line. This is pretty
+helpful when you want to orbit and zoom around a form-found model without
+resorting to a full-blown CAD software like <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>.</p>
+<p>Some of the examples presented depend on <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code> to display the
+resulting form-found structure. However, the viewers package <strong>is entirely
+optional</strong>, and is not required for <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> internals to operate.</p>
+<p>If you are interested to, please follow the installation instructions provided
+by the <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code> developer in this <a class="reference external" href="https://github.com/compas-dev/compas_viewers/">repo</a>.</p>
 </div>
-<div class="section" id="linking-compas-cem-to-rhino">
-<h2>Linking <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to Rhino</h2>
-<p>As with any other <strong>COMPAS</strong> runs independently from any CAD platform. However,
-there will be times when modeling a complex structure is easier and more natural
-to do with a few mouse-clicks instead of a hundred lines of code.</p>
-<p>Therefore, the <strong>COMPAS</strong> framework allows you to link <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to
-<a class="reference external" href="https://www.rhino3d.com/">Rhino</a> with a few lines of code, so that you can access (almost) all the
-package functionality inside.</p>
-<p>To link <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to Rhino, follow the next three steps in your command line:</p>
+</div>
+<div class="section" id="linking-compas-cem-to-rhino-and-grasshopper">
+<h2>Linking <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to Rhino and Grasshopper</h2>
+<p>There will be times when modeling a complex structure is easier to do with a few
+mouse-clicks instead of a hundred lines of code. <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> enables connecting
+<code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to <a class="reference external" href="https://www.rhino3d.com/">Rhino</a> and <a class="reference external" href="https://www.grasshopper3d.com/">Grasshopper</a> to access (almost) all of its
+functionality from the inside.</p>
+<p>To create the link, follow the next three steps from the command line:</p>
 <div class="section" id="remove-any-leftovers">
 <h3>1. Remove any leftovers</h3>
-<p>In case you had older <strong>COMPAS</strong> versions linked to Rhino before.</p>
+<p>In case there was an older <strong>COMPAS</strong> version linked to Rhino.</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.uninstall
 </code></pre></div>
 </div>
 </div>
 <div class="section" id="link-compas-cem">
 <h3>2. Link <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code></h3>
-<p>Now, let’s link <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, <code class="docutils literal notranslate"><span class="pre">compas_rhino</span></code> and <code class="docutils literal notranslate"><span class="pre">compas_ghpython</span></code> to
-Rhino. If you were wondering, the last two come with a default <strong>COMPAS</strong> installation.</p>
+<p>Let’s connect <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, <code class="docutils literal notranslate"><span class="pre">compas_rhino</span></code> and <code class="docutils literal notranslate"><span class="pre">compas_ghpython</span></code> to
+Rhino. If you were wondering, the last two come with a default <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> installation.</p>
 <p>Type in your command line:</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.install -p compas_cem compas_rhino compas_ghpython
 </code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Make sure that you are in the <code class="docutils literal notranslate"><span class="pre">cem</span></code> anaconda environment while you do it.</p>
+<p>Make sure that you are in the <code class="docutils literal notranslate"><span class="pre">cem</span></code> anaconda environment we created
+earlier while you do this.</p>
 </div>
 </div>
 <div class="section" id="check-your-rhino-installation">
@@ -208,9 +221,10 @@ and <code class="docutils literal notranslate"><span class="pre">compas_cem</spa
 <li class="nav-item"><a class="nav-link reference internal" href="#get-the-compas-cem-repo">2. Get the <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> repo</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#install-compas-cem-from-source">3. Install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> from source</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#verify-your-installation">4. Verify your installation</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#optional-dependencies">5. Optional Dependencies</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="#linking-compas-cem-to-rhino">Linking <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to Rhino</a><ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="#linking-compas-cem-to-rhino-and-grasshopper">Linking <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to Rhino and Grasshopper</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#remove-any-leftovers">1. Remove any leftovers</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#link-compas-cem">2. Link <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code></a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#check-your-rhino-installation">3. Check your Rhino installation</a></li>

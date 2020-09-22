@@ -4,20 +4,23 @@ Getting Started
 
 .. _Anaconda: https://www.continuum.io/
 .. _Rhino: https://www.rhino3d.com/
+.. _Grasshopper: https://www.grasshopper3d.com/
+.. _repo: https://github.com/compas-dev/compas_viewers/
+
 
 .. highlight:: bash
 
 Installation
 ============
 
-The preferred way to install ``compas_cem`` is to build it from source in only four simple steps.
+The preferred way to install ``compas_cem`` is to build it from source in only five simple steps.
 
 
 1. Create a virtual environment
 -------------------------------
 
-First, create a new `Anaconda`_ environment from your command line. The only
-requirements (until now) are ``python``, ``compas``, and ``rtree``.
+First, create and activate a new `Anaconda`_ environment from your command line.
+The only dependencies are ```python``, ``COMPAS``, and ``rtree``.
 
 ::
 
@@ -26,7 +29,8 @@ requirements (until now) are ``python``, ``compas``, and ``rtree``.
 
 .. note::
 	Make sure you install ``python`` version ``3.7``, ``COMPAS`` version
-	``0.16.4``, and ``rtree`` version ``0.9.4``.
+	``0.16.4``, and ``rtree`` version ``0.9.4``. The name of the new environment
+	is ``cem``.
 
 2. Get the ``compas_cem`` repo
 -------------------------------
@@ -44,7 +48,8 @@ wish to put it in a pre-existing ``~/code/`` folder:
 3. Install ``compas_cem`` from source
 -------------------------------------
 
-Next, Move into the the repository's folder (the one you've just cloned) and install ``compas_cem`` using ``pip``:
+Next, move into the the repository's folder (the one we've just cloned) and
+install ``compas_cem`` as an editable package via ``pip``:
 
 ::
 
@@ -65,23 +70,37 @@ If no errors show up, celebrate 🎉! You have a working installation of
 ``compas_cem``.
 
 
-Linking ``compas_cem`` to Rhino
-===============================
+5. Optional Dependencies
+------------------------
 
-As with any other **COMPAS** runs independently from any CAD platform. However,
-there will be times when modeling a complex structure is easier and more natural
-to do with a few mouse-clicks instead of a hundred lines of code.
+As a CAD-agnostic framework, ``COMPAS`` has developed ``compas_viewers``, a
+standalone package to display 3d geometry from the command line. This is pretty
+helpful when you want to orbit and zoom around a form-found model without
+resorting to a full-blown CAD software like `Rhino`_. 
 
-Therefore, the **COMPAS** framework allows you to link ``compas_cem`` to
-`Rhino`_ with a few lines of code, so that you can access (almost) all the 
-package functionality inside.
+Some of the examples presented depend on ``compas_viewers`` to display the
+resulting form-found structure. However, the viewers package **is entirely
+optional**, and is not required for ``compas_cem`` internals to operate.
 
-To link ``compas_cem`` to Rhino, follow the next three steps in your command line:
+If you are interested to, please follow the installation instructions provided
+by the ``compas_viewers`` developer in this `repo`_.
+
+
+Linking ``compas_cem`` to Rhino and Grasshopper
+===============================================
+
+There will be times when modeling a complex structure is easier to do with a few
+mouse-clicks instead of a hundred lines of code. ``COMPAS`` enables connecting
+``compas_cem`` to `Rhino`_ and `Grasshopper`_ to access (almost) all of its
+functionality from the inside.
+
+To create the link, follow the next three steps from the command line:
+
 
 1. Remove any leftovers
 ------------------------
 
-In case you had older **COMPAS** versions linked to Rhino before.
+In case there was an older **COMPAS** version linked to Rhino.
 
 ::
 
@@ -90,8 +109,8 @@ In case you had older **COMPAS** versions linked to Rhino before.
 2. Link ``compas_cem``
 ----------------------
 
-Now, let's link ``compas_cem``, ``compas_rhino`` and ``compas_ghpython`` to
-Rhino. If you were wondering, the last two come with a default **COMPAS** installation.
+Let's connect ``compas_cem``, ``compas_rhino`` and ``compas_ghpython`` to
+Rhino. If you were wondering, the last two come with a default ``COMPAS`` installation.
 
 Type in your command line:
 
@@ -101,7 +120,8 @@ Type in your command line:
     
 .. note::
 
-	Make sure that you are in the ``cem`` anaconda environment while you do it.
+	Make sure that you are in the ``cem`` anaconda environment we created
+	earlier while you do this.
 
 3. Check your Rhino installation
 ---------------------------------

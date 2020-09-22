@@ -17,11 +17,11 @@
   <link rel="stylesheet" type="text/css" href="../_static/css/compas-reference.css" />
 
   
-    <link rel="next" title="Long-Span Bridge 3d" href="04.html" />
+    <link rel="next" title="04. Best-fit Arch" href="04.html" />
   
   
   
-    <link rel="prev" title="Braced Tower 2d" href="02.html" />
+    <link rel="prev" title="02. Braced Tower in 2d" href="02.html" />
   
 
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -78,8 +78,8 @@
       <main class="col-12 col-md-9 col-xl-7 px-2 px-md-5 py-5 compas-content" role="main">
         
         
-        <div class="section" id="bridge-optimization-2d">
-<h1 class="display-4 p-0 mb-5">Bridge Optimization 2d</h1>
+        <div class="section" id="bridge-optimization-in-2d">
+<h1 class="display-4 p-0 mb-5">03. Bridge Optimization in 2d</h1>
 <div class="figure align-default">
 <img alt="../_images/simple_bridge.png" class="figure-img img-fluid" src="../_images/simple_bridge.png" />
 </div>
@@ -94,7 +94,6 @@
 <span class="kn">from</span> <span class="nn">compas_cem.loads</span> <span class="kn">import</span> <span class="n">NodeLoad</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">FormPlotter</span>
-<span class="kn">from</span> <span class="nn">compas_cem.viewers</span> <span class="kn">import</span> <span class="n">FormViewer</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">force_equilibrium</span>
 
@@ -227,27 +226,6 @@
     <span class="n">plotter</span><span class="o">.</span><span class="n">draw_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
     <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Viewer</span>
-<span class="c1"># ------------------------------------------------------------------------------</span>
-
-<span class="k">if</span> <span class="n">view</span><span class="p">:</span>
-    <span class="n">viewer</span> <span class="o">=</span> <span class="n">FormViewer</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">scale</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_residuals</span><span class="p">(</span><span class="n">scale</span><span class="o">=-</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-
-    <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">goal</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">goal</span><span class="p">,</span> <span class="n">PointGoal</span><span class="p">):</span>
-            <span class="k">continue</span>
-        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">goal</span><span class="o">.</span><span class="n">target_geometry</span><span class="p">())</span>
-
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-
-    <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
@@ -272,12 +250,11 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../index.html">Introduction</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../gettingstarted.html">Getting Started</a></li>
 <li class="nav-item active"><a class="nav-link reference internal" href="../examples.html">Examples</a><ul class="nav flex-column active">
-<li class="nav-item"><a class="nav-link reference internal" href="00.html">Create a FormDiagram from JSON</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="01.html">Simple Compression Arch</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="02.html">Braced Tower 2d</a></li>
-<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Bridge Optimization 2d</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="04.html">Long-Span Bridge 3d</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="05.html">Best-fit Arch</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="01.html">01. Simple Compression Structure</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="02.html">02. Braced Tower in 2d</a></li>
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">03. Bridge Optimization in 2d</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="04.html">04. Best-fit Arch</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="05.html">05. Long-Span Bridge in 3d (Grasshopper)</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../api.html">API Reference</a></li>
@@ -293,7 +270,7 @@
       <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
         
         <ul class="nav flex-column" id="compas-toc">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Bridge Optimization 2d</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">03. Bridge Optimization in 2d</a></li>
 </ul>
 
       </div>

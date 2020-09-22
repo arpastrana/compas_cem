@@ -93,17 +93,26 @@
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<dl class="simple">
-<dt>Currently supported algorithms are:</dt><dd><ul class="simple">
+<p>Only the following local optimization algorithms are supported:</p>
+<p>Gradient-based:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>LD_MMA</p></li>
 <li><p>LD_LBFGS</p></li>
+<li><p>LD_AUGLAG</p></li>
 <li><p>LD_SLSQP</p></li>
-<li><p>LN_COBYLA</p></li>
-<li><p>LN_BOBYQA</p></li>
+<li><p>LD_TNEWTON</p></li>
 </ul>
-</dd>
-</dl>
-<p>For further information, please refer to nlopt’s documentation.</p>
+</div></blockquote>
+<p>Derivative-free:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>LN_BOBYQA</p></li>
+<li><p>LN_COBYLA</p></li>
+<li><p>LN_SBPLX</p></li>
+</ul>
+</div></blockquote>
+<p>Refer to nlopt’s docs for more details on their theoretical underpinnings.</p>
 </dd></dl>
 
 </div>

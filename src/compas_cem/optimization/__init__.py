@@ -14,6 +14,7 @@ Optimization
 
     Optimizer
     optimizer_solve_nlopt_proxy
+    solve_nlopt_proxy
 
 Goals
 =====

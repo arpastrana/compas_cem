@@ -17,11 +17,11 @@
   <link rel="stylesheet" type="text/css" href="../_static/css/compas-reference.css" />
 
   
-    <link rel="next" title="Best-fit Arch" href="05.html" />
+    <link rel="next" title="05. Long-Span Bridge in 3d (Grasshopper)" href="05.html" />
   
   
   
-    <link rel="prev" title="Bridge Optimization 2d" href="03.html" />
+    <link rel="prev" title="03. Bridge Optimization in 2d" href="03.html" />
   
 
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -78,71 +78,166 @@
       <main class="col-12 col-md-9 col-xl-7 px-2 px-md-5 py-5 compas-content" role="main">
         
         
-        <div class="section" id="long-span-bridge-3d">
-<h1 class="display-4 p-0 mb-5">Long-Span Bridge 3d</h1>
+        <div class="section" id="best-fit-arch">
+<h1 class="display-4 p-0 mb-5">04. Best-fit Arch</h1>
 <div class="figure align-default">
-<img alt="../_images/front_cover.png" class="figure-img img-fluid" src="../_images/front_cover.png" />
+<img alt="../_images/best_fit_arch.png" class="figure-img img-fluid" src="../_images/best_fit_arch.png" />
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code> for visualization.</p>
 </div>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">fabs</span>
+<span class="kn">from</span> <span class="nn">trimesh</span> <span class="kn">import</span> <span class="n">Trimesh</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem</span> <span class="kn">import</span> <span class="n">JSON_DATA</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">FormDiagram</span>
+
+<span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">force_equilibrium</span>
+
+<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">Optimizer</span>
+<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">PointGoal</span>
+<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">TrimeshGoal</span>
+<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">TrailEdgeConstraint</span>
+<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">DeviationEdgeConstraint</span>
+
+<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">FormPlotter</span>
 <span class="kn">from</span> <span class="nn">compas_cem.viewers</span> <span class="kn">import</span> <span class="n">FormViewer</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">Mesh</span>
+<span class="kn">from</span> <span class="nn">compas.datastructures</span> <span class="kn">import</span> <span class="n">network_transformed</span>
+
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Frame</span>
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Plane</span>
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Transformation</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">centroid_points</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Data</span>
 <span class="c1">#-------------------------------------------------------------------------------</span>
 
-<span class="n">IN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JSON_DATA</span><span class="p">,</span> <span class="s2">&quot;w2_cem_3d_bridge_rhino.json&quot;</span><span class="p">))</span>
+<span class="n">IN_MESH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JSON_DATA</span><span class="p">,</span> <span class="s2">&quot;lightvault.json&quot;</span><span class="p">))</span>
+<span class="n">IN_ARCH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JSON_DATA</span><span class="p">,</span> <span class="s2">&quot;arch_optimized.json&quot;</span><span class="p">))</span>
+<span class="n">OUT_ARCH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JSON_DATA</span><span class="p">,</span> <span class="s2">&quot;arch_optimized.json&quot;</span><span class="p">))</span>
 
+<span class="n">optimize</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">plot</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">view</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">export</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Target Mesh</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">IN_MESH</span><span class="p">)</span>
+
+<span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">to_vertices_and_faces</span><span class="p">()</span>        
+<span class="n">vertices</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">faces</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">trimesh</span> <span class="o">=</span> <span class="n">Trimesh</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="n">faces</span><span class="p">)</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Form Diagram</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<span class="n">form</span> <span class="o">=</span> <span class="n">FormDiagram</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>
+<span class="n">form</span> <span class="o">=</span> <span class="n">FormDiagram</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">IN_ARCH</span><span class="p">)</span>
+<span class="n">force_equilibrium</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Relocate form</span>
+<span class="c1"># Initialize optimizer</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<span class="n">base_f</span> <span class="o">=</span> <span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">()</span>
-<span class="n">base_f</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">centroid_points</span><span class="p">([</span><span class="n">form</span><span class="o">.</span><span class="n">node_xyz</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame_to_frame</span><span class="p">(</span><span class="n">base_f</span><span class="p">,</span> <span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">())</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">()</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Define goals / Targets</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
 
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">node_xyz</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-    <span class="n">xyz</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
-    <span class="n">form</span><span class="o">.</span><span class="n">node_xyz</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">add_goal</span><span class="p">(</span><span class="n">TrimeshGoal</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">trimesh</span><span class="p">))</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Prepare keys</span>
+<span class="c1"># Define optimization parameters / constraints</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<span class="n">ekeys</span> <span class="o">=</span> <span class="p">[</span><span class="n">edge</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="n">fabs</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">edge_force</span><span class="p">(</span><span class="n">edge</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="n">nkeys</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">ekeys</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">edge</span><span class="p">]</span>
+<span class="n">bound_t</span> <span class="o">=</span> <span class="mf">0.025</span>
+<span class="n">bound_d</span> <span class="o">=</span> <span class="mf">0.07</span>
+
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">trail_edges</span><span class="p">():</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">TrailEdgeConstraint</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">bound_t</span><span class="p">,</span> <span class="n">bound_t</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">deviation_edges</span><span class="p">():</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">DeviationEdgeConstraint</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">bound_d</span><span class="p">,</span> <span class="n">bound_d</span><span class="p">))</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Optimization</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="n">optimize</span><span class="p">:</span>
+    <span class="c1"># record starting time</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+    <span class="c1"># optimization constants</span>
+    <span class="n">opt_algorithm</span> <span class="o">=</span> <span class="s2">&quot;LD_LBFGS&quot;</span>  <span class="c1"># LN_BOBYQA / LD_LBFGS</span>
+    <span class="n">iters</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># 100</span>
+    <span class="n">stopval</span> <span class="o">=</span> <span class="mf">1e-4</span>  <span class="c1"># 1e-4</span>
+    <span class="n">step_size</span> <span class="o">=</span> <span class="mf">1e-6</span>  <span class="c1"># 1e-4</span>
+
+    <span class="c1"># optimize</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimizing&quot;</span><span class="p">)</span>
+    <span class="n">x_opt</span><span class="p">,</span> <span class="n">l_opt</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">solve_nlopt</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">opt_algorithm</span><span class="p">,</span> <span class="n">iters</span><span class="p">,</span> <span class="n">stopval</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
+
+    <span class="c1"># print out results</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time: </span><span class="si">{}</span><span class="s2"> seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">),</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l_opt</span><span class="p">))</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Export</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="n">export</span><span class="p">:</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">OUT_ARCH</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exported json file to: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">OUT_ARCH</span><span class="p">))</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Plotter</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">Transformation</span><span class="o">.</span><span class="n">from_frame_to_frame</span><span class="p">(</span><span class="n">Frame</span><span class="o">.</span><span class="n">worldYZ</span><span class="p">(),</span> <span class="n">Frame</span><span class="o">.</span><span class="n">worldXY</span><span class="p">())</span>
+    <span class="n">form_transformed</span> <span class="o">=</span> <span class="n">network_transformed</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+    <span class="n">plotter</span> <span class="o">=</span> <span class="n">FormPlotter</span><span class="p">(</span><span class="n">form_transformed</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;key&quot;</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;attr&quot;</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_loads</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">plotter</span><span class="o">.</span><span class="n">draw_residuals</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Viewer</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <span class="k">if</span> <span class="n">view</span><span class="p">:</span>
-
     <span class="n">viewer</span> <span class="o">=</span> <span class="n">FormViewer</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="n">nkeys</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="n">ekeys</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_residuals</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="n">nkeys</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">viewer</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">add_nodes</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">add_loads</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">add_residuals</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">goal</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">goals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">goal</span><span class="p">,</span> <span class="n">PointGoal</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">goal</span><span class="o">.</span><span class="n">target_geometry</span><span class="p">())</span>
+
+    <span class="n">viewer</span><span class="o">.</span><span class="n">add_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">viewer</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">edges_width</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">faces_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
@@ -169,12 +264,11 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../index.html">Introduction</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../gettingstarted.html">Getting Started</a></li>
 <li class="nav-item active"><a class="nav-link reference internal" href="../examples.html">Examples</a><ul class="nav flex-column active">
-<li class="nav-item"><a class="nav-link reference internal" href="00.html">Create a FormDiagram from JSON</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="01.html">Simple Compression Arch</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="02.html">Braced Tower 2d</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="03.html">Bridge Optimization 2d</a></li>
-<li class="nav-item active"><a class="nav-link active current reference internal" href="#">Long-Span Bridge 3d</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="05.html">Best-fit Arch</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="01.html">01. Simple Compression Structure</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="02.html">02. Braced Tower in 2d</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="03.html">03. Bridge Optimization in 2d</a></li>
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">04. Best-fit Arch</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="05.html">05. Long-Span Bridge in 3d (Grasshopper)</a></li>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../api.html">API Reference</a></li>
@@ -190,7 +284,7 @@
       <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
         
         <ul class="nav flex-column" id="compas-toc">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Long-Span Bridge 3d</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">04. Best-fit Arch</a></li>
 </ul>
 
       </div>

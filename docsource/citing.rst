@@ -7,8 +7,14 @@ If you use :mod:`compas_cem` for a project or research, please refer to the GitH
 .. code-block:: latex
 
     @misc{compas_cem,
-        title  = {{compas_cem}: A COMPAS-flavored combinatorial equilibrium modeling.},
-        author = {Rafael Pastrana},
-        note   = {https://github.com/arpastrana/compas_cem},
-        year   = {2020},
+        title={{COMPAS~CEM}: A COMPAS-flavored combinatorial equilibrium
+        modeling},
+        author={
+            Pastrana, Rafael and
+            Ohlbrock, Patrick Ole and 
+            D'Acunto, Pierluigi and
+            Parascho, Stefana
+            },
+        url={https://github.com/arpastrana/compas_cem},
+        year={2020}
     }

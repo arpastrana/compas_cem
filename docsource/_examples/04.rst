@@ -1,9 +1,12 @@
 ================================================================================
-Long-Span Bridge 3d
+04. Best-fit Arch
 ================================================================================
 
-.. figure:: ../_images/front_cover.png
+.. figure:: ../_images/best_fit_arch.png
     :figclass: figure
     :class: figure-img img-fluid
 
-.. literalinclude:: ../../examples/04_bridge_letten.py
+.. note::
+	Requires ``compas_viewers`` for visualization.
+
+.. literalinclude:: ../../examples/05_arch_on_mesh.py

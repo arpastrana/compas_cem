@@ -9,7 +9,6 @@ from compas_cem.diagrams import FormDiagram
 from compas_cem.loads import NodeLoad
 
 from compas_cem.plotters import FormPlotter
-from compas_cem.viewers import FormViewer
 
 from compas_cem.equilibrium import force_equilibrium
 
@@ -142,24 +141,3 @@ if plot:
     plotter.draw_points(points)
 
     plotter.show()
-
-# ------------------------------------------------------------------------------
-# Viewer
-# ------------------------------------------------------------------------------
-
-if view:
-    viewer = FormViewer(form)
-    viewer.add_nodes(size=20)
-    viewer.add_edges(width=(1, 5))
-    viewer.add_loads(scale=-2, width=15)
-    viewer.add_residuals(scale=-0.25, width=15)
-
-    points = []
-    for key, goal in optimizer.goals.items():
-        if not isinstance(goal, PointGoal):
-            continue
-        points.append(goal.target_geometry())
-
-    viewer.add_points(points, size=30)
-
-    viewer.show()
