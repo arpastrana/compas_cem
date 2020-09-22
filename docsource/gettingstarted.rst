@@ -20,7 +20,7 @@ The preferred way to install ``compas_cem`` is to build it from source in only f
 -------------------------------
 
 First, create and activate a new `Anaconda`_ environment from your command line.
-The only dependencies are ```python``, ``COMPAS``, and ``rtree``.
+The only dependencies are ``python``, ``COMPAS``, and ``rtree``.
 
 ::
 
