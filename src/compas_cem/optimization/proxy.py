@@ -12,7 +12,7 @@ def optimizer_solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopv
     """
     A wrapper around ``Optimizer.solve_nlopt`` to be used with an ``rpc.Proxy``.
     """
-    return self_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize)
+    return solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize)
 
 
 def solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize):
@@ -31,9 +31,9 @@ def solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsi
     for constraint in constraints:
         optimizer.add_constraint(constraint)
 
-    optimizer.solve_nlopt(form, algorithm, kmax, stopval, stepsize)
+    x_opt, l_opt = optimizer.solve_nlopt(form, algorithm, kmax, stepsize, stopval)
 
-    return form
+    return form, x_opt, l_opt
 
 # ------------------------------------------------------------------------------
 # Main

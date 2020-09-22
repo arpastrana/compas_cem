@@ -77,7 +77,7 @@ class NodeConstraint(Serializable):
 
         data = {}
 
-        data["key"] = repr(self._key)
+        data["key"] = self._key
         data["bound_up"] = self._bound_up
         data["bound_low"] = self._bound_low
         data["attr_name"] = self._attr_name
@@ -205,7 +205,6 @@ if __name__ == "__main__":
     # optimize
     x_opt, l_opt = optimizer.solve_nlopt(form, algo, iters, step_size, stopval)
 
-    # print out results
     print("Elapsed time: {}".format(time() - start))
     print("Total error: {}".format(l_opt))
 
