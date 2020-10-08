@@ -94,15 +94,15 @@ conda activate cem
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Make sure you install <code class="docutils literal notranslate"><span class="pre">python</span></code> version <code class="docutils literal notranslate"><span class="pre">3.7</span></code>, <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> version
-<code class="docutils literal notranslate"><span class="pre">0.16.4</span></code>, and <code class="docutils literal notranslate"><span class="pre">rtree</span></code> version <code class="docutils literal notranslate"><span class="pre">0.9.4</span></code>. The name of the new environment
-is <code class="docutils literal notranslate"><span class="pre">cem</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">0.16.4</span></code>, and <code class="docutils literal notranslate"><span class="pre">rtree</span></code> version <code class="docutils literal notranslate"><span class="pre">0.9.4</span></code>. In this case, the name of the
+new environment will be <code class="docutils literal notranslate"><span class="pre">cem</span></code> but feel free the change it to your liking.</p>
 </div>
 </div>
-<div class="section" id="get-the-compas-cem-repo">
-<h3>2. Get the <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> repo</h3>
-<p>We need to fetch <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> from this repository. Go to the folder where you
-want to store it and run the following. For example, if you are a macOS user and
-wish to put it in a pre-existing <code class="docutils literal notranslate"><span class="pre">~/code/</span></code> folder:</p>
+<div class="section" id="clone-the-compas-cem-repo">
+<h3>2. Clone the <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> repo</h3>
+<p>We need to fetch <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> from <a class="reference external" href="https://github.com/arpastrana/compas_cem/">Github</a>. Move to the folder
+where you want to store it clone the source repository. For example, if you are
+a macOS user and wish to put it in a pre-existing <code class="docutils literal notranslate"><span class="pre">~/code/</span></code> folder:</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><code><span></span><span class="nb">cd</span> ~/code/
 git clone https://github.com/arpastrana/compas_cem.git
 </code></pre></div>
@@ -119,7 +119,8 @@ pip install -e .
 </div>
 <div class="section" id="verify-your-installation">
 <h3>4. Verify your installation</h3>
-<p>To double-check that everything is up and running, still in your command line interface, type the following and hit enter:</p>
+<p>To double-check that everything is up and running, type the following in the
+command line and hit enter:</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -c <span class="s2">&quot;import compas_cem&quot;</span>
 </code></pre></div>
 </div>
@@ -132,11 +133,10 @@ pip install -e .
 standalone package to display 3d geometry from the command line. This is pretty
 helpful when you want to orbit and zoom around a form-found model without
 resorting to a full-blown CAD software like <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>.</p>
-<p>Some of the examples presented depend on <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code> to display the
-resulting form-found structure. However, the viewers package <strong>is entirely
+<p>Some of the examples presented here depend on <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code> to display a form-found structure. However, the viewers package <strong>is entirely
 optional</strong>, and is not required for <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> internals to operate.</p>
-<p>If you are interested to, please follow the installation instructions provided
-by the <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code> developer in this <a class="reference external" href="https://github.com/compas-dev/compas_viewers/">repo</a>.</p>
+<p>If you are still interested in installing <code class="docutils literal notranslate"><span class="pre">compas_viewers</span></code>, please follow the
+instructions provided in this <a class="reference external" href="https://github.com/compas-dev/compas_viewers/">repo</a>.</p>
 </div>
 </div>
 <div class="section" id="linking-compas-cem-to-rhino-and-grasshopper">
@@ -145,7 +145,12 @@ by the <code class="docutils literal notranslate"><span class="pre">compas_viewe
 mouse-clicks instead of a hundred lines of code. <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> enables connecting
 <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> to <a class="reference external" href="https://www.rhino3d.com/">Rhino</a> and <a class="reference external" href="https://www.grasshopper3d.com/">Grasshopper</a> to access (almost) all of its
 functionality from the inside.</p>
-<p>To create the link, follow the next three steps from the command line:</p>
+<p>To link it, follow the next three steps from the command line:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that we are in the <code class="docutils literal notranslate"><span class="pre">cem</span></code> anaconda environment we created
+earlier while we do this.</p>
+</div>
 <div class="section" id="remove-any-leftovers">
 <h3>1. Remove any leftovers</h3>
 <p>In case there was an older <strong>COMPAS</strong> version linked to Rhino.</p>
@@ -160,11 +165,6 @@ Rhino. If you were wondering, the last two come with a default <code class="docu
 <p>Type in your command line:</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.install -p compas_cem compas_rhino compas_ghpython
 </code></pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Make sure that you are in the <code class="docutils literal notranslate"><span class="pre">cem</span></code> anaconda environment we created
-earlier while you do this.</p>
 </div>
 </div>
 <div class="section" id="check-your-rhino-installation">
@@ -218,7 +218,7 @@ and <code class="docutils literal notranslate"><span class="pre">compas_cem</spa
 <li class="nav-item"><a class="nav-link reference internal" href="#">Getting Started</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#installation">Installation</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#create-a-virtual-environment">1. Create a virtual environment</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#get-the-compas-cem-repo">2. Get the <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> repo</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#clone-the-compas-cem-repo">2. Clone the <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> repo</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#install-compas-cem-from-source">3. Install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> from source</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#verify-your-installation">4. Verify your installation</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#optional-dependencies">5. Optional Dependencies</a></li>

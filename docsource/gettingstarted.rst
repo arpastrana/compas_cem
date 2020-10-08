@@ -6,6 +6,7 @@ Getting Started
 .. _Rhino: https://www.rhino3d.com/
 .. _Grasshopper: https://www.grasshopper3d.com/
 .. _repo: https://github.com/compas-dev/compas_viewers/
+.. _Github: https://github.com/arpastrana/compas_cem/
 
 
 .. highlight:: bash
@@ -29,15 +30,15 @@ The only dependencies are ``python``, ``COMPAS``, and ``rtree``.
 
 .. note::
 	Make sure you install ``python`` version ``3.7``, ``COMPAS`` version
-	``0.16.4``, and ``rtree`` version ``0.9.4``. The name of the new environment
-	is ``cem``.
+	``0.16.4``, and ``rtree`` version ``0.9.4``. In this case, the name of the
+	new environment will be ``cem`` but feel free the change it to your liking.
 
-2. Get the ``compas_cem`` repo
--------------------------------
+2. Clone the ``compas_cem`` repo
+--------------------------------
 
-We need to fetch ``compas_cem`` from this repository. Go to the folder where you
-want to store it and run the following. For example, if you are a macOS user and
-wish to put it in a pre-existing ``~/code/`` folder:
+We need to fetch ``compas_cem`` from `Github`_. Move to the folder
+where you want to store it clone the source repository. For example, if you are
+a macOS user and wish to put it in a pre-existing ``~/code/`` folder:
 
 ::
 
@@ -60,7 +61,8 @@ install ``compas_cem`` as an editable package via ``pip``:
 4. Verify your installation
 ----------------------------
 
-To double-check that everything is up and running, still in your command line interface, type the following and hit enter:
+To double-check that everything is up and running, type the following in the
+command line and hit enter:
 
 ::
 
@@ -78,12 +80,11 @@ standalone package to display 3d geometry from the command line. This is pretty
 helpful when you want to orbit and zoom around a form-found model without
 resorting to a full-blown CAD software like `Rhino`_. 
 
-Some of the examples presented depend on ``compas_viewers`` to display the
-resulting form-found structure. However, the viewers package **is entirely
+Some of the examples presented here depend on ``compas_viewers`` to display a form-found structure. However, the viewers package **is entirely
 optional**, and is not required for ``compas_cem`` internals to operate.
 
-If you are interested to, please follow the installation instructions provided
-by the ``compas_viewers`` developer in this `repo`_.
+If you are still interested in installing ``compas_viewers``, please follow the
+instructions provided in this `repo`_.
 
 
 Linking ``compas_cem`` to Rhino and Grasshopper
@@ -94,8 +95,12 @@ mouse-clicks instead of a hundred lines of code. ``COMPAS`` enables connecting
 ``compas_cem`` to `Rhino`_ and `Grasshopper`_ to access (almost) all of its
 functionality from the inside.
 
-To create the link, follow the next three steps from the command line:
+To link it, follow the next three steps from the command line:
 
+.. note::
+
+	Make sure that we are in the ``cem`` anaconda environment we created
+	earlier while we do this.
 
 1. Remove any leftovers
 ------------------------
@@ -117,11 +122,7 @@ Type in your command line:
 ::
 
     python -m compas_rhino.install -p compas_cem compas_rhino compas_ghpython
-    
-.. note::
 
-	Make sure that you are in the ``cem`` anaconda environment we created
-	earlier while you do this.
 
 3. Check your Rhino installation
 ---------------------------------
