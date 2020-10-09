@@ -3,7 +3,7 @@ from compas_rhino.geometry import RhinoPoint
 
 class Node(object):
     """
-    The node base class.
+    A node.
     """
     def __init__(self, key=None, xyz=None):
         self.key = key
@@ -23,14 +23,14 @@ class Node(object):
             Additional arguments.
         **kwargs : ``dict``
             Extra keyword arguments.
-        
+
         Returns
         -------
         node : ``Node``
             A node object.
         """
         return cls(xyz=point)
-    
+
     @classmethod
     def from_rhino_point(cls, rhino_point, *args, **kwargs):
         """
@@ -44,7 +44,7 @@ class Node(object):
             Additional arguments.
         **kwargs : ``dict``
             Extra keyword arguments.
-        
+
         Returns
         -------
         node : ``Node``
