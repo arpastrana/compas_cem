@@ -1,8 +1,11 @@
 from compas_cem.optimization.goals import Goal
 
+from compas.geometry import distance_point_point_sqrd
+
 
 __all__ = [
-    "TrailEdgeForceGoal"
+    "TrailEdgeForceGoal",
+    "NodeResidualGoal"
 ]
 
 
@@ -27,6 +30,23 @@ class TrailEdgeForceGoal(Goal):
         """
         diff = self.reference_geometry() - self.target_geometry()
         return diff * diff
+
+
+class NodeResidualGoal(Goal):
+    def __init__(self, node=None, residual_vector=None):
+        super(NodeResidualGoal, self).__init__(node, residual_vector)
+
+    def update(self, form):
+        """
+        """
+        self._ref_geo = form.node_residual(self.key())
+
+    def error(self):
+        """
+        """
+        a = self.target_geometry()
+        b = self.reference_geometry()
+        return distance_point_point_sqrd(a, b)
 
 
 if __name__ == "__main__":
@@ -106,6 +126,7 @@ if __name__ == "__main__":
     point_a = Point(0.0, 1.5, 0.0)
     optimizer.add_goal((PointGoal(3, point_a)))
     optimizer.add_goal(TrailEdgeForceGoal((1, 4), 0.0))
+    optimizer.add_goal(NodeResidualGoal(1, [0.0, 0.0, 0.0]))
     
     # optimization settings
     start = time()
@@ -125,7 +146,6 @@ if __name__ == "__main__":
 
     plotter.draw_nodes(radius=0.03, text="key-xyz")
     plotter.draw_loads(scale=-0.25)
-    plotter.draw_residuals(scale=0.10)
-
+    plotter.draw_residuals(scale=1.0)
     plotter.draw_edges(text="force")
-    plotter.show()
+    plotter.show() 
