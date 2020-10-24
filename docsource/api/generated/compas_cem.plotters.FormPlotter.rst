@@ -14,6 +14,11 @@ FormPlotter
 
     .. autosummary::
     
+        ~FormPlotter.edge_colors
+        ~FormPlotter.edge_state_colors
+        ~FormPlotter.float_precision
+        ~FormPlotter.form
+        ~FormPlotter.node_colors
 
     .. rubric:: Inherited Attributes
 

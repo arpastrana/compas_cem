@@ -83,15 +83,27 @@
 <dl class="py method">
 <dt id="compas_cem.plotters.FormPlotter.draw_edges">
 <code class="sig-prename descclassname">FormPlotter.</code><code class="sig-name descname">draw_edges</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span></dt>
-<dd><p>Draws the edges.</p>
+<dd><p>Draws the edges of a <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) – Additional plotter arguments</p></li>
-<li><p><strong>**kwargs</strong> (<code class="docutils literal notranslate"><span class="pre">dict</span></code>) – Additional plotter keyword arguments</p></li>
+<li><p><strong>keys</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">tuple</span></code>) – The keys of the edges to plot.</p></li>
+<li><p><strong>width</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">float</span></code>) – Width of the edges.</p></li>
+<li><p><strong>color</strong> (<code class="docutils literal notranslate"><span class="pre">color</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">color</span></code>) – Color of the edges in (r, g, b) format.</p></li>
+<li><p><strong>text</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>) – A dictionary of strings to render on the nodes.</p></li>
+<li><p><strong>textcolor</strong> (<code class="docutils literal notranslate"><span class="pre">color</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">color</span></code>) – Color for the text to be displayed on the nodes.</p></li>
+<li><p><strong>fontsize</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">int</span></code>) – Font size for the text to be displayed on the nodes.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>collection</strong> (<code class="docutils literal notranslate"><span class="pre">matplotlib.collection</span></code>) – A matplotlib point collection object.</p>
+</dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>When the parameters are passed as single value, this will be applied to
+all the nodes or edges in the <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code>. If instead, a dictionary
+that maps <code class="docutils literal notranslate"><span class="pre">{edge_key:</span> <span class="pre">attribute}</span></code> is supplied, specific values can be
+assigned individually.</p>
 </dd></dl>
 
 </div>

@@ -82,14 +82,52 @@
 <h1 class="display-4 p-0 mb-5">FormPlotter</h1>
 <dl class="py class">
 <dt id="compas_cem.plotters.FormPlotter">
-<em class="property">class </em><code class="sig-prename descclassname">compas_cem.plotters.</code><code class="sig-name descname">FormPlotter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span></dt>
-<dd><p class="rubric">Attributes</p>
+<em class="property">class </em><code class="sig-prename descclassname">compas_cem.plotters.</code><code class="sig-name descname">FormPlotter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">form_diagram</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span></dt>
+<dd><p>A plotter tailored to draw form-related matters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>form_diagram</strong> (<a class="reference internal" href="compas_cem.diagrams.FormDiagram.html#compas_cem.diagrams.FormDiagram" title="compas_cem.diagrams.FormDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.FormDiagram</span></code></a>) – The form diagram to plot.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl class="field-list simple">
+<dt class="field-odd">Include-source</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<p>import os
+from compas_cem import JSON_DATA
+from compas_cem.diagrams import FormDiagram
+from compas_cem.plotters import FormPlotter</p>
+<p>IN = os.path.abspath(os.path.join(JSON_DATA, “w1_cem_2d_bridge_rhino.json”))
+form = FormDiagram.from_json(IN)</p>
+<p>plotter = FormPlotter(form)
+plotter.draw_nodes(radius=0.30, text=”key”)
+plotter.draw_edges(text=”force”)
+plotter.draw_loads(scale=-2.0)
+plotter.draw_residuals(scale=-0.25)</p>
+<p>plotter.show()</p>
+<p class="rubric">Attributes</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">edge_colors</span></code></p></td>
+<td><p>The default colors to draw the edges of a form diagram.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">edge_state_colors</span></code></p></td>
+<td><p>The default colors to draw edges based on the forces acting on them.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float_precision</span></code></p></td>
+<td><p>The default decimal precision to render float values as text. precision: <code class="docutils literal notranslate"><span class="pre">str</span></code>     The float precision value. Defaults to <code class="docutils literal notranslate"><span class="pre">3f</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">form</span></code></p></td>
+<td><p>The form diagram to plot.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">node_colors</span></code></p></td>
+<td><p>The default colors to draw the nodes of a form diagram.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Inherited Attributes</p>
@@ -123,23 +161,23 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.plotters.FormPlotter.__init__.html#compas_cem.plotters.FormPlotter.__init__" title="compas_cem.plotters.FormPlotter.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(*args, **kwargs)</p></td>
-<td><p>A plotter tailored to draw form-related matters.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.plotters.FormPlotter.__init__.html#compas_cem.plotters.FormPlotter.__init__" title="compas_cem.plotters.FormPlotter.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(form_diagram, *args, **kwargs)</p></td>
+<td><p>Initialises a network plotter object</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.plotters.FormPlotter.draw_edges.html#compas_cem.plotters.FormPlotter.draw_edges" title="compas_cem.plotters.FormPlotter.draw_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_edges</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Draws the edges.</p></td>
+<td><p>Draws the edges of a <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.plotters.FormPlotter.draw_loads.html#compas_cem.plotters.FormPlotter.draw_loads" title="compas_cem.plotters.FormPlotter.draw_loads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_loads</span></code></a>([keys, scale, color, width, tol])</p></td>
-<td><p>Draws the nodal loads as scaled arrows.</p></td>
+<td><p>Draws the node loads in a <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code> as scaled arrows.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.plotters.FormPlotter.draw_nodes.html#compas_cem.plotters.FormPlotter.draw_nodes" title="compas_cem.plotters.FormPlotter.draw_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_nodes</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Draws the nodes.</p></td>
+<td><p>Draws the nodes of a <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.plotters.FormPlotter.draw_residuals.html#compas_cem.plotters.FormPlotter.draw_residuals" title="compas_cem.plotters.FormPlotter.draw_residuals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_residuals</span></code></a>([keys, scale, color, width, tol])</p></td>
-<td><p>Draws the node residual forces as scaled arrows.</p></td>
+<td><p>Draws the node residual forces in a <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code> as scaled arrows.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.plotters.FormPlotter.draw_segments.html#compas_cem.plotters.FormPlotter.draw_segments" title="compas_cem.plotters.FormPlotter.draw_segments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_segments</span></code></a>(segments[, color, width])</p></td>
-<td><p>Draws lines.</p></td>
+<td><p>Draws additional line segments on a <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code>.</p></td>
 </tr>
 </tbody>
 </table>

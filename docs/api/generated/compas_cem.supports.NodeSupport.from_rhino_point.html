@@ -83,7 +83,20 @@
 <dl class="py method">
 <dt id="compas_cem.supports.NodeSupport.from_rhino_point">
 <em class="property">classmethod </em><code class="sig-prename descclassname">NodeSupport.</code><code class="sig-name descname">from_rhino_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rhino_point</span></em><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
+<dd><p>Create a NodeSupport from a rhino point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>point</strong> (<code class="docutils literal notranslate"><span class="pre">Rhino.Geometry.Point3d</span></code>) – The xyz position where to apply a support.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>support</strong> (<code class="docutils literal notranslate"><span class="pre">NodeSupport</span></code>) – A support object.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The support will be assigned to a <code class="docutils literal notranslate"><span class="pre">FormDiagram</span></code> only if it has a node
+whose xyz coordinates matches defined by the <code class="docutils literal notranslate"><span class="pre">NodeSupport</span></code>.
+Otherwise, the support will not be assigned to the diagram.</p>
+</dd></dl>
 
 </div>
 

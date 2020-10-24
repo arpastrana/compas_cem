@@ -89,13 +89,13 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.Optimizer.html#compas_cem.optimization.Optimizer" title="compas_cem.optimization.Optimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Optimizer</span></code></a></p></td>
-<td><p></p></td>
+<td><p>An object that modifies a form diagram to accomplish geometric goals.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas_cem.optimization.optimizer_solve_nlopt_proxy.html#compas_cem.optimization.optimizer_solve_nlopt_proxy" title="compas_cem.optimization.optimizer_solve_nlopt_proxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimizer_solve_nlopt_proxy</span></code></a></p></td>
 <td><p>A wrapper around <code class="docutils literal notranslate"><span class="pre">Optimizer.solve_nlopt</span></code> to be used with an <code class="docutils literal notranslate"><span class="pre">rpc.Proxy</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.solve_nlopt_proxy.html#compas_cem.optimization.solve_nlopt_proxy" title="compas_cem.optimization.solve_nlopt_proxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve_nlopt_proxy</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Deprecated version of <code class="docutils literal notranslate"><span class="pre">optimizer_solve_nlopt_proxy</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -109,13 +109,19 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.PointGoal.html#compas_cem.optimization.PointGoal" title="compas_cem.optimization.PointGoal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PointGoal</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Pulls the xyz position of a node to a target point.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas_cem.optimization.PlaneGoal.html#compas_cem.optimization.PlaneGoal" title="compas_cem.optimization.PlaneGoal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaneGoal</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas_cem.optimization.LineGoal.html#compas_cem.optimization.LineGoal" title="compas_cem.optimization.LineGoal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LineGoal</span></code></a></p></td>
+<td><p>Pulls the xyz position of a node to a target line ray.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.TrimeshGoal.html#compas_cem.optimization.TrimeshGoal" title="compas_cem.optimization.TrimeshGoal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TrimeshGoal</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.PlaneGoal.html#compas_cem.optimization.PlaneGoal" title="compas_cem.optimization.PlaneGoal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaneGoal</span></code></a></p></td>
+<td><p>Pulls the xyz position of a node to a target plane.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/compas_cem.optimization.TrimeshGoal.html#compas_cem.optimization.TrimeshGoal" title="compas_cem.optimization.TrimeshGoal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TrimeshGoal</span></code></a></p></td>
+<td><p>Pulls the xyz position of a node to a target triangular mesh.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.NodeResidualGoal.html#compas_cem.optimization.NodeResidualGoal" title="compas_cem.optimization.NodeResidualGoal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeResidualGoal</span></code></a></p></td>
+<td><p>Makes the residual force at a node match a target residual vector.</p></td>
 </tr>
 </tbody>
 </table>
@@ -129,10 +135,10 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.TrailEdgeConstraint.html#compas_cem.optimization.TrailEdgeConstraint" title="compas_cem.optimization.TrailEdgeConstraint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TrailEdgeConstraint</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Registers the length of a trail edge as an optimization variable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas_cem.optimization.DeviationEdgeConstraint.html#compas_cem.optimization.DeviationEdgeConstraint" title="compas_cem.optimization.DeviationEdgeConstraint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviationEdgeConstraint</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Registers the force of a deviation edge as an optimization variable.</p></td>
 </tr>
 </tbody>
 </table>
