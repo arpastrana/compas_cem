@@ -22,24 +22,25 @@ class FormPlotter(NetworkPlotter):
 
     Example
     -------
-    
-    :include-source:
+    .. plot::
+        :include-source:
 
-    import os
-    from compas_cem import JSON_DATA
-    from compas_cem.diagrams import FormDiagram
-    from compas_cem.plotters import FormPlotter
+        import os
+        from compas_cem import JSON_DATA
+        from compas_cem.diagrams import FormDiagram
+        from compas_cem.plotters import FormPlotter
 
-    IN = os.path.abspath(os.path.join(JSON_DATA, "w1_cem_2d_bridge_rhino.json"))
-    form = FormDiagram.from_json(IN)
 
-    plotter = FormPlotter(form)
-    plotter.draw_nodes(radius=0.30, text="key")
-    plotter.draw_edges(text="force")
-    plotter.draw_loads(scale=-2.0)
-    plotter.draw_residuals(scale=-0.25)
+        IN = os.path.abspath(os.path.join(JSON_DATA, "w1_cem_2d_bridge_rhino.json"))
+        form = FormDiagram.from_json(IN)
 
-    plotter.show()
+        plotter = FormPlotter(form, figsize=(8, 4.5))
+        plotter.draw_nodes(radius=0.30, text="key")
+        plotter.draw_edges(text="force")
+        plotter.draw_loads(scale=-2.0)
+        plotter.draw_residuals(scale=-0.25)
+
+        plotter.show()
 
     """
 
@@ -123,6 +124,9 @@ class FormPlotter(NetworkPlotter):
     def float_precision(self):
         """
         The default decimal precision to render float values as text.
+
+        Returns
+        -------
         precision: ``str``
             The float precision value. Defaults to ``3f``.
         """
