@@ -9,6 +9,9 @@ __all__ = [
     
 
 class PointGoal(Goal):
+    """
+    Pulls the xyz position of a node to a target point.
+    """
     def __init__(self, node=None, point=None):
         super(PointGoal, self).__init__(node, point)
 

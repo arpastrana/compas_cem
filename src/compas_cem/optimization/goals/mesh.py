@@ -9,6 +9,9 @@ __all__ = [
 
 
 class TrimeshGoal(Goal):
+    """
+    Pulls the xyz position of a node to a target triangular mesh.
+    """
     def __init__(self, node=None, trimesh=None):
         super(TrimeshGoal, self).__init__(node, trimesh)
         self.target_point = None

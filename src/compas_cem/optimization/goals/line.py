@@ -10,6 +10,9 @@ __all__ = [
 
 
 class LineGoal(Goal):
+    """
+    Pulls the xyz position of a node to a target line ray.
+    """
     def __init__(self, node=None, line=None):
         super(LineGoal, self).__init__(node, line)
         self.target_point = None

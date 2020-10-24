@@ -10,6 +10,9 @@ __all__ = [
 
 
 class TrailEdgeForceGoal(Goal):
+    """
+    Make a trail edge reach a target force value.
+    """
     def __init__(self, edge=None, force=None):
         # TODO: needs different serialization mechanism
         super(TrailEdgeForceGoal, self).__init__(edge, force)
@@ -33,6 +36,9 @@ class TrailEdgeForceGoal(Goal):
 
 
 class NodeResidualGoal(Goal):
+    """
+    Makes the residual force at a node match a target residual vector.
+    """
     def __init__(self, node=None, residual_vector=None):
         super(NodeResidualGoal, self).__init__(node, residual_vector)
 

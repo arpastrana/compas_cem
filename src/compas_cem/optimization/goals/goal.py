@@ -44,7 +44,7 @@ class Goal(Serializable):
     @property
     def data(self):
         """
-        A data dictionary that represents a``Goal`` object.
+        A data dictionary that represents a ``Goal`` object.
 
         Returns
         -------

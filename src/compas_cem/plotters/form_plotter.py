@@ -12,41 +12,156 @@ from compas_plotters import NetworkPlotter
 
 
 class FormPlotter(NetworkPlotter):
-    def __init__(self, *args, **kwargs):
-        """
-        A plotter tailored to draw form-related matters.
-        """
-        super(FormPlotter, self).__init__(*args, **kwargs)
+    """
+    A plotter tailored to draw form-related matters.
+    
+    Parameters
+    ----------
+    form_diagram : :class:`compas_cem.diagrams.FormDiagram`
+        The form diagram to plot.
+
+    Example
+    -------
+    
+    :include-source:
+
+    import os
+    from compas_cem import JSON_DATA
+    from compas_cem.diagrams import FormDiagram
+    from compas_cem.plotters import FormPlotter
+
+    IN = os.path.abspath(os.path.join(JSON_DATA, "w1_cem_2d_bridge_rhino.json"))
+    form = FormDiagram.from_json(IN)
+
+    plotter = FormPlotter(form)
+    plotter.draw_nodes(radius=0.30, text="key")
+    plotter.draw_edges(text="force")
+    plotter.draw_loads(scale=-2.0)
+    plotter.draw_residuals(scale=-0.25)
+
+    plotter.show()
+
+    """
+
+    def __init__(self, form_diagram, *args, **kwargs):
+        super(FormPlotter, self).__init__(form_diagram, *args, **kwargs)
         
-        self.node_colors = {
+        self._node_colors = {
             "support": (0, 153, 0),  # green
             "root": (153, 102, 255),  # root
             "default": (150, 150, 150)  # gray
             }
 
-        self.edge_colors = {
+        self._edge_colors = {
             "trail": (255, 0, 255),
             "deviation": (0, 255, 0)
             }
 
-        self.edge_state_colors = {
+        self._edge_state_colors = {
             -1: (0, 0, 255),
             1: (255, 0, 0),
             0: (0, 0, 0)
             }
 
-        self.float_precision = "3f"
+        self._form = self.datastructure
+        self._float_precision = "3f"
+
+    @property
+    def form(self):
+        """
+        The form diagram to plot.
+
+        Returns
+        -------
+        form : :class:`compas_cem.diagrams.FormDiagram`
+            A form diagram.
+        """
+        return self._form
+        
+    @property
+    def node_colors(self):
+        """
+        The default colors to draw the nodes of a form diagram.
+
+        Returns
+        -------
+        node_colors : ``dict`` of ``color``
+            For supports, green (0, 153, 0).
+            For root nodes, cyan (153, 102, 255).
+            Otherwise, gray (150, 150, 150).
+        """
+        return self._node_colors
+
+    @property
+    def edge_colors(self):
+        """
+        The default colors to draw the edges of a form diagram.
+
+        Returns
+        -------
+        edge_colors : ``dict`` of ``color``
+            For trail edges, magenta (255, 0, 155).
+            For deviation edges, green (0, 255, 0).
+        """
+        return self._edge_colors
+
+    @property
+    def edge_state_colors(self):
+        """
+        The default colors to draw edges based on the forces acting on them.
+
+        Returns
+        -------
+        edge_state_colors : ``dict`` of ``color``
+            For compression forces, blue (0, 0, 255).
+            For tension force, red (255, 0, 0).
+            No force, black (0, 0, 0).
+        """
+        return self._edge_state_colors
+
+    @property
+    def float_precision(self):
+        """
+        The default decimal precision to render float values as text.
+        precision: ``str``
+            The float precision value. Defaults to ``3f``.
+        """
+        return self._float_precision
 
     def draw_nodes(self, *args, **kwargs):
         """
-        Draws the nodes.
+        Draws the nodes of a ``FormDiagram``.
 
         Parameters
         ----------
-        *args : ``list``
-            Additional plotter arguments
-        **kwargs : ``dict``
-            Additional plotter keyword arguments
+        keys : ``list`` of ``int``
+            The keys of the nodes to plot.
+        radius : ``float``, ``dict`` of ``float``
+            The radius of the nodes.
+        text : ``str``, ``dict`` of ``str``
+            A dictionary of strings to render on the nodes.
+        facecolor : ``color``, ``dict`` of ``color``
+            Color for the node circle fill in (r, g, b) format.
+        edgecolor : ``color``, ``dict`` of ``color``
+            Color for the node circle edge in (r, g, b) format.
+        edgewidth : ``float``, ``dict`` of ``float``
+            Width for the node circle edge.
+        textcolor : ``color``, ``dict`` of ``color``
+            Color for the text to be displayed on the nodes.
+        fontsize : ``int``, ``dict`` of ``int``
+            Font size for the text to be displayed on the nodes.
+
+        Returns
+        -------
+        collection : ``matplotlib.collection``
+            A matplotlib point collection object.
+
+        Notes
+        -----
+        When the parameters are passed as single value, this will be applied to
+        all the nodes or edges in the ``FormDiagram``. If instead, a dictionary 
+        that maps ``{node_key: attribute}`` is supplied, specific values can be 
+        assigned individually.
         """
         cmap = self.node_colors
         ds = self.datastructure
@@ -61,14 +176,34 @@ class FormPlotter(NetworkPlotter):
 
     def draw_edges(self, *args, **kwargs):
         """
-        Draws the edges.
-    
+        Draws the edges of a ``FormDiagram``.
+
         Parameters
         ----------
-        *args : ``list``
-            Additional plotter arguments
-        **kwargs : ``dict``
-            Additional plotter keyword arguments
+        keys : ``list`` of ``tuple``
+            The keys of the edges to plot.
+        width : ``float``, ``dict`` of ``float``
+            Width of the edges.
+        color : ``color``, ``dict`` of ``color``
+            Color of the edges in (r, g, b) format.
+        text : ``str``, ``dict`` of ``str``
+            A dictionary of strings to render on the nodes.
+        textcolor : ``color``, ``dict`` of ``color``
+            Color for the text to be displayed on the nodes.
+        fontsize : ``int``, ``dict`` of ``int``
+            Font size for the text to be displayed on the nodes.
+
+        Returns
+        -------
+        collection : ``matplotlib.collection``
+            A matplotlib point collection object.
+
+        Notes
+        -----
+        When the parameters are passed as single value, this will be applied to
+        all the nodes or edges in the ``FormDiagram``. If instead, a dictionary 
+        that maps ``{edge_key: attribute}`` is supplied, specific values can be 
+        assigned individually.
         """
         cmap = self.edge_state_colors
         ds = self.datastructure
@@ -82,7 +217,7 @@ class FormPlotter(NetworkPlotter):
 
     def draw_loads(self, keys=None, scale=1.0, color=(102, 255, 51), width=2.0, tol=1e-3):
         """
-        Draws the nodal loads as scaled arrows.
+        Draws the node loads in a ``FormDiagram`` as scaled arrows.
 
         Parameters
         ----------
@@ -106,7 +241,7 @@ class FormPlotter(NetworkPlotter):
 
     def draw_residuals(self, keys=None, scale=1.0, color=(0, 204, 255), width=3.0, tol=1e-3):
         """
-        Draws the node residual forces as scaled arrows.
+        Draws the node residual forces in a ``FormDiagram`` as scaled arrows.
 
         Parameters
         ----------
@@ -130,7 +265,7 @@ class FormPlotter(NetworkPlotter):
 
     def _draw_forces(self, keys, attrs, scale, color, width, tol):
         """
-        Draws forces as scaled arrows.
+        Base method to draws forces (residuals or loads) as scaled arrows.
 
         Parameters
         ----------
@@ -169,7 +304,7 @@ class FormPlotter(NetworkPlotter):
 
     def draw_segments(self, segments, color=(40, 40, 40), width=0.5):
         """
-        Draws lines.
+        Draws additional line segments on a ``FormDiagram``.
 
         Parameters
         ----------
@@ -196,7 +331,7 @@ class FormPlotter(NetworkPlotter):
     
     def _text_labels_nodes(self, text_tag):
         """
-        Generates text labels to plot on nodes based on a tag query.
+        Generates text labels to plot on the nodes of a ``FormDiagram``.
 
         Input
         -----
@@ -232,13 +367,13 @@ class FormPlotter(NetworkPlotter):
 
     def _text_labels_edges(self, text_tag):
         """
-        Generates text labels to plot on edges based on a tag query.
+        Generates text labels to plot on the edges of a ``FormDiagram``.
 
         Input
         -----
         text_tag : `str`
             Tag query.
-            Supported tags are: force", "length", and "force-length".
+            Supported tags are: "force", "length", and "force-length".
         
         Returns
         -------

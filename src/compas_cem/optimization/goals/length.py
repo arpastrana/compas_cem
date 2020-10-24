@@ -7,6 +7,9 @@ __all__ = [
 
 
 class DeviationEdgeLengthGoal(Goal):
+    """
+    Make a deviation edge reach a target length.
+    """
     def __init__(self, edge=None, length=None):
         # TODO: needs different serialization mechanism
         super(DeviationEdgeLengthGoal, self).__init__(edge, length)

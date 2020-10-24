@@ -19,6 +19,9 @@ __all__ = [
 # ------------------------------------------------------------------------------
 
 class Optimizer():
+    """
+    An object that modifies a form diagram to accomplish geometric goals.
+    """
     def __init__(self, **kwargs):
         self.form = None
         self.constraints = {}

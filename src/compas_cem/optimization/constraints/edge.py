@@ -97,6 +97,9 @@ class EdgeConstraint(Serializable):
 # ------------------------------------------------------------------------------
 
 class TrailEdgeConstraint(EdgeConstraint):
+    """
+    Registers the length of a trail edge as an optimization variable.
+    """
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(TrailEdgeConstraint, self).__init__(key, bound_low, bound_up)
         self._attr_name = "length"
@@ -106,6 +109,9 @@ class TrailEdgeConstraint(EdgeConstraint):
 # ------------------------------------------------------------------------------
 
 class DeviationEdgeConstraint(EdgeConstraint):
+    """
+    Registers the force of a deviation edge as an optimization variable.
+    """
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(DeviationEdgeConstraint, self).__init__(key, bound_low, bound_up)
         self._attr_name = "force"

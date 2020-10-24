@@ -10,6 +10,9 @@ __all__ = [
 
 
 class PlaneGoal(Goal):
+    """
+    Pulls the xyz position of a node to a target plane.
+    """
     def __init__(self, node=None, plane=None):
         super(PlaneGoal, self).__init__(node, plane)
         self.target_point = None

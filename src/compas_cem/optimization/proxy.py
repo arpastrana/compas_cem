@@ -17,6 +17,7 @@ def optimizer_solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopv
 
 def solve_nlopt_proxy(form, goals, constraints, algorithm, kmax, stopval, stepsize):
     """
+    Deprecated version of ``optimizer_solve_nlopt_proxy``.
     """
     from compas_cem.optimization import Optimizer
 

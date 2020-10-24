@@ -16,10 +16,12 @@ from compas_viewers.objectviewer import ObjectViewer
 
 
 class FormViewer(ObjectViewer):
+    """
+    A viewer tailored to display a form diagram.
+    """
+
     def __init__(self, form, *args, **kwargs):
-        """
-        A viewer tailored to display topological stuff.
-        """
+        
         super(FormViewer, self).__init__(*args, **kwargs)
 
         self.form = form

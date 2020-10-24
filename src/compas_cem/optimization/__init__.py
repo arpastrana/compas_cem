@@ -24,9 +24,10 @@ Goals
     :nosignatures:
 
     PointGoal
+    LineGoal
     PlaneGoal
     TrimeshGoal
-
+    NodeResidualGoal
 
 Constraints
 ===========
