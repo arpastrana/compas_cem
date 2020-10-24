@@ -56,7 +56,7 @@ class Diagram(NodeMixins, EdgeMixins, Network):
 
     def two_node_vector(self, nodes, normalize=False):
         """
-        Calculates the vector between two nodes in a diagram..
+        Calculates the vector between two nodes in a diagram.
 
         Parameters
         ----------
