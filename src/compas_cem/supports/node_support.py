@@ -11,7 +11,7 @@ __all__ = [
 
 class NodeSupport(object):
     """
-    A support applied to a node.
+    A support assigned to a node.
 
     Parameters
     ----------
@@ -20,8 +20,8 @@ class NodeSupport(object):
 
     Returns
     -------
-    node_support : ``PointSupport``
-        A point support.
+    node_support : ``NodeSupport``
+        A node support.
     """
     def __init__(self, node):
         self.node = node
@@ -30,6 +30,23 @@ class NodeSupport(object):
     @classmethod
     def from_point(cls, point):
         """
+        Create a NodeSupport from a point.
+
+        Parameters
+        ----------
+        point : ``list`` of ``float``
+            The xyz coordinates of the positions where to assign a support.
+
+        Returns
+        -------
+        support : ``NodeSupport``
+            A support object.
+
+        Notes
+        -----
+        The support will be assigned to a ``FormDiagram`` only if it has a node
+        whose xyz coordinates matches defined by the ``NodeSupport``.
+        Otherwise, the support will not be assigned to the diagram.
         """
         support = cls(node=None)
         support.xyz = point
@@ -37,10 +54,27 @@ class NodeSupport(object):
 
     @classmethod
     def from_rhino_point(cls, rhino_point):
-       """
-       """
-       xyz = RhinoPoint.from_geometry(rhino_point).to_compas()
-       return cls.from_point(xyz)
+        """
+        Create a NodeSupport from a rhino point.
+
+        Parameters
+        ----------
+        point : ``Rhino.Geometry.Point3d``
+            The xyz position where to apply a support.
+
+        Returns
+        -------
+        support : ``NodeSupport``
+            A support object.
+
+        Notes
+        -----
+        The support will be assigned to a ``FormDiagram`` only if it has a node
+        whose xyz coordinates matches defined by the ``NodeSupport``.
+        Otherwise, the support will not be assigned to the diagram.
+        """
+        xyz = RhinoPoint.from_geometry(rhino_point).to_compas()
+        return cls.from_point(xyz)
 
 if __name__ == "__main__":
     support = PointSupport([1.0, 0.0, 0,0])
