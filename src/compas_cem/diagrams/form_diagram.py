@@ -150,7 +150,9 @@ class FormDiagram(Diagram):
 
         # trail search
         nodes_in_trails = set()
+
         for support in self.support_nodes():
+
             trail = []
             visited = set()
             node = support
@@ -189,6 +191,12 @@ class FormDiagram(Diagram):
             self.node_attribute(root, "type", "root")
 
             trail.reverse()
+
+            # assign topological distances
+            # root should be _w= 0, support _w=len(trail)
+            for index, node in enumerate(trail):
+                self.node_attribute(node, "_w", index)
+
             tr[root] = trail
             nodes_in_trails.update(visited)
 
@@ -534,7 +542,7 @@ class FormDiagram(Diagram):
             ``False`` otherwise.
         """
         def predicate(x):
-            a, b = self.nodes_attribute(name="_w", keys=edge)
+            a, b = self._edge_topological_distance(edge)
             if a == b:
                 return True
 
@@ -556,7 +564,7 @@ class FormDiagram(Diagram):
             ``False`` otherwise.
         """
         def predicate(x):
-            a, b = self.nodes_attribute(name="_w", keys=edge)
+            a, b = self._edge_topological_distance(edge)
             if a != b:
                 return True
 
@@ -590,6 +598,45 @@ class FormDiagram(Diagram):
             return True
         return False
 
+
+    def _node_topological_distance(self, node):
+        """
+        Gets the distance of a node to the root node of the trail it belongs to.
+
+        Parameters
+        ----------
+        node : ``int``
+            The node key.
+
+        Returns
+        -------
+        w : ``int``
+            The number of nodes between the current node and the root node.
+        """
+        w = self.node_attribute(key=node, name="_w")
+
+        if w is None:
+            msg = "Topological distance at node {} is None. Try running FormDiagram.trails() first."
+            raise ValueError(msg.format(node))
+
+        return w
+
+    def _edge_topological_distance(self, edge):
+        """
+        Gets the distance of the nodes of an edge to the root nodes of the trails they belongs to.
+
+        Parameters
+        ----------
+        edge : ``tuple`
+            The edge key.
+
+        Returns
+        -------
+        w_edge : ``tuple``
+            The number of nodes between the edge's nodes and their corresponding root nodes.
+        """
+
+        return  tuple([self._node_topological_distance(node) for node in edge])
 
 # ==============================================================================
 # Main

@@ -36,7 +36,7 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     """
 
     trails = form.trails()
-    nodes_root_distances(form, trails)
+    # nodes_root_distances(form, trails)
 
 
     w_max = max([len(trail) for trail in trails.values()])
