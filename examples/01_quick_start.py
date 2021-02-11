@@ -14,8 +14,8 @@ form = FormDiagram()
 # add nodes
 form.add_node(Node(0, [0.0, 0.0, 0.0]))
 form.add_node(Node(1, [1.0, 0.0, 0.0]))
-form.add_node(Node(2, [2.0, 0.0, 0.0]))
-form.add_node(Node(3, [3.0, 0.0, 0.0]))
+form.add_node(Node(2, [2.5, 0.0, 0.0]))
+form.add_node(Node(3, [3.5, 0.0, 0.0]))
 
 # add edges with negative values for a compression-only structure
 form.add_edge(TrailEdge(0, 1, length=-1.0))
@@ -36,7 +36,7 @@ force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
 # plot
 plotter = FormPlotter(form, figsize=(16, 9))
 
-plotter.draw_nodes(radius=0.03, text="key")
+plotter.draw_nodes(radius=0.03, text="key-xyz")
 plotter.draw_edges(text="force-length")
 plotter.draw_loads(scale=-0.25)
 plotter.draw_residuals(scale=0.10)
