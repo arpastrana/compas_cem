@@ -361,33 +361,31 @@ class FormPlotter(NetworkPlotter):
             A list of text labels
         """
         ds = self.datastructure
-        force_format = partial(ds.edge_attribute, name="force")
-        length_format = partial(ds.edge_attribute, name="length")
+        precision = self.float_precision
 
-        def parameter_format(key):
-            if ds.is_trail_edge(key):
-                return length_format(key)
-            elif ds.is_deviation_edge(key):
-                return force_format(key)
+        force_format = lambda x: "{0:.{1}}".format(ds.edge_force(x), precision)
+        length_format = lambda x: "{0:.{1}}".format(ds.edge_length(*x), precision)
+        force_length_format = lambda x: "f: {} / lt: {}".format(force_format(x), length_format(x))
 
         tags_formatter = {
             "force": force_format,
             "length": length_format,
-            "force-length": parameter_format
+            "force-length": force_length_format
             }
 
         if text_tag not in tags_formatter:
             return
 
-        precision = self.float_precision
         text_labels = {}
         formatter = tags_formatter[text_tag]
 
         for edge in ds.edges():
-            label = formatter(key=edge)
-            text_labels[edge] = "{0:.{1}}".format(label, precision)
-        
+            label = formatter(edge)
+            text_labels[edge] = label
+
         return text_labels
+
+
 
 if __name__ == "__main__":
     pass

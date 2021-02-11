@@ -119,6 +119,7 @@ class FormDiagram(Diagram):
 
         self.node_attributes(node, ["qx", "qy", "qz"], load.vector)
 
+
 # ==============================================================================
 # Trails
 # ==============================================================================
@@ -238,6 +239,7 @@ class FormDiagram(Diagram):
             The key of the next root node.
         """
         return self.nodes_where({"type": "support"})
+
 
 # ==============================================================================
 #  Connected Edges
@@ -599,6 +601,10 @@ class FormDiagram(Diagram):
         return False
 
 
+# ==============================================================================
+# Topological Distances
+# ==============================================================================
+#
     def _node_topological_distance(self, node):
         """
         Gets the distance of a node to the root node of the trail it belongs to.
@@ -622,6 +628,7 @@ class FormDiagram(Diagram):
         return w
 
     def _edge_topological_distance(self, edge):
+
         """
         Gets the distance of the nodes of an edge to the root nodes of the trails they belongs to.
 
@@ -637,6 +644,7 @@ class FormDiagram(Diagram):
         """
 
         return  tuple([self._node_topological_distance(node) for node in edge])
+
 
 # ==============================================================================
 # Main
