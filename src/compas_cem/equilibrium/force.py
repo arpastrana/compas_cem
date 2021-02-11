@@ -37,8 +37,9 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
 
     trails = form.trails()
     nodes_root_distances(form, trails)
-    w_max = max([len(trail) for trail in trails.values()])
 
+
+    w_max = max([len(trail) for trail in trails.values()])
     positions = {}
     trail_vectors = {}
 
@@ -297,7 +298,8 @@ def nodes_root_distances(form, trails):
 
     Note
     ----
-    Assigns the topological distance to the nodes as a private attribute.
+    This attribute is a helper to find out if an edge is indirect or direct.
+    Assignment is made with a private attribute.
     """
     for _, trail in trails.items():
         for index, node in enumerate(trail):

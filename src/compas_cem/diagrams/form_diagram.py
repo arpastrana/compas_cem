@@ -142,6 +142,14 @@ class FormDiagram(Diagram):
         """
         tr = {}
 
+        # input sanity checks
+        # there must be at least one trail edge
+        assert len(list(self.trail_edges())) > 0, "No trail edges defined!"
+        # there must be at least one support node for trails to run
+        assert len(list(self.support_nodes())) > 0, "No supports assigned!"
+
+        # trail search
+        nodes_in_trails = set()
         for support in self.support_nodes():
             trail = []
             visited = set()
@@ -174,6 +182,7 @@ class FormDiagram(Diagram):
                 if last_node == node:
                     root = node
                     trail.append(root)
+                    visited.add(node)
                     break
 
             # set last node to be of root type
@@ -181,8 +190,16 @@ class FormDiagram(Diagram):
 
             trail.reverse()
             tr[root] = trail
+            nodes_in_trails.update(visited)
+
+        # output sanity checks
+        # all nodes must belong to a trail
+        unassigned_nodes = set(self.nodes()) - nodes_in_trails
+        msg = "Nodes {} haven't been assigned to a trail. Check your topology!"
+        assert len(unassigned_nodes) == 0, msg
 
         return tr
+
 
 # ==============================================================================
 #  Node Queries
@@ -314,6 +331,7 @@ class FormDiagram(Diagram):
                 deviation_edges.append(edge)
         return deviation_edges
 
+
 # ==============================================================================
 # Edges
 # ==============================================================================
@@ -356,6 +374,7 @@ class FormDiagram(Diagram):
         """
         return self.edges_where({"type": "deviation"}, data)
 
+
 # ==============================================================================
 # Edge Attributes
 # ==============================================================================
@@ -375,6 +394,7 @@ class FormDiagram(Diagram):
             The force value in the edge.
         """
         return self.edge_attribute(key=edge, name="force")
+
 
 # ==============================================================================
 # Node Attributes
@@ -417,8 +437,9 @@ class FormDiagram(Diagram):
         """
         return self.node_attributes(key=node, names=["rx", "ry", "rz"])
 
+
 # ==============================================================================
-# Node Selections
+# Node Filters
 # ==============================================================================
 
     def is_node_root(self, node):
@@ -453,8 +474,9 @@ class FormDiagram(Diagram):
         """
         return self.node_attribute(key=node, name="type") == "support"
 
+
 # ==============================================================================
-# Edge Selections
+# Edge Filters
 # ==============================================================================
 
     def is_trail_edge(self, edge):
@@ -564,6 +586,7 @@ class FormDiagram(Diagram):
         if predicate(edge):
             return True
         return False
+
 
 # ==============================================================================
 # Main
