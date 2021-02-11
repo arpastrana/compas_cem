@@ -43,8 +43,8 @@ def threebar_funicular():
     # add nodes
     form.add_node(Node(0, [0.0, 0.0, 0.0]))
     form.add_node(Node(1, [1.0, 0.0, 0.0]))
-    form.add_node(Node(2, [2.0, 0.0, 0.0]))
-    form.add_node(Node(3, [3.0, 0.0, 0.0]))
+    form.add_node(Node(2, [2.5, 0.0, 0.0]))
+    form.add_node(Node(3, [3.5, 0.0, 0.0]))
 
     # add edges with negative values for a compression-only structure
     form.add_edge(TrailEdge(0, 1, length=-1.0))
@@ -58,6 +58,57 @@ def threebar_funicular():
     # add loads
     form.add_load(NodeLoad(1, [0.0, -1.0, 0.0]))
     form.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
+
+    return form
+
+
+@pytest.fixture
+def braced_tower_2d():
+    """
+    """
+    points = [
+        (0, [0.0, 0.0, 0.0]),
+        (1, [0.0, 1.0, 0.0]),
+        (2, [0.0, 2.0, 0.0]),
+        (3, [1.0, 0.0, 0.0]),
+        (4, [1.0, 1.0, 0.0]),
+        (5, [1.0, 2.0, 0.0])
+    ]
+
+    trail_edges = [
+        (0, 1),
+        (1, 2),
+        (3, 4),
+        (4, 5)
+    ]
+
+    deviation_edges = [
+        (1, 4),
+        (2, 5)
+    ]
+
+    load = [0.0, -1.0, 0.0]
+
+    form = FormDiagram()
+
+    for key, point in points:
+        form.add_node(Node(key, point))
+
+    for u, v in trail_edges:
+        form.add_edge(TrailEdge(u, v, length=-1.0))
+
+    for u, v in deviation_edges:
+        form.add_edge(DeviationEdge(u, v, force=-1.0))
+
+    form.add_edge(DeviationEdge(1, 5, force=1.0))
+    form.add_edge(DeviationEdge(1, 3, force=1.0))
+    form.add_edge(DeviationEdge(2, 4, force=1.0))
+
+    form.add_support(NodeSupport(0))
+    form.add_support(NodeSupport(3))
+
+    form.add_load(NodeLoad(2, load))
+    form.add_load(NodeLoad(5, load))
 
     return form
 
