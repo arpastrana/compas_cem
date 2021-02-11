@@ -214,6 +214,9 @@ class FormDiagram(Diagram):
         root_node : ``int``
             The key of the next root node.
         """
+        # TODO: Attribute "root" might be better off as private "_root".
+        # What if a user wants to artificially set a node as root. Now possible.
+        # Either explicitely private or completely out of the public API.
         return self.nodes_where({"type": "root"})
 
     def support_nodes(self):
