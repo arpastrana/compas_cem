@@ -49,6 +49,7 @@ class FormDiagram(Diagram):
                                             "force": 0.0
                                             })
 
+        self.attributes["trails"] = {}
         self.attributes["gkey_node"] = {}
         self.attributes["tol"] = "3f"
 
@@ -207,8 +208,39 @@ class FormDiagram(Diagram):
         msg = "Nodes {} haven't been assigned to a trail. Check your topology!"
         assert len(unassigned_nodes) == 0, msg
 
+        # store trails in form diagram
+        self.attributes["trails"] = tr
+
         return tr
 
+
+    def trails_2(self):
+        """
+        The trails stored as an internal attribute.
+
+        Returns
+        -------
+        trails : ``dict``
+            A dictionary with trails.
+            Every trail is mapped with the root node as key.
+        """
+        return self.attributes["trails"]
+
+
+    def number_of_trails(self):
+        """
+        Number of trails in the force diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of trails.
+
+        Notes
+        -----
+        Make sure to run FormDiagram.trails() before invoking this method.
+        """
+        return len(self.trails_2())
 
 # ==============================================================================
 #  Node Queries

@@ -2,6 +2,7 @@ from math import copysign
 
 from compas.geometry import scale_vector
 from compas.geometry import add_vectors
+from compas.geometry import subtract_vectors
 from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 from compas.geometry import distance_point_point
@@ -34,14 +35,28 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     callback : ``function``. Optional.
         An optional callback function to run at every iteration.
     """
+    # compute trails
+    form.trails()
 
-    trails = form.trails()
-    # nodes_root_distances(form, trails)
+    # equilibrate form
+    attrs = form_equilibrate(form, kmax, eps, verbose, callback)
+
+    # update form node and edge attributes
+    form_update(form, *attrs)
 
 
+def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
+    """
+    Equilibrate forces in a form.
+    """
+    trails = form.trails_2()
     w_max = max([len(trail) for trail in trails.values()])
+
     positions = {}
     trail_vectors = {}
+    reaction_forces = {}
+    trail_forces = {}
+    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
 
     for k in range(kmax):  # max iterations
 
@@ -70,10 +85,10 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                     pos = positions[node]
 
                 # calculate nodal equilibrium to get trail direction
+                indirect = True
                 if k == 0:
-                    t_vec = node_equilibrium(form, node, t_vec, False)
-                else:
-                    t_vec = node_equilibrium(form, node, t_vec, True, False)
+                    indirect = False
+                t_vec = node_equilibrium(form, node, t_vec, node_xyz, indirect)
 
                 # if this is the last node, exit
                 if i == (len(trail) - 1):
@@ -97,18 +112,16 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 positions[next_node] = next_pos
                 trail_vectors[next_node] = t_vec
 
-                # update node coordinates in topology diagram
-                form.node_xyz(key=next_node, xyz=next_pos)
+                # store node coordinates
+                # form.node_xyz(key=next_node, xyz=next_pos)
+                node_xyz[next_node] = next_pos
 
-                # update trail forces in topology diagram
-                force = copysign(length_vector(t_vec), length)
-                form.edge_attribute(key=edge, name="force", value=force)
+                # store force in trail edge
+                trail_forces[edge] = copysign(length_vector(t_vec), length)
 
-                # update reaction forces in supports
-                nn = next_node
-                if form.is_node_support(nn):  # or next_node?
-                    attrs = ["rx", "ry", "rz"]
-                    form.node_attributes(key=nn, names=attrs, values=t_vec)
+                # store reaction force in support node
+                if form.is_node_support(next_node):
+                    reaction_forces[next_node] = t_vec[:]
 
                 # do callback
                 if callback:
@@ -128,21 +141,40 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
         if residual < eps:
             break
 
+    # if residual larger than threshold after kmax iterations, raise error
+    if residual > eps:
+        raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
+
+    # print log
+    if verbose:
+        msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
+        print(msg.format(k, residual))
+
+    return node_xyz, trail_forces, reaction_forces
+
+def form_update(form, node_xyz, trail_forces, reaction_forces):
+    """
+    Update the node and edge attributes of a form after equilibrating it.
+    """
+    # assign nodes' coordinates
+    for node, xyz in node_xyz.items():
+        form.node_attributes(key=node, names=["x", "y", "z"], values=xyz)
+
+    # assign forces on trail edges
+    for edge, tforce in trail_forces.items():
+        form.edge_attribute(key=edge, name="force", value=tforce)
+
+    # assign reaction forces
+    for node, rforce in reaction_forces.items():
+        form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
+
     # assign lengths to deviation edges
     for u, v in form.deviation_edges():
         length = form.edge_length(u, v)
         form.edge_attribute(key=(u, v), name="length", value=length)
 
-    # if residual larger than threshold after kmax iterations, raise error
-    if residual > eps:
-        raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
 
-    if verbose:
-        msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
-        print(msg.format(k, residual))
-
-
-def node_equilibrium(form, node, t_vec, indirect=False, verbose=False):
+def node_equilibrium(form, node, t_vec, node_xyz, indirect=False, verbose=False):
     """
     Calculates the equilibrium of trail and deviation forces at a node.
 
@@ -167,10 +199,10 @@ def node_equilibrium(form, node, t_vec, indirect=False, verbose=False):
     """
     tvec_in = scale_vector(t_vec, -1.0)
     q_vec = form.node_load(node)
-    rd_vec = direct_deviation_edges_resultant_vector(form, node)
+    rd_vec = direct_deviation_edges_resultant_vector(form, node, node_xyz)
 
     if indirect:
-        ri_vec = indirect_deviation_edges_resultant_vector(form, node)
+        ri_vec = indirect_deviation_edges_resultant_vector(form, node, node_xyz)
     else:
         ri_vec = [0.0, 0.0, 0.0]
 
@@ -187,7 +219,45 @@ def node_equilibrium(form, node, t_vec, indirect=False, verbose=False):
     return tvec_out
 
 
-def deviation_edges_resultant_vector(form, node, deviation_edges):
+def incoming_edge_vectors(node, node_xyz, edges, normalize=False):
+    """
+    Temporary alternative to Diagram.incoming_edge_vectors()
+    """
+    vectors = []
+    for u, v in edges:
+        other = u if u != node else v
+        vector = vector_two_nodes(node_xyz[other], node_xyz[node], normalize)
+        vectors.append(vector)
+
+    return vectors
+
+
+def vector_two_nodes(a, b, normalize=False):
+    """
+    Calculates the vector between the xyz coordinates of two noddes.
+
+    Parameters
+    ----------
+    a : ``list``
+        The xyz coordinates of the first node
+    b : ``list``
+        The xyz coordinates of the second node
+    normalize : ``bool``
+        A boolean flag to normalize all the resulting edge vectors.
+        Defaults to ``False``.
+
+    Returns
+    -------
+    vector : ``list``
+        The calculated xyz vector.
+    """
+    vector = subtract_vectors(a, b)
+    if not normalize:
+        return vector
+    return normalize_vector(vector)
+
+
+def deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges):
     """
     Adds up the force vectors of the deviation edges incident to a node.
 
@@ -197,6 +267,8 @@ def deviation_edges_resultant_vector(form, node, deviation_edges):
         A form diagram.
     node : ``int``
         A node key.
+    node_xyz : ``dict``
+        A dictionary with node keys and xyz coordinates as values.
     deviation_edges : ``list``
         A list with deviation edges keys.
 
@@ -209,7 +281,8 @@ def deviation_edges_resultant_vector(form, node, deviation_edges):
     if not deviation_edges:
         return r_vec
 
-    vectors = form.incoming_edge_vectors(node, deviation_edges, True)
+    # vectors = form.incoming_edge_vectors(node, deviation_edges, True)
+    vectors = incoming_edge_vectors(node, node_xyz, deviation_edges, True)
     forces = form.edges_attribute(name="force", keys=deviation_edges)
 
     for force, dev_vec in zip(forces, vectors):
@@ -218,7 +291,7 @@ def deviation_edges_resultant_vector(form, node, deviation_edges):
     return r_vec
 
 
-def direct_deviation_edges_resultant_vector(form, node):
+def direct_deviation_edges_resultant_vector(form, node, node_xyz):
     """
     Adds up the force vectors of the direct deviation edges incident to a node.
 
@@ -235,10 +308,10 @@ def direct_deviation_edges_resultant_vector(form, node):
         The resulting force vector.
     """
     deviation_edges = form._connected_direct_deviation_edges(node)
-    return deviation_edges_resultant_vector(form, node, deviation_edges)
+    return deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges)
 
 
-def indirect_deviation_edges_resultant_vector(form, node):
+def indirect_deviation_edges_resultant_vector(form, node, node_xyz):
     """
     Adds up the force vectors of the indirect deviation edges incident to a node.
 
@@ -255,7 +328,7 @@ def indirect_deviation_edges_resultant_vector(form, node):
         The resulting force vector.
     """
     deviation_edges = form._connected_indirect_deviation_edges(node)
-    return deviation_edges_resultant_vector(form, node, deviation_edges)
+    return deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges)
 
 
 def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
@@ -283,27 +356,6 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     for vec in vectors:
         tvec = add_vectors(tvec, vec)
     return scale_vector(tvec, -1.0)
-
-
-def nodes_root_distances(form, trails):
-    """
-    Assigns topological distances to the nodes of the form diagram.
-
-    Parameters
-    ----------
-    form : ``FormDiagram``
-        A form diagram.
-    trails : ``dict``
-        A dictionary of trails.
-
-    Note
-    ----
-    This attribute is a helper to find out if an edge is indirect or direct.
-    Assignment is made with a private attribute.
-    """
-    for _, trail in trails.items():
-        for index, node in enumerate(trail):
-            form.node_attribute(node, "_w", index)
 
 
 if __name__ == "__main__":

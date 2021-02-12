@@ -93,7 +93,7 @@ if optimize:
     start = time()
 
     # optimization constants
-    opt_algorithm = "LD_LBFGS"  # LN_BOBYQA / LD_LBFGS
+    opt_algorithm = "LD_SLSQP"  # LN_BOBYQA / LD_LBFGS
     iters = 100  # 100
     stopval = 1e-4  # 1e-4
     step_size = 1e-6  # 1e-4
@@ -124,7 +124,7 @@ if plot:
     plotter.draw_edges(text="force")
     plotter.draw_loads(scale=-2.0)
     plotter.draw_residuals(scale=-0.25)
-    plotter.draw_segments(edge_lines)
+    # plotter.draw_segments(edge_lines)
 
     points = []
     for key, goal in optimizer.goals.items():
