@@ -40,8 +40,9 @@ def test_deviation_edges_resultant_vector(form, node, resultant):
     """
     Verifies that the output vector is correct.
     """
+    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
     edges = form.connected_deviation_edges(node)
-    a = deviation_edges_resultant_vector(form, node, edges)
+    a = deviation_edges_resultant_vector(form, node, node_xyz, edges)
     b = resultant
 
     assert np.allclose(a, b)
@@ -55,7 +56,8 @@ def test_direct_deviation_edges_resultant_vector(form, node, resultant):
     Verifies that the output vector is correct.
     """
     form.trails()
-    a = direct_deviation_edges_resultant_vector(form, node)
+    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
+    a = direct_deviation_edges_resultant_vector(form, node, node_xyz)
     b = resultant
 
     assert np.allclose(a, b)
@@ -71,7 +73,8 @@ def test_indirect_deviation_edges_resultant_vector(form, node, resultant):
     Verifies that the output vector is correct.
     """
     form.trails()
-    a = indirect_deviation_edges_resultant_vector(form, node)
+    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
+    a = indirect_deviation_edges_resultant_vector(form, node, node_xyz)
     b = resultant
 
     assert np.allclose(a, b)
@@ -87,8 +90,9 @@ def test_node_equilibrium_no_indirect_root_nodes(form, node, result):
     Checks that the resulting output vector is correct.
     """
     form.trails()
+    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
     t_vec_in = [0.0, 0.0, 0.0]
-    t_vec_out = node_equilibrium(form, node, t_vec_in, indirect=False)
+    t_vec_out = node_equilibrium(form, node, t_vec_in, node_xyz, indirect=False)
 
     assert np.allclose(t_vec_out, result)
 
@@ -104,8 +108,9 @@ def test_node_equilibrium_with_indirect_root_nodes(form, node, result):
     Checks that the resulting output vector is correct.
     """
     form.trails()
+    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
     t_vec_in = [0.0, 0.0, 0.0]
-    t_vec_out = node_equilibrium(form, node, t_vec_in, indirect=True)
+    t_vec_out = node_equilibrium(form, node, t_vec_in, node_xyz, indirect=True)
 
     assert np.allclose(t_vec_out, result)
 
@@ -183,7 +188,8 @@ def bt2_out():
 
 @pytest.mark.parametrize("form, output",
                          [(pytest.lazy_fixture("compression_strut"), cs_out()),
-                          (pytest.lazy_fixture("threebar_funicular"), tf_out())
+                          (pytest.lazy_fixture("threebar_funicular"), tf_out()),
+                          (pytest.lazy_fixture("braced_tower_2d"), bt2_out())
                           ])
 def test_force_equilibrium_output(form, output):
     """
