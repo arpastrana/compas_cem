@@ -92,7 +92,7 @@ if optimize:
     start = time()
 
     # optimization constants
-    opt_algorithm = "LD_LBFGS"  # LN_BOBYQA / LD_LBFGS
+    opt_algorithm = "LD_SLSQP"  # LN_BOBYQA / LD_LBFGS
     iters = 100  # 100
     stopval = 1e-4  # 1e-4
     step_size = 1e-6  # 1e-4

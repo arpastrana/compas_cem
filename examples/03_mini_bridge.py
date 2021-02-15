@@ -83,7 +83,7 @@ for edge in form.trail_edges():
 
 for edge in form.deviation_edges():
     optimizer.add_constraint(DeviationEdgeConstraint(edge, bound_d, bound_d))
-        
+
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
@@ -94,12 +94,17 @@ if optimize:
 
     # optimization constants
     opt_algorithm = "LD_SLSQP"  # LN_BOBYQA / LD_LBFGS
+    # opt_algorithm = "LN_BOBYQA"
     iters = 100  # 100
     stopval = 1e-4  # 1e-4
     step_size = 1e-6  # 1e-4
 
     # optimize
-    x_opt, l_opt = optimizer.solve_nlopt(form, opt_algorithm, iters, stopval, step_size)
+    x_opt, l_opt = optimizer.solve_nlopt(form,
+                                         opt_algorithm,
+                                         iters, stopval,
+                                         step_size,
+                                         verbose=True)
 
     # print out results
     print("Elapsed time: {}".format(time() - start))
@@ -130,7 +135,7 @@ if plot:
     for key, goal in optimizer.goals.items():
         if not isinstance(goal, PointGoal):
             continue
-        pt = goal.target_geometry()
+        pt = goal.target()
         points.append({
             "pos": pt[:2],
             "radius": 0.5,

@@ -8,9 +8,9 @@ from compas.geometry import length_vector
 from compas.geometry import distance_point_point
 
 
-__all__ = [
-    "force_equilibrium"
-]
+__all__ = ["force_equilibrium",
+           "form_update",
+           "form_equilibrate"]
 
 
 def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
@@ -59,6 +59,8 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
 
     for k in range(kmax):  # max iterations
+
+        print("k", k)
 
         # store last positions for residual
         last_positions = {k: v for k, v in positions.items()}
@@ -117,7 +119,13 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 node_xyz[next_node] = next_pos
 
                 # store force in trail edge
+                # print("pos", positions)
+                # print("trail_vectors", trail_vectors)
+                # print("nodes xyz", node_xyz)
+                # print("t_vec", t_vec, type(t_vec), length_vector(t_vec), length)
+
                 trail_forces[edge] = copysign(length_vector(t_vec), length)
+                # trail_forces[edge] = length_vector
 
                 # store reaction force in support node
                 if form.is_node_support(next_node):

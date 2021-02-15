@@ -1,6 +1,4 @@
-__all__ = [
-    "objective_function_numpy"
-]
+__all__ = ["objective_function_numpy"]
 
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
@@ -9,6 +7,8 @@ __all__ = [
 def objective_function_numpy(x, grad, x_func, grad_func, verbose=False):
     """
     """
+    print("inside objective func")
+    print("x type", type(x), "grad type", type(grad))
     if grad.size > 0:
         grad_func(x, grad)
     # fx

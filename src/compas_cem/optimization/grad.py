@@ -1,9 +1,31 @@
 import numpy as np
-
+# from autograd import grad as agrad
+from jax import grad as agrad
 
 __all__ = [
-    "grad_finite_difference_numpy"
+    "grad_finite_difference_numpy",
+    "grad_autograd"
 ]
+
+
+# ------------------------------------------------------------------------------
+# Gradient calculation with finite differences
+# ------------------------------------------------------------------------------
+
+def grad_autograd(x, grad, x_func, verbose=False):
+    """
+    Automatic differentiation, baby.
+    """
+    print("inside grad autograd func")
+    print("type x and grad", type(x), type(grad))
+    grad_func = agrad(x_func)
+    new grad = grad_func(x)
+    grad[:] = new_grad
+
+    if verbose:
+        print("====== Computing Gradient ======")
+        print("Gradient: {}".format(grad))
+
 
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
@@ -13,7 +35,7 @@ def grad_finite_difference_numpy(x, grad, x_func, step_size, verbose=False):
     """
     Finite differences
     """
-    # finite difference    
+    # finite difference
     fx0 = x_func(x)
 
     for i in range(len(x)):  # vectorize with numpy?
@@ -29,6 +51,7 @@ def grad_finite_difference_numpy(x, grad, x_func, step_size, verbose=False):
     if verbose:
         print("====== Computing Gradient ======")
         print("Gradient: {}".format(grad))
+
 
 # ------------------------------------------------------------------------------
 # Main
