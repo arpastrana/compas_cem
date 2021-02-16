@@ -5,7 +5,7 @@ import jax.numpy as np
 from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import subtract_vectors
-from compas.geometry import normalize_vector
+# from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 from compas.geometry import distance_point_point
 
@@ -38,7 +38,7 @@ def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False, callback=No
         An optional callback function to run at every iteration.
     """
     # compute trails
-    form.trails()
+    # form.trails()
 
     # equilibrate form
     attrs = form_equilibrate(form, kmax, eps, verbose, callback)
@@ -177,7 +177,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
 
     # assign lengths to deviation edges
     for u, v in form.deviation_edges():
-        length = form.edge_length(u, v)
+        # length = form.edge_length(u, v)
+        length = length_vector(subtract_vectors(node_xyz[u], node_xyz[v]))
         form.edge_attribute(key=(u, v), name="length", value=length)
 
 
@@ -258,11 +259,31 @@ def vector_two_nodes(a, b, normalize=False):
     vector : ``list``
         The calculated xyz vector.
     """
-    vector = subtract_vectors(a, b)
+    # vector = subtract_vectors(a, b)
+    if isinstance(a, list):
+        a = np.array(a)
+    if isinstance(b, list):
+        b = np.array(b)
+    vector = np.subtract(a, b)
     if not normalize:
         return vector
     return normalize_vector(vector)
 
+def normalize_vector(vector):
+    if isinstance(vector, list):
+        vector = np.array(vector)
+    vector = vector / np.linalg.norm(vector)
+    return vector
+
+def scale_vector(vector, factor):
+    if isinstance(vector, list):
+        vector = np.array(vector)
+    return vector * factor
+
+def length_vector(vector):
+    if isinstance(vector, list):
+        vector = np.array(vector)
+    return np.linalg.norm(vector)
 
 def deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges):
     """

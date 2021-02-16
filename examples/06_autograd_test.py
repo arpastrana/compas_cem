@@ -72,9 +72,6 @@ plotter = FormPlotter(form, figsize=(16, 9))
 plotter.draw_nodes(radius=0.03, text="key-xyz")
 plotter.draw_edges(text="length")
 
-# plotter.draw_nodes(radius=0.03)
-# plotter.draw_edges()
-
 plotter.draw_loads(scale=-0.1)
 plotter.draw_residuals(scale=-0.10)
 plotter.show()
