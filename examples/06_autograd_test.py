@@ -20,7 +20,7 @@ form.add_node(Node(2, [0.0, 0.0, 0.0]))
 
 # add edges with negative values for a compression-only structure
 form.add_edge(TrailEdge(0, 1, length=-1.0))
-form.add_edge(TrailEdge(1, 2, length=-0.25))
+form.add_edge(TrailEdge(1, 2, length=-0.5))
 
 # add supports
 form.add_support(NodeSupport(2))
@@ -31,8 +31,8 @@ form.add_load(NodeLoad(0, [2.0, 0.0, 0.0]))
 # create optimizer
 optimizer = Optimizer()
 
-optimizer.add_goal(PointGoal(node=2, point=[2.0, 0.0, 0.0]))
-optimizer.add_constraint(TrailEdgeConstraint((1, 2), -1.0, 1.0))
+optimizer.add_goal(PointGoal(node=2, point=[3.0, 0.0, 0.0]))
+optimizer.add_constraint(TrailEdgeConstraint((1, 2), -2.0, 2.0))
 
 # force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
 
@@ -58,11 +58,23 @@ x_opt, l_opt = optimizer.solve_nlopt(form,
 print("Total error: {}".format(l_opt))
 # calculate equilibrium
 
+print("Final node coordinates")
+for node in form.nodes():
+    print(node, ":", form.node_coordinates(node))
+
+print("Final trail edge attributes")
+for edge in form.trail_edges():
+    print(edge, ":", form.edge_attribute(edge, name="length"))
+
 # plot
 plotter = FormPlotter(form, figsize=(16, 9))
 
 plotter.draw_nodes(radius=0.03, text="key-xyz")
 plotter.draw_edges(text="length")
+
+# plotter.draw_nodes(radius=0.03)
+# plotter.draw_edges()
+
 plotter.draw_loads(scale=-0.1)
 plotter.draw_residuals(scale=-0.10)
 plotter.show()

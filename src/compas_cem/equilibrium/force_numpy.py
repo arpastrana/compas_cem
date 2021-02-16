@@ -1,5 +1,7 @@
 from math import copysign
 
+import jax.numpy as np
+
 from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import subtract_vectors
@@ -8,12 +10,12 @@ from compas.geometry import length_vector
 from compas.geometry import distance_point_point
 
 
-__all__ = ["force_equilibrium",
+__all__ = ["force_equilibrium_numpy",
            "form_update",
            "form_equilibrate"]
 
 
-def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
+def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     """
     Computes force equilibrium on the nodes of the force diagram.
 
@@ -116,7 +118,8 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 node_xyz[next_node] = next_pos
 
                 # store trail forces
-                trail_forces[edge] = copysign(length_vector(t_vec), length)
+                # trail_forces[edge] = copysign(length_vector(t_vec), length)
+                trail_forces[edge] = np.copysign(length_vector(t_vec), length)
 
                 # store reaction force in support node
                 if form.is_node_support(next_node):
@@ -134,7 +137,12 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
         residual = 0.0
         for key, pos in positions.items():
             last_pos = last_positions[key]
-            residual += distance_point_point(last_pos, pos)
+            # residual += distance_point_point(last_pos, pos)
+            if isinstance(pos, list):
+                pos = np.array(pos)
+            if isinstance(last_pos, list):
+                last_pos = np.array(last_pos)
+            residual += np.sqrt(np.sum(np.subtract(last_pos, pos) ** 2))
 
         # if residual smaller than threshold, stop iterating
         if residual < eps:

@@ -1,6 +1,7 @@
 import numpy as np
-# from autograd import grad as agrad
+
 from jax import grad as agrad
+
 
 __all__ = [
     "grad_finite_difference_numpy",
@@ -16,13 +17,16 @@ def grad_autograd(x, grad, x_func, verbose=False):
     """
     Automatic differentiation, baby.
     """
+    if verbose:
+        print("====== Computing Gradient ======")
+
     grad_func = agrad(x_func)
     new_grad = grad_func(x)
     grad[:] = new_grad
 
     if verbose:
-        print("====== Computing Gradient ======")
         print("Gradient: {}".format(grad))
+
 
 
 # ------------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 import numpy as np
 # import autograd.numpy as np
 # import jax.numpy as jnp
+import os
+os.environ["JAX_PLATFORM_NAME"] = "cpu"
 
 from functools import partial
 
@@ -11,13 +13,14 @@ from compas_cem.optimization import grad_autograd
 from compas_cem.optimization import objective_function_numpy
 
 from compas_cem.equilibrium import force_equilibrium
-from compas_cem.equilibrium import form_update
-from compas_cem.equilibrium import form_equilibrate
+
+from compas_cem.equilibrium.force_numpy import force_equilibrium_numpy
+from compas_cem.equilibrium.force_numpy import form_update
+from compas_cem.equilibrium.force_numpy import form_equilibrate
 
 
-__all__ = [
-    "Optimizer"
-]
+__all__ = ["Optimizer"]
+
 
 # ------------------------------------------------------------------------------
 # Optimizer
@@ -110,7 +113,8 @@ class Optimizer():
         """
         v = verbose
         func = partial(self._optimize_form, form=form)
-        grad_func = partial(grad_autograd, x_func=func)
+        func_grad = partial(self._grad_optimize_form, form=form.copy())
+        grad_func = partial(grad_autograd, x_func=func_grad, verbose=v)
         obj_func = objective_function_numpy
 
         return partial(obj_func, x_func=func, grad_func=grad_func, verbose=v)
@@ -156,13 +160,12 @@ class Optimizer():
 
         # compose gradient and objective functions
         # grad_f = self.gradient_func(step_size, verbose)
-        f = self.objective_func(form, step_size, verbose)
+        # f = self.objective_func(form, step_size, verbose)
 
-        # f = self.objective_func_2(form, verbose)
+        f = self.objective_func_2(form, verbose)
 
         # generate optimization variables
         x = self.optimization_parameters(form)
-        print("Number of Parameters x: ", x.shape)
 
         # extract the lower and upper bounds to optimization variables
         bounds_low, bounds_up = self.optimization_bounds(form)
@@ -341,6 +344,21 @@ class Optimizer():
 
         return error
 
+    def _grad_optimize_form(self, parameters, form):
+        """
+        """
+        self.form = form
+
+        self._update_form_root_nodes(parameters)
+        self._update_form_edges(parameters)
+
+        force_equilibrium_numpy(form, kmax=100, eps=1e-5)
+
+        error = self._compute_error()
+
+        self.form = None
+
+        return error
 # ------------------------------------------------------------------------------
 # Sanity Check
 # ------------------------------------------------------------------------------
