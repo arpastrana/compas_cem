@@ -16,10 +16,8 @@ def grad_autograd(x, grad, x_func, verbose=False):
     """
     Automatic differentiation, baby.
     """
-    print("inside grad autograd func")
-    print("type x and grad", type(x), type(grad))
     grad_func = agrad(x_func)
-    new grad = grad_func(x)
+    new_grad = grad_func(x)
     grad[:] = new_grad
 
     if verbose:

@@ -1,6 +1,6 @@
 import numpy as np
 # import autograd.numpy as np
-import jax.numpy as jnp
+# import jax.numpy as jnp
 
 from functools import partial
 
@@ -11,6 +11,8 @@ from compas_cem.optimization import grad_autograd
 from compas_cem.optimization import objective_function_numpy
 
 from compas_cem.equilibrium import force_equilibrium
+from compas_cem.equilibrium import form_update
+from compas_cem.equilibrium import form_equilibrate
 
 
 __all__ = [
@@ -113,12 +115,14 @@ class Optimizer():
 
         return partial(obj_func, x_func=func, grad_func=grad_func, verbose=v)
 
-    def objective_func(self, grad_func, verbose):
+    def objective_func(self, form, step_size, verbose):
         """
         """
-        obj_func = objective_function_numpy
-        func = self._optimize_form
         v = verbose
+        func = partial(self._optimize_form, form=form)
+        grad_func = grad_finite_difference_numpy
+        grad_func = partial(grad_func, x_func=func, step_size=step_size, verbose=v)
+        obj_func = objective_function_numpy
         return partial(obj_func, x_func=func, grad_func=grad_func, verbose=v)
     
 # ------------------------------------------------------------------------------
@@ -152,9 +156,9 @@ class Optimizer():
 
         # compose gradient and objective functions
         # grad_f = self.gradient_func(step_size, verbose)
-        # f = self.objective_func(grad_f, verbose)
+        f = self.objective_func(form, step_size, verbose)
 
-        f = self.objective_func_2(form, verbose)
+        # f = self.objective_func_2(form, verbose)
 
         # generate optimization variables
         x = self.optimization_parameters(form)
@@ -209,13 +213,13 @@ class Optimizer():
             constraint = self.constraints[ckey]
             x[index] = constraint.start_value(form)
 
-        print("x numpy", x, type(x))
-        print("x[0]", x[0], type(x[0]))
+        # print("x numpy", x, type(x))
+        # print("x[0]", x[0], type(x[0]))
 
-        x = jnp.array(x, float)
+        # x = jnp.array(x, float)
 
-        print("x jax", x, type(x))
-        print("x[0]", x[0], type(x[0]))
+        # print("x jax", x, type(x))
+        # print("x[0]", x[0], type(x[0]))
         return x
 
     def optimization_bounds(self, form):
