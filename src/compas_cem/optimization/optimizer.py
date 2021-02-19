@@ -4,6 +4,8 @@ import numpy as np
 import os
 os.environ["JAX_PLATFORM_NAME"] = "cpu"
 
+from jax import grad as agrad
+
 from functools import partial
 
 from compas_cem.optimization import nlopt_solver
@@ -19,8 +21,14 @@ from compas_cem.equilibrium.force_numpy import form_update
 from compas_cem.equilibrium.force_numpy import form_equilibrate
 
 
+
 __all__ = ["Optimizer"]
 
+# profiling stuff
+import atexit
+import line_profiler
+profile = line_profiler.LineProfiler()
+atexit.register(profile.print_stats)
 
 # ------------------------------------------------------------------------------
 # Optimizer
@@ -107,15 +115,13 @@ class Optimizer():
 # Objective Function
 # ------------------------------------------------------------------------------
 
-    def objective_func_2(self, form, verbose):
+    def objective_func_2(self, form, grad_func, verbose):
         """
         Test with autodiff.
         """
         v = verbose
-        func = partial(self._optimize_form, form=form)
-        func_grad = partial(self._grad_optimize_form, form=form.copy())
-        grad_func = partial(grad_autograd, x_func=func_grad, verbose=v)
         obj_func = objective_function_numpy
+        func = partial(self._optimize_form, form=form)
 
         return partial(obj_func, x_func=func, grad_func=grad_func, verbose=v)
 
@@ -127,6 +133,7 @@ class Optimizer():
         grad_func = grad_finite_difference_numpy
         grad_func = partial(grad_func, x_func=func, step_size=step_size, verbose=v)
         obj_func = objective_function_numpy
+
         return partial(obj_func, x_func=func, grad_func=grad_func, verbose=v)
     
 # ------------------------------------------------------------------------------
@@ -137,14 +144,22 @@ class Optimizer():
         """
         """
         grad_func = grad_finite_difference_numpy
-        func = self._optimize_form
+        func = self._grad_optimize_form
         v = verbose
+
         return partial(grad_func, x_func=func, step_size=step_size, verbose=v)
+
+    def gradient_func_2(self, form, verbose):
+        """
+        """
+        x_func = agrad(partial(self._grad_optimize_form, form=form))
+
+        return partial(grad_autograd, grad_func=x_func, verbose=verbose)
 
 # ------------------------------------------------------------------------------
 # Solver
 # ------------------------------------------------------------------------------
-
+    @profile
     def solve_nlopt(self, form, algorithm, iters, step_size, stopval=None, verbose=False):
         """
         Solve an optimization problem with NLOpt.
@@ -159,10 +174,11 @@ class Optimizer():
         # self.form = form  # TODO: this should not happen here! Not silently!
 
         # compose gradient and objective functions
-        # grad_f = self.gradient_func(step_size, verbose)
-        # f = self.objective_func(form, step_size, verbose)
+        grad_f = self.gradient_func(step_size, verbose)
+        f = self.objective_func(form, step_size, verbose)
 
-        f = self.objective_func_2(form, verbose)
+        gf = self.gradient_func_2(form.copy(), verbose)
+        f = self.objective_func_2(form, gf, verbose)
 
         # generate optimization variables
         x = self.optimization_parameters(form)
@@ -329,6 +345,8 @@ class Optimizer():
 
         return error
 
+
+    @profile
     def _optimize_form(self, parameters, form):
         """
         """
@@ -336,7 +354,7 @@ class Optimizer():
 
         self._update_form_root_nodes(parameters)
         self._update_form_edges(parameters)
-        self._update_form_equilibrium()
+        self._update_form_equilibrium()  # bottleneck
 
         error = self._compute_error()
 
@@ -344,6 +362,7 @@ class Optimizer():
 
         return error
 
+    @profile
     def _grad_optimize_form(self, parameters, form):
         """
         """
@@ -352,7 +371,7 @@ class Optimizer():
         self._update_form_root_nodes(parameters)
         self._update_form_edges(parameters)
 
-        force_equilibrium_numpy(form, kmax=100, eps=1e-5)
+        force_equilibrium_numpy(form, kmax=100, eps=1e-5)  # bottleneck
 
         error = self._compute_error()
 

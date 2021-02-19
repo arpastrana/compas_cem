@@ -7,10 +7,12 @@ __all__ = ["objective_function_numpy"]
 def objective_function_numpy(x, grad, x_func, grad_func, verbose=False):
     """
     """
-    print("*********************************")
-    print("In objective function numpy")
-    # fx
-    print("====== Computing Objective ======")
+    if verbose:
+        print("*********************************")
+        print("In objective function numpy")
+        # fx
+        print("====== Computing Objective ======")
+
     fx = x_func(x)
 
     if verbose:
@@ -18,7 +20,6 @@ def objective_function_numpy(x, grad, x_func, grad_func, verbose=False):
 
     if grad.size > 0:
         grad_func(x, grad)
-
 
     return fx
 

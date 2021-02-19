@@ -1,18 +1,24 @@
-from math import copysign
+# from math import copysign
 
 import jax.numpy as np
 
-from compas.geometry import scale_vector
-from compas.geometry import add_vectors
+# from compas.geometry import scale_vector
+# from compas.geometry import add_vectors
 from compas.geometry import subtract_vectors
 # from compas.geometry import normalize_vector
-from compas.geometry import length_vector
-from compas.geometry import distance_point_point
+# from compas.geometry import length_vector
+# from compas.geometry import distance_point_point
 
 
 __all__ = ["force_equilibrium_numpy",
            "form_update",
            "form_equilibrate"]
+
+# profiling stuff
+import atexit
+import line_profiler
+profile = line_profiler.LineProfiler()
+atexit.register(profile.print_stats)
 
 
 def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False, callback=None):
@@ -41,12 +47,13 @@ def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False, callback=No
     # form.trails()
 
     # equilibrate form
-    attrs = form_equilibrate(form, kmax, eps, verbose, callback)
+    attrs = form_equilibrate(form, kmax, eps, verbose, callback)  # bottleneck
 
     # update form node and edge attributes
     form_update(form, *attrs)
 
 
+@profile
 def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     """
     Equilibrate forces in a form.
@@ -90,6 +97,8 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 indirect = True
                 if k == 0:
                     indirect = False
+
+                # bottleneck 60%
                 t_vec = node_equilibrium(form, node, t_vec, node_xyz, indirect)
 
                 # if this is the last node, exit
@@ -108,7 +117,9 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                     edge = (next_node, node)
                     length = form.edge_attribute(key=edge, name="length")
 
-                next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), length))
+                # bottleneck 20%
+                # next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), length))
+                next_pos = np.array(pos) + length * normalize_vector(t_vec)
 
                 # store new position and trail vector
                 positions[next_node] = next_pos
@@ -119,7 +130,9 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
 
                 # store trail forces
                 # trail_forces[edge] = copysign(length_vector(t_vec), length)
-                trail_forces[edge] = np.copysign(length_vector(t_vec), length)
+                trail_force = length_vector(t_vec)
+                # bottleneck 10%
+                trail_forces[edge] = np.copysign(trail_force, length)
 
                 # store reaction force in support node
                 if form.is_node_support(next_node):
@@ -159,6 +172,7 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
 
     return node_xyz, trail_forces, reaction_forces
 
+
 def form_update(form, node_xyz, trail_forces, reaction_forces):
     """
     Update the node and edge attributes of a form after equilibrating it.
@@ -182,6 +196,7 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.edge_attribute(key=(u, v), name="length", value=length)
 
 
+@profile
 def node_equilibrium(form, node, t_vec, node_xyz, indirect=False, verbose=False):
     """
     Calculates the equilibrium of trail and deviation forces at a node.
@@ -207,14 +222,14 @@ def node_equilibrium(form, node, t_vec, node_xyz, indirect=False, verbose=False)
     """
     tvec_in = scale_vector(t_vec, -1.0)
     q_vec = form.node_load(node)
-    rd_vec = direct_deviation_edges_resultant_vector(form, node, node_xyz)
+    rd_vec = direct_deviation_edges_resultant_vector(form, node, node_xyz)  # bottleneck
 
     if indirect:
         ri_vec = indirect_deviation_edges_resultant_vector(form, node, node_xyz)
     else:
         ri_vec = [0.0, 0.0, 0.0]
 
-    tvec_out = trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec)
+    tvec_out = trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec)  # bottleneck
 
     if verbose:
         print("-----")
@@ -226,65 +241,7 @@ def node_equilibrium(form, node, t_vec, node_xyz, indirect=False, verbose=False)
 
     return tvec_out
 
-
-def incoming_edge_vectors(node, node_xyz, edges, normalize=False):
-    """
-    Temporary alternative to Diagram.incoming_edge_vectors()
-    """
-    vectors = []
-    for u, v in edges:
-        other = u if u != node else v
-        vector = vector_two_nodes(node_xyz[other], node_xyz[node], normalize)
-        vectors.append(vector)
-
-    return vectors
-
-
-def vector_two_nodes(a, b, normalize=False):
-    """
-    Calculates the vector between the xyz coordinates of two noddes.
-
-    Parameters
-    ----------
-    a : ``list``
-        The xyz coordinates of the first node
-    b : ``list``
-        The xyz coordinates of the second node
-    normalize : ``bool``
-        A boolean flag to normalize all the resulting edge vectors.
-        Defaults to ``False``.
-
-    Returns
-    -------
-    vector : ``list``
-        The calculated xyz vector.
-    """
-    # vector = subtract_vectors(a, b)
-    if isinstance(a, list):
-        a = np.array(a)
-    if isinstance(b, list):
-        b = np.array(b)
-    vector = np.subtract(a, b)
-    if not normalize:
-        return vector
-    return normalize_vector(vector)
-
-def normalize_vector(vector):
-    if isinstance(vector, list):
-        vector = np.array(vector)
-    vector = vector / np.linalg.norm(vector)
-    return vector
-
-def scale_vector(vector, factor):
-    if isinstance(vector, list):
-        vector = np.array(vector)
-    return vector * factor
-
-def length_vector(vector):
-    if isinstance(vector, list):
-        vector = np.array(vector)
-    return np.linalg.norm(vector)
-
+@profile
 def deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges):
     """
     Adds up the force vectors of the deviation edges incident to a node.
@@ -310,11 +267,17 @@ def deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges):
         return r_vec
 
     # vectors = form.incoming_edge_vectors(node, deviation_edges, True)
+
+    # bottleneck 60%
     vectors = incoming_edge_vectors(node, node_xyz, deviation_edges, True)
     forces = form.edges_attribute(name="force", keys=deviation_edges)
 
-    for force, dev_vec in zip(forces, vectors):
-        r_vec = add_vectors(r_vec, scale_vector(dev_vec, force))
+    # bottleneck 40%
+    # TODO: check if np.array forces broadcasts well with vectors array
+    vectors = np.multiply(np.array(forces), np.array(vectors))
+    r_vec = np.sum(vectors, axis=0)
+    # for force, dev_vec in zip(forces, vectors):
+    #     r_vec = add_vectors(r_vec, scale_vector(dev_vec, force))
 
     return r_vec
 
@@ -359,6 +322,7 @@ def indirect_deviation_edges_resultant_vector(form, node, node_xyz):
     return deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges)
 
 
+@profile
 def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     """
     Calculate an outgoing trail vector.
@@ -379,11 +343,82 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     tvec_out : ``list``
         An outgoing trail vector.
     """
-    tvec = [0.0, 0.0, 0.0]
-    vectors = [tvec_in, q_vec, rd_vec, ri_vec]
-    for vec in vectors:
-        tvec = add_vectors(tvec, vec)
-    return scale_vector(tvec, -1.0)
+    # tvec = [0.0, 0.0, 0.0]
+    # vectors = [tvec_in, q_vec, rd_vec, ri_vec]
+    # for vec in vectors:
+    #     tvec = add_vectors(tvec, vec)
+    # return scale_vector(tvec, -1.0)
+
+    vectors = np.array([tvec_in, q_vec, rd_vec, ri_vec])  # bottleneck
+    result =  -1.0 * np.sum(vectors, axis=0)
+
+    return result
+
+# ------------------------------------------------------------------------------
+# Utilities
+# ------------------------------------------------------------------------------
+
+@profile
+def incoming_edge_vectors(node, node_xyz, edges, normalize=False):
+    """
+    Temporary alternative to Diagram.incoming_edge_vectors()
+    """
+    vectors = []
+    for u, v in edges:
+        other = u if u != node else v
+        vector = vector_two_nodes(node_xyz[other], node_xyz[node], normalize)
+        vectors.append(vector)
+
+    return vectors
+
+@profile
+def vector_two_nodes(a, b, normalize=False):
+    """
+    Calculates the vector between the xyz coordinates of two noddes.
+
+    Parameters
+    ----------
+    a : ``list``
+        The xyz coordinates of the first node
+    b : ``list``
+        The xyz coordinates of the second node
+    normalize : ``bool``
+        A boolean flag to normalize all the resulting edge vectors.
+        Defaults to ``False``.
+
+    Returns
+    -------
+    vector : ``list``
+        The calculated xyz vector.
+    """
+    # vector = subtract_vectors(a, b)
+    if isinstance(a, list):
+        a = np.array(a)
+    if isinstance(b, list):
+        b = np.array(b)
+    vector = np.subtract(a, b)
+    if not normalize:
+        return vector
+    return normalize_vector(vector)
+
+
+def normalize_vector(vector):
+    if isinstance(vector, list):
+        vector = np.array(vector)
+    vector = vector / np.linalg.norm(vector)
+    return vector
+
+
+def scale_vector(vector, factor):
+    if isinstance(vector, list):
+        vector = np.array(vector)
+    return vector * factor
+
+
+def length_vector(vector):
+    if isinstance(vector, list):
+        vector = np.array(vector)
+    return np.linalg.norm(vector)
 
 
 if __name__ == "__main__":

@@ -104,7 +104,7 @@ if optimize:
                                          opt_algorithm,
                                          iters, stopval,
                                          step_size,
-                                         verbose=True)
+                                         verbose=False)
 
     # print out results
     print("Elapsed time: {}".format(time() - start))
@@ -145,4 +145,4 @@ if plot:
 
     plotter.draw_points(points)
 
-    plotter.show()
+    # plotter.show()
