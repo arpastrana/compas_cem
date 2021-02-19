@@ -2,6 +2,7 @@ from compas_cem.optimization.goals import Goal
 
 from compas.geometry import distance_point_point_sqrd
 
+import jax.numpy as np
 
 __all__ = [
     "TrimeshGoal",
@@ -13,30 +14,32 @@ class TrimeshGoal(Goal):
     Pulls the xyz position of a node to a target triangular mesh.
     """
     def __init__(self, node=None, trimesh=None):
-        super(TrimeshGoal, self).__init__(node, trimesh)
-        self.target_point = None
+        super(TrimeshGoal, self).__init__(key=node, target=trimesh)
 
-    def target_geometry(self):
+    def error(self, data):
         """
         """
-        return self._target_point
+        a = self.reference(data)
 
-    def update(self, form):
-        """
-        """
-        self._ref_geo = form.node_xyz(self.key())
-        trimesh = self._target_geo
-        point = [self._ref_geo]
-        
-        closest, distance, _ = trimesh.nearest.on_surface(point)
-        self._target_point = closest.tolist().pop()
+        b = self.goal(a)
 
-    def error(self):
-        """
-        """
-        a = self.target_geometry()
-        b = self.reference_geometry()
         return distance_point_point_sqrd(a, b)
+
+    def reference(self, data):
+        """
+        """
+        a = data.node_xyz(self.key())
+
+        return a
+
+    def goal(self, ref):
+        """
+        """
+        trimesh = self.target()
+        points = [ref]
+        closest, dist, _ = trimesh.nearest.on_surface(points)
+
+        return closest.tolist().pop()
 
 
 if __name__ == "__main__":
