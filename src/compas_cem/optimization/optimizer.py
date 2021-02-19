@@ -159,7 +159,7 @@ class Optimizer():
 # ------------------------------------------------------------------------------
 # Solver
 # ------------------------------------------------------------------------------
-    @profile
+#
     def solve_nlopt(self, form, algorithm, iters, step_size, stopval=None, verbose=False):
         """
         Solve an optimization problem with NLOpt.
@@ -346,7 +346,6 @@ class Optimizer():
         return error
 
 
-    @profile
     def _optimize_form(self, parameters, form):
         """
         """
@@ -362,7 +361,6 @@ class Optimizer():
 
         return error
 
-    @profile
     def _grad_optimize_form(self, parameters, form):
         """
         """

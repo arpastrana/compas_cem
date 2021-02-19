@@ -116,7 +116,7 @@ if optimize:
 
     for node in form.support_nodes():
         residual = length_vector(form.node_residual(node))
-        print("node: {} residual: {}".format(node, residual))
+        print("node: {} reaction force: {}".format(node, residual))
 
 # ------------------------------------------------------------------------------
 # Plotter
@@ -145,4 +145,4 @@ if plot:
 
     plotter.draw_points(points)
 
-    # plotter.show()
+    plotter.show()

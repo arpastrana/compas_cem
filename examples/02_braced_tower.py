@@ -9,6 +9,8 @@ from compas_cem.supports import NodeSupport
 
 from compas_cem.equilibrium import force_equilibrium
 
+from compas_cem.equilibrium.force_numpy import force_equilibrium_numpy
+
 from compas_cem.plotters import FormPlotter
 
 
