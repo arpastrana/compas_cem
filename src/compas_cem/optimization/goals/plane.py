@@ -15,26 +15,35 @@ class PlaneGoal(Goal):
     """
     def __init__(self, node=None, plane=None):
         super(PlaneGoal, self).__init__(node, plane)
-        self.target_point = None
 
-    def target_geometry(self):
+    def error(self, data):
         """
-        """
-        return self._target_point
+        The error between the xyz coords of a node and its closest point on a plane.
 
-    def update(self, form):
+        Returns
+        -------
+        error : ``float``
+            The squared distance between the two points.
         """
-        """
-        self._ref_geo = form.node_xyz(self.key())
-        plane = self._target_geo
-        self._target_point = closest_point_on_plane(self._ref_geo, plane)
+        point_a = self.reference(data)
+        point_b = self.target(point_a)
 
-    def error(self):
+        return distance_point_point_sqrd(point_a, point_b)
+
+    def reference(self, data):
         """
         """
-        a = self.target_geometry()
-        b = self.reference_geometry()
-        return distance_point_point_sqrd(a, b)
+        a = data["node_xyz"][self.key()]
+
+        return a
+
+    def target(self, point):
+        """
+        """
+        plane = self._target
+
+        return closest_point_on_plane(point, plane)
+
 
 if __name__ == "__main__":
     pass

@@ -44,7 +44,7 @@ def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False):
     form_update(form, *attrs)
 
 
-@profile
+# @profile
 def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
     """
     Equilibrate forces in a form.

@@ -45,10 +45,10 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     form.trails()
 
     # equilibrate form
-    attrs = form_equilibrate(form, kmax, eps, verbose, callback)
+    eq_state = form_equilibrate(form, kmax, eps, verbose, callback)
 
     # update form node and edge attributes
-    form_update(form, *attrs)
+    form_update(form, **eq_state)
 
 
 # @profile
@@ -123,7 +123,7 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 node_xyz[next_node] = next_pos
 
                 # store trail forces
-                trail_forces[edge] = copysign(length_vector(t_vec), length)
+                trail_forces[edge] = length_vector(t_vec)
 
                 # store reaction force in support node
                 if form.is_node_support(next_node):
@@ -156,7 +156,13 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
         print(msg.format(k, residual))
 
-    return node_xyz, trail_forces, reaction_forces
+    eq_state = {}
+    eq_state["node_xyz"] = node_xyz
+    eq_state["trail_forces"] = trail_forces
+    eq_state["reaction_forces"] = reaction_forces
+
+    return eq_state
+
 
 def form_update(form, node_xyz, trail_forces, reaction_forces):
     """
@@ -168,6 +174,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
 
     # assign forces on trail edges
     for edge, tforce in trail_forces.items():
+        tlength = form.edge_attribute(key=edge, name="length")
+        tforce = copysign(tforce, tlength)
         form.edge_attribute(key=edge, name="force", value=tforce)
 
     # assign reaction forces

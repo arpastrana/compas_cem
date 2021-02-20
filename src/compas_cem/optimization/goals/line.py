@@ -15,26 +15,34 @@ class LineGoal(Goal):
     """
     def __init__(self, node=None, line=None):
         super(LineGoal, self).__init__(node, line)
-        self.target_point = None
 
-    def target_geometry(self):
+    def error(self, data):
         """
-        """
-        return self._target_point
+        The error between the xyz coords of a node and its closest point on a line.
 
-    def update(self, form):
+        Returns
+        -------
+        error : ``float``
+            The squared distance between the two points.
         """
-        """
-        self._ref_geo = form.node_xyz(self.key())
-        line = self._target_geo
-        self._target_point = closest_point_on_line(self._ref_geo, line)
+        point_a = self.reference(data)
+        point_b = self.target(point_a)
 
-    def error(self):
+        return distance_point_point_sqrd(point_a, point_b)
+
+    def reference(self, data):
         """
         """
-        a = self.target_geometry()
-        b = self.reference_geometry()
-        return distance_point_point_sqrd(a, b)
+        point = data["node_xyz"][self.key()]
+
+        return point
+
+    def target(self, point):
+        """
+        """
+        line = self._target
+
+        return closest_point_on_line(point, line)
 
 
 if __name__ == "__main__":
@@ -112,7 +120,12 @@ if __name__ == "__main__":
     step_size = 1e-6  # 1e-4
 
     # optimize
-    x_opt, l_opt = optimizer.solve_nlopt(form, algo, iters, step_size, stopval)
+    x_opt, l_opt = optimizer.solve_nlopt(form,
+                                         algo,
+                                         iters,
+                                         step_size,
+                                         stopval,
+                                         )
 
     # print out results
     print("Elapsed time: {}".format(time() - start))

@@ -25,19 +25,15 @@ class PointGoal(Goal):
             The squared distance between two points.
         """
         a = self.reference(data)
-
         b = self.target()
+
         return distance_point_point_sqrd(a, b)
 
     def reference(self, data):
         """
         Gets the reference to compare the target against.
         """
-
-        try:
-            a = data.node_xyz(self.key())
-        except AttributeError:
-            a = data["node_xyz"][self.key()]
+        a = data["node_xyz"][self.key()]
         return a
 
 

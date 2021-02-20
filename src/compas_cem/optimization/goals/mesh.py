@@ -20,8 +20,7 @@ class TrimeshGoal(Goal):
         """
         """
         a = self.reference(data)
-
-        b = self.goal(a)
+        b = self.target(a)
 
         return distance_point_point_sqrd(a, b)
 
@@ -32,10 +31,10 @@ class TrimeshGoal(Goal):
 
         return a
 
-    def goal(self, ref):
+    def target(self, ref):
         """
         """
-        trimesh = self.target()
+        trimesh = self._target
         points = [ref]
         closest, dist, _ = trimesh.nearest.on_surface(points)
 

@@ -17,22 +17,27 @@ class TrailEdgeForceGoal(Goal):
         # TODO: needs different serialization mechanism
         super(TrailEdgeForceGoal, self).__init__(edge, force)
 
-    def target_geometry(self):
+    def error(self, data):
         """
-        """
-        return self._target_geo
+        The error between the current and the target forces in a trail edge.
 
-    def update(self, form):
+        Returns
+        -------
+        error : ``float``
+            The squared difference.
         """
-        """
-        u, v = self.key()
-        self._ref_geo = form.edge_force((u, v))
-        
-    def error(self):
-        """
-        """
-        diff = self.reference_geometry() - self.target_geometry()
+        force_a = self.reference(data)
+        force_b = self.target()
+        diff = force_a - force_b
+
         return diff * diff
+
+    def reference(self, data):
+        """
+        """
+        force = data["trail_forces"][self.key()]
+
+        return force
 
 
 class NodeResidualGoal(Goal):
@@ -42,17 +47,26 @@ class NodeResidualGoal(Goal):
     def __init__(self, node=None, residual_vector=None):
         super(NodeResidualGoal, self).__init__(node, residual_vector)
 
-    def update(self, form):
+    def error(self, data):
         """
-        """
-        self._ref_geo = form.node_residual(self.key())
+        The error between the current and the target residual force in a node.
 
-    def error(self):
+        Returns
+        -------
+        error : ``float``
+            The squared difference.
+        """
+        reaction_a = self.reference(data)
+        reaction_b = self.target()
+
+        return distance_point_point_sqrd(reaction_a, reaction_b)
+
+    def reference(self, data):
         """
         """
-        a = self.target_geometry()
-        b = self.reference_geometry()
-        return distance_point_point_sqrd(a, b)
+        force = data["reaction_forces"][self.key()]
+
+        return force
 
 
 if __name__ == "__main__":
@@ -142,7 +156,13 @@ if __name__ == "__main__":
     step_size = 1e-6  # 1e-4
 
     # optimize
-    x_opt, l_opt = optimizer.solve_nlopt(form, algo, iters, step_size, stopval)
+    x_opt, l_opt = optimizer.solve_nlopt(form,
+                                         algo,
+                                         iters,
+                                         step_size,
+                                         stopval,
+                                         mode="autodiff"
+                                         )
 
     print("Elapsed time: {}".format(time() - start))
     print("Total error: {}".format(l_opt))

@@ -1,3 +1,5 @@
+from compas.geometry import distance_point_point
+
 from compas_cem.optimization.goals import Goal
 
 
@@ -14,22 +16,30 @@ class DeviationEdgeLengthGoal(Goal):
         # TODO: needs different serialization mechanism
         super(DeviationEdgeLengthGoal, self).__init__(edge, length)
 
-    def target_geometry(self):
+    def error(self, data):
         """
-        """
-        return self._target_geo
+        The length error of a deviation edge.
 
-    def update(self, form):
+        Returns
+        -------
+        error : ``float``
+            The squared difference bewteen the current and the target length.
+        """
+        length_a = self.reference(data)
+        length_b = self.target()
+
+        diff = length_a - length_b
+
+        return diff * diff
+
+    def reference(self, data):
         """
         """
         u, v = self.key()
-        self._ref_geo = form.edge_length(u, v)
-        
-    def error(self):
-        """
-        """
-        diff = self.reference_geometry() - self.target_geometry()
-        return diff * diff
+        point_a = data["node_xyz"][u]
+        point_b = data["node_xyz"][v]
+
+        return distance_point_point(point_a, point_b)
 
 
 if __name__ == "__main__":
