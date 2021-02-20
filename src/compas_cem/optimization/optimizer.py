@@ -11,6 +11,9 @@ from compas_cem.optimization import grad_autograd
 
 from compas_cem.equilibrium import force_equilibrium
 
+from compas_cem.equilibrium import form_equilibrate
+from compas_cem.equilibrium import form_update
+
 from compas_cem.equilibrium.force_numpy import force_equilibrium_numpy
 from compas_cem.equilibrium.force_numpy import form_equilibrate_numpy
 
@@ -293,7 +296,8 @@ class Optimizer():
             j = map_xyz_index[constraint.attr_name()]
             xyz[j] = x[index]
 
-            self.form.node_xyz(key=node, xyz=xyz)  # form.node_xyz(node, y=x[])?
+            # self.form.node_xyz(key=node, xyz=xyz)  # form.node_xyz(node, y=x[])?
+            self.form.node_attributes(key=node, names="xyz", values=xyz)
 
     def _update_form_edges(self, x):
         """
@@ -336,16 +340,7 @@ class Optimizer():
 # Optimization
 # ------------------------------------------------------------------------------
 
-    def _compute_error(self):
-        """
-        """
-        error = 0.0
-        for goal in self.goals.values():
-            error += goal.error(self.form)
-
-        return error
-
-    def _grad_compute_error(self, eq_state):
+    def _compute_error(self, eq_state):
         """
         """
         error = 0.0
@@ -361,9 +356,11 @@ class Optimizer():
 
         self._update_form_root_nodes(parameters)
         self._update_form_edges(parameters)
-        self._update_form_equilibrium()  # bottleneck
 
-        error = self._compute_error()
+        eq_state = form_equilibrate(form, kmax=100, eps=1e-5)
+        error = self._compute_error(eq_state)
+
+        form_update(self.form, **eq_state)
 
         self.form = None
 
@@ -377,14 +374,14 @@ class Optimizer():
         self._update_form_root_nodes(parameters)
         self._update_form_edges(parameters)
 
-        # force_equilibrium_numpy(form, kmax=100, eps=1e-5)  # bottleneck
         eq_state = form_equilibrate_numpy(form, kmax=100, eps=1e-5)
 
-        error = self._grad_compute_error(eq_state)
+        error = self._compute_error(eq_state)
 
-        # self.form = None
+        self.form = None
 
         return error
+
 # ------------------------------------------------------------------------------
 # Sanity Check
 # ------------------------------------------------------------------------------
