@@ -2,11 +2,10 @@ from compas_cem.optimization.goals import Goal
 
 from compas.geometry import distance_point_point_sqrd
 
-import jax.numpy as np
+import numpy as np
 
-__all__ = [
-    "TrimeshGoal",
-]
+
+__all__ = ["TrimeshGoal"]
 
 
 class TrimeshGoal(Goal):
@@ -19,15 +18,15 @@ class TrimeshGoal(Goal):
     def error(self, data):
         """
         """
-        a = self.reference(data)
-        b = self.target(a)
+        point_a = self.reference(data)
+        point_b = self.target(point_a)
 
-        return distance_point_point_sqrd(a, b)
+        return distance_point_point_sqrd(point_a, point_b)
 
     def reference(self, data):
         """
         """
-        a = data.node_xyz(self.key())
+        a = data["node_xyz"][self.key()]
 
         return a
 
@@ -35,7 +34,7 @@ class TrimeshGoal(Goal):
         """
         """
         trimesh = self._target
-        points = [ref]
+        points = np.array([ref])
         closest, dist, _ = trimesh.nearest.on_surface(points)
 
         return closest.tolist().pop()

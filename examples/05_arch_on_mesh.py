@@ -94,12 +94,18 @@ if optimize:
     # optimization constants
     opt_algorithm = "LD_SLSQP"  # LN_BOBYQA / LD_LBFGS
     iters = 100  # 100
-    stopval = 1e-4  # 1e-4
+    stopval = 1e-6  # 1e-4
     step_size = 1e-6  # 1e-4
 
     # optimize
     print("Optimizing")
-    x_opt, l_opt = optimizer.solve_nlopt(form, opt_algorithm, iters, stopval, step_size)
+    x_opt, l_opt = optimizer.solve_nlopt(form,
+                                         opt_algorithm,
+                                         iters=iters,
+                                         stopval=stopval,
+                                         step_size=step_size,
+                                         mode="autodiff"
+                                         )
 
     # print out results
     print("Elapsed time: {} seconds".format(round((time() - start), 2)))
