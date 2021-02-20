@@ -12,9 +12,7 @@ from compas_cem.optimization import grad_autograd
 from compas_cem.equilibrium import force_equilibrium
 
 from compas_cem.equilibrium.force_numpy import force_equilibrium_numpy
-from compas_cem.equilibrium.force_numpy import form_update
-from compas_cem.equilibrium.force_numpy import form_equilibrate
-
+from compas_cem.equilibrium.force_numpy import form_equilibrate_numpy
 
 
 __all__ = ["Optimizer"]
@@ -165,11 +163,7 @@ class Optimizer():
         # build trails
         form.trails()
 
-        # assign form as attribute to not pollute the signature of downstream functions.
-        # self.form = form  # TODO: this should not happen here! Not silently!
-
         # compose gradient and objective functions
-
         if mode == "autodiff":
             print("*** Doing automatic differentiation! ***")
             gf = self.gradient_func_2(form.copy(), verbose)
@@ -215,8 +209,7 @@ class Optimizer():
         # fetch last optimum value of loss function
         loss_opt = solver.last_optimum_value()
 
-        # deassign form as attribute
-        # self.form = None
+        # TODO: before exiting function, update form here!
 
         # exit like a champion
         return x_opt, loss_opt
@@ -231,6 +224,7 @@ class Optimizer():
         Only one entry in the array per constraint.
         Takes care of keeping the ordering.
         """
+        # TODO: This can become an (n, 3) array to acount for root nodes variables?
         x = np.zeros(self.number_of_constraints())
 
         for index, ckey in self.index_constraint().items():
@@ -337,6 +331,7 @@ class Optimizer():
         """
         force_equilibrium(self.form, kmax=100, eps=1e-5)
 
+
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
@@ -350,6 +345,14 @@ class Optimizer():
 
         return error
 
+    def _grad_compute_error(self, eq_state):
+        """
+        """
+        error = 0.0
+        for goal in self.goals.values():
+            error += goal.error(eq_state)
+
+        return error
 
     def _optimize_form(self, parameters, form):
         """
@@ -374,11 +377,12 @@ class Optimizer():
         self._update_form_root_nodes(parameters)
         self._update_form_edges(parameters)
 
-        force_equilibrium_numpy(form, kmax=100, eps=1e-5)  # bottleneck
+        # force_equilibrium_numpy(form, kmax=100, eps=1e-5)  # bottleneck
+        eq_state = form_equilibrate_numpy(form, kmax=100, eps=1e-5)
 
-        error = self._compute_error()
+        error = self._grad_compute_error(eq_state)
 
-        self.form = None
+        # self.form = None
 
         return error
 # ------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import numpy as np
 
-from jax import grad as agrad
+# from jax import grad as agrad
+from autograd import grad as agrad
 
 
 __all__ = ["grad_finite_difference_numpy",

@@ -52,7 +52,7 @@ x_opt, l_opt = optimizer.solve_nlopt(form,
                                      iters, stopval,
                                      step_size,
                                      mode="autodiff",
-                                     verbose=True)
+                                     verbose=False)
 
 # print out results
 # print("Elapsed time: {}".format(time() - start))

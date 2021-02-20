@@ -1,5 +1,5 @@
-import jax.numpy as np
-# import autograd.numpy as np
+# import jax.numpy as np
+import autograd.numpy as np
 
 # profiling stuff
 import atexit
@@ -9,8 +9,7 @@ atexit.register(profile.print_stats)
 
 
 __all__ = ["force_equilibrium_numpy",
-           "form_update",
-           "form_equilibrate"]
+           "form_equilibrate_numpy"]
 
 
 def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False):
@@ -39,43 +38,41 @@ def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False):
     # form.trails()
 
     # equilibrate form
-    attrs = form_equilibrate(form, kmax, eps, verbose)  # bottleneck
+    attrs = form_equilibrate_numpy(form, kmax, eps, verbose)  # bottleneck
 
     # update form node and edge attributes
     form_update(form, *attrs)
 
 
 @profile
-def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False):
+def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
     """
     Equilibrate forces in a form.
     """
     trails = form.trails_2()  # calls attribute self.attributes["trails"]
     w_max = max([len(trail) for trail in trails.values()])
 
-    # positions = {}
-    trail_vectors = {}
-    reaction_forces = {}
-    trail_forces = {}
-
-    # dict arrays
+    # input, output
     node_xyz = {n: np.array(form.node_coordinates(n)) for n in form.nodes()}
-    node_loads = {n: np.array(form.node_load(n)) for n in form.nodes()}
-    node_residuals = {n: np.array(form.node_residual(n)) for n in form.nodes()}
 
-    node_direct = {n: form._connected_direct_deviation_edges(n) for n in form.nodes()}
-    node_indirect = {n: form._connected_indirect_deviation_edges(n) for n in form.nodes()}
-
-    edge_keys = {e for e in form.edges()}
-
+    # output, mutable
     edge_forces = {e: np.array(form.edge_force(e)) for e in form.edges()}
     edge_lengths = {e: np.array(form.edge_attribute(e, "length")) for e in form.edges()}
 
-    # create index key dictionaries for nodes and edges
-    # node_index = form.key_index()
-    # edge_index = form.uv_index()
+    # input, immutable
+    # numpy
+    node_loads = {n: np.array(form.node_load(n)) for n in form.nodes()}
+    # no numpy
+    node_direct = {n: form._connected_direct_deviation_edges(n) for n in form.nodes()}
+    node_indirect = {n: form._connected_indirect_deviation_edges(n) for n in form.nodes()}
+    edge_keys = {e for e in form.edges()}
 
-    # indirect edges not considered until second k iteration
+    # internals
+    trail_vectors = {}
+
+    # output
+    reaction_forces = {}
+    trail_forces = {}
 
     for k in range(kmax):  # max iterations
 
@@ -85,7 +82,7 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False):
 
         for i in range(w_max):  # layers
 
-            for root, trail in trails.items():
+            for _, trail in trails.items():
 
                 # if index is larger than available nodes in trails
                 if i > (len(trail) - 1):
@@ -211,7 +208,13 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False):
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
         print(msg.format(k, residual))
 
-    return node_xyz, trail_forces, reaction_forces
+    eq_state = {}
+    eq_state["node_xyz"] = node_xyz
+    eq_state["trail_forces"] = trail_forces
+    eq_state["reaction_forces"] = reaction_forces
+
+    # return node_xyz, trail_forces, reaction_forces
+    return eq_state
 
 
 def form_update(form, node_xyz, trail_forces, reaction_forces):

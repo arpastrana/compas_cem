@@ -33,7 +33,11 @@ class PointGoal(Goal):
         """
         Gets the reference to compare the target against.
         """
-        a = data.node_xyz(self.key())
+
+        try:
+            a = data.node_xyz(self.key())
+        except AttributeError:
+            a = data["node_xyz"][self.key()]
         return a
 
 
