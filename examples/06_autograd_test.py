@@ -51,6 +51,7 @@ x_opt, l_opt = optimizer.solve_nlopt(form,
                                      opt_algorithm,
                                      iters, stopval,
                                      step_size,
+                                     mode="autodiff",
                                      verbose=True)
 
 # print out results

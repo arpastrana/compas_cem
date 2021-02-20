@@ -93,17 +93,26 @@ if optimize:
     start = time()
 
     # optimization constants
-    opt_algorithm = "LD_SLSQP"  # LN_BOBYQA / LD_LBFGS
+    opt_algorithm = "LD_LBFGS"  # LN_BOBYQA / LD_LBFGS / LD_SLSQP
     # opt_algorithm = "LN_BOBYQA"
-    iters = 100  # 100
-    stopval = 1e-4  # 1e-4
-    step_size = 1e-6  # 1e-4
+
+    iters = 1000  # 100
+
+    stopval = 1e-6 # 1e-4
+
+    ftol = None  # 1e-3
+
+    step_size = 1e-3  # 1e-6
+
 
     # optimize
-    x_opt, l_opt = optimizer.solve_nlopt(form,
-                                         opt_algorithm,
-                                         iters, stopval,
-                                         step_size,
+    x_opt, l_opt = optimizer.solve_nlopt(form=form,
+                                         algorithm=opt_algorithm,
+                                         iters=iters,
+                                         step_size=step_size,
+                                         stopval=stopval,
+                                         ftol=ftol,
+                                         # mode="autodiff",
                                          verbose=False)
 
     # print out results

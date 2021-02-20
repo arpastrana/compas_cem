@@ -1,18 +1,13 @@
 import numpy as np
-# import autograd.numpy as np
-# import jax.numpy as jnp
-import os
-os.environ["JAX_PLATFORM_NAME"] = "cpu"
-
-from jax import grad as agrad
 
 from functools import partial
 
 from compas_cem.optimization import nlopt_solver
 
 from compas_cem.optimization import grad_finite_difference_numpy
-from compas_cem.optimization import grad_autograd
 from compas_cem.optimization import objective_function_numpy
+
+from compas_cem.optimization import grad_autograd
 
 from compas_cem.equilibrium import force_equilibrium
 
@@ -152,7 +147,7 @@ class Optimizer():
     def gradient_func_2(self, form, verbose):
         """
         """
-        x_func = agrad(partial(self._grad_optimize_form, form=form))
+        x_func = partial(self._grad_optimize_form, form=form)
 
         return partial(grad_autograd, grad_func=x_func, verbose=verbose)
 
@@ -160,7 +155,7 @@ class Optimizer():
 # Solver
 # ------------------------------------------------------------------------------
 #
-    def solve_nlopt(self, form, algorithm, iters, step_size, stopval=None, verbose=False):
+    def solve_nlopt(self, form, algorithm, iters, step_size, stopval=None, ftol=None, mode=None, verbose=False):
         """
         Solve an optimization problem with NLOpt.
         """
@@ -174,11 +169,15 @@ class Optimizer():
         # self.form = form  # TODO: this should not happen here! Not silently!
 
         # compose gradient and objective functions
-        grad_f = self.gradient_func(step_size, verbose)
-        f = self.objective_func(form, step_size, verbose)
 
-        gf = self.gradient_func_2(form.copy(), verbose)
-        f = self.objective_func_2(form, gf, verbose)
+        if mode == "autodiff":
+            print("*** Doing automatic differentiation! ***")
+            gf = self.gradient_func_2(form.copy(), verbose)
+            f = self.objective_func_2(form, gf, verbose)
+        else:
+            print("*** Doing finite differences! ***")
+            grad_f = self.gradient_func(step_size, verbose)
+            f = self.objective_func(form, step_size, verbose)
 
         # generate optimization variables
         x = self.optimization_parameters(form)
@@ -194,7 +193,8 @@ class Optimizer():
             "bounds_low": bounds_low,
             "bounds_up": bounds_up,
             "iters": iters,
-            "stopval": stopval
+            "stopval": stopval,
+            "ftol": ftol
         }
 
         # assemble optimization solver
@@ -203,8 +203,13 @@ class Optimizer():
         # solve optimization problem
         try:
             x_opt = solver.optimize(x)
+            evals = solver.get_numevals()
+            print("Optimization ended correctly!")
+            print("Number of evaluations incurred: {}".format(evals))
         except RuntimeError:
+            evals = solver.get_numevals()
             print("Tol unreached and max iters exhausted! Try increasing them.")
+            print("Number of evaluations incurred: {}".format(evals))
             x_opt = None
 
         # fetch last optimum value of loss function

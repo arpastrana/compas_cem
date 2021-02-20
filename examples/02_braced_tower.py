@@ -8,7 +8,6 @@ from compas_cem.loads import NodeLoad
 from compas_cem.supports import NodeSupport
 
 from compas_cem.equilibrium import force_equilibrium
-
 from compas_cem.equilibrium.force_numpy import force_equilibrium_numpy
 
 from compas_cem.plotters import FormPlotter
@@ -65,7 +64,7 @@ for u, v in trail_edges:
 
 for u, v in deviation_edges:
     form.add_edge(DeviationEdge(u, v, force=-1.0))
-    
+
 # ------------------------------------------------------------------------------
 # Add Indirect Deviation Edges
 # ------------------------------------------------------------------------------
@@ -101,6 +100,7 @@ edge_lines = [form.edge_coordinates(*edge) for edge in form.edges()]
 # ------------------------------------------------------------------------------
 
 force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
+# force_equilibrium_numpy(form, eps=1e-5, kmax=100, verbose=True)
 
 # ------------------------------------------------------------------------------
 # Plotter

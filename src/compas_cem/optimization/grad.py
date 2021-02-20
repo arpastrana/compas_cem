@@ -24,7 +24,7 @@ def grad_autograd(x, grad, grad_func, verbose=False):
     if verbose:
         print("====== Computing Gradient ======")
 
-    # grad_func = agrad(x_func)
+    grad_func = agrad(grad_func)
     new_grad = grad_func(x)  # bottleneck
     grad[:] = new_grad
 
