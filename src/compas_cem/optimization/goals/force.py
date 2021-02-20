@@ -89,7 +89,8 @@ if __name__ == "__main__":
     from compas_cem.optimization import Optimizer
     from compas_cem.optimization import DeviationEdgeConstraint
     from compas_cem.optimization import TrailEdgeConstraint
-    
+
+    from compas_cem.optimization import RootNodeConstraintX
     from compas_cem.optimization import RootNodeConstraintY
     
     from compas_cem.optimization import PointGoal
@@ -133,12 +134,12 @@ if __name__ == "__main__":
     # optimization
     optimizer = Optimizer()
 
-    # root node constraints
-    optimizer.add_constraint(RootNodeConstraintY(3, 1.0, 1.0))
-    optimizer.add_constraint(RootNodeConstraintY(4, 1.0, 1.0))
-    # optimizer.add_constraint(RootNodeConstraintY(5, 1.0, 1.0))
+    # root node variables in x and y
+    for node in (3, 4, 5):
+        optimizer.add_constraint(RootNodeConstraintX(node, 1.0, 1.0))
+        optimizer.add_constraint(RootNodeConstraintY(node, 1.0, 1.0))
 
-    # deviation edge constraints 
+    # deviation edge constraints
     optimizer.add_constraint(DeviationEdgeConstraint((3, 4), 1.0, 1.0))
     optimizer.add_constraint(DeviationEdgeConstraint((4, 5), 1.0, 1.0))
     

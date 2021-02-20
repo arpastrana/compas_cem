@@ -41,6 +41,12 @@ class EdgeConstraint(Serializable):
         """
         return self.start_value(form) + fabs(self._bound_up)
 
+    def attr_name(self):
+        """
+        """
+        return self._attr_name
+
+
 # ------------------------------------------------------------------------------
 # Data
 # ------------------------------------------------------------------------------

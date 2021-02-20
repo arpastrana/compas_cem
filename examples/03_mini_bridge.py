@@ -96,7 +96,7 @@ if optimize:
     opt_algorithm = "LD_SLSQP"  # LN_BOBYQA / LD_LBFGS / LD_SLSQP
     # opt_algorithm = "LN_BOBYQA"
 
-    iters = 100  # 100
+    iters = 1000  # 100
 
     stopval = 1e-6 # 1e-4
 

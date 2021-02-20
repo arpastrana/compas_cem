@@ -75,9 +75,9 @@ class Optimizer():
 
     def add_constraint(self, constraint):
         """
-        Adds an edge constraint.
+        Adds a constraint.
         """
-        key = constraint.key()
+        key = (constraint.key(), constraint.attr_name())
         self.constraints[key] = constraint
 
     def add_goal(self, goal):
@@ -279,7 +279,7 @@ class Optimizer():
 
         for index, ckey in self.index_constraint().items():
 
-            node = ckey
+            node = self.constraints[ckey].key()
 
             # TODO: weak check, needs to be handled differently
             if not isinstance(node, int):
@@ -311,11 +311,12 @@ class Optimizer():
 
         for index, ckey in self.index_constraint().items():
 
+            edge = self.constraints[ckey].key()
+
             # TODO: weak check, needs to be handled differently
-            if isinstance(ckey, int):
+            if isinstance(edge, int):
                 continue
 
-            edge = ckey
             if self.form.is_trail_edge(edge):
                 name = "length"
             elif self.form.is_deviation_edge(edge):
