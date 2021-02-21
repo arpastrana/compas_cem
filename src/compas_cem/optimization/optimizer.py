@@ -14,7 +14,6 @@ from compas_cem.equilibrium import force_equilibrium
 from compas_cem.equilibrium import form_equilibrate
 from compas_cem.equilibrium import form_update
 
-from compas_cem.equilibrium.force_numpy import force_equilibrium_numpy
 from compas_cem.equilibrium.force_numpy import form_equilibrate_numpy
 
 

@@ -35,13 +35,13 @@ def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False):
         An optional callback function to run at every iteration.
     """
     # compute trails
-    # form.trails()
+    form.trails()
 
     # equilibrate form
     attrs = form_equilibrate_numpy(form, kmax, eps, verbose)  # bottleneck
 
     # update form node and edge attributes
-    form_update(form, *attrs)
+    form_update(form, **attrs)
 
 
 # @profile
@@ -232,7 +232,9 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.edge_attribute(key=edge, name="force", value=tforce)
 
     # assign reaction forces
-    for node, rforce in reaction_forces.items():
+    for node in form.support_nodes():
+    # for node, rforce in reaction_forces.items():
+        rforce = reaction_forces[node]
         form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
 
     # assign lengths to deviation edges
