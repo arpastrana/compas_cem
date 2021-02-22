@@ -10,6 +10,7 @@ from compas_cem.optimization import Optimizer
 from compas_cem.optimization import PointGoal
 from compas_cem.optimization import TrailEdgeConstraint
 
+
 # create a form diagram
 form = FormDiagram()
 

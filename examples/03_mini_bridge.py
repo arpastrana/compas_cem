@@ -1,8 +1,10 @@
 import os
+import matplotlib.pyplot as plt
 
 from time import time
 
 from compas_cem import JSON_DATA
+from compas_cem import TEMP
 
 from compas_cem.diagrams import FormDiagram
 
@@ -32,6 +34,7 @@ IN = os.path.abspath(os.path.join(JSON_DATA, "w1_cem_2d_bridge_rhino.json"))
 optimize = True
 plot = True
 view = False
+save_fig = True
 
 # ------------------------------------------------------------------------------
 # Form Diagram
@@ -93,7 +96,7 @@ if optimize:
     start = time()
 
     # optimization constants
-    opt_algorithm = "LD_SLSQP"  # LN_BOBYQA / LD_LBFGS / LD_SLSQP
+    opt_algorithm = "LD_LBFGS"  # LN_BOBYQA / LD_LBFGS / LD_SLSQP
     # opt_algorithm = "LN_BOBYQA"
 
     iters = 1000  # 100
@@ -115,7 +118,11 @@ if optimize:
                                          mode="autodiff",
                                          verbose=False)
 
-    # print out results
+   # print out results
+    print("Form. # Nodes: {}, # Edges: {}".format(form.number_of_nodes(),
+                                                  form.number_of_edges()))
+    print("Optimizer. # Variables {}, # Goals {}".format(optimizer.number_of_constraints(),
+                                                         optimizer.number_of_goals()))
     print("Elapsed time: {}".format(time() - start))
     print("Total error: {}".format(l_opt))
 
@@ -134,8 +141,8 @@ if optimize:
 if plot:
     plotter = FormPlotter(form, figsize=(16, 9))
 
-    plotter.draw_nodes(radius=0.30, text="key")
-    plotter.draw_edges(text="force")
+    plotter.draw_nodes(radius=0.30, text=None)
+    plotter.draw_edges(text=None)
     plotter.draw_loads(scale=-2.0)
     plotter.draw_residuals(scale=-0.25)
     # plotter.draw_segments(edge_lines)
@@ -153,5 +160,11 @@ if plot:
         )
 
     plotter.draw_points(points)
+
+    if save_fig:
+        path = os.path.abspath(os.path.join(TEMP, "iass_2021/mini_bridge"))
+        plt.autoscale()
+        plt.tight_layout()
+        plt.savefig(path, bbox_inches='tight', pad_inches=0)
 
     plotter.show()
