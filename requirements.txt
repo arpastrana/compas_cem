@@ -1,4 +1,4 @@
 COMPAS==0.16.2
 nlopt
 trimesh
-
+autograd
