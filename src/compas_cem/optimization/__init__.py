@@ -70,9 +70,5 @@ if not compas.IPY:
     from .grad import *
     from .optimizer import *
 
-    import jax
-    # Global flag to set a specific platform, must be used at startup.
-    jax.config.update('jax_platform_name', 'cpu')
-
 
 __all__ = [name for name in dir() if not name.startswith('_')]
