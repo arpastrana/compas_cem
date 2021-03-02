@@ -1,11 +1,4 @@
-# import jax.numpy as np
 import autograd.numpy as np
-
-# profiling stuff
-import atexit
-import line_profiler
-profile = line_profiler.LineProfiler()
-atexit.register(profile.print_stats)
 
 
 __all__ = ["force_equilibrium_numpy",
@@ -44,7 +37,6 @@ def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False):
     form_update(form, **attrs)
 
 
-# @profile
 def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
     """
     Equilibrate forces in a form.
@@ -244,7 +236,6 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.edge_attribute(key=(u, v), name="length", value=length)
 
 
-# @profile
 def node_equilibrium(form, node, t_vec, q_vec, rd_vec, ri_vec):
     """
     Calculates the equilibrium of trail and deviation forces at a node.
@@ -281,7 +272,7 @@ def node_equilibrium(form, node, t_vec, q_vec, rd_vec, ri_vec):
 
     return tvec_out
 
-# @profile
+
 def deviation_edges_resultant_vector(node, node_xyz, deviation_edges, edge_forces):
     """
     Adds up the force vectors of the deviation edges incident to a node.
@@ -437,7 +428,6 @@ def incoming_edge_vector(node, node_xyz, edge, normalize=False):
     return  vector_two_nodes(node_xyz[other], node_xyz[node], normalize)
 
 
-# @profile
 def vector_two_nodes(a, b, normalize=False):
     """
     Calculates the vector between the xyz coordinates of two noddes.

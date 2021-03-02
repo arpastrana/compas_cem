@@ -1,18 +1,10 @@
 import numpy as np
 
-# from jax import grad as agrad
 from autograd import grad as agrad
 
 
 __all__ = ["grad_finite_difference_numpy",
            "grad_autograd"]
-
-# profiling stuff
-import atexit
-import line_profiler
-profile = line_profiler.LineProfiler()
-atexit.register(profile.print_stats)
-
 
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
@@ -36,7 +28,6 @@ def grad_autograd(x, grad, grad_func, verbose=False):
 # Gradient calculation with finite differences
 # ------------------------------------------------------------------------------
 
-# @profile
 def grad_finite_difference_numpy(x, grad, x_func, step_size, verbose=False):
     """
     Finite differences

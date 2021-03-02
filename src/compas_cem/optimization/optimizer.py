@@ -19,11 +19,6 @@ from compas_cem.equilibrium.force_numpy import form_equilibrate_numpy
 
 __all__ = ["Optimizer"]
 
-# profiling stuff
-import atexit
-import line_profiler
-profile = line_profiler.LineProfiler()
-atexit.register(profile.print_stats)
 
 # ------------------------------------------------------------------------------
 # Optimizer

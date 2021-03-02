@@ -7,12 +7,6 @@ from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 from compas.geometry import distance_point_point
 
-# profiling stuff
-import atexit
-import line_profiler
-profile = line_profiler.LineProfiler()
-atexit.register(profile.print_stats)
-
 
 __all__ = ["force_equilibrium",
            "form_update",
@@ -51,7 +45,6 @@ def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     form_update(form, **eq_state)
 
 
-# @profile
 def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
     """
     Equilibrate forces in a form.
