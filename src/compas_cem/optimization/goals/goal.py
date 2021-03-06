@@ -1,4 +1,3 @@
-from abc import ABC
 from abc import abstractmethod
 
 from compas_cem.optimization import Serializable
@@ -9,7 +8,7 @@ __all__ = [
 ]
 
 
-class Goal(ABC, Serializable):
+class Goal(Serializable):
     """
     The blueprint of a goal.
     """
@@ -69,8 +68,8 @@ class Goal(ABC, Serializable):
         data = {}
         data["datatype"] = self.datatype()
         data["node_key"] = str(self._key)
-        data["target_datatype"] = self.object_datatype(self._target_geo)
-        data["target_geo"] = self._target_geo.to_data()
+        data["target_datatype"] = self.object_datatype(self._target)
+        data["target"] = self._target.to_data()
 
         return data
 
@@ -85,9 +84,9 @@ class Goal(ABC, Serializable):
             A data dictionary.
         """
         self._key = int(data["node_key"])
-        target_geo_cls = self.object_cls_from_dtype(data["target_datatype"])
-        target_geo = target_geo_cls.from_data(data["target_geo"])
-        self._target_geo = target_geo
+        target_cls = self.object_cls_from_dtype(data["target_datatype"])
+        target = target_cls.from_data(data["target"])
+        self._target = target
 
 
 if __name__ == "__main__":
