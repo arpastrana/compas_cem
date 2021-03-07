@@ -40,7 +40,7 @@ from compas_cem.optimization import DeviationEdgeConstraint
 # ------------------------------------------------------------------------------
 
 VIEW = True
-OPTIMIZE = True
+OPTIMIZE = 1
 
 MODE = "autodiff"
 # MODE = "numerical"
@@ -50,7 +50,7 @@ FIX_TO_LINE = True
 
 # bounds - deviation edge variables
 BOUND_D = 50.0
-INCLUDE_TRAILS_AS_VARIABLES = True
+INCLUDE_TRAILS_AS_VARIABLES = False
 BOUND_T = 0.1
 
 # loads
@@ -338,10 +338,8 @@ if OPTIMIZE:
                                          verbose=False)
 
    # print out results
-    print("Form. # Nodes: {}, # Edges: {}".format(form.number_of_nodes(),
-                                                  form.number_of_edges()))
-    print("Optimizer. # Variables {}, # Goals {}".format(optimizer.number_of_constraints(),
-                                                         optimizer.number_of_goals()))
+    print("Form. # Nodes: {}, # Edges: {}".format(form.number_of_nodes(), form.number_of_edges()))
+    print("Optimizer. # Variables {}, # Goals {}".format(optimizer.number_of_constraints(), optimizer.number_of_goals()))
     print("Elapsed time: {}".format(time() - start))
     print("Total error: {}".format(l_opt))
 
@@ -354,16 +352,6 @@ if OPTIMIZE:
             continue
         residual = length_vector(form.node_residual(node))
         print("node: {} reaction force: {}".format(node, residual))
-
-# ------------------------------------------------------------------------------
-# Prepare keys
-# ------------------------------------------------------------------------------
-
-ekeys = [edge for edge in form.edges() if fabs(form.edge_force(edge)) > 0.0]
-nkeys = [node for edge in ekeys for node in edge]
-
-ekeys=None
-nkeys=None
 
 # ------------------------------------------------------------------------------
 # Viewer
