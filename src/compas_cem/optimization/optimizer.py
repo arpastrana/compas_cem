@@ -150,7 +150,7 @@ class Optimizer():
 # Solver
 # ------------------------------------------------------------------------------
 #
-    def solve_nlopt(self, form, algorithm, iters, step_size, stopval=None, ftol=None, mode=None, verbose=False):
+    def solve_nlopt(self, form, algorithm, iters, step_size, stop_val=None, ftol=None, mode=None, verbose=False):
         """
         Solve an optimization problem with NLOpt.
         """
@@ -184,7 +184,7 @@ class Optimizer():
             "bounds_low": bounds_low,
             "bounds_up": bounds_up,
             "iters": iters,
-            "stopval": stopval,
+            "stop_val": stop_val,
             "ftol": ftol
         }
 
@@ -209,7 +209,7 @@ class Optimizer():
         # TODO: before exiting function, update form here!
 
         # exit like a champion
-        return x_opt, loss_opt
+        return x_opt, loss_opt, evals
 
 # ------------------------------------------------------------------------------
 # Optimization parameters
