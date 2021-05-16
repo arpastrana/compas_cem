@@ -49,6 +49,10 @@ class Diagram(NodeMixins, EdgeMixins, Network):
         for u, v in edges:
             other_node = u if u != node else v
             vector = self.two_node_vector((other_node, node), normalize)
+
+            if normalize:
+                vector = normalize_vector(vector)
+
             vectors.append(vector)
 
         return vectors
