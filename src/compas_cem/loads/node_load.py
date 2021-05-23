@@ -1,11 +1,15 @@
-from compas_rhino.geometry import RhinoPoint
-from compas_rhino.geometry import RhinoVector
+import compas
+
+if compas.RHINO:
+    from compas_rhino.geometry import RhinoPoint
+    from compas_rhino.geometry import RhinoVector
 
 
-__all__ = [
-    "NodeLoad"
-]
+__all__ = ["NodeLoad"]
 
+# ==============================================================================
+# Node Load
+# ==============================================================================
 
 class NodeLoad(object):
     """

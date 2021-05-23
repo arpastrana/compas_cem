@@ -1,5 +1,14 @@
-from compas_rhino.geometry import RhinoPoint
+import compas
 
+if compas.RHINO:
+    from compas_rhino.geometry import RhinoPoint
+
+
+__all__ = ["Node"]
+
+# ==============================================================================
+# Node
+# ==============================================================================
 
 class Node(object):
     """
