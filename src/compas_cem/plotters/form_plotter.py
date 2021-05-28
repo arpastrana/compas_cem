@@ -146,7 +146,7 @@ class FormPlotter(NetworkPlotter):
         cmap = self.node_colors
         ds = self.datastructure
         cmap["d"] = (255, 255, 255)
-        nc = {n: cmap[attr.get("type", "d")] for n, attr in ds.nodes(True)}
+        nc = {n: cmap[ds.node_attribute(n, "type") or "d"] for n in ds.nodes()}
 
         text = kwargs.get("text")
         if text and text != "key":
@@ -185,9 +185,9 @@ class FormPlotter(NetworkPlotter):
         that maps ``{edge_key: attribute}`` is supplied, specific values can be 
         assigned individually.
         """
-        cmap = self.edge_state_colors
         ds = self.datastructure
-        ec = {e: cmap[copysign(1.0, attr.get("force", 0.0))] for e, attr in ds.edges(True)}
+        cmap = self.edge_state_colors
+        ec = {e: cmap[copysign(1.0, ds.edge_attribute(e, "force") or 0.0)] for e in ds.edges()}
 
         text = kwargs.get("text")
         if text and text != "key":

@@ -1,9 +1,7 @@
 from compas_cem.diagrams import Diagram
 
 
-__all__ = [
-    "FormDiagram"
-]
+__all__ = ["FormDiagram"]
 
 # ==============================================================================
 # Form Diagram
@@ -28,26 +26,22 @@ class FormDiagram(Diagram):
 
     def __init__(self, *args, **kwargs):
         super(FormDiagram, self).__init__(*args, **kwargs)
-        
-        self.update_default_node_attributes({
-                                            "x": 0.0,
-                                            "y": 0.0,
-                                            "z": 0.0,
-                                            "qx": 0.0,
-                                            "qy": 0.0,
-                                            "qz": 0.0,
-                                            "rx": 0.0,
-                                            "ry": 0.0,
-                                            "rz": 0.0,
-                                            "type": None,
-                                            "_w": None
-                                            })
 
-        self.update_default_edge_attributes({
-                                            "type": None,
-                                            "length": 0.0,
-                                            "force": 0.0
-                                            })
+        self.update_default_node_attributes({"x": 0.0,
+                                             "y": 0.0,
+                                             "z": 0.0,
+                                             "qx": 0.0,
+                                             "qy": 0.0,
+                                             "qz": 0.0,
+                                             "rx": 0.0,
+                                             "ry": 0.0,
+                                             "rz": 0.0,
+                                             "type": None,
+                                             "_w": None})
+
+        self.update_default_edge_attributes({"type": None,
+                                             "length": 0.0,
+                                             "force": 0.0})
 
         self.attributes["trails"] = {}
         self.attributes["gkey_node"] = {}
@@ -62,7 +56,7 @@ class FormDiagram(Diagram):
         """
         """
         return self.attributes["tol"]
-    
+
     @tol.setter
     def tol(self, tol):
         """
@@ -96,7 +90,7 @@ class FormDiagram(Diagram):
         if value is None:
             value = support.xyz
         node = self.node_key(value)
-        
+
         if node is None:
             raise ValueError("A node doesn't exist at {} yet!".format(value))
 
@@ -137,7 +131,7 @@ class FormDiagram(Diagram):
         trails : ``dict``
             The trails.
             Their keys in the dictionary correspond to the found root nodes.
-        
+
         Note
         ----
             Root nodes are computed as part of the trail-making process.
@@ -163,7 +157,7 @@ class FormDiagram(Diagram):
 
                 last_node = node
                 neighbors = self.neighbors(node)
-                
+
                 while neighbors:
                     neighbor = neighbors.pop()
 
@@ -213,7 +207,6 @@ class FormDiagram(Diagram):
 
         return tr
 
-
     def trails_2(self):
         """
         The trails stored as an internal attribute.
@@ -225,7 +218,6 @@ class FormDiagram(Diagram):
             Every trail is mapped with the root node as key.
         """
         return self.attributes["trails"]
-
 
     def number_of_trails(self):
         """
@@ -285,7 +277,7 @@ class FormDiagram(Diagram):
         ----------
         node : ``int``
             A node key.
-        
+
         Returns
         -------
         deviation_edges : ``list``
@@ -302,7 +294,7 @@ class FormDiagram(Diagram):
         ----------
         node : ``int``
             A node key.
-        
+
         Returns
         -------
         trail_edges : ``list``
@@ -319,7 +311,7 @@ class FormDiagram(Diagram):
         ----------
         node : ``int``
             A node key.
-        
+
         Returns
         -------
         deviation_edges : ``list``
@@ -328,7 +320,8 @@ class FormDiagram(Diagram):
 
         Note
         ----
-            Direct deviation edges have both end-nodes with equal topological distance to a root node. Distances must be precomputed.
+        Direct deviation edges have both end-nodes with equal topological
+        distance to a root node. Distances must be precomputed.
         """
         return self._connected_edges_predicate(node, self._is_direct_deviation_edge)
 
@@ -340,7 +333,7 @@ class FormDiagram(Diagram):
         ----------
         node : ``int``
             A node key.
-        
+
         Returns
         -------
         deviation_edges : ``list``
@@ -349,7 +342,8 @@ class FormDiagram(Diagram):
 
         Note
         ----
-            Indirect deviation edges have both end-nodes with unequal topological distance to a root node. Distances must be precomputed.
+        Indirect deviation edges have both end-nodes with unequal topological
+        distance to a root node. Distances must be precomputed.
         """
         return self._connected_edges_predicate(node, self._is_indirect_deviation_edge)
 
@@ -363,7 +357,7 @@ class FormDiagram(Diagram):
             A node key.
         predicate : ``func``
             A predicate function to search for a specific edge type.
-        
+
         Returns
         -------
         selected_edges : ``list``
@@ -448,7 +442,7 @@ class FormDiagram(Diagram):
     def node_load(self, node):
         """
         Gets the load applied at a node.
-        
+
         Parameters
         ----------
         node : ``int``
@@ -458,7 +452,7 @@ class FormDiagram(Diagram):
             If load is ``None``, this function queries the load vector at the
             node.
             Otherwise, it assigns it. Defaults to ``None``.
-        
+
         Returns
         -------
         load_vector: ``list``
@@ -469,12 +463,12 @@ class FormDiagram(Diagram):
     def node_residual(self, node):
         """
         Gets the residual force vector at a node.
-        
+
         Parameters
         ----------
         node : ``int``
             A node key.
-        
+
         Returns
         -------
         type : ``list``
@@ -495,14 +489,14 @@ class FormDiagram(Diagram):
         ----------
         node : ``int``
             A node key.
-        
+
         Returns
         -------
         flag : ``bool``
             ``True``if the node is a root node. ``False`` otherwise.
         """
         return self.node_attribute(key=node, name="type") == "root"
-    
+
     def is_node_support(self, node):
         """
         Checks if a node is a support.
@@ -511,7 +505,7 @@ class FormDiagram(Diagram):
         ----------
         node : ``int``
             A node key.
-        
+
         Returns
         -------
         flag : ``bool``
@@ -532,7 +526,7 @@ class FormDiagram(Diagram):
         ----------
         edge : ``tuple``
             The key of the edge to test.
-        
+
         Returns
         -------
         flag : ``bool``
@@ -550,7 +544,7 @@ class FormDiagram(Diagram):
         ----------
         edge : ``tuple``
             The key of the edge to test.
-        
+
         Returns
         -------
         flag : ``bool``
@@ -568,7 +562,7 @@ class FormDiagram(Diagram):
         ----------
         edge : ``tuple``
             The key of the edge to test.
-        
+
         Returns
         -------
         flag : ``bool``
@@ -585,12 +579,12 @@ class FormDiagram(Diagram):
     def _is_indirect_deviation_edge(self, edge):
         """
         Tests if a deviation edge is indirect.
-        
+
         Parameters
         ----------
         edge : ``tuple``
             The key of the edge to test.
-        
+
         Returns
         -------
         flag : ``bool``
@@ -603,7 +597,7 @@ class FormDiagram(Diagram):
                 return True
 
         return self._is_deviation_edge_predicate(edge, predicate)
-    
+
     def _is_deviation_edge_predicate(self, edge, predicate):
         """
         Tests whether or not a deviation edge fulfills a set of conditions.
@@ -615,13 +609,13 @@ class FormDiagram(Diagram):
         predicate : ``func``
             A function that for user-defined test conditions.
             Predicate must take in a single edge key as argument.
-        
+
         Returns
         -------
         flag : ``bool``
             ``True``if the deviation edge meets the predicate condition.
             ``False`` otherwise.
-        
+
         Notes
         -----
         Similar to ``FormDiagram.edges_where_predicate()``.

@@ -1,5 +1,14 @@
-from compas_rhino.geometry import RhinoLine
+import compas
 
+if compas.RHINO:
+    from compas_rhino.geometry import RhinoLine
+
+
+__all__ = ["Edge"]
+
+# ==============================================================================
+# Edge
+# ==============================================================================
 
 class Edge(object):
     """
