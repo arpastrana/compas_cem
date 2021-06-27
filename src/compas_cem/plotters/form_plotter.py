@@ -1,20 +1,26 @@
-from math import copysign
+import matplotlib.pyplot as plt
 
-from functools import partial
+from math import copysign
 
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
 from compas.geometry import scale_vector
+from compas.geometry import normalize_vector
+from compas.geometry import translate_points
 
 from compas.utilities import geometric_key
-
 from compas_plotters import NetworkPlotter
+
+from compas_cem import COLORS
+
+
+__all__ = ["FormPlotter"]
 
 
 class FormPlotter(NetworkPlotter):
     """
     A plotter tailored to draw form-related matters.
-    
+
     Parameters
     ----------
     form_diagram : :class:`compas_cem.diagrams.FormDiagram`
@@ -22,23 +28,13 @@ class FormPlotter(NetworkPlotter):
     """
     def __init__(self, form_diagram, *args, **kwargs):
         super(FormPlotter, self).__init__(form_diagram, *args, **kwargs)
-        
-        self._node_colors = {
-            "support": (0, 153, 0),  # green
-            "root": (153, 102, 255),  # root
-            "default": (150, 150, 150)  # gray
-            }
 
-        self._edge_colors = {
-            "trail": (255, 0, 255),
-            "deviation": (0, 255, 0)
-            }
+        self._edge_colors = {"trail": COLORS["edge"],
+                             "deviation": COLORS["edge"]}
 
-        self._edge_state_colors = {
-            -1: (0, 0, 255),
-            1: (255, 0, 0),
-            0: (0, 0, 0)
-            }
+        self._edge_state_colors = {-1: COLORS["compression"],
+                                   1: COLORS["tension"],
+                                   0: COLORS["edge"]}
 
         self._form = self.datastructure
         self._float_precision = "3f"
@@ -54,33 +50,6 @@ class FormPlotter(NetworkPlotter):
             A form diagram.
         """
         return self._form
-        
-    @property
-    def node_colors(self):
-        """
-        The default colors to draw the nodes of a form diagram.
-
-        Returns
-        -------
-        node_colors : ``dict`` of ``color``
-            For supports, green (0, 153, 0).
-            For root nodes, cyan (153, 102, 255).
-            Otherwise, gray (150, 150, 150).
-        """
-        return self._node_colors
-
-    @property
-    def edge_colors(self):
-        """
-        The default colors to draw the edges of a form diagram.
-
-        Returns
-        -------
-        edge_colors : ``dict`` of ``color``
-            For trail edges, magenta (255, 0, 155).
-            For deviation edges, green (0, 255, 0).
-        """
-        return self._edge_colors
 
     @property
     def edge_state_colors(self):
@@ -107,6 +76,24 @@ class FormPlotter(NetworkPlotter):
             The float precision value. Defaults to ``3f``.
         """
         return self._float_precision
+
+    def save(self, filepath, tight=False, **kwargs):
+        """
+        Saves the plot to a file.
+
+        Parameters
+        ----------
+        filepath : str
+            Full path of the file.
+        """
+
+        if tight:
+            plt.tight_layout()
+            kwargs_tight = {"bbox_inches": "tight", "pad_inches": 0.0}
+            kwargs.update(kwargs_tight)
+
+        return super(FormPlotter, self).save(filepath, **kwargs)
+
 
     def draw_nodes(self, *args, **kwargs):
         """
@@ -139,20 +126,19 @@ class FormPlotter(NetworkPlotter):
         Notes
         -----
         When the parameters are passed as single value, this will be applied to
-        all the nodes or edges in the ``FormDiagram``. If instead, a dictionary 
-        that maps ``{node_key: attribute}`` is supplied, specific values can be 
+        all the nodes or edges in the ``FormDiagram``. If instead, a dictionary
+        that maps ``{node_key: attribute}`` is supplied, specific values can be
         assigned individually.
         """
-        cmap = self.node_colors
         ds = self.datastructure
-        cmap["d"] = (255, 255, 255)
-        nc = {n: cmap[ds.node_attribute(n, "type") or "d"] for n in ds.nodes()}
+        fc = COLORS["node"]
+        # nc = {n: cmap[ds.node_attribute(n, "type") or "d"] for n in ds.nodes()}
 
         text = kwargs.get("text")
         if text and text != "key":
             kwargs["text"] = self._text_labels_nodes(text)
 
-        super(FormPlotter, self).draw_nodes(facecolor=nc, *args, **kwargs)
+        super(FormPlotter, self).draw_nodes(facecolor=fc, *args, **kwargs)
 
     def draw_edges(self, *args, **kwargs):
         """
@@ -181,8 +167,8 @@ class FormPlotter(NetworkPlotter):
         Notes
         -----
         When the parameters are passed as single value, this will be applied to
-        all the nodes or edges in the ``FormDiagram``. If instead, a dictionary 
-        that maps ``{edge_key: attribute}`` is supplied, specific values can be 
+        all the nodes or edges in the ``FormDiagram``. If instead, a dictionary
+        that maps ``{edge_key: attribute}`` is supplied, specific values can be
         assigned individually.
         """
         ds = self.datastructure
@@ -193,57 +179,74 @@ class FormPlotter(NetworkPlotter):
         if text and text != "key":
             kwargs["text"] = self._text_labels_edges(text)
 
-        super(FormPlotter, self).draw_edges(color=ec, *args, **kwargs)
+        return super(FormPlotter, self).draw_edges(color=ec, *args, **kwargs)
 
-    def draw_loads(self, keys=None, scale=1.0, color=(102, 255, 51), width=2.0, tol=1e-3):
+    def draw_loads(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
         """
         Draws the node loads in a ``FormDiagram`` as scaled arrows.
 
         Parameters
         ----------
         keys : ``list``
-            The list of node keys where to draw forces. 
+            The list of node keys where to draw forces.
             If nodes is ``None``, all nodes in will be considered.
             Defaults to ``None``.
         scale : ``float``
             The scale of the load arrows. Defaults to ``1.0``.
-        color : ``tuple``
-            The arrows' uniform color in rgb. Defaults to ``(102, 255, 51)``. 
         width : ``float``
-            The arrows uniform display width. Defaults to ``4.0``.
+            The arrows uniform display width. Defaults to ``1.0``.
+        gap : ``float``
+            The offset between the node and the load. Defaults to ``0.2``.
         tol : ``float``
-            The minimum force magnitude to draw. Defaults to ``1e-3``. 
+            The minimum force magnitude to draw. Defaults to ``1e-3``.
         """
         if not keys:
             keys = list(self.datastructure.nodes())
         attrs = ["qx", "qy", "qz"]
-        self._draw_forces(keys, attrs, scale, color, width, tol)
+        color = COLORS["load"]
+        shift = {key: False for key in keys}
+        self._draw_forces(keys, attrs, scale, color, width, shift, gap, tol)
 
-    def draw_residuals(self, keys=None, scale=1.0, color=(0, 204, 255), width=3.0, tol=1e-3):
+    def draw_residuals(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
         """
         Draws the node residual forces in a ``FormDiagram`` as scaled arrows.
 
         Parameters
         ----------
         keys : ``list``
-            The list of node keys where to draw forces. 
+            The list of node keys where to draw forces.
             If nodes is ``None``, all nodes in will be considered.
             Defaults to ``None``.
         scale : ``float``
             The scale of the residual arrows. Defaults to ``1.0``.
-        color : ``tuple``
-            The arrows' uniform color in rgb. Defaults to ``(0, 204, 255)``. 
         width : ``float``
-            The arrows uniform display width. Defaults to ``3.0``.
+            The arrows uniform display width. Defaults to ``1.0``.
+        gap : ``float``
+            The offset between the node and the force. Defaults to ``0.2``.
         tol : ``float``
-            The minimum force magnitude to draw. Defaults to ``1e-3``. 
+            The minimum force magnitude to draw. Defaults to ``1e-3``.
         """
         if not keys:
-            keys = list(self.datastructure.nodes())
+            keys = list(self.datastructure.support_nodes())
         attrs = ["rx", "ry", "rz"]
-        self._draw_forces(keys, attrs, scale, color, width, tol)
+        color = COLORS["support_force"]
 
-    def _draw_forces(self, keys, attrs, scale, color, width, tol):
+        # TODO: needs a more robust check for arrow orientation
+        # what we need is to know whether the arrow needs a full shift.
+        # here we say we shift if the connected trail edge is in compression
+        form = self.datastructure
+        shift = {}
+        for key in keys:
+            # every support must connect to only one trail edge
+            s = False
+            trail_edge = form.connected_trail_edges(key).pop()
+            if form.edge_force(trail_edge) < 0.0:
+                s = True
+            shift[key] = s
+
+        self._draw_forces(keys, attrs, scale, color, width, shift, gap, tol)
+
+    def _draw_forces(self, keys, attrs, scale, color, width, shift, gap, tol):
         """
         Base method to draws forces (residuals or loads) as scaled arrows.
 
@@ -259,30 +262,48 @@ class FormPlotter(NetworkPlotter):
             The forces' color in rgb.
         width : ``float``
             The forces  display width.
+        shift : ``bool``
+            A flat to shift an arrow one length along its own axis.
+        gap : ``float``
+            The offset between the node and the force.
         tol : ``float``
             The minimum force magnitude to draw.
         """
         ds = self.datastructure
         arrows = []
 
-        for node in ds.nodes():
+        for node in keys:
             q_vec = ds.node_attributes(node, attrs)
-            
-            if length_vector(q_vec) < tol:
+            q_vec_scaled = scale_vector(q_vec, scale)
+            q_vec_norm = normalize_vector(q_vec)
+            q_len = length_vector(q_vec)
+
+            if q_len < tol:
                 continue
 
             arrow = {}
-            arrow["start"] = ds.node_xyz(node)
-            pt = scale_vector(q_vec, -scale)
-            arrow["end"] = add_vectors(arrow["start"], pt)
+            start = ds.node_xyz(node)
+            end = add_vectors(start, q_vec_scaled)
+
+            # shift
+            gap_arrow = gap
+            if shift[node]:
+                gap_arrow = (gap + length_vector(q_vec_scaled)) * -1
+
+            gap_vector = scale_vector(q_vec_norm, gap_arrow)
+            start, end = translate_points([start, end], gap_vector)
+
+            # create gap
+            arrow["start"] = start
+            arrow["end"] = end
             arrow["color"] = color
             arrow["width"] = width
-            
+
             arrows.append(arrow)
-        
+
         super(FormPlotter, self).draw_arrows(arrows)
 
-    def draw_segments(self, segments, color=(40, 40, 40), width=0.5):
+    def draw_segments(self, segments, color=(50, 50, 50), width=0.5, ls="--"):
         """
         Draws additional line segments on a ``FormDiagram``.
 
@@ -291,7 +312,7 @@ class FormPlotter(NetworkPlotter):
         segments : ``list``
             The line segments as tuples of xyz coordinates.
         color : ``tuple``
-            The lines uniform color in rgb. Defaults to gray, ``(40, 40, 40)``. 
+            The lines uniform color in rgb. Defaults to gray, ``(40, 40, 40)``.
         width : ``float``
             The lines' uniform display width. Defaults to ``0.5``.
         """
@@ -307,8 +328,11 @@ class FormPlotter(NetworkPlotter):
 
             lines.append(line)
 
-        super(FormPlotter, self).draw_lines(lines)
-    
+        lines = super(FormPlotter, self).draw_lines(lines)
+        lines.set_linestyle(ls)
+
+        return lines
+
     def _text_labels_nodes(self, text_tag):
         """
         Generates text labels to plot on the nodes of a ``FormDiagram``.
@@ -317,7 +341,7 @@ class FormPlotter(NetworkPlotter):
         -----
         text_tag : `str`
             Tag query. Supported tags are: "xyz" and "key-xyz".
-        
+
         Returns
         -------
         text_labels : ``list``
@@ -334,7 +358,7 @@ class FormPlotter(NetworkPlotter):
             }
 
         if text_tag not in tags_formatter:
-            return
+            return None
 
         text_labels = {}
         formatter = tags_formatter[text_tag]
@@ -342,7 +366,7 @@ class FormPlotter(NetworkPlotter):
         for node in ds.nodes():
             label = formatter(node)
             text_labels[node] = label
-        
+
         return text_labels
 
     def _text_labels_edges(self, text_tag):
@@ -354,7 +378,7 @@ class FormPlotter(NetworkPlotter):
         text_tag : `str`
             Tag query.
             Supported tags are: "force", "length", and "force-length".
-        
+
         Returns
         -------
         text_labels : ``list``
@@ -367,14 +391,12 @@ class FormPlotter(NetworkPlotter):
         length_format = lambda x: "{0:.{1}}".format(ds.edge_length(*x), precision)
         force_length_format = lambda x: "f: {} / lt: {}".format(force_format(x), length_format(x))
 
-        tags_formatter = {
-            "force": force_format,
-            "length": length_format,
-            "force-length": force_length_format
-            }
+        tags_formatter = {"force": force_format,
+                          "length": length_format,
+                          "force-length": force_length_format}
 
         if text_tag not in tags_formatter:
-            return
+            return None
 
         text_labels = {}
         formatter = tags_formatter[text_tag]

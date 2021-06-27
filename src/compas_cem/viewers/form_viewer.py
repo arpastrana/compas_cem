@@ -14,6 +14,11 @@ from compas.utilities import normalize_values
 
 from compas_viewers.objectviewer import ObjectViewer
 
+from compas_cem import COLORS
+
+
+__all__ = ["FormViewer"]
+
 
 class FormViewer(ObjectViewer):
     """
@@ -26,22 +31,16 @@ class FormViewer(ObjectViewer):
 
         self.form = form
 
-        self.node_colors = {
-            "support": (0, 153, 0),  # green
-            "root": (153, 102, 255),  # root
-            "default": (150, 150, 150)  # gray
-            }
+        self._node_colors = {"support": COLORS["node_support"],
+                             "root": COLORS["node_origin"],
+                             "default": COLORS["node"]}
 
-        self.edge_colors = {
-            "trail": (255, 0, 255),
-            "deviation": (0, 255, 0)
-            }
+        self._edge_colors = {"trail": COLORS["edge"],
+                             "deviation": COLORS["edge"]}
 
-        self.edge_state_colors = {
-            -1: (0, 0, 255),
-            1: (255, 0, 0),
-            0: (0, 0, 0)
-            }
+        self._edge_state_colors = {-1: COLORS["compression"],
+                                   1: COLORS["tension"],
+                                   0: COLORS["edge"]}
 
         self.point_size = 10.0
         self.line_width = 5.0

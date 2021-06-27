@@ -21,6 +21,13 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .form_plotter import *
+import compas
+
+if not compas.IPY:
+    from .form_plotter import *
+    from .topology_plotter import *
+
+from .proxy import *
+
 
 __all__ = [name for name in dir() if not name.startswith('_')]
