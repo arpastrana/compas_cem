@@ -1,8 +1,12 @@
+import matplotlib.pyplot as plt
+
 from math import copysign
+from math import pi
 
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
 from compas.geometry import scale_vector
+from compas.geometry import rotate_points_xy
 
 from compas.utilities import geometric_key
 from compas_plotters import NetworkPlotter
@@ -13,7 +17,7 @@ from compas_cem import COLORS
 __all__ = ["TopologyPlotter"]
 
 
-class TopologyPlotter (NetworkPlotter):
+class TopologyPlotter(NetworkPlotter):
     """
     A plotter tailored to draw topology matters.
 
@@ -29,9 +33,9 @@ class TopologyPlotter (NetworkPlotter):
                              "root": COLORS["node_origin"],
                              "default": COLORS["node"]}
 
-        self._edge_state_colors = {-1: COLORS["compression"],
-                                   1: COLORS["tension"],
-                                   0: COLORS["edge"]}
+        self._edge_state_colors = {-1.0: COLORS["compression"],
+                                   1.0: COLORS["tension"],
+                                   0.0: COLORS["edge"]}
 
         self._edge_linestyles = {"trail": "-",  # solid
                                  "deviation": "--"}  # dashed
@@ -141,7 +145,7 @@ class TopologyPlotter (NetworkPlotter):
 
         super(TopologyPlotter, self).draw_nodes(facecolor=nc, *args, **kwargs)
 
-    def draw_edges(self, keys=None, *args, **kwargs):
+    def draw_edges(self, *args, **kwargs):
         """
         Draws the edges of a ``TopologyDiagram``.
 
@@ -174,24 +178,29 @@ class TopologyPlotter (NetworkPlotter):
         specific values can be assigned individually.
         """
         ds = self.datastructure
-
-        if keys is None:
-            keys = list(ds.edges())
-
         cmap = self.edge_state_colors
-        ec = {e: cmap[copysign(1.0, ds.edge_attribute(e, "force") or 0.0)] for e in keys}
 
-        edges = super(TopologyPlotter, self).draw_edges(keys=keys, color=ec, *args, **kwargs)
+        keys = list(ds.edges())
+
+        ec = {}
+        for edge in keys:
+            if ds.is_trail_edge(edge):
+                attr_name = "length"
+            else:
+                attr_name = "force"
+            ec[edge] = cmap[copysign(1.0, ds.edge_attribute(edge, attr_name))]
+
+        edges = super(TopologyPlotter, self).draw_edges(color=ec, *args, **kwargs)
 
         lsmap = self.edge_linestyles
         els = [lsmap[ds.edge_attribute(e, "type")] for e in keys]
         edges.set_linestyle(els)
 
-        return edges
+        return keys
 
-    def draw_loads(self, keys=None, scale=1.0, width=1.0, tol=1e-3):
+    def draw_loads(self, keys=None, radius=0.1, width=0.5):
         """
-        Draws the node loads in a ``FormDiagram`` as scaled arrows.
+        Draws the node loads as crosses inscribed in a circle.
 
         Parameters
         ----------
@@ -199,80 +208,62 @@ class TopologyPlotter (NetworkPlotter):
             The list of node keys where to draw forces.
             If nodes is ``None``, all nodes in will be considered.
             Defaults to ``None``.
-        scale : ``float``
-            The scale of the load arrows. Defaults to ``1.0``.
+        radius : ``float``, ``dict`` of ``float``
+            The radius of the loads. Defaults to ``0.1``.
         width : ``float``
-            The arrows uniform display width. Defaults to ``4.0``.
-        tol : ``float``
-            The minimum force magnitude to draw. Defaults to ``1e-3``.
+            The arrows uniform display width. Defaults to ``0.5``.
         """
+        topology = self.datastructure
+        flips = (-1, 1)
+        angle = pi / 4.0
+
         if not keys:
-            keys = list(self.datastructure.nodes())
-        attrs = ["qx", "qy", "qz"]
-        color = COLORS["load"]
-        self._draw_forces(keys, attrs, scale, color, width, tol)
+            keys = list(topology.nodes())
 
-    def draw_residuals(self, keys=None, scale=1.0, width=1.0, tol=1e-3):
-        """
-        Draws the node residual forces in a ``FormDiagram`` as scaled arrows.
-
-        Parameters
-        ----------
-        keys : ``list``
-            The list of node keys where to draw forces.
-            If nodes is ``None``, all nodes in will be considered.
-            Defaults to ``None``.
-        scale : ``float``
-            The scale of the residual arrows. Defaults to ``1.0``.
-        width : ``float``
-            The arrows uniform display width. Defaults to ``3.0``.
-        tol : ``float``
-            The minimum force magnitude to draw. Defaults to ``1e-3``.
-        """
-        if not keys:
-            keys = list(self.datastructure.nodes())
-        attrs = ["rx", "ry", "rz"]
-        color = COLORS["support_force"]
-        self._draw_forces(keys, attrs, scale, color, width, tol)
-
-    def _draw_forces(self, keys, attrs, scale, color, width, tol):
-        """
-        Base method to draws forces (residuals or loads) as scaled arrows.
-
-        Parameters
-        ----------
-        keys : ``list``
-            The list of node keys where to draw forces.
-        attrs : ``list``
-            The attribute names of the force vector to draw.
-        scale : ``float``
-            The forces scale factor.
-        color : ``tuple``
-            The forces' color in rgb.
-        width : ``float``
-            The forces  display width.
-        tol : ``float``
-            The minimum force magnitude to draw.
-        """
-        ds = self.datastructure
-        arrows = []
-
-        for node in ds.nodes():
-            q_vec = ds.node_attributes(node, attrs)
-
-            if length_vector(q_vec) < tol:
+        loads = []
+        for node in keys:
+            if not topology.is_node_loaded(node):
                 continue
 
-            arrow = {}
-            arrow["start"] = ds.node_xyz(node)
-            pt = scale_vector(q_vec, -scale)
-            arrow["end"] = add_vectors(arrow["start"], pt)
-            arrow["color"] = color
-            arrow["width"] = width
+            xyz = topology.node_coordinates(node)
+            line = [add_vectors(xyz, [radius * f, 0.0, 0.0]) for f in flips]
 
-            arrows.append(arrow)
+            for f in flips:
+                start, end = rotate_points_xy(line, angle=f*angle, origin=xyz)
 
-        super(TopologyPlotter, self).draw_arrows(arrows)
+                load = {}
+                load['start'] = start
+                load['end'] = end
+                load['color'] = (0, 0, 0) # black
+                load['width'] = width
+
+                loads.append(load)
+
+        lines = self.draw_lines(loads)
+        lines.set_zorder(4000)
+
+        return lines
+
+
+    def save(self, filepath, tight=True, autoscale=True, bbox_inches="tight", pad_inches=0.0, **kwargs):
+        """
+        Saves the plot to a file.
+
+        Parameters
+        ----------
+        filepath : str
+            Full path of the file.
+        """
+        if autoscale:
+            self.axes.autoscale(tight=tight)
+
+        if tight:
+            plt.tight_layout()
+            kwargs_tight = {"bbox_inches": bbox_inches, "pad_inches": pad_inches}
+            kwargs.update(kwargs_tight)
+
+        plt.savefig(filepath, **kwargs)
+
 
 
 if __name__ == "__main__":

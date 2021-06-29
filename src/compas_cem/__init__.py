@@ -46,7 +46,6 @@ COLORS = {"tension": (227, 6, 75),  # red
           "node_support": (0, 150, 10),  # green
           "node_origin": (155, 100, 255),  # purple
           "load": (0, 150, 10),  # green
-          # "support_force": (0, 204, 255),  # cyan
           "support_force": (0, 150, 10),  # green
           "trail": (250, 80, 210),  # pink
           "auxiliary_trail": (255, 155, 15)  # orange

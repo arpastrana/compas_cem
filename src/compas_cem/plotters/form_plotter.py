@@ -77,7 +77,7 @@ class FormPlotter(NetworkPlotter):
         """
         return self._float_precision
 
-    def save(self, filepath, tight=False, **kwargs):
+    def save(self, filepath, tight=True, autoscale=True, bbox_inches="tight", pad_inches=0.0, **kwargs):
         """
         Saves the plot to a file.
 
@@ -86,14 +86,15 @@ class FormPlotter(NetworkPlotter):
         filepath : str
             Full path of the file.
         """
+        if autoscale:
+            self.axes.autoscale(tight=tight)
 
         if tight:
             plt.tight_layout()
-            kwargs_tight = {"bbox_inches": "tight", "pad_inches": 0.0}
+            kwargs_tight = {"bbox_inches": bbox_inches, "pad_inches": pad_inches}
             kwargs.update(kwargs_tight)
 
-        return super(FormPlotter, self).save(filepath, **kwargs)
-
+        plt.savefig(filepath, **kwargs)
 
     def draw_nodes(self, *args, **kwargs):
         """
@@ -132,7 +133,6 @@ class FormPlotter(NetworkPlotter):
         """
         ds = self.datastructure
         fc = COLORS["node"]
-        # nc = {n: cmap[ds.node_attribute(n, "type") or "d"] for n in ds.nodes()}
 
         text = kwargs.get("text")
         if text and text != "key":
@@ -406,8 +406,6 @@ class FormPlotter(NetworkPlotter):
             text_labels[edge] = label
 
         return text_labels
-
-
 
 if __name__ == "__main__":
     pass
