@@ -1,3 +1,5 @@
+from compas.geometry import length_vector
+
 from compas_cem.diagrams import Diagram
 
 
@@ -513,6 +515,23 @@ class FormDiagram(Diagram):
         """
         return self.node_attribute(key=node, name="type") == "support"
 
+    def is_node_loaded(self, node, min_force=1e-6):
+        """
+        Checks if there is a lode applied to a node.
+
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+        min_force : ``float``
+            The minimum force magnitude to consider a node loaded.
+            Defaults to ``1e-6``.
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the node is a support. ``False`` otherwise.
+        """
+        return length_vector(self.node_load(node)) > min_force
 
 # ==============================================================================
 # Edge Filters
