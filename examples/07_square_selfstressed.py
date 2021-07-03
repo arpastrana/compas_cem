@@ -120,17 +120,17 @@ stopval = 1e-6  # 1e-4
 step_size = 1e-3  # 1e-4
 
 # optimize
-x_opt, l_opt = optimizer.solve_nlopt(form,
-                                     opt_algorithm,
-                                     iters,
-                                     stopval,
-                                     step_size,
-                                     mode="autodiff",
-                                     verbose=False)
+# x_opt, l_opt = optimizer.solve_nlopt(form,
+#                                      opt_algorithm,
+#                                      iters,
+#                                      stopval,
+#                                      step_size,
+#                                      mode="autodiff",
+#                                      verbose=False)
 
-# print out results
-print("Elapsed time: {}".format(time() - start))
-print("Total error: {}".format(l_opt))
+# # print out results
+# print("Elapsed time: {}".format(time() - start))
+# print("Total error: {}".format(l_opt))
 
 # ------------------------------------------------------------------------------
 # Print out
@@ -155,6 +155,6 @@ plotter = FormPlotter(form, figsize=(16, 9))
 plotter.draw_nodes(radius=0.03, text="key-xyz")
 plotter.draw_edges(text="force-length")
 
-plotter.draw_loads(scale=-0.1)
-plotter.draw_residuals(scale=-0.10)
+plotter.draw_loads(scale=0.1)
+plotter.draw_residuals(scale=0.10)
 plotter.show()

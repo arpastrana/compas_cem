@@ -11,6 +11,7 @@ from compas_cem.diagrams import FormDiagram
 from compas_cem.loads import NodeLoad
 
 from compas_cem.plotters import FormPlotter
+from compas_cem.plotters import TopologyPlotter
 
 from compas_cem.equilibrium import force_equilibrium
 
@@ -131,7 +132,7 @@ if optimize:
 # ------------------------------------------------------------------------------
 
     for node in form.support_nodes():
-        residual = length_vector(form.node_residual(node))
+        residual = form.node_residual(node)
         print("node: {} reaction force: {}".format(node, residual))
 
 # ------------------------------------------------------------------------------
@@ -141,10 +142,10 @@ if optimize:
 if plot:
     plotter = FormPlotter(form, figsize=(16, 9))
 
-    plotter.draw_nodes(radius=0.30, text=None)
-    plotter.draw_edges(text=None)
-    plotter.draw_loads(scale=-2.0)
-    plotter.draw_residuals(scale=-0.25)
+    plotter.draw_nodes(radius=0.30)
+    plotter.draw_edges()
+    plotter.draw_loads(scale=2.0, gap=0.75)
+    plotter.draw_residuals(scale=2.0, gap=0.75)
     # plotter.draw_segments(edge_lines)
 
     points = []
@@ -156,10 +157,9 @@ if plot:
             "pos": pt[:2],
             "radius": 0.5,
             "facecolor": (255, 153, 0)
-        }
-        )
+        })
 
-    plotter.draw_points(points)
+    # plotter.draw_points(points)
 
     if save_fig:
         path = os.path.abspath(os.path.join(TEMP, "iass_2021/mini_bridge"))
