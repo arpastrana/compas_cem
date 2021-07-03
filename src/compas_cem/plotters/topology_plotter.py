@@ -1,14 +1,11 @@
-import matplotlib.pyplot as plt
-
 from math import copysign
 from math import pi
 
+import matplotlib.pyplot as plt
+
 from compas.geometry import add_vectors
-from compas.geometry import length_vector
-from compas.geometry import scale_vector
 from compas.geometry import rotate_points_xy
 
-from compas.utilities import geometric_key
 from compas_plotters import NetworkPlotter
 
 from compas_cem import COLORS
@@ -263,7 +260,6 @@ class TopologyPlotter(NetworkPlotter):
             kwargs.update(kwargs_tight)
 
         plt.savefig(filepath, **kwargs)
-
 
 
 if __name__ == "__main__":
