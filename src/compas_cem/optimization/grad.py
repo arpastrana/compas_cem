@@ -6,31 +6,26 @@ from autograd import grad as agrad
 __all__ = ["grad_finite_difference_numpy",
            "grad_autograd"]
 
+
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
 # ------------------------------------------------------------------------------
 
-def grad_autograd(x, grad, grad_func, verbose=False):
+def grad_autograd(x, grad, grad_func):
     """
-    Automatic differentiation, baby.
+    Calculates the gradient with automatic differentiation, baby.
     """
-    if verbose:
-        print("====== Computing Gradient ======")
-
     grad_func = agrad(grad_func)
     new_grad = grad_func(x)  # bottleneck
     grad[:] = new_grad
 
-    if verbose:
-        print("Gradient: {}".format(grad))
-
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
 # ------------------------------------------------------------------------------
 
-def grad_finite_difference_numpy(x, grad, x_func, step_size, verbose=False):
+def grad_finite_difference_numpy(x, grad, x_func, step_size):
     """
-    Finite differences
+    Approximates the gradient of a blackbox function using finite differences.
     """
     # finite difference
     fx0 = x_func(x)
@@ -44,11 +39,6 @@ def grad_finite_difference_numpy(x, grad, x_func, step_size, verbose=False):
 
         delta_fx = (fx1 - fx0) / step_size
         grad[i] = delta_fx
-
-    if verbose:
-        print("====== Computing Gradient ======")
-        print("Gradient: {}".format(grad))
-
 
 # ------------------------------------------------------------------------------
 # Main
