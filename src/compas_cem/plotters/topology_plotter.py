@@ -27,7 +27,7 @@ class TopologyPlotter(NetworkPlotter):
         super(TopologyPlotter, self).__init__(topology_diagram, *args, **kwargs)
 
         self._node_colors = {"support": COLORS["node_support"],
-                             "root": COLORS["node_origin"],
+                             "_origin": COLORS["node_origin"],
                              "default": COLORS["node"]}
 
         self._edge_state_colors = {-1.0: COLORS["compression"],

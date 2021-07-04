@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 
 from math import copysign
+from math import fabs
 
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
@@ -207,9 +208,9 @@ class FormPlotter(NetworkPlotter):
         shift = {key: False for key in keys}
         self._draw_forces(keys, attrs, scale, color, width, shift, gap, tol)
 
-    def draw_residuals(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
+    def draw_reactions(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
         """
-        Draws the node residual forces in a ``FormDiagram`` as scaled arrows.
+        Draws the support reaction forces in a ``FormDiagram`` as scaled arrows.
 
         Parameters
         ----------
@@ -239,8 +240,9 @@ class FormPlotter(NetworkPlotter):
         for key in keys:
             # every support must connect to only one trail edge
             s = False
-            trail_edge = form.connected_trail_edges(key).pop()
-            if form.edge_force(trail_edge) < 0.0:
+            forces = [form.edge_force(e) for e in form.connected_edges(key)]
+            max_force = max(forces, key=lambda f: fabs(f))
+            if max_force < 0.0:
                 s = True
             shift[key] = s
 
