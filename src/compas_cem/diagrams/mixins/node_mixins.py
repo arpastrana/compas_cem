@@ -36,13 +36,12 @@ class NodeMixins(object):
         """
         Gets
         """
+        key = None
         try:
             if value in self.node:
                 key = value
         except TypeError:
             key = self.gkey_node.get(self.gkey(value))
-        else:
-            key = None
         return key
 
     def update_node_xyz(self, key, xyz):
