@@ -19,6 +19,8 @@ Unreleased
 
 **Removed**
 
+* Deleted tag regex from `.bumpversion.cfg`
+
 0.1.3rc0
 ----------
 **Added**
