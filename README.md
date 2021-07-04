@@ -1,6 +1,6 @@
 # compas_cem
 
-A **COMPAS**-flavored combinatorial equilibrium modeling (CEM).
+Constrained form-finding meets automatic differentiation.
 
 ![simple_bridge_optimization](./docs/images/simple_bridge_opt_4_fps.gif)
 

@@ -112,5 +112,13 @@ temp/**
 !temp/PLACEHOLDER
 
 .DS_Store
+
+.vscode
+
+docs/api/generated/
+
+conda.recipe/
+
 *.code-workspace
+
 .obsidian
