@@ -23,6 +23,8 @@ from __future__ import print_function
 # from .<module> import *
 from .mixins import *
 from .diagram import *
-from .form_diagram import *
+from .topology import *
+from .form import *
+
 
 __all__ = [name for name in dir() if not name.startswith('_')]

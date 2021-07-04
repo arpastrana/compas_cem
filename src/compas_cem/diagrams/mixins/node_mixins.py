@@ -42,7 +42,7 @@ class NodeMixins(object):
         else:
             key = self.gkey_node.get(self.gkey(value))
         return key
-  
+
     def update_node_xyz(self, key, xyz):
         """
         Modifies
@@ -72,11 +72,11 @@ class NodeMixins(object):
 
 if __name__ == "__main__":
     from compas_cem.diagrams.form_diagram import FormDiagram
-    
+
     form = FormDiagram()
 
     node = form.add_node()
     xyz = [1.0, 0.0, 0.0]
     form.node_xyz(node, xyz)
-    
+
     assert form.node_xyz(node) == xyz

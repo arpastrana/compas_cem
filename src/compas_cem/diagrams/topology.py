@@ -3,15 +3,15 @@ from compas.geometry import length_vector
 from compas_cem.diagrams import Diagram
 
 
-__all__ = ["FormDiagram"]
+__all__ = ["TopologyDiagram"]
 
 # ==============================================================================
 # Form Diagram
 # ==============================================================================
 
-class FormDiagram(Diagram):
+class TopologyDiagram(Diagram):
     """
-    The heart of life.
+    The very heart of life.
 
     Parameters
     ----------
@@ -22,54 +22,14 @@ class FormDiagram(Diagram):
 
     Returns
     -------
-    form : ``FormDiagram``
-        A form diagram.
+    topology : ``TopologyDiagram``
+        A topology diagram.
     """
 
     def __init__(self, *args, **kwargs):
-        super(FormDiagram, self).__init__(*args, **kwargs)
-
-        self.update_default_node_attributes({"x": 0.0,
-                                             "y": 0.0,
-                                             "z": 0.0,
-                                             "qx": 0.0,
-                                             "qy": 0.0,
-                                             "qz": 0.0,
-                                             "rx": 0.0,
-                                             "ry": 0.0,
-                                             "rz": 0.0,
-                                             "type": None,
-                                             "_w": None})
-
-        self.update_default_edge_attributes({"type": None,
-                                             "length": 0.0,
-                                             "force": 0.0})
+        super(TopologyDiagram, self).__init__(*args, **kwargs)
 
         self.attributes["trails"] = {}
-        self.attributes["gkey_node"] = {}
-        self.attributes["tol"] = "3f"
-
-# ==============================================================================
-# Properties
-# ==============================================================================
-
-    @property
-    def tol(self):
-        """
-        """
-        return self.attributes["tol"]
-
-    @tol.setter
-    def tol(self, tol):
-        """
-        """
-        self.attributes["tol"] = tol
-
-    @property
-    def gkey_node(self):
-        """
-        """
-        return self.attributes["gkey_node"]
 
 # ==============================================================================
 # Node Additions
@@ -116,14 +76,36 @@ class FormDiagram(Diagram):
 
         self.node_attributes(node, ["qx", "qy", "qz"], load.vector)
 
-
 # ==============================================================================
 # Trails
 # ==============================================================================
 
     def trails(self):
         """
-        Collects the trails in the form diagram.
+        The trails in the topology diagram.
+
+        Returns
+        -------
+        trails : ``dict``
+            A dictionary with trails.
+            Every trail is stored with its origin node as key.
+        """
+        return self.attributes["trails"]
+
+    def number_of_trails(self):
+        """
+        Number of trails in the topology diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of trails.
+        """
+        return len(self.trails())
+
+    def build_trails(self):
+        """
+        Automatically builds the trails in the topology diagram.
 
         A trail is an ordered sequence of nodes with two characteristics:
         there is a root node at the start, and a support node at the end.
@@ -132,11 +114,11 @@ class FormDiagram(Diagram):
         -------
         trails : ``dict``
             The trails.
-            Their keys in the dictionary correspond to the found root nodes.
+            Their keys in the dictionary correspond to the found origin nodes.
 
-        Note
-        ----
-            Root nodes are computed as part of the trail-making process.
+        Notes
+        -----
+            Origin nodes are computed as part of the trail-making process.
         """
         tr = {}
 
@@ -180,22 +162,22 @@ class FormDiagram(Diagram):
                     break
 
                 if last_node == node:
-                    root = node
-                    trail.append(root)
+                    origin = node
+                    trail.append(origin)
                     visited.add(node)
                     break
 
-            # set last node to be of root type
-            self.node_attribute(root, "type", "root")
+            # set last node to be origin/start node
+            self.node_attribute(origin, "type", "_origin")
 
             trail.reverse()
 
-            # assign topological distances
-            # root should be _w= 0, support _w=len(trail)
+            # assign node sequences
+            # start should be _k= 0, support _k=len(trail)
             for index, node in enumerate(trail):
-                self.node_attribute(node, "_w", index)
+                self.node_attribute(node, "_k", index)
 
-            tr[root] = trail
+            tr[origin] = trail
             nodes_in_trails.update(visited)
 
         # output sanity checks
@@ -204,68 +186,25 @@ class FormDiagram(Diagram):
         msg = "Nodes {} haven't been assigned to a trail. Check your topology!"
         assert len(unassigned_nodes) == 0, msg
 
-        # store trails in form diagram
+        # store trails in topology diagram
         self.attributes["trails"] = tr
 
         return tr
 
-    def trails_2(self):
-        """
-        The trails stored as an internal attribute.
-
-        Returns
-        -------
-        trails : ``dict``
-            A dictionary with trails.
-            Every trail is mapped with the root node as key.
-        """
-        return self.attributes["trails"]
-
-    def number_of_trails(self):
-        """
-        Number of trails in the force diagram.
-
-        Return
-        ------
-        number : ``int``
-            The number of trails.
-
-        Notes
-        -----
-        Make sure to run FormDiagram.trails() before invoking this method.
-        """
-        return len(self.trails_2())
-
 # ==============================================================================
-#  Node Queries
+#  Node Collections
 # ==============================================================================
 
-    def root_nodes(self):
+    def origin_nodes(self):
         """
         Starting nodes of all trails.
 
         Yields
         -------
-        root_node : ``int``
-            The key of the next root node.
+        origin_node : ``int``
+            The key of the next origin node.
         """
-        # TODO: Attribute "root" might be better off as private "_root".
-        # What if a user wants to artificially set a node as root. Now possible.
-        # Either explicitely private or completely out of the public API.
-        return self.nodes_where({"type": "root"})
-
-    def support_nodes(self):
-        """
-        Nodes whose position is fixed in space.
-        Also the ending nodes of all trails.
-
-        Yields
-        -------
-        support_node : ``int``
-            The key of the next root node.
-        """
-        return self.nodes_where({"type": "support"})
-
+        return self.nodes_where({"type": "_origin"})
 
 # ==============================================================================
 #  Connected Edges
@@ -372,7 +311,6 @@ class FormDiagram(Diagram):
                 deviation_edges.append(edge)
         return deviation_edges
 
-
 # ==============================================================================
 # Edges
 # ==============================================================================
@@ -417,75 +355,12 @@ class FormDiagram(Diagram):
 
 
 # ==============================================================================
-# Edge Attributes
-# ==============================================================================
-
-    def edge_force(self, edge):
-        """
-        Gets the force value at an edge.
-
-        Parameters
-        ----------
-        edge : ``tuple``
-            The u, v edge key.
-
-        Return
-        ------
-        force : ``float``
-            The force value in the edge.
-        """
-        return self.edge_attribute(key=edge, name="force")
-
-
-# ==============================================================================
-# Node Attributes
-# ==============================================================================
-
-    def node_load(self, node):
-        """
-        Gets the load applied at a node.
-
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-        load : ``list``
-            A vector with xyz components.
-            If load is ``None``, this function queries the load vector at the
-            node.
-            Otherwise, it assigns it. Defaults to ``None``.
-
-        Returns
-        -------
-        load_vector: ``list``
-            A vector with xyz components if ``load`` is ``None``.
-        """
-        return self.node_attributes(key=node, names=["qx", "qy", "qz"])
-
-    def node_residual(self, node):
-        """
-        Gets the residual force vector at a node.
-
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-
-        Returns
-        -------
-        type : ``list``
-            The residual force vector.
-        """
-        return self.node_attributes(key=node, names=["rx", "ry", "rz"])
-
-
-# ==============================================================================
 # Node Filters
 # ==============================================================================
 
-    def is_node_root(self, node):
+    def is_node_origin(self, node):
         """
-        Checks if a node is a root node.
+        Checks if a node is an origin node.
 
         Parameters
         ----------
@@ -495,46 +370,13 @@ class FormDiagram(Diagram):
         Returns
         -------
         flag : ``bool``
-            ``True``if the node is a root node. ``False`` otherwise.
+            ``True``if the node is a origin node.
+            ``False`` otherwise.
         """
-        return self.node_attribute(key=node, name="type") == "root"
-
-    def is_node_support(self, node):
-        """
-        Checks if a node is a support.
-
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-
-        Returns
-        -------
-        flag : ``bool``
-            ``True``if the node is a support. ``False`` otherwise.
-        """
-        return self.node_attribute(key=node, name="type") == "support"
-
-    def is_node_loaded(self, node, min_force=1e-6):
-        """
-        Checks if there is a lode applied to a node.
-
-        Parameters
-        ----------
-        node : ``int``
-            A node key.
-        min_force : ``float``
-            The minimum force magnitude to consider a node loaded.
-            Defaults to ``1e-6``.
-        Returns
-        -------
-        flag : ``bool``
-            ``True``if the node is a support. ``False`` otherwise.
-        """
-        return length_vector(self.node_load(node)) > min_force
+        return self.node_attribute(key=node, name="type") == "_origin"
 
 # ==============================================================================
-# Edge Filters
+# Edge Predicates
 # ==============================================================================
 
     def is_trail_edge(self, edge):
@@ -589,7 +431,7 @@ class FormDiagram(Diagram):
             ``False`` otherwise.
         """
         def predicate(x):
-            a, b = self._edge_topological_distance(edge)
+            a, b = self.edge_sequence(edge)
             if a == b:
                 return True
 
@@ -611,7 +453,7 @@ class FormDiagram(Diagram):
             ``False`` otherwise.
         """
         def predicate(x):
-            a, b = self._edge_topological_distance(edge)
+            a, b = self.edge_sequence(edge)
             if a != b:
                 return True
 
@@ -647,12 +489,12 @@ class FormDiagram(Diagram):
 
 
 # ==============================================================================
-# Topological Distances
+#  Sequences
 # ==============================================================================
-#
-    def _node_topological_distance(self, node):
+
+    def node_sequence(self, node):
         """
-        Gets the distance of a node to the root node of the trail it belongs to.
+        Gets the sequence a node is assigned to.
 
         Parameters
         ----------
@@ -661,21 +503,19 @@ class FormDiagram(Diagram):
 
         Returns
         -------
-        w : ``int``
-            The number of nodes between the current node and the root node.
+        k : ``int``
+            The sequence key.
         """
-        w = self.node_attribute(key=node, name="_w")
-
-        if w is None:
-            msg = "Topological distance at node {} is None. Try running FormDiagram.trails() first."
+        k = self.node_attribute(key=node, name="_k")
+        if k is None:
+            msg = "Node {} is unassigned. Try building trails first."
             raise ValueError(msg.format(node))
 
-        return w
+        return k
 
-    def _edge_topological_distance(self, edge):
-
+    def edge_sequence(self, edge):
         """
-        Gets the distance of the nodes of an edge to the root nodes of the trails they belongs to.
+        Gets the sequence of the nodes of a given edge.
 
         Parameters
         ----------
@@ -684,18 +524,37 @@ class FormDiagram(Diagram):
 
         Returns
         -------
-        w_edge : ``tuple``
-            The number of nodes between the edge's nodes and their corresponding root nodes.
+        sequences : ``tuple``
+            The nodes' sequences.
         """
+        u, v = edge
+        return  self.node_sequence(u), self.node_sequence(v)
 
-        return  tuple([self._node_topological_distance(node) for node in edge])
+    def sequences(self):
+        """
+        Iterate over the sequences in the diagram.
 
+        Yields
+        ------
+        sequence : `int`
+            The next sequence number.
+        """
+        return range(self.sequence_max())
+
+    def sequence_max(self):
+        """
+        The largest sequence number.
+
+        Yields
+        ------
+        sequence : `int`
+            The largest sequence number.
+        """
+        return max([len(trail) for trail in self.trails().values()])
 
 # ==============================================================================
 # Main
 # ==============================================================================
 
 if __name__ == "__main__":
-    form = FormDiagram()
-    form.edges_where_predicate()
-    print(form)
+    pass
