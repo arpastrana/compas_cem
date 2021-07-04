@@ -173,20 +173,104 @@ def test(ctx, checks=False, doctest=False):
         ctx.run(' '.join(cmd))
 
 
+# @task
+# def prepare_changelog(ctx):
+#     """Prepare changelog for next release."""
+#     UNRELEASED_CHANGELOG_TEMPLATE = '## Unreleased\n\n### Added\n\n### Changed\n\n### Removed\n\n\n## '
+
+#     with chdir(BASE_FOLDER):
+#         # Preparing changelog for next release
+#         with open('CHANGELOG.md', 'r+') as changelog:
+#             content = changelog.read()
+#             changelog.seek(0)
+#             changelog.write(content.replace(
+#                 '## ', UNRELEASED_CHANGELOG_TEMPLATE, 1))
+
+#         ctx.run('git add CHANGELOG.md && git commit -m "Prepare changelog for next release"')
+
 @task
 def prepare_changelog(ctx):
     """Prepare changelog for next release."""
-    UNRELEASED_CHANGELOG_TEMPLATE = '## Unreleased\n\n### Added\n\n### Changed\n\n### Removed\n\n\n## '
+    UNRELEASED_CHANGELOG_TEMPLATE = '\nUnreleased\n----------\n\n**Added**\n\n**Changed**\n\n**Fixed**\n\n**Deprecated**\n\n**Removed**\n'
 
     with chdir(BASE_FOLDER):
         # Preparing changelog for next release
-        with open('CHANGELOG.md', 'r+') as changelog:
+        with open('CHANGELOG.rst', 'r+') as changelog:
             content = changelog.read()
-            changelog.seek(0)
-            changelog.write(content.replace(
-                '## ', UNRELEASED_CHANGELOG_TEMPLATE, 1))
+            start_index = content.index('----------')
+            start_index = content.rindex('\n', 0, start_index - 1)
+            last_version = content[start_index:start_index + 11].strip()
 
-        ctx.run('git add CHANGELOG.md && git commit -m "Prepare changelog for next release"')
+            if last_version == 'Unreleased':
+                log.write('Already up-to-date')
+                return
+
+            changelog.seek(0)
+            changelog.write(content[0:start_index] + UNRELEASED_CHANGELOG_TEMPLATE + content[start_index:])
+
+        ctx.run('git add CHANGELOG.rst && git commit -m "Prepare changelog for next release"')
+
+
+@task(help={'release_type': 'Type of release follows semver rules. Must be one of: major, minor, patch.'})
+def release(ctx, release_type):
+    """Releases the project in one swift command!"""
+    if release_type not in ('patch', 'minor', 'major'):
+        raise Exit('The release type parameter is invalid.\nMust be one of: major, minor, patch')
+
+    # Run checks
+    ctx.run('invoke check test')
+
+    # Bump version and git tag it
+    ctx.run('bump2version %s --verbose' % release_type)
+
+    # Build project
+    ctx.run('python setup.py clean --all sdist bdist_wheel')
+
+    # Prepare changelog for next release
+    prepare_changelog(ctx)
+
+    # Clean up local artifacts
+    clean(ctx)
+
+    # Upload to pypi
+    if confirm('Everything is ready. You are about to push to git which will trigger a release to pypi.org. Are you sure? [y/N]'):
+        ctx.run('git push --tags && git push')
+    else:
+        raise Exit('You need to manually revert the tag/commits created.')
+
+
+# @task(help={
+#       'release_type': 'Type of release follows semver rules. Must be one of: major, minor, patch, major-rc, minor-rc, patch-rc, rc, release.'})
+# def release(ctx, release_type):
+#     """Releases the project in one swift command!"""
+#     if release_type not in ('patch', 'minor', 'major', 'major-rc', 'minor-rc', 'patch-rc', 'rc', 'release'):
+#         raise Exit('The release type parameter is invalid.\nMust be one of: major, minor, patch, major-rc, minor-rc, patch-rc, rc, release')
+
+#     is_rc = release_type.find('rc') >= 0
+#     release_type = release_type.split('-')[0]
+
+#     # Run checks
+#     ctx.run('invoke check')
+
+#     # Bump version and git tag it
+#     if is_rc:
+#         ctx.run('bump2version %s --verbose' % release_type)
+#     elif release_type == 'release':
+#         ctx.run('bump2version release --verbose')
+#     else:
+#         ctx.run('bump2version %s --verbose --no-tag' % release_type)
+#         ctx.run('bump2version release --verbose')
+
+
+@contextlib.contextmanager
+def chdir(dirname=None):
+    current_dir = os.getcwd()
+    try:
+        if dirname is not None:
+            os.chdir(dirname)
+        yield
+    finally:
+        os.chdir(current_dir)
 
 
 @task(help={
@@ -209,37 +293,3 @@ def build_ghuser_components(ctx, gh_io_folder=None, ironpython=None):
             componentizer_script = os.path.join(action_dir, 'componentize.py')
 
             ctx.run('{} {} {} {} --ghio "{}"'.format(ironpython, componentizer_script, source_dir, target_dir, gh_io_folder))
-
-
-@task(help={
-      'release_type': 'Type of release follows semver rules. Must be one of: major, minor, patch, major-rc, minor-rc, patch-rc, rc, release.'})
-def release(ctx, release_type):
-    """Releases the project in one swift command!"""
-    if release_type not in ('patch', 'minor', 'major', 'major-rc', 'minor-rc', 'patch-rc', 'rc', 'release'):
-        raise Exit('The release type parameter is invalid.\nMust be one of: major, minor, patch, major-rc, minor-rc, patch-rc, rc, release')
-
-    is_rc = release_type.find('rc') >= 0
-    release_type = release_type.split('-')[0]
-
-    # Run checks
-    ctx.run('invoke check')
-
-    # Bump version and git tag it
-    if is_rc:
-        ctx.run('bump2version %s --verbose' % release_type)
-    elif release_type == 'release':
-        ctx.run('bump2version release --verbose')
-    else:
-        ctx.run('bump2version %s --verbose --no-tag' % release_type)
-        ctx.run('bump2version release --verbose')
-
-
-@contextlib.contextmanager
-def chdir(dirname=None):
-    current_dir = os.getcwd()
-    try:
-        if dirname is not None:
-            os.chdir(dirname)
-        yield
-    finally:
-        os.chdir(current_dir)
