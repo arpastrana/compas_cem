@@ -3,7 +3,7 @@ graft src
 prune .github
 prune data
 prune docs
-prune scripts
+prune examples
 prune tests
 prune temp
 
