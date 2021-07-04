@@ -50,4 +50,5 @@ COLORS = {"tension": (227, 6, 75),  # red
           "auxiliary_trail": (255, 155, 15)  # orange
           }
 
+__all_plugins__ = ['compas_cem.rhino_install']
 __all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]
