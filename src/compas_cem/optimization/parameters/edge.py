@@ -101,7 +101,7 @@ class EdgeParameter(Serializable):
 
 class TrailEdgeParameter(EdgeParameter):
     """
-    Registers the length of a trail edge as an optimization variable.
+    Sets the length of a trail edge as an optimization parameter.
     """
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(TrailEdgeParameter, self).__init__(key, bound_low, bound_up)
@@ -113,7 +113,7 @@ class TrailEdgeParameter(EdgeParameter):
 
 class DeviationEdgeParameter(EdgeParameter):
     """
-    Registers the force of a deviation edge as an optimization variable.
+    Sets the force of a deviation edge as an optimization parameter.
     """
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(DeviationEdgeParameter, self).__init__(key, bound_low, bound_up)
