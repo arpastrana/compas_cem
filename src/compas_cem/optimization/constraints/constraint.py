@@ -10,9 +10,10 @@ class Constraint(Serializable):
     """
     The blueprint of a constraint.
     """
-    def __init__(self, key, target):
+    def __init__(self, key, target, weight):
         self._key = key  # a topological key
         self._target = target  # a geometric target
+        self._weight = weight  # the strength of the constraint
 
     def key(self):
         """
@@ -42,6 +43,13 @@ class Constraint(Serializable):
         Calculate the error to the target.
         """
         return
+
+    @property
+    def weight(self):
+        """
+        The strength of the constraint.
+        """
+        return self._weight
 
 # ------------------------------------------------------------------------------
 # Data

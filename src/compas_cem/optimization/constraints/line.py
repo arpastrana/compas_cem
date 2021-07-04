@@ -11,8 +11,8 @@ class LineConstraint(Constraint):
     """
     Pulls the xyz position of a node to a target line ray.
     """
-    def __init__(self, node=None, line=None):
-        super(LineConstraint, self).__init__(node, line)
+    def __init__(self, node=None, line=None, weight=1.0):
+        super(LineConstraint, self).__init__(node, line, weight)
 
     def error(self, data):
         """
@@ -26,7 +26,7 @@ class LineConstraint(Constraint):
         point_a = self.reference(data)
         point_b = self.target(point_a)
 
-        return distance_point_point_sqrd(point_a, point_b)
+        return distance_point_point_sqrd(point_a, point_b) * self.weight
 
     def reference(self, data):
         """

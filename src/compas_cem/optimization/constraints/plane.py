@@ -11,8 +11,8 @@ class PlaneConstraint(Constraint):
     """
     Pulls the xyz position of a node to a target plane.
     """
-    def __init__(self, node=None, plane=None):
-        super(PlaneConstraint, self).__init__(node, plane)
+    def __init__(self, node=None, plane=None, weight=1.0):
+        super(PlaneConstraint, self).__init__(node, plane, weight)
 
     def error(self, data):
         """
@@ -26,7 +26,7 @@ class PlaneConstraint(Constraint):
         point_a = self.reference(data)
         point_b = self.target(point_a)
 
-        return distance_point_point_sqrd(point_a, point_b)
+        return distance_point_point_sqrd(point_a, point_b) * self.weight
 
     def reference(self, data):
         """

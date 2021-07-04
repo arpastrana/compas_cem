@@ -33,7 +33,7 @@ from compas_cem.plotters import TopologyPlotter
 
 
 diameter = 1.0
-num_steps = 8 # only even numbers
+num_steps = 24 # only even numbers
 appendix_length = 0.10
 force = 1.0
 tension_force = +force

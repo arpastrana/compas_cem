@@ -11,9 +11,9 @@ class TrailEdgeForceConstraint(Constraint):
     """
     Make a trail edge reach a target force value.
     """
-    def __init__(self, edge=None, force=None):
-        # TODO: needs different serialization mechanism
-        super(TrailEdgeForceConstraint, self).__init__(edge, force)
+    def __init__(self, edge=None, force=None, weight=1.0):
+        # TODO: needs different serialization mechanism?
+        super(TrailEdgeForceConstraint, self).__init__(edge, force, weight)
 
     def error(self, data):
         """
@@ -28,7 +28,7 @@ class TrailEdgeForceConstraint(Constraint):
         force_b = self.target()
         diff = force_a - force_b
 
-        return diff * diff
+        return diff * diff * self.weight
 
     def reference(self, data):
         """
@@ -42,8 +42,8 @@ class ReactionForceConstraint(Constraint):
     """
     Makes the support reaction force at a node match a target vector.
     """
-    def __init__(self, node=None, vector=None):
-        super(ReactionForceConstraint, self).__init__(node, vector)
+    def __init__(self, node=None, vector=None, weight=1.0):
+        super(ReactionForceConstraint, self).__init__(node, vector, weight)
 
     def error(self, data):
         """
@@ -57,7 +57,7 @@ class ReactionForceConstraint(Constraint):
         reaction_a = self.reference(data)
         reaction_b = self.target()
 
-        return distance_point_point_sqrd(reaction_a, reaction_b)
+        return distance_point_point_sqrd(reaction_a, reaction_b) * self.weight
 
     def reference(self, data):
         """

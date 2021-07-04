@@ -10,9 +10,9 @@ class DeviationEdgeLengthConstraint(Constraint):
     """
     Make a deviation edge reach a target length.
     """
-    def __init__(self, edge=None, length=None):
+    def __init__(self, edge=None, length=None, weight=1.0):
         # TODO: needs different serialization mechanism
-        super(DeviationEdgeLengthConstraint, self).__init__(edge, length)
+        super(DeviationEdgeLengthConstraint, self).__init__(edge, length, weight)
 
     def error(self, data):
         """
@@ -28,7 +28,7 @@ class DeviationEdgeLengthConstraint(Constraint):
 
         diff = length_a - length_b
 
-        return diff * diff
+        return diff * diff * self.weight
 
     def reference(self, data):
         """

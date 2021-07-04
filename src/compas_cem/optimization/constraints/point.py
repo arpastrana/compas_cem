@@ -10,8 +10,8 @@ class PointConstraint(Constraint):
     """
     Pulls the xyz position of a node to a target point.
     """
-    def __init__(self, node=None, point=None):
-        super(PointConstraint, self).__init__(key=node, target=point)
+    def __init__(self, node=None, point=None, weight=1.0):
+        super(PointConstraint, self).__init__(node, point, weight)
 
     def error(self, data):
         """
@@ -25,7 +25,7 @@ class PointConstraint(Constraint):
         a = self.reference(data)
         b = self.target()
 
-        return distance_point_point_sqrd(a, b)
+        return distance_point_point_sqrd(a, b) * self.weight
 
     def reference(self, data):
         """
