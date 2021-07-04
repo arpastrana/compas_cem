@@ -1,10 +1,11 @@
+from math import sqrt
+
 import pytest
 
 import numpy as np
 
-from math import sqrt
-
-from compas_cem.equilibrium import force_equilibrium
+from compas_cem.equilibrium import static_equilibrium
+from compas_cem.equilibrium.force_numpy import static_equilibrium_numpy
 
 from compas_cem.equilibrium.force import trail_vector_out
 from compas_cem.equilibrium.force import indirect_deviation_edges_resultant_vector
@@ -30,87 +31,87 @@ def test_trail_vector_out():
         assert np.allclose(a, b)
 
 
-@pytest.mark.parametrize("form, node, resultant",
+@pytest.mark.parametrize("topology, node, resultant",
                          [(pytest.lazy_fixture("compression_strut"), 0, [0.0, 0.0, 0.0]),
                           (pytest.lazy_fixture("threebar_funicular"), 1, [-1.0, 0.0, 0.0]),
                           (pytest.lazy_fixture("threebar_funicular"), 2, [1.0, 0.0, 0.0]),
                           (pytest.lazy_fixture("braced_tower_2d"), 3, [-0.5*2**0.5, 0.5*2**0.5, 0.0])
                           ])
-def test_deviation_edges_resultant_vector(form, node, resultant):
+def test_deviation_edges_resultant_vector(topology, node, resultant):
     """
     Verifies that the output vector is correct.
     """
-    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
-    edges = form.connected_deviation_edges(node)
-    a = deviation_edges_resultant_vector(form, node, node_xyz, edges)
+    node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
+    edges = topology.connected_deviation_edges(node)
+    a = deviation_edges_resultant_vector(topology, node, node_xyz, edges)
     b = resultant
 
     assert np.allclose(a, b)
 
 
-@pytest.mark.parametrize("form, node, resultant",
+@pytest.mark.parametrize("topology, node, resultant",
                          [(pytest.lazy_fixture("braced_tower_2d"), 1, [-1.0, 0.0, 0.0]),
                           (pytest.lazy_fixture("braced_tower_2d"), 5, [1.0, 0.0, 0.0])])
-def test_direct_deviation_edges_resultant_vector(form, node, resultant):
+def test_direct_deviation_edges_resultant_vector(topology, node, resultant):
     """
     Verifies that the output vector is correct.
     """
-    form.trails()
-    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
-    a = direct_deviation_edges_resultant_vector(form, node, node_xyz)
+    topology.build_trails()
+    node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
+    a = direct_deviation_edges_resultant_vector(topology, node, node_xyz)
     b = resultant
 
     assert np.allclose(a, b)
 
 
-@pytest.mark.parametrize("form, node, resultant",
+@pytest.mark.parametrize("topology, node, resultant",
                          [(pytest.lazy_fixture("braced_tower_2d"), 4, [-0.5*2**0.5, 0.5*2**0.5, 0.0]),
                           (pytest.lazy_fixture("braced_tower_2d"), 1, [2**0.5, 0.0, 0.0]),
                           (pytest.lazy_fixture("braced_tower_2d"), 0, [0.0, 0.0, 0.0])
                            ])
-def test_indirect_deviation_edges_resultant_vector(form, node, resultant):
+def test_indirect_deviation_edges_resultant_vector(topology, node, resultant):
     """
     Verifies that the output vector is correct.
     """
-    form.trails()
-    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
-    a = indirect_deviation_edges_resultant_vector(form, node, node_xyz)
+    topology.build_trails()
+    node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
+    a = indirect_deviation_edges_resultant_vector(topology, node, node_xyz)
     b = resultant
 
     assert np.allclose(a, b)
 
 
-@pytest.mark.parametrize("form, node, result",
+@pytest.mark.parametrize("topology, node, result",
                          [(pytest.lazy_fixture("compression_strut"), 1, [0.0, 1.0, 0.0]),
                           (pytest.lazy_fixture("threebar_funicular"), 2, [-1.0, 1.0, 0.0]),
                           (pytest.lazy_fixture("braced_tower_2d"), 5, [-1.0, 1.0, 0.0])
                            ])
-def test_node_equilibrium_no_indirect_root_nodes(form, node, result):
+def test_node_equilibrium_no_indirect_root_nodes(topology, node, result):
     """
     Checks that the resulting output vector is correct.
     """
-    form.trails()
-    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
+    topology.build_trails()
+    node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
     t_vec_in = [0.0, 0.0, 0.0]
-    t_vec_out = node_equilibrium(form, node, t_vec_in, node_xyz, indirect=False)
+    t_vec_out = node_equilibrium(topology, node, t_vec_in, node_xyz, indirect=False)
 
     assert np.allclose(t_vec_out, result)
 
 
-@pytest.mark.parametrize("form, node, result",
+@pytest.mark.parametrize("topology, node, result",
                          [(pytest.lazy_fixture("compression_strut"), 1, [0.0, 1.0, 0.0]),
                           (pytest.lazy_fixture("threebar_funicular"), 2, [-1.0, 1.0, 0.0]),
                           (pytest.lazy_fixture("braced_tower_2d"), 5,
                            [-1.0 * (1.0 - 0.5*2**0.5), -1 * (-1.0 - 0.5*2**0.5), 0.0])
                            ])
-def test_node_equilibrium_with_indirect_root_nodes(form, node, result):
+def test_node_equilibrium_with_indirect_root_nodes(topology, node, result):
     """
     Checks that the resulting output vector is correct.
     """
-    form.trails()
-    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
+    topology.build_trails()
+    node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
     t_vec_in = [0.0, 0.0, 0.0]
-    t_vec_out = node_equilibrium(form, node, t_vec_in, node_xyz, indirect=True)
+    t_vec_out = node_equilibrium(topology, node, t_vec_in, node_xyz, indirect=True)
 
     assert np.allclose(t_vec_out, result)
 
@@ -186,12 +187,12 @@ def bt2_out():
     return output
 
 
-@pytest.mark.parametrize("form, output",
+@pytest.mark.parametrize("topology, output",
                          [(pytest.lazy_fixture("compression_strut"), cs_out()),
                           (pytest.lazy_fixture("threebar_funicular"), tf_out()),
                           (pytest.lazy_fixture("braced_tower_2d"), bt2_out())
                           ])
-def test_force_equilibrium_output(form, output):
+def test_force_equilibrium_output(topology, output):
     """
     Minute testing of forces and geometric outputs post force equilibrium.
     """
@@ -200,12 +201,36 @@ def test_force_equilibrium_output(form, output):
     edge_length_out = output["length"]
     support_residual_out = output["residual"]
 
-    force_equilibrium(form, eps=1e-5, kmax=100, verbose=False)
+    topology.build_trails()
+    form = static_equilibrium(topology, eta=1e-5, tmax=100, verbose=False)
 
     check_nodes_xyz(form, node_xyz_out)
     check_edges_forces(form, edge_force_out)
     check_edges_lengths(form, edge_length_out)
-    check_nodes_residuals(form, support_residual_out)
+    check_nodes_reactions(form, support_residual_out)
+
+
+@pytest.mark.parametrize("topology, output",
+                         [(pytest.lazy_fixture("compression_strut"), cs_out()),
+                          (pytest.lazy_fixture("threebar_funicular"), tf_out()),
+                          (pytest.lazy_fixture("braced_tower_2d"), bt2_out())
+                          ])
+def test_force_equilibrium_numpy_output(topology, output):
+    """
+    Minute testing of forces and geometric outputs post force equilibrium.
+    """
+    node_xyz_out = output["xyz"]
+    edge_force_out = output["force"]
+    edge_length_out = output["length"]
+    support_residual_out = output["residual"]
+
+    topology.build_trails()
+    form = static_equilibrium_numpy(topology, eta=1e-5, tmax=100, verbose=False)
+
+    check_nodes_xyz(form, node_xyz_out)
+    check_edges_forces(form, edge_force_out)
+    check_edges_lengths(form, edge_length_out)
+    check_nodes_reactions(form, support_residual_out)
 
 # ==============================================================================
 # Tests - Force Equilibrium Helpers
@@ -232,8 +257,8 @@ def check_edges_lengths(form, edge_length_out):
         assert np.allclose(length, test_length)
 
 
-def check_nodes_residuals(form, support_residual_out):
+def check_nodes_reactions(form, support_residual_out):
     for node in form.nodes(data=False):
         residual = support_residual_out.get(node, [0.0, 0.0, 0.0])
-        test_residual = form.node_residual(node)
+        test_residual = form.reaction_force(node)
         assert np.allclose(residual, test_residual)
