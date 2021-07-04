@@ -1,17 +1,14 @@
 from compas_cem.elements import Node
 
 from compas.utilities import geometric_key
-from compas.utilities import is_item_iterable
 
 
-__all__ = [
-    "NodeMixins"
-]
-
+__all__ = ["NodeMixins"]
 
 # ==============================================================================
 # Node Mixins
 # ==============================================================================
+
 
 class NodeMixins(object):
     """
@@ -31,16 +28,21 @@ class NodeMixins(object):
         """
         Checks
         """
-        return self.node_key(value) != None
+        if self.node_key(value) is not None:
+            return True
+        return False
 
     def node_key(self, value):
         """
         Gets
         """
-        if value in self.node:
-            key = value
-        else:
+        try:
+            if value in self.node:
+                key = value
+        except TypeError:
             key = self.gkey_node.get(self.gkey(value))
+        else:
+            key = None
         return key
 
     def update_node_xyz(self, key, xyz):
@@ -70,13 +72,14 @@ class NodeMixins(object):
 # Main
 # ==============================================================================
 
+
 if __name__ == "__main__":
-    from compas_cem.diagrams.form_diagram import FormDiagram
+    from compas_cem.diagrams import TopologyDiagram
 
-    form = FormDiagram()
+    topology = TopologyDiagram()
 
-    node = form.add_node()
+    node = topology.add_node(Node())
     xyz = [1.0, 0.0, 0.0]
-    form.node_xyz(node, xyz)
+    topology.node_xyz(node, xyz)
 
-    assert form.node_xyz(node) == xyz
+    assert topology.node_xyz(node) == xyz

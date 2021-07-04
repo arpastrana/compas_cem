@@ -22,7 +22,7 @@ from __future__ import print_function
 
 import os
 
-__author__ = ["Rafael Pastrana" ]
+__author__ = ["Rafael Pastrana"]
 __copyright__ = "Copyright 2020 - Princeton University"
 __license__ = "MIT License"
 __email__ = "arpj@princeton.edu"

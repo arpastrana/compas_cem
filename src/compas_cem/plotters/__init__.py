@@ -24,10 +24,10 @@ from __future__ import print_function
 import compas
 
 if not compas.IPY:
-    from .form_plotter import *
-    from .topology_plotter import *
+    from .form_plotter import *  # noqa F403
+    from .topology_plotter import *  # noqa F403
 
-from .proxy import *
+from .proxy import *  # noqa F403
 
 
 __all__ = [name for name in dir() if not name.startswith('_')]

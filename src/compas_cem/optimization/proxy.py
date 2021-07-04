@@ -16,16 +16,16 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps):
 
     optimizer = Optimizer()
 
-    # add goals
-    for goal in goals:
-        optimizer.add_goal(goal)
-    
+    # add parameters
+    for parameter in parameters:
+        optimizer.add_goal(parameter)
+
     # add constraints
     for constraint in constraints:
         optimizer.add_constraint(constraint)
 
     start = time()
-    form = optimizer.solve_nlopt(form, algorithm, iters, eps)
+    form = optimizer.solve_nlopt(topology, algorithm, iters, eps)
 
     duration = time() - start
     x_opt = optimizer.parameters
@@ -33,6 +33,7 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps):
     evals = optimizer.evals
 
     return form, x_opt, l_opt, evals, duration
+
 
 # ------------------------------------------------------------------------------
 # Main

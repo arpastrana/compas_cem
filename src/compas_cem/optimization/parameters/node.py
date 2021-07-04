@@ -11,7 +11,11 @@ __all__ = ["OriginNodeXParameter",
 # Base Node Parameter
 # ------------------------------------------------------------------------------
 
+
 class NodeParameter(Serializable):
+    """
+    Parametrize a node attribute to solve an optimization problem.
+    """
     def __init__(self, key, bound_low, bound_up):
         self._key = key
         self._bound_up = bound_up
@@ -62,7 +66,7 @@ class NodeParameter(Serializable):
             * "bound up" : ``float``
             * "bound low" : ``float``
             * "attr name" : ``str``
-            
+
         Notes
         -----
         All dictionary keys are converted to their representation value
@@ -81,7 +85,7 @@ class NodeParameter(Serializable):
         data["datatype"] = self.datatype()
 
         return data
-    
+
     @data.setter
     def data(self, data):
         """
@@ -101,6 +105,7 @@ class NodeParameter(Serializable):
 # Origin Node Constraint on X
 # ------------------------------------------------------------------------------
 
+
 class OriginNodeXParameter(NodeParameter):
     """
     Sets the X coordinate of an origin node as an optimization parameter.
@@ -113,6 +118,7 @@ class OriginNodeXParameter(NodeParameter):
 # Origin Node Constraint on Y
 # ------------------------------------------------------------------------------
 
+
 class OriginNodeYParameter(NodeParameter):
     """
     Sets the Y coordinate of an origin node as an optimization parameter.
@@ -124,6 +130,7 @@ class OriginNodeYParameter(NodeParameter):
 # ------------------------------------------------------------------------------
 # Origin Node Constraint on Z
 # ------------------------------------------------------------------------------
+
 
 class OriginNodeZParameter(NodeParameter):
     """
@@ -153,14 +160,12 @@ if __name__ == "__main__":
     from compas_cem.optimization import Optimizer
     from compas_cem.optimization import DeviationEdgeParameter
     from compas_cem.optimization import TrailEdgeParameter
-    from compas_cem.optimization import OriginNodeYParameter
 
     from compas_cem.optimization import PointConstraint
 
     from compas_cem.equilibrium import static_equilibrium
 
     from compas_cem.plotters import FormPlotter
-
 
     # create a topology diagram
     topology = TopologyDiagram()
@@ -194,18 +199,18 @@ if __name__ == "__main__":
     optimizer.add_parameter(OriginNodeYParameter(1, 1.0, 1.0))
     optimizer.add_parameter(DeviationEdgeParameter((1, 2), 1.0, 1.0))
     optimizer.add_parameter(TrailEdgeParameter((2, 3), 1.0, 1.0))
-    
+
     point_a = Point(1.0, -0.5, 0.0)
     optimizer.add_constraint((PointConstraint(1, point_a)))
 
     point_b = Point(3.0, -0.707, 0.0)
     optimizer.add_constraint((PointConstraint(3, point_b)))
-    
+
     # optimization settings
     start = time()
     algo = "LD_LBFGS"  # LN_BOBYQA, LD_LBFGS, LD_MMA
     iters = 100  # 100
-    eps = 1e-6 # 1e-4
+    eps = 1e-6  # 1e-4
 
     # optimize
     form = optimizer.solve_nlopt(topology, algo, iters, eps)

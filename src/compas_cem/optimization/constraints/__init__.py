@@ -28,12 +28,12 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .constraint import *
-from .point import *
-from .plane import *
-from .line import *
-from .force import *
-from .length import *
+from .constraint import *  # noqa F403
+from .point import *  # noqa F403
+from .plane import *  # noqa F403
+from .line import *  # noqa F403
+from .force import *  # noqa F403
+from .length import *  # noqa F403
 
 # import compas
 # if not compas.IPY:

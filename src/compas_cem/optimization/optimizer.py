@@ -284,7 +284,7 @@ class Optimizer():
 
         eq_state = equilibrium_state_numpy(topology, tmax=100, eta=1e-5)
 
-        return  self._calculate_penalty(eq_state)
+        return self._calculate_penalty(eq_state)
 
 # ------------------------------------------------------------------------------
 # Sanity Check
@@ -301,6 +301,7 @@ class Optimizer():
         if len(self.constraints) == 0:
             msg = "No constraints defined. Optimization not possible."
             raise ValueError(msg)
+
 
 # ------------------------------------------------------------------------------
 # Main

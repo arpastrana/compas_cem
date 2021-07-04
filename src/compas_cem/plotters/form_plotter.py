@@ -132,7 +132,6 @@ class FormPlotter(NetworkPlotter):
         that maps ``{node_key: attribute}`` is supplied, specific values can be
         assigned individually.
         """
-        ds = self.datastructure
         fc = COLORS["node"]
 
         text = kwargs.get("text")
@@ -349,15 +348,17 @@ class FormPlotter(NetworkPlotter):
         text_labels : ``list``
             A list of text labels
         """
+        def gkey_format(x):
+            return geometric_key(ds.node_xyz(x), precision)
+
+        def key_gkey_format(x):
+            return "{} / {}".format(x, gkey_format(x))
+
         ds = self.datastructure
         precision = self.float_precision
-        gkey_format = lambda x: geometric_key(ds.node_xyz(x), precision)
-        key_gkey_format = lambda x: "{} / {}".format(x, gkey_format(x))
 
-        tags_formatter = {
-            "xyz": gkey_format,
-            "key-xyz": key_gkey_format
-            }
+        tags_formatter = {"xyz": gkey_format,
+                          "key-xyz": key_gkey_format}
 
         if text_tag not in tags_formatter:
             return None
@@ -386,12 +387,17 @@ class FormPlotter(NetworkPlotter):
         text_labels : ``list``
             A list of text labels
         """
+        def force_format(x):
+            return "{0:.{1}}".format(ds.edge_force(x), precision)
+
+        def length_format(x):
+            return "{0:.{1}}".format(ds.edge_length(*x), precision)
+
+        def force_length_format(x):
+            return "f: {} / lt: {}".format(force_format(x), length_format(x))
+
         ds = self.datastructure
         precision = self.float_precision
-
-        force_format = lambda x: "{0:.{1}}".format(ds.edge_force(x), precision)
-        length_format = lambda x: "{0:.{1}}".format(ds.edge_length(*x), precision)
-        force_length_format = lambda x: "f: {} / lt: {}".format(force_format(x), length_format(x))
 
         tags_formatter = {"force": force_format,
                           "length": length_format,
@@ -408,6 +414,7 @@ class FormPlotter(NetworkPlotter):
             text_labels[edge] = label
 
         return text_labels
+
 
 if __name__ == "__main__":
     pass

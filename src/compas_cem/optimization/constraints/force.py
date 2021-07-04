@@ -70,34 +70,30 @@ class ReactionForceConstraint(Constraint):
 if __name__ == "__main__":
 
     from time import time
-    from math import fabs
 
     from compas.geometry import Point
 
     from compas_cem.diagrams import TopologyDiagram
-    
+
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
     from compas_cem.elements import DeviationEdge
-    
+
     from compas_cem.loads import NodeLoad
-    
+
     from compas_cem.supports import NodeSupport
-    
+
     from compas_cem.optimization import Optimizer
     from compas_cem.optimization import DeviationEdgeParameter
-    from compas_cem.optimization import TrailEdgeParameter
 
     from compas_cem.optimization import OriginNodeXParameter
     from compas_cem.optimization import OriginNodeYParameter
 
     from compas_cem.optimization import PointConstraint
-    from compas_cem.optimization import TrailEdgeForceConstraint
-    
-    from compas_cem.equilibrium import static_equilibrium
-    
-    from compas_cem.plotters import FormPlotter
 
+    from compas_cem.equilibrium import static_equilibrium
+
+    from compas_cem.plotters import FormPlotter
 
     # create a topology diagram
     topology = TopologyDiagram()
@@ -109,12 +105,12 @@ if __name__ == "__main__":
     topology.add_node(Node(3, [0.0, 1.0, 0.0]))
     topology.add_node(Node(4, [1.0, 1.0, 0.0]))
     topology.add_node(Node(5, [2.0, 1.0, 0.0]))
-    
+
     # add edges with negative values for a compression-only structure
     topology.add_edge(TrailEdge(0, 3, length=-1.0))
     topology.add_edge(TrailEdge(1, 4, length=-1.0))
     topology.add_edge(TrailEdge(2, 5, length=-1.0))
-    
+
     topology.add_edge(DeviationEdge(3, 4, force=-1.0))
     topology.add_edge(DeviationEdge(4, 5, force=-1.0))
 
@@ -152,7 +148,7 @@ if __name__ == "__main__":
     start = time()
     algo = "LD_LBFGS"  # LN_BOBYQA, LD_LBFGS, LD_MMA
     iters = 100  # 100
-    eps = 1e-6 # 1e-4
+    eps = 1e-6  # 1e-4
 
     # optimize
     form = optimizer.solve_nlopt(topology, algo, iters, eps)

@@ -1,5 +1,3 @@
-from compas.geometry import length_vector
-
 from compas_cem.diagrams import Diagram
 
 
@@ -8,6 +6,7 @@ __all__ = ["TopologyDiagram"]
 # ==============================================================================
 # Form Diagram
 # ==============================================================================
+
 
 class TopologyDiagram(Diagram):
     """
@@ -353,7 +352,6 @@ class TopologyDiagram(Diagram):
         """
         return self.edges_where({"type": "deviation"}, data)
 
-
 # ==============================================================================
 # Node Filters
 # ==============================================================================
@@ -487,7 +485,6 @@ class TopologyDiagram(Diagram):
             return True
         return False
 
-
 # ==============================================================================
 #  Sequences
 # ==============================================================================
@@ -528,7 +525,7 @@ class TopologyDiagram(Diagram):
             The nodes sequences.
         """
         u, v = edge
-        return  self.node_sequence(u), self.node_sequence(v)
+        return self.node_sequence(u), self.node_sequence(v)
 
     def sequences(self):
         """
@@ -555,6 +552,7 @@ class TopologyDiagram(Diagram):
 # ==============================================================================
 # Main
 # ==============================================================================
+
 
 if __name__ == "__main__":
     pass

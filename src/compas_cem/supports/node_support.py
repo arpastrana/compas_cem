@@ -10,6 +10,7 @@ __all__ = ["NodeSupport"]
 # Node Support
 # ==============================================================================
 
+
 class NodeSupport(object):
     """
     A support assigned to a node.
@@ -27,7 +28,7 @@ class NodeSupport(object):
     def __init__(self, node):
         self.node = node
         self.xyz = None
-    
+
     @classmethod
     def from_point(cls, point):
         """
@@ -77,6 +78,6 @@ class NodeSupport(object):
         xyz = RhinoPoint.from_geometry(rhino_point).to_compas()
         return cls.from_point(xyz)
 
+
 if __name__ == "__main__":
-    support = PointSupport([1.0, 0.0, 0,0])
-    print(support)
+    pass

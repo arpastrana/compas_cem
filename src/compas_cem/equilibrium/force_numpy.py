@@ -152,12 +152,12 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
 
     # if residual larger than threshold after kmax iterations, raise error
     if residual > eta:
-        raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
+        raise ValueError("Over {} iters. residual: {} > eta: {}".format(tmax, residual, eta))
 
     # print log
     if verbose:
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
-        print(msg.format(k, residual))
+        print(msg.format(t, residual))
 
     eq_state = {}
     eq_state["node_xyz"] = node_xyz
@@ -184,7 +184,6 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
 
     # assign reaction forces
     for node in form.support_nodes():
-    # for node, rforce in reaction_forces.items():
         rforce = reaction_forces[node]
         form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
 
@@ -321,6 +320,7 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
 # Utilities
 # ------------------------------------------------------------------------------
 
+
 def incoming_edge_vectors(node, node_xyz, edges, normalize=False):
     """
     Temporary alternative to Diagram.incoming_edge_vectors()
@@ -341,7 +341,7 @@ def incoming_edge_vector(node, node_xyz, edge, normalize=False):
     u, v = edge
     other = u if u != node else v
 
-    return  vector_two_nodes(node_xyz[other], node_xyz[node], normalize)
+    return vector_two_nodes(node_xyz[other], node_xyz[node], normalize)
 
 
 def vector_two_nodes(a, b, normalize=False):

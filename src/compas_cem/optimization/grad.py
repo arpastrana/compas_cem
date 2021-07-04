@@ -6,10 +6,10 @@ from autograd import grad as agrad
 __all__ = ["grad_finite_difference_numpy",
            "grad_autograd"]
 
-
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
 # ------------------------------------------------------------------------------
+
 
 def grad_autograd(x, grad, grad_func):
     """
@@ -22,6 +22,7 @@ def grad_autograd(x, grad, grad_func):
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
 # ------------------------------------------------------------------------------
+
 
 def grad_finite_difference_numpy(x, grad, x_func, step_size):
     """
@@ -43,6 +44,7 @@ def grad_finite_difference_numpy(x, grad, x_func, step_size):
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     pass

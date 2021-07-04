@@ -15,5 +15,6 @@ def objective_function_numpy(x, grad, x_func, grad_func):
 # Main
 # ------------------------------------------------------------------------------
 
+
 if __name__ == "__main__":
     pass

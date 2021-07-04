@@ -37,7 +37,6 @@ def form_plotter_proxy(**kwargs):
     fig_width = kwargs.get("fig_width", 16)
     fig_height = kwargs.get("fig_height", 9)
     fig_dpi = kwargs.get("fig_dpi", 100)
-    fig_tight = kwargs.get("fig_tight", False)
 
     frame_polygon = kwargs.get("frame_polygon", None)
 
@@ -88,7 +87,6 @@ def topology_plotter_proxy(**kwargs):
     fig_width = kwargs.get("fig_width", 16)
     fig_height = kwargs.get("fig_height", 9)
     fig_dpi = kwargs.get("fig_dpi", 100)
-    fig_tight = kwargs.get("fig_tight", False)
 
     frame_polygon = kwargs.get("frame_polygon", None)
 
@@ -97,7 +95,7 @@ def topology_plotter_proxy(**kwargs):
 
     plotter.draw_loads(keys=node_key, radius=load_radius, width=load_width)
     plotter.draw_nodes(keys=node_key, radius=node_radius, edgewidth=node_edgewidth)
-    data = plotter.draw_edges(keys=edge_key, width=edge_width)
+    plotter.draw_edges(keys=edge_key, width=edge_width)
 
     if frame_polygon:
         polygons = [{"points": frame_polygon, "edgecolor": (255, 255, 255)}]

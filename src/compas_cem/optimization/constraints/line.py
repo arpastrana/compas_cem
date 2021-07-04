@@ -44,31 +44,30 @@ class LineConstraint(Constraint):
 
 
 if __name__ == "__main__":
-    
+
     from time import time
 
     from compas.geometry import Line
     from compas.geometry import Point
 
     from compas_cem.diagrams import TopologyDiagram
-    
+
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
     from compas_cem.elements import DeviationEdge
-    
+
     from compas_cem.loads import NodeLoad
-    
+
     from compas_cem.supports import NodeSupport
-    
+
     from compas_cem.optimization import Optimizer
     from compas_cem.optimization import DeviationEdgeParameter
     from compas_cem.optimization import TrailEdgeParameter
     from compas_cem.optimization import PointConstraint
-    
-    from compas_cem.equilibrium import static_equilibrium
-    
-    from compas_cem.plotters import FormPlotter
 
+    from compas_cem.equilibrium import static_equilibrium
+
+    from compas_cem.plotters import FormPlotter
 
     # create a topology diagram
     topology = TopologyDiagram()
@@ -115,7 +114,7 @@ if __name__ == "__main__":
     start = time()
     algo = "LD_LBFGS"  # LN_BOBYQA, LD_LBFGS, LD_MMA
     iters = 100  # 100
-    eps = 1e-6 # 1e-4
+    eps = 1e-6  # 1e-4
 
     # optimize
     form = optimizer.solve_nlopt(topology, algo, iters, eps)

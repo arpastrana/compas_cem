@@ -15,7 +15,7 @@ class TrimeshConstraint(Constraint):
     TODO: trimesh complaints with autograd boxes when parsing into array.
     """
     def __init__(self, node=None, trimesh=None, weight=1.0):
-        super(TrimeshConstraint, self).__init__(key=node, target=trimesh, weight)
+        super(TrimeshConstraint, self).__init__(node, trimesh, weight)
 
     def error(self, data):
         """
@@ -23,7 +23,7 @@ class TrimeshConstraint(Constraint):
         point_a = self.reference(data)
         point_b = self.target(point_a)
 
-        return distance_point_point_sqrd(point_a, point_b) * weight
+        return distance_point_point_sqrd(point_a, point_b) * self.weight
 
     def reference(self, data):
         """

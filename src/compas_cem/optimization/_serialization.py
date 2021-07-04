@@ -1,20 +1,21 @@
+import json
+
 from compas.base import Base
 
 
-__all__ = [
-    "Serializable",
-    "cls_from_dtype"
-]
+__all__ = ["Serializable", "cls_from_dtype"]
+
 
 # ------------------------------------------------------------------------------
 # Base Class
 # ------------------------------------------------------------------------------
 
+
 class Serializable(Base):
 
-# ------------------------------------------------------------------------------
-# Data
-# ------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+    # Data
+    # --------------------------------------------------------------------------
 
     @property
     def data(self):
@@ -28,9 +29,9 @@ class Serializable(Base):
         """
         return
 
-# ------------------------------------------------------------------------------
-# IO - Data
-# ------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+    # IO - Data
+    # --------------------------------------------------------------------------
 
     @classmethod
     def from_data(cls, data):
@@ -55,7 +56,7 @@ class Serializable(Base):
         serializable = cls()
         serializable.data = data
         return serializable
-    
+
     def to_data(self):
         """
         Returns a dictionary of structured data representing a serializable object.
@@ -72,12 +73,12 @@ class Serializable(Base):
         """
         return self.data
 
-# ------------------------------------------------------------------------------
-# IO - JSON
-# ------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+    # IO - JSON
+    # --------------------------------------------------------------------------
 
     @classmethod
-    def from_json(self, filepath):
+    def from_json(cls, filepath):
         """
         Construct a serializable object from structured data contained in a json file.
 
@@ -101,7 +102,7 @@ class Serializable(Base):
         optimizer = cls()
         optimizer.data = data
         return optimizer
-    
+
     def to_json(self, filepath, pretty=False):
         """
         Serialize this object to a structured json.
@@ -134,7 +135,7 @@ class Serializable(Base):
             '{}/{}'.format(o.__class__.__module__, o.__class__.__name__).
         """
         return self.object_datatype(self)
-    
+
     @staticmethod
     def object_datatype(o):
         return "{}/{}".format(o.__class__.__module__, o.__class__.__name__)
@@ -146,6 +147,7 @@ class Serializable(Base):
 # ------------------------------------------------------------------------------
 # Class from datatype
 # ------------------------------------------------------------------------------
+
 
 def cls_from_dtype(dtype):
     """
@@ -177,6 +179,7 @@ def cls_from_dtype(dtype):
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     pass

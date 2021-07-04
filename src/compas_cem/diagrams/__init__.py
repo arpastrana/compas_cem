@@ -22,10 +22,10 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .mixins import *
-from .diagram import *
-from .topology import *
-from .form import *
+from .mixins import *  # noqa F403
+from .diagram import *  # noqa F403
+from .topology import *  # noqa F403
+from .form import *  # noqa F403
 
 
 __all__ = [name for name in dir() if not name.startswith('_')]

@@ -10,11 +10,12 @@ __all__ = ["Node"]
 # Node
 # ==============================================================================
 
+
 class Node(object):
     """
     A node.
     """
-    def __init__(self, key=None, xyz=None):
+    def __init__(self, key=None, xyz=[0.0, 0.0, 0.0]):
         self.key = key
         self.xyz = xyz
         self.attributes = {}
@@ -66,6 +67,7 @@ class Node(object):
         """
         """
         return "{}(key={}, xyz={})".format(self.__class__.__name__, self.key, self.xyz)
+
 
 if __name__ == "__main__":
     pass

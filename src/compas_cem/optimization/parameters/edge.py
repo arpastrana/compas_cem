@@ -11,7 +11,11 @@ __all__ = ["TrailEdgeParameter",
 # Base Edge Parameter
 # ------------------------------------------------------------------------------
 
+
 class EdgeParameter(Serializable):
+    """
+    Parametrize and edge to solve an optimization problem.
+    """
     def __init__(self, key, bound_low, bound_up):
         self._key = key
         self._bound_up = bound_up
@@ -62,7 +66,7 @@ class EdgeParameter(Serializable):
             * "bound up" : ``float``
             * "bound low" : ``float``
             * "attr name" : ``str``
-            
+
         Notes
         -----
         All dictionary keys are converted to their representation value
@@ -79,7 +83,7 @@ class EdgeParameter(Serializable):
         data["datatype"] = self.datatype()
 
         return data
-    
+
     @data.setter
     def data(self, data):
         """
@@ -99,6 +103,7 @@ class EdgeParameter(Serializable):
 # Trail Edge Parameter
 # ------------------------------------------------------------------------------
 
+
 class TrailEdgeParameter(EdgeParameter):
     """
     Sets the length of a trail edge as an optimization parameter.
@@ -111,6 +116,7 @@ class TrailEdgeParameter(EdgeParameter):
 # Deviation Edge Parameter
 # ------------------------------------------------------------------------------
 
+
 class DeviationEdgeParameter(EdgeParameter):
     """
     Sets the force of a deviation edge as an optimization parameter.
@@ -122,6 +128,7 @@ class DeviationEdgeParameter(EdgeParameter):
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     pass

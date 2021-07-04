@@ -23,10 +23,10 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .force import *
+from .force import *  # noqa F403
 
 import compas
 if not compas.IPY:
-    from .force_numpy import *
+    from .force_numpy import *  # noqa F403
 
 __all__ = [name for name in dir() if not name.startswith('_')]

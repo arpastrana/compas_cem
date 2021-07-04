@@ -1,7 +1,5 @@
 from compas.datastructures import Network
 
-from compas.geometry import subtract_vectors
-from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 
 from compas_cem.diagrams import NodeMixins
@@ -14,6 +12,7 @@ __all__ = ["Diagram"]
 # ==============================================================================
 # Diagram
 # ==============================================================================
+
 
 class Diagram(NodeMixins, EdgeMixins, Network):
     """

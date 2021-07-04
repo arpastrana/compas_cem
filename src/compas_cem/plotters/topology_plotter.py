@@ -231,7 +231,7 @@ class TopologyPlotter(NetworkPlotter):
                 load = {}
                 load['start'] = start
                 load['end'] = end
-                load['color'] = (0, 0, 0) # black
+                load['color'] = (0, 0, 0)  # black
                 load['width'] = width
 
                 loads.append(load)
@@ -240,7 +240,6 @@ class TopologyPlotter(NetworkPlotter):
         lines.set_zorder(4000)
 
         return lines
-
 
     def save(self, filepath, tight=True, autoscale=True, bbox_inches="tight", pad_inches=0.0, **kwargs):
         """

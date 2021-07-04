@@ -49,7 +49,7 @@ NLOpt
 
     nlopt_algorithm
     nlopt_algorithms
-    nlopt_solver    
+    nlopt_solver
 
 """
 
@@ -59,17 +59,17 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from ._serialization import *
-from .constraints import *
-from .parameters import *
-from .proxy import *
+from ._serialization import *  # noqa F403
+from .constraints import *  # noqa F403
+from .parameters import *  # noqa F403
+from .proxy import *  # noqa F403
 
 import compas
 if not compas.IPY:
-    from .nlopt import *
-    from .objective_func import *
-    from .grad import *
-    from .optimizer import *
+    from .nlopt import *  # noqa F403
+    from .objective_func import *  # noqa F403
+    from .grad import *  # noqa F403
+    from .optimizer import *  # noqa F403
 
 
 __all__ = [name for name in dir() if not name.startswith('_')]
