@@ -4,30 +4,15 @@ compas_cem.optimization
 
 .. currentmodule:: compas_cem.optimization
 
-
-Optimization
-============
+Optimizers
+==========
 
 .. autosummary::
     :toctree: generated/
     :nosignatures:
 
     Optimizer
-    optimizer_solve_nlopt_proxy
     solve_nlopt_proxy
-
-Goals
-=====
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    PointGoal
-    LineGoal
-    PlaneGoal
-    TrimeshGoal
-    NodeResidualGoal
 
 Constraints
 ===========
@@ -36,9 +21,25 @@ Constraints
     :toctree: generated/
     :nosignatures:
 
-    TrailEdgeConstraint
-    DeviationEdgeConstraint
+    PointConstraint
+    LineConstraint
+    PlaneConstraint
+    DeviationEdgeLengthConstraint
+    TrailEdgeForceConstraint
+    ReactionForceConstraint
 
+Optimization Parameters
+=======================
+
+.. autosummary::
+    :toctree: generated/
+    :nosignatures:
+
+    TrailEdgeParameter
+    DeviationEdgeParameter
+    OriginNodeXParameter
+    OriginNodeYParameter
+    OriginNodeZParameter
 
 NLOpt
 =====
@@ -59,8 +60,8 @@ from __future__ import print_function
 
 # from .<module> import *
 from ._serialization import *
-from .parameters import *
 from .constraints import *
+from .parameters import *
 from .proxy import *
 
 import compas

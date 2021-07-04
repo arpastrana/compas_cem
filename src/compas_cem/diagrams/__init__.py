@@ -12,6 +12,7 @@ Diagrams
     :toctree: generated/
     :nosignatures:
 
+    TopologyDiagram
     FormDiagram
 """
 

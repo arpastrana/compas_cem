@@ -2,7 +2,7 @@
 compas_cem.optimization
 ****************************
 
-.. currentmodule:: compas_cem.optimization.goals
+.. currentmodule:: compas_cem.optimization.constraints
 
 
 Classes

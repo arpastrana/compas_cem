@@ -519,13 +519,13 @@ class TopologyDiagram(Diagram):
 
         Parameters
         ----------
-        edge : ``tuple`
+        edge : ``tuple``
             The edge key.
 
         Returns
         -------
         sequences : ``tuple``
-            The nodes' sequences.
+            The nodes sequences.
         """
         u, v = edge
         return  self.node_sequence(u), self.node_sequence(v)
