@@ -21,8 +21,8 @@ Unreleased
 
 * Deleted tag regex from `.bumpversion.cfg`
 
-0.1.3rc0
-----------
+0.1.3
+------
 **Added**
 
 * Added automatic tag versioning to `CHANGELOG.md`
