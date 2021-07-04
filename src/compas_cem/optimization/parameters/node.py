@@ -1,20 +1,17 @@
-from ast import literal_eval
 from math import fabs
 
 from compas_cem.optimization import Serializable
 
 
-__all__ = [
-    "RootNodeConstraintX",
-    "RootNodeConstraintY",
-    "RootNodeConstraintZ"
-]
+__all__ = ["OriginNodeXParameter",
+           "OriginNodeYParameter",
+           "OriginNodeZParameter"]
 
 # ------------------------------------------------------------------------------
-# Base Node Constraint
+# Base Node Parameter
 # ------------------------------------------------------------------------------
 
-class NodeConstraint(Serializable):
+class NodeParameter(Serializable):
     def __init__(self, key, bound_low, bound_up):
         self._key = key
         self._bound_up = bound_up
@@ -26,21 +23,21 @@ class NodeConstraint(Serializable):
         """
         return self._key
 
-    def start_value(self, form):
+    def start_value(self, topology):
         """
         """
-        val = form.node_attribute(key=self.key(), name=self._attr_name)
+        val = topology.node_attribute(key=self.key(), name=self._attr_name)
         return val
 
-    def bound_low(self, form):
+    def bound_low(self, topology):
         """
         """
-        return self.start_value(form) - fabs(self._bound_low)
+        return self.start_value(topology) - fabs(self._bound_low)
 
-    def bound_up(self, form):
+    def bound_up(self, topology):
         """
         """
-        return self.start_value(form) + fabs(self._bound_up)
+        return self.start_value(topology) + fabs(self._bound_up)
 
     def attr_name(self):
         """
@@ -101,30 +98,30 @@ class NodeConstraint(Serializable):
         self._attr_name = str(data["attr_name"])
 
 # ------------------------------------------------------------------------------
-# Root Node Constraint on X
+# Origin Node Constraint on X
 # ------------------------------------------------------------------------------
 
-class RootNodeConstraintX(NodeConstraint):
+class OriginNodeXParameter(NodeParameter):
     def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(RootNodeConstraintX, self).__init__(key, bound_low, bound_up)
+        super(OriginNodeXParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "x"
 
 # ------------------------------------------------------------------------------
-# Root Node Constraint on Y
+# Origin Node Constraint on Y
 # ------------------------------------------------------------------------------
 
-class RootNodeConstraintY(NodeConstraint):
+class OriginNodeYParameter(NodeParameter):
     def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(RootNodeConstraintY, self).__init__(key, bound_low, bound_up)
+        super(OriginNodeYParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "y"
 
 # ------------------------------------------------------------------------------
-# Root Node Constraint on Z
+# Origin Node Constraint on Z
 # ------------------------------------------------------------------------------
 
-class RootNodeConstraintZ(NodeConstraint):
+class OriginNodeZParameter(NodeParameter):
     def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(RootNodeConstraintZ, self).__init__(key, bound_low, bound_up)
+        super(OriginNodeZParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "z"
 
 
@@ -134,85 +131,84 @@ if __name__ == "__main__":
 
     from compas.geometry import Point
 
-    from compas_cem.diagrams import FormDiagram
-    
+    from compas_cem.diagrams import TopologyDiagram
+
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
     from compas_cem.elements import DeviationEdge
-    
+
     from compas_cem.loads import NodeLoad
-    
+
     from compas_cem.supports import NodeSupport
-    
+
     from compas_cem.optimization import Optimizer
-    from compas_cem.optimization import DeviationEdgeConstraint
-    from compas_cem.optimization import TrailEdgeConstraint
-    
-    from compas_cem.optimization import RootNodeConstraintY
-    
-    from compas_cem.optimization import PointGoal
-    
-    from compas_cem.equilibrium import force_equilibrium
-    
+    from compas_cem.optimization import DeviationEdgeParameter
+    from compas_cem.optimization import TrailEdgeParameter
+    from compas_cem.optimization import OriginNodeYParameter
+
+    from compas_cem.optimization import PointConstraint
+
+    from compas_cem.equilibrium import static_equilibrium
+
     from compas_cem.plotters import FormPlotter
 
 
-    # create a form diagram
-    form = FormDiagram()
+    # create a topology diagram
+    topology = TopologyDiagram()
 
     # add nodes
-    form.add_node(Node(0, [0.0, 0.0, 0.0]))
-    form.add_node(Node(1, [1.0, 0.0, 0.0]))
-    form.add_node(Node(2, [2.0, 0.0, 0.0]))
-    form.add_node(Node(3, [3.0, 0.0, 0.0]))
+    topology.add_node(Node(0, [0.0, 0.0, 0.0]))
+    topology.add_node(Node(1, [1.0, 0.0, 0.0]))
+    topology.add_node(Node(2, [2.0, 0.0, 0.0]))
+    topology.add_node(Node(3, [3.0, 0.0, 0.0]))
 
     # add edges with negative values for a compression-only structure
-    form.add_edge(TrailEdge(0, 1, length=-1.0))
-    form.add_edge(DeviationEdge(1, 2, force=-1.0))
-    form.add_edge(TrailEdge(2, 3, length=-1.0))
+    topology.add_edge(TrailEdge(0, 1, length=-1.0))
+    topology.add_edge(DeviationEdge(1, 2, force=-1.0))
+    topology.add_edge(TrailEdge(2, 3, length=-1.0))
 
     # add supports
-    form.add_support(NodeSupport(0))
-    form.add_support(NodeSupport(3))
+    topology.add_support(NodeSupport(0))
+    topology.add_support(NodeSupport(3))
 
     # add loads
-    form.add_load(NodeLoad(1, [0.0, -1.0, 0.0]))
-    form.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
+    topology.add_load(NodeLoad(1, [0.0, -1.0, 0.0]))
+    topology.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
 
     # calculate equilibrium
-    force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
+    topology.build_trails()
+    form = static_equilibrium(topology, eta=1e-5, tmax=100)
 
     # optimization
     optimizer = Optimizer()
 
-    optimizer.add_constraint(RootNodeConstraintY(1, 1.0, 1.0))
-    optimizer.add_constraint(DeviationEdgeConstraint((1, 2), 1.0, 1.0))
-    optimizer.add_constraint(TrailEdgeConstraint((2, 3), 1.0, 1.0))
+    optimizer.add_parameter(OriginNodeYParameter(1, 1.0, 1.0))
+    optimizer.add_parameter(DeviationEdgeParameter((1, 2), 1.0, 1.0))
+    optimizer.add_parameter(TrailEdgeParameter((2, 3), 1.0, 1.0))
     
     point_a = Point(1.0, -0.5, 0.0)
-    optimizer.add_goal((PointGoal(1, point_a)))
+    optimizer.add_constraint((PointConstraint(1, point_a)))
 
     point_b = Point(3.0, -0.707, 0.0)
-    optimizer.add_goal((PointGoal(3, point_b)))
+    optimizer.add_constraint((PointConstraint(3, point_b)))
     
     # optimization settings
     start = time()
     algo = "LD_LBFGS"  # LN_BOBYQA, LD_LBFGS, LD_MMA
     iters = 100  # 100
-    stopval = 1e-6 # 1e-4
-    step_size = 1e-6  # 1e-4
+    eps = 1e-6 # 1e-4
 
     # optimize
-    x_opt, l_opt = optimizer.solve_nlopt(form, algo, iters, step_size, stopval)
+    form = optimizer.solve_nlopt(topology, algo, iters, eps)
 
     print("Elapsed time: {}".format(time() - start))
-    print("Total error: {}".format(l_opt))
+    print("Total error: {}".format(optimizer.penalty))
 
     # plot
-    plotter = FormPlotter(form, figsize=(16, 9))
+    plotter = FormPlotter(topology, figsize=(16, 9))
 
     plotter.draw_nodes(radius=0.03, text="key-xyz")
     plotter.draw_edges(text="force-length")
     plotter.draw_loads(scale=-0.25)
-    plotter.draw_residuals(scale=0.10)
+    plotter.draw_reactions(scale=0.10)
     plotter.show()

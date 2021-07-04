@@ -3,14 +3,12 @@ from abc import abstractmethod
 from compas_cem.optimization import Serializable
 
 
-__all__ = [
-    "Goal"
-]
+__all__ = ["Constraint"]
 
 
-class Goal(Serializable):
+class Constraint(Serializable):
     """
-    The blueprint of a goal.
+    The blueprint of a constraint.
     """
     def __init__(self, key, target):
         self._key = key  # a topological key
@@ -45,12 +43,11 @@ class Goal(Serializable):
         """
         return
 
-
 # ------------------------------------------------------------------------------
 # Data
 # ------------------------------------------------------------------------------
-
     # TODO: Update serialization after autodiff. Danger of not working in Rhino!
+
     @property
     def data(self):
         """
@@ -58,11 +55,8 @@ class Goal(Serializable):
 
         Returns
         -------
-            data : ``dict``
+        data : ``dict``
             A dictionary that contains the following key-value pairs:
-
-            * "node_key" : ``int``
-            * "target_geo" : ``dict``
         """
 
         data = {}

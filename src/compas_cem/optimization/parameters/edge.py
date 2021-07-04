@@ -4,16 +4,14 @@ from math import fabs
 from compas_cem.optimization import Serializable
 
 
-__all__ = [
-    "TrailEdgeConstraint",
-    "DeviationEdgeConstraint"
-]
+__all__ = ["TrailEdgeParameter",
+           "DeviationEdgeParameter"]
 
 # ------------------------------------------------------------------------------
-# Base Edge Constraint
+# Base Edge Parameter
 # ------------------------------------------------------------------------------
 
-class EdgeConstraint(Serializable):
+class EdgeParameter(Serializable):
     def __init__(self, key, bound_low, bound_up):
         self._key = key
         self._bound_up = bound_up
@@ -25,27 +23,26 @@ class EdgeConstraint(Serializable):
         """
         return self._key
 
-    def start_value(self, form):
+    def start_value(self, topology):
         """
         """
-        val = form.edge_attribute(key=self.key(), name=self._attr_name)
+        val = topology.edge_attribute(key=self.key(), name=self._attr_name)
         return val
 
-    def bound_low(self, form):
+    def bound_low(self, topology):
         """
         """
-        return self.start_value(form) - fabs(self._bound_low)
+        return self.start_value(topology) - fabs(self._bound_low)
 
-    def bound_up(self, form):
+    def bound_up(self, topology):
         """
         """
-        return self.start_value(form) + fabs(self._bound_up)
+        return self.start_value(topology) + fabs(self._bound_up)
 
     def attr_name(self):
         """
         """
         return self._attr_name
-
 
 # ------------------------------------------------------------------------------
 # Data
@@ -54,7 +51,7 @@ class EdgeConstraint(Serializable):
     @property
     def data(self):
         """
-        A data dictionary that represents an ``EdgeConstraint`` object.
+        A data dictionary that represents an ``EdgeParameter`` object.
 
         Returns
         -------
@@ -99,27 +96,27 @@ class EdgeConstraint(Serializable):
         self._attr_name = str(data["attr_name"])
 
 # ------------------------------------------------------------------------------
-# Trail Edge Constraint
+# Trail Edge Parameter
 # ------------------------------------------------------------------------------
 
-class TrailEdgeConstraint(EdgeConstraint):
+class TrailEdgeParameter(EdgeParameter):
     """
     Registers the length of a trail edge as an optimization variable.
     """
     def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(TrailEdgeConstraint, self).__init__(key, bound_low, bound_up)
+        super(TrailEdgeParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "length"
 
 # ------------------------------------------------------------------------------
-# Deviation Edge Constraint
+# Deviation Edge Parameter
 # ------------------------------------------------------------------------------
 
-class DeviationEdgeConstraint(EdgeConstraint):
+class DeviationEdgeParameter(EdgeParameter):
     """
     Registers the force of a deviation edge as an optimization variable.
     """
     def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(DeviationEdgeConstraint, self).__init__(key, bound_low, bound_up)
+        super(DeviationEdgeParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "force"
 
 # ------------------------------------------------------------------------------

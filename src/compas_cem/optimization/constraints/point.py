@@ -1,19 +1,17 @@
-from compas_cem.optimization.goals import Goal
+from compas_cem.optimization.constraints import Constraint
 
 from compas.geometry import distance_point_point_sqrd
 
 
-__all__ = [
-    "PointGoal",
-]
+__all__ = ["PointConstraint"]
 
 
-class PointGoal(Goal):
+class PointConstraint(Constraint):
     """
     Pulls the xyz position of a node to a target point.
     """
     def __init__(self, node=None, point=None):
-        super(PointGoal, self).__init__(key=node, target=point)
+        super(PointConstraint, self).__init__(key=node, target=point)
 
     def error(self, data):
         """

@@ -59,8 +59,8 @@ from __future__ import print_function
 
 # from .<module> import *
 from ._serialization import *
+from .parameters import *
 from .constraints import *
-from .goals import *
 from .proxy import *
 
 import compas

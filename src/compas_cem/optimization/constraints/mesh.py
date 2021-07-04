@@ -1,19 +1,21 @@
-from compas_cem.optimization.goals import Goal
+from compas_cem.optimization.constraint import Constraint
 
 from compas.geometry import distance_point_point_sqrd
 
 import numpy as np
 
 
-__all__ = ["TrimeshGoal"]
+__all__ = ["TrimeshConstraint"]
 
 
-class TrimeshGoal(Goal):
+class TrimeshConstraint(Constraint):
     """
     Pulls the xyz position of a node to a target triangular mesh.
+
+    TODO: trimesh complaints with autograd boxes when parsing into array.
     """
     def __init__(self, node=None, trimesh=None):
-        super(TrimeshGoal, self).__init__(key=node, target=trimesh)
+        super(TrimeshConstraint, self).__init__(key=node, target=trimesh)
 
     def error(self, data):
         """
@@ -26,15 +28,13 @@ class TrimeshGoal(Goal):
     def reference(self, data):
         """
         """
-        a = data["node_xyz"][self.key()]
-
-        return a
+        return data["node_xyz"][self.key()]
 
     def target(self, ref):
         """
         """
-        trimesh = self._target
         points = np.array([ref])
+        trimesh = self._target
         closest, dist, _ = trimesh.nearest.on_surface(points)
 
         return closest.tolist().pop()

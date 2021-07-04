@@ -1,20 +1,18 @@
 from compas.geometry import distance_point_point
 
-from compas_cem.optimization.goals import Goal
+from compas_cem.optimization.constraints import Constraint
 
 
-__all__ = [
-    "DeviationEdgeLengthGoal"
-]
+__all__ = ["DeviationEdgeLengthConstraint"]
 
 
-class DeviationEdgeLengthGoal(Goal):
+class DeviationEdgeLengthConstraint(Constraint):
     """
     Make a deviation edge reach a target length.
     """
     def __init__(self, edge=None, length=None):
         # TODO: needs different serialization mechanism
-        super(DeviationEdgeLengthGoal, self).__init__(edge, length)
+        super(DeviationEdgeLengthConstraint, self).__init__(edge, length)
 
     def error(self, data):
         """

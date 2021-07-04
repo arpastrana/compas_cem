@@ -1,20 +1,18 @@
 from compas.geometry import closest_point_on_plane
 from compas.geometry import distance_point_point_sqrd
 
-from compas_cem.optimization.goals import Goal
+from compas_cem.optimization.constraints import Constraint
 
 
-__all__ = [
-    "PlaneGoal"
-]
+__all__ = ["PlaneConstraint"]
 
 
-class PlaneGoal(Goal):
+class PlaneConstraint(Constraint):
     """
     Pulls the xyz position of a node to a target plane.
     """
     def __init__(self, node=None, plane=None):
-        super(PlaneGoal, self).__init__(node, plane)
+        super(PlaneConstraint, self).__init__(node, plane)
 
     def error(self, data):
         """

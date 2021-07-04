@@ -2,7 +2,7 @@
 compas_cem.optimization
 ****************************
 
-.. currentmodule:: compas_cem.optimization.constraints
+.. currentmodule:: compas_cem.optimization.goals
 
 
 Classes
@@ -26,8 +26,17 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+
 # from .<module> import *
-from .edge import *
-from .node import *
+from .constraint import *
+from .point import *
+from .plane import *
+from .line import *
+from .force import *
+from .length import *
+
+# import compas
+# if not compas.IPY:
+#     from .mesh import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]
