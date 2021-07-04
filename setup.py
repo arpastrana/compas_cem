@@ -28,7 +28,7 @@ optional_requirements = {}
 
 setup(
     name="compas_cem",
-    version="0.1.3",
+    version="0.1.4",
     description="Constrained form-finding meets automatic differentiation.",
     long_description=long_description,
     long_description_content_type="text/markdown",
