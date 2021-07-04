@@ -1,63 +1,59 @@
 import autograd.numpy as np
 
-
-__all__ = ["force_equilibrium_numpy",
-           "form_equilibrate_numpy"]
+from compas_cem.diagrams import FormDiagram
 
 
-def force_equilibrium_numpy(form, kmax=100, eps=1e-5, verbose=False):
+__all__ = ["static_equilibrium_numpy"]
+
+
+def static_equilibrium_numpy(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
     """
-    Computes force equilibrium on the nodes of the force diagram.
+    Generate a form diagram in static equilibrium using a numpy backend.
 
     Parameters
     ----------
-    form : ``FormDiagram``
-        A form diagram
-    kmax : ``int``. Optional.
+    topology : ``TopologyDiagram``
+        A valid topology diagram
+    tmax : ``int``. Optional.
         Maximum number of iterations the algorithm will run for.
         Defaults to ``100``.
-    eps : ``float``. Optional.
+    eta: ``float``. Optional.
         Distance threshold that marks equilibrium convergence.
         This threshold is compared against the sum of distances of the nodes'
         positions from one iteration to the next one.
-        If ``eps`` is hit before consuming ``kmax`` iterations, calculations
+        If ``eta`` is hit before consuming ``kmax`` iterations, calculations
         will stop early. Defaults to ``1e-5``.
     verbose : ``bool``. Optional.
         Flag to print out internal operations. Defaults to ``False``.
     callback : ``function``. Optional.
         An optional callback function to run at every iteration.
     """
-    # compute trails
-    form.trails()
-
-    # equilibrate form
-    attrs = form_equilibrate_numpy(form, kmax, eps, verbose)  # bottleneck
-
-    # update form node and edge attributes
+    attrs = equilibrium_state_numpy(topology, tmax, eta, verbose, callback)
+    form = FormDiagram.from_topology_diagram(topology)
     form_update(form, **attrs)
+    return form
 
 
-def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
+def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
     """
-    Equilibrate forces in a form.
+    Equilibrate forces in a topology.
     """
-    trails = form.trails_2()  # calls attribute self.attributes["trails"]
-    w_max = max([len(trail) for trail in trails.values()])
+    trails = topology.trails()  # calls attribute self.attributes["trails"]
 
     # input, output
-    node_xyz = {n: np.array(form.node_coordinates(n)) for n in form.nodes()}
+    node_xyz = {n: np.array(topology.node_coordinates(n)) for n in topology.nodes()}
 
     # output, mutable
-    edge_forces = {e: np.array(form.edge_force(e)) for e in form.edges()}
-    edge_lengths = {e: np.array(form.edge_attribute(e, "length")) for e in form.edges()}
+    edge_forces = {e: np.array(topology.edge_force(e)) for e in topology.edges()}
+    edge_lengths = {e: np.array(topology.edge_attribute(e, "length")) for e in topology.edges()}
 
     # input, immutable
     # numpy
-    node_loads = {n: np.array(form.node_load(n)) for n in form.nodes()}
+    node_loads = {n: np.array(topology.node_load(n)) for n in topology.nodes()}
     # no numpy
-    node_direct = {n: form._connected_direct_deviation_edges(n) for n in form.nodes()}
-    node_indirect = {n: form._connected_indirect_deviation_edges(n) for n in form.nodes()}
-    edge_keys = {e for e in form.edges()}
+    node_direct = {n: topology._connected_direct_deviation_edges(n) for n in topology.nodes()}
+    node_indirect = {n: topology._connected_indirect_deviation_edges(n) for n in topology.nodes()}
+    edge_keys = {e for e in topology.edges()}
 
     # internals
     trail_vectors = {}
@@ -66,13 +62,12 @@ def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
     reaction_forces = {}
     trail_forces = {}
 
-    for k in range(kmax):  # max iterations
+    for t in range(tmax):  # max iterations
 
         # store last positions for residual
-        # last_positions = {k: v for k, v in positions.items()}
         last_positions = {k: v for k, v in node_xyz.items()}
 
-        for i in range(w_max):  # layers
+        for i in topology.sequences():  # layers
 
             for _, trail in trails.items():
 
@@ -87,14 +82,10 @@ def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
                 pos = node_xyz[node]
                 if i == 0:
                     t_vec = np.zeros(3)
-                    # pos = form.node_coordinates(root)
-                    # pos = node_xyz[root]  #jax array
 
                 # otherwise, select last trail vector and position from dictionary
                 else:
                     t_vec = trail_vectors[node]
-                    # pos = positions[node]
-                    # pos = node_xyz[node]
 
                 # node load
                 q_vec = node_loads[node]
@@ -105,12 +96,12 @@ def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
 
                 # indirect deviation edges vector
                 ri_vec = np.zeros(3)
-                if k > 0:
+                if t > 0:
                     indir_edges = node_indirect[node]
                     ri_vec = deviation_edges_resultant_vector(node, node_xyz, indir_edges, edge_forces)
 
                 # node equilibrium, bottleneck 60%
-                t_vec = node_equilibrium(form, node, t_vec, q_vec, rd_vec, ri_vec)
+                t_vec = node_equilibrium(t_vec, q_vec, rd_vec, ri_vec)
 
                 # if this is the last node, exit
                 if i == (len(trail) - 1):
@@ -127,72 +118,40 @@ def form_equilibrate_numpy(form, kmax=100, eps=1e-5, verbose=False):
                 # query trail edge's length
                 length = edge_lengths[edge]
 
-                # try:
-                #     edge = (node, next_node)
-                #     length = form.edge_attribute(key=edge, name="length")
-
-                # except KeyError:
-                #     edge = (next_node, node)
-                #     length = form.edge_attribute(key=edge, name="length")
-                # store trail forces
-                # trail_forces[edge] = copysign(length_vector(t_vec), length)
                 trail_force = length_vector(t_vec)
-                # bottleneck 10%
-                # trail_forces[edge] = np.copysign(trail_force, length)
                 trail_forces[edge] = trail_force
 
-                # bottleneck 20%
-                # next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), length))
-                # next_pos = np.array(pos) + length * normalize_vector(t_vec)
-                # next_pos = pos + length * normalize_vector(t_vec)
                 next_pos = pos + length * t_vec / trail_force
 
                 # store new position and trail vector
-                # positions[next_node] = next_pos
                 trail_vectors[next_node] = t_vec
 
                 # store node coordinates
                 node_xyz[next_node] = next_pos
 
-
                 # store reaction force in support node
-                # if form.is_node_support(next_node):
                 reaction_forces[next_node] = t_vec
 
                 # do callback
-                # if callback:
-                #     callback()
+                if callback:
+                    callback()
 
         # if this is the first iteration, move directly to the next one
-        if k == 0:
+        if t == 0:
             continue
 
-        # calculate residual
-        # residual = 0.0
         # TODO: simplify by iterating only over values?
-        # pos_array = np.array([pos for key, pos in positions.items()])
-        # last_pos_array = np.array([last_positions[key] for key, pos in positions.items()])
-        # residual = np.sqrt(np.sum(np.square(last_pos_array - pos_array)))
-
         pos_array = np.array([pos for key, pos in node_xyz.items()])
         last_pos_array = np.array([last_positions[key] for key, pos in node_xyz.items()])
+
+        # calculate residual
         residual = np.sqrt(np.sum(np.square(last_pos_array - pos_array)))
-        # for key, pos in positions.items():
-        #     last_pos = last_positions[key]
-            # residual += distance_point_point(last_pos, pos)
-            # if isinstance(pos, list):
-            #     pos = np.array(pos)
-            # if isinstance(last_pos, list):
-            #     last_pos = np.array(last_pos)
-
-            # residual += np.sum(np.square(np.subtract(last_pos, pos)))
-
         # if residual smaller than threshold, stop iterating
-        if residual < eps:
+        if residual < eta:
             break
 
     # if residual larger than threshold after kmax iterations, raise error
-    if residual > eps:
+    if residual > eta:
         raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
 
     # print log
@@ -230,22 +189,18 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
 
     # assign lengths to deviation edges
-    for u, v in form.deviation_edges():
+    for u, v in form.edges():
         # length = form.edge_length(u, v)
         length = length_vector(node_xyz[u] - node_xyz[v])
         form.edge_attribute(key=(u, v), name="length", value=length)
 
 
-def node_equilibrium(form, node, t_vec, q_vec, rd_vec, ri_vec):
+def node_equilibrium(t_vec, q_vec, rd_vec, ri_vec):
     """
     Calculates the equilibrium of trail and deviation forces at a node.
 
     Parameters
     ----------
-    form : ``FormDiagram``
-        A form diagram
-    node : ``int``
-        A node key.
     t_vec : ``list``
         A trail vector.
     indirect : ``bool``
@@ -258,19 +213,8 @@ def node_equilibrium(form, node, t_vec, q_vec, rd_vec, ri_vec):
         The new trail vector.
     """
     tvec_in = -1.0 * t_vec
-    # tvec_in = scale_vector(t_vec, -1.0)
-    # q_vec = form.node_load(node)
-    # breakpoint()
 
-    # rd_vec = direct_deviation_edges_resultant_vector(form, node, node_xyz)  # bottleneck
-
-    # ri_vec = np.zeros(3)
-    # if indirect:
-    #     ri_vec = indirect_deviation_edges_resultant_vector(form, node, node_xyz)
-
-    tvec_out = trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec)  # bottleneck
-
-    return tvec_out
+    return trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec)  # bottleneck
 
 
 def deviation_edges_resultant_vector(node, node_xyz, deviation_edges, edge_forces):
@@ -279,8 +223,8 @@ def deviation_edges_resultant_vector(node, node_xyz, deviation_edges, edge_force
 
     Parameters
     ----------
-    form : ``FormDiagram``
-        A form diagram.
+    topology : ``TopologyDiagram``
+        A topology diagram.
     node : ``int``
         A node key.
     node_xyz : ``dict``
@@ -293,18 +237,10 @@ def deviation_edges_resultant_vector(node, node_xyz, deviation_edges, edge_force
     rvec : ``list``
         The resulting force vector.
     """
-    # r_vec = [0.0, 0.0, 0.0]
     r_vec = np.zeros(3)
     if not deviation_edges:
         return r_vec
-        # return np.zeros(3)
 
-    # vectors = form.incoming_edge_vectors(node, deviation_edges, True)
-
-    # bottleneck 60%
-    # forces = form.edges_attribute(name="force", keys=deviation_edges)
-    # vectors = incoming_edge_vectors(node, node_xyz, deviation_edges, True)
-    #
     for edge in deviation_edges:
         force = edge_forces[edge]
         vector = incoming_edge_vector(node, node_xyz, edge, normalize=True)
@@ -312,25 +248,18 @@ def deviation_edges_resultant_vector(node, node_xyz, deviation_edges, edge_force
 
     # bottleneck 40%
     # TODO: check if np.array forces broadcasts well with vectors array
-    # vectors = np.multiply(np.array(forces), np.array(vectors))
-
-    #
-    # r_vec = np.sum(vectors, axis=0)
-
-    # for force, dev_vec in zip(forces, vectors):
-    #     r_vec = add_vectors(r_vec, scale_vector(dev_vec, force))
 
     return r_vec
 
 
-def direct_deviation_edges_resultant_vector(form, node, node_xyz):
+def direct_deviation_edges_resultant_vector(topology, node, node_xyz):
     """
     Adds up the force vectors of the direct deviation edges incident to a node.
 
     Parameters
     ----------
-    form : ``FormDiagram``
-        A form diagram.
+    topology : ``TopologyDiagram``
+        A topology diagram.
     node : ``int``
         A node key.
 
@@ -339,22 +268,20 @@ def direct_deviation_edges_resultant_vector(form, node, node_xyz):
     rvec : ``list``
         The resulting force vector.
     """
-    deviation_edges = form._connected_direct_deviation_edges(node)
-
-
-    res = deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges)
+    deviation_edges = topology._connected_direct_deviation_edges(node)
+    res = deviation_edges_resultant_vector(topology, node, node_xyz, deviation_edges)
 
     return res
 
 
-def indirect_deviation_edges_resultant_vector(form, node, node_xyz):
+def indirect_deviation_edges_resultant_vector(topology, node, node_xyz):
     """
     Adds up the force vectors of the indirect deviation edges incident to a node.
 
     Parameters
     ----------
-    form : ``FormDiagram``
-        A form diagram.
+    topology : ``TopologyDiagram``
+        A topology diagram.
     node : ``int``
         A node key.
 
@@ -363,9 +290,9 @@ def indirect_deviation_edges_resultant_vector(form, node, node_xyz):
     rvec : ``list``
         The resulting force vector.
     """
-    deviation_edges = form._connected_indirect_deviation_edges(node)
+    deviation_edges = topology._connected_indirect_deviation_edges(node)
 
-    return deviation_edges_resultant_vector(form, node, node_xyz, deviation_edges)
+    return deviation_edges_resultant_vector(topology, node, node_xyz, deviation_edges)
 
 
 def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
@@ -388,18 +315,7 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     tvec_out : ``list``
         An outgoing trail vector.
     """
-    # tvec = [0.0, 0.0, 0.0]
-    # vectors = [tvec_in, q_vec, rd_vec, ri_vec]
-    # for vec in vectors:
-    #     tvec = add_vectors(tvec, vec)
-    # return scale_vector(tvec, -1.0)
-
-    # vectors = np.array([tvec_in, q_vec, rd_vec, ri_vec])  # bottleneck
-    # vectors = np.vstack([tvec_in, q_vec, rd_vec, ri_vec])
-    # result =  -1.0 * np.sum(vectors, axis=0)
-
     return -1.0 * (tvec_in + q_vec + rd_vec + ri_vec)
-
 
 # ------------------------------------------------------------------------------
 # Utilities
@@ -447,11 +363,6 @@ def vector_two_nodes(a, b, normalize=False):
     vector : ``list``
         The calculated xyz vector.
     """
-    # vector = subtract_vectors(a, b)
-    # if isinstance(a, list):
-    #     a = np.array(a)
-    # if isinstance(b, list):
-    #     b = np.array(b)
     vector = a - b
     if not normalize:
         return vector
@@ -459,14 +370,16 @@ def vector_two_nodes(a, b, normalize=False):
 
 
 def normalize_vector(vector):
-    # if isinstance(vector, list):
-    #     vector = np.array(vector)
+    """
+    Hand-made vector normalization.
+    """
     return vector / length_vector(vector)
 
 
 def length_vector(vector):
-    # if isinstance(vector, list):
-    #     vector = np.array(vector)
+    """
+    Calculates the norm of a vector.
+    """
     return np.linalg.norm(vector)
 
 

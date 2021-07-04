@@ -7,65 +7,68 @@ from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 from compas.geometry import distance_point_point
 
-
-__all__ = ["force_equilibrium",
-           "form_update",
-           "form_equilibrate"]
+from compas_cem.diagrams import FormDiagram
 
 
-def force_equilibrium(form, kmax=100, eps=1e-5, verbose=False, callback=None):
+__all__ = ["static_equilibrium"]
+
+
+def static_equilibrium(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
     """
-    Computes force equilibrium on the nodes of the force diagram.
+    Generate a form diagram in static equilibrium.
 
     Parameters
     ----------
-    form : ``FormDiagram``
-        A form diagram
-    kmax : ``int``. Optional.
+    topology : ``TopologyDiagram``
+        A topology diagram
+    tmax : ``int``. Optional.
         Maximum number of iterations the algorithm will run for.
         Defaults to ``100``.
-    eps : ``float``. Optional.
+    eta : ``float``. Optional.
         Distance threshold that marks equilibrium convergence.
         This threshold is compared against the sum of distances of the nodes'
         positions from one iteration to the next one.
-        If ``eps`` is hit before consuming ``kmax`` iterations, calculations
+        If ``eta`` is hit before consuming ``tmax`` iterations, calculations
         will stop early. Defaults to ``1e-5``.
     verbose : ``bool``. Optional.
         Flag to print out internal operations. Defaults to ``False``.
     callback : ``function``. Optional.
         An optional callback function to run at every iteration.
+
+    Returns
+    -------
+    form : :class:`compas_cem.diagrams.FormDiagram`
+        A form diagram.
     """
-    # compute trails
-    form.trails()
-
-    # equilibrate form
-    eq_state = form_equilibrate(form, kmax, eps, verbose, callback)
-
-    # update form node and edge attributes
-    form_update(form, **eq_state)
+    attrs = equilibrium_state(topology, tmax, eta, verbose, callback)
+    form = FormDiagram.from_topology_diagram(topology)
+    form_update(form, **attrs)
+    return form
 
 
-def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
+def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
     """
     Equilibrate forces in a form.
     """
-    trails = form.trails_2()  # calls attribute self.attributes["trails"]
-    w_max = max([len(trail) for trail in trails.values()])
+    trails = topology.trails()  # calls attribute self.attributes["trails"]
+
+    # there must be at least one trail
+    assert len(trails) != 0, "No trails in the diagram!"
 
     positions = {}
     trail_vectors = {}
     reaction_forces = {}
     trail_forces = {}
-    node_xyz = {node: form.node_coordinates(node) for node in form.nodes()}
+    node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
 
-    for k in range(kmax):  # max iterations
+    for t in range(tmax):  # max iterations
 
         # store last positions for residual
         last_positions = {k: v for k, v in positions.items()}
 
-        for i in range(w_max):  # layers
+        for i in topology.sequences():  # sequences
 
-            for root, trail in trails.items():
+            for trail in trails.values():
 
                 # if index is larger than available nodes in trails
                 if i > (len(trail) - 1):
@@ -77,7 +80,7 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 # set initial trail vector and position for first iteration
                 if i == 0:
                     t_vec = [0.0, 0.0, 0.0]
-                    pos = form.node_coordinates(root)
+                    pos = topology.node_coordinates(node)
 
                 # otherwise, select last trail vector and position from dictionary
                 else:
@@ -86,9 +89,9 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
 
                 # calculate nodal equilibrium to get trail direction
                 indirect = True
-                if k == 0:
+                if t == 0:
                     indirect = False
-                t_vec = node_equilibrium(form, node, t_vec, node_xyz, indirect)
+                t_vec = node_equilibrium(topology, node, t_vec, node_xyz, indirect)
 
                 # if this is the last node, exit
                 if i == (len(trail) - 1):
@@ -100,11 +103,11 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 # query trail edge's length
                 try:
                     edge = (node, next_node)
-                    length = form.edge_attribute(key=edge, name="length")
+                    length = topology.edge_attribute(key=edge, name="length")
 
                 except KeyError:
                     edge = (next_node, node)
-                    length = form.edge_attribute(key=edge, name="length")
+                    length = topology.edge_attribute(key=edge, name="length")
 
                 next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), length))
 
@@ -119,7 +122,7 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                 trail_forces[edge] = length_vector(t_vec)
 
                 # store reaction force in support node
-                if form.is_node_support(next_node):
+                if topology.is_node_support(next_node):
                     reaction_forces[next_node] = t_vec[:]
 
                 # do callback
@@ -127,7 +130,7 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
                     callback()
 
         # if this is the first iteration, move directly to the next one
-        if k == 0:
+        if t == 0:
             continue
 
         # calculate residual
@@ -137,17 +140,17 @@ def form_equilibrate(form, kmax=100, eps=1e-5, verbose=False, callback=None):
             residual += distance_point_point(last_pos, pos)
 
         # if residual smaller than threshold, stop iterating
-        if residual < eps:
+        if residual < eta:
             break
 
-    # if residual larger than threshold after kmax iterations, raise error
-    if residual > eps:
-        raise ValueError("Over {} iters. residual: {} > eps: {}".format(kmax, residual, eps))
+    # if residual larger than threshold after tmax iterations, raise error
+    if residual > eta:
+        raise ValueError("Over {} iters. residual: {} > eta: {}".format(tmax, residual, eta))
 
     # print log
     if verbose:
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
-        print(msg.format(k, residual))
+        print(msg.format(t, residual))
 
     eq_state = {}
     eq_state["node_xyz"] = node_xyz
@@ -176,7 +179,7 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
 
     # assign lengths to deviation edges
-    for u, v in form.deviation_edges():
+    for u, v in form.edges():
         length = form.edge_length(u, v)
         form.edge_attribute(key=(u, v), name="length", value=length)
 
