@@ -47,8 +47,9 @@ COLORS = {"tension": (227, 6, 75),  # red
           "load": (0, 150, 10),  # green
           "support_force": (0, 150, 10),  # green
           "trail": (250, 80, 210),  # pink
-          "auxiliary_trail": (255, 155, 15)  # orange
-          }
+          "auxiliary_trail": (255, 155, 15)}  # orange
+
+PROXY_PORT = 7123
 
 __all_plugins__ = ['compas_cem.ghpython.install', 'compas_cem.ghpython.uninstall']
 __all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]

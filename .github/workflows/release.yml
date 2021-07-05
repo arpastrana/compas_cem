@@ -46,7 +46,7 @@ jobs:
         uses: compas-dev/compas-actions.ghpython_components@v1
         with:
           source: src/compas_cem/ghpython/components
-          target: src/compas_cem/hpython/components/ghuser
+          target: src/compas_cem/ghpython/components/ghuser
 
       - name: 💃 Build release
         if: success() && startsWith(github.ref, 'refs/tags')
