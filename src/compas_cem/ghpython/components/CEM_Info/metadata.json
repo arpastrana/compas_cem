@@ -8,12 +8,7 @@
 
     "ghpython": {
         "isAdvancedMode": true,
-        "inputParameters": [
-            {
-                "name": "ros_client",
-                "description": "The ROS client."
-            }
-        ],
+        "inputParameters": [],
         "outputParameters": [
             {
                 "name": "info",
