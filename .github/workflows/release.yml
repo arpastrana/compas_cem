@@ -1,6 +1,8 @@
 on:
   push:
     # Sequence of patterns matched against refs/tags
+    branches:
+      - alpha
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
@@ -11,11 +13,6 @@ jobs:
     name: Create Release
     runs-on: windows-latest
     steps:
-      - name: Get version from tag
-        id: tag_name
-        run: |
-          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
-        shell: bash
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -31,10 +28,10 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.8
 
       - uses: compas-dev/compas-actions.build@v1.0.0
         with:
