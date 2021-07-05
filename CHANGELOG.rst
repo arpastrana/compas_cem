@@ -12,15 +12,20 @@ Unreleased
 **Added**
 
 * Implemented `TopologyArtist` and `FormArtist`
-* Added `compas_cem.rhino_install.py` to streamline the symlink with Rhino.
+* Added `compas_cem.rhino_install` to streamline the symlink with Rhino
+* Added `src/compas_cem/ghpython/components/ghuser/` to `.gitignore`
 
 **Changed**
+
+* Refactored `compas_cem.rhino_install` into `compas_cem.ghpython.install`
+* Refactored `compas_cem.rhino_install` into `compas_cem.ghpython.uninstall`
 
 **Fixed**
 
 **Deprecated**
 
 **Removed**
+* Removed `compas_cem.rhino_install`
 
 0.1.5
 ----------
