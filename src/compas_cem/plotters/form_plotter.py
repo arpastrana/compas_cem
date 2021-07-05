@@ -30,9 +30,6 @@ class FormPlotter(NetworkPlotter):
     def __init__(self, form_diagram, *args, **kwargs):
         super(FormPlotter, self).__init__(form_diagram, *args, **kwargs)
 
-        self._edge_colors = {"trail": COLORS["edge"],
-                             "deviation": COLORS["edge"]}
-
         self._edge_state_colors = {-1: COLORS["compression"],
                                    1: COLORS["tension"],
                                    0: COLORS["edge"]}
@@ -200,8 +197,7 @@ class FormPlotter(NetworkPlotter):
         tol : ``float``
             The minimum force magnitude to draw. Defaults to ``1e-3``.
         """
-        if not keys:
-            keys = list(self.datastructure.nodes())
+        keys = keys or list(self.datastructure.nodes())
         attrs = ["qx", "qy", "qz"]
         color = COLORS["load"]
         shift = {key: False for key in keys}
@@ -226,8 +222,7 @@ class FormPlotter(NetworkPlotter):
         tol : ``float``
             The minimum force magnitude to draw. Defaults to ``1e-3``.
         """
-        if not keys:
-            keys = list(self.datastructure.support_nodes())
+        keys = keys or list(self.datastructure.support_nodes())
         attrs = ["rx", "ry", "rz"]
         color = COLORS["support_force"]
 
@@ -249,7 +244,7 @@ class FormPlotter(NetworkPlotter):
 
     def _draw_forces(self, keys, attrs, scale, color, width, shift, gap, tol):
         """
-        Base method to draws forces (residuals or loads) as scaled arrows.
+        Base method to draw forces (residuals or loads) as scaled arrows.
 
         Parameters
         ----------

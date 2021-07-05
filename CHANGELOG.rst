@@ -11,6 +11,9 @@ Unreleased
 
 **Added**
 
+* Implemented `TopologyArtist` and `FormArtist`
+* Added `compas_cem.rhino_install.py` to streamline the symlink with Rhino.
+
 **Changed**
 
 **Fixed**

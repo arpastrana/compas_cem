@@ -36,11 +36,9 @@ class NodeMixins(object):
         """
         Gets
         """
-        key = None
-        try:
-            if value in self.node:
-                key = value
-        except TypeError:
+        if value in self.node:
+            key = value
+        else:
             key = self.gkey_node.get(self.gkey(value))
         return key
 
