@@ -166,7 +166,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
     """
     # assign nodes' coordinates
     for node, xyz in node_xyz.items():
-        form.node_attributes(key=node, names=["x", "y", "z"], values=xyz)
+        form.node_xyz(node, xyz)
+        # form.node_attributes(key=node, names=["x", "y", "z"], values=xyz)
 
     # assign forces on trail edges
     for edge, tforce in trail_forces.items():

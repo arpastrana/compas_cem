@@ -56,7 +56,7 @@ class NodeMixins(object):
         """
         Gets or sets node coordinates.
         """
-        if not xyz:
+        if xyz is None:
             return self.node_coordinates(key)
         self.update_node_xyz(key, xyz)
 

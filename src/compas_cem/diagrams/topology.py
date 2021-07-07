@@ -40,7 +40,7 @@ class TopologyDiagram(Diagram):
         self.attributes["_trails"] = dict()
         self.attributes["_auxiliary_trails"] = dict()
         self.attributes["_aux_length"] = -1.0
-        self.attributes["_aux_vector"] = normalize_vector([1.0, 1.0, 1.0])
+        self.attributes["_aux_vector"] = [1.0, 1.0, 1.0]
 
 # ==============================================================================
 # Properties
@@ -271,8 +271,9 @@ class TopologyDiagram(Diagram):
         # automatically create auxiliary trails
         if auxiliary_trails:
             aux_trails = dict()
+            aux_dir = normalize_vector(self.auxiliary_trail_vector)
             for node in unassigned:
-                aux_vector = scale_vector(self.auxiliary_trail_vector, self.auxiliary_trail_length)
+                aux_vector = scale_vector(aux_dir, self.auxiliary_trail_length)
                 aux_xyz = add_vectors(self.node_coordinates(node), aux_vector)
                 aux_node = self.add_node(Node(xyz=aux_xyz))
 
