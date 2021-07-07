@@ -264,13 +264,15 @@ class FormArtist(DiagramArtist):
         reaction : list of :class:`Rhino.Geometry.Line`
         """
         diagram = self.diagram
-        nodes = nodes or list(self.diagram.nodes())
+        nodes = nodes or list(self.diagram.support_nodes())
         attrs = ["rx", "ry", "rz"]
 
         # TODO: needs a more robust check for arrow orientation
         # what we need is to know whether the arrow needs a full shift.
         shift = {}
         for node in nodes:
+            if not diagram.is_node_support(node):
+                continue
             s = False
             forces = [diagram.edge_force(e) for e in diagram.connected_edges(node)]
             max_force = max(forces, key=lambda f: fabs(f))
@@ -314,8 +316,9 @@ class TopologyArtist(DiagramArtist):
         if nodes is None:
             nodes = list(self.diagram.origin_nodes())
         else:
-            nodes = [no for no in nodes if self.diagram.is_origin_node(no)]
-        return self.draw_nodes(nodes)
+            nodes = [no for no in nodes if self.diagram.is_node_origin(no)]
+        if not len(nodes) == 0:
+            return self.draw_nodes(nodes)
 
     def draw_edges_deviation(self, edges=None):
         """
@@ -332,7 +335,8 @@ class TopologyArtist(DiagramArtist):
         """
 
         edges = self._collection_keys("deviation_edges", "is_deviation_edge", edges)
-        return self.draw_edges(edges)
+        if not len(edges) == 0:
+            return self.draw_edges(edges)
 
     def draw_edges_trail(self, edges=None):
         """
@@ -348,4 +352,5 @@ class TopologyArtist(DiagramArtist):
         edges: list of :class:`Rhino.Geometry.Line`
         """
         edges = self._collection_keys("trail_edges", "is_trail_edge", edges)
-        return self.draw_edges(edges)
+        if not len(edges) == 0:
+            return self.draw_edges(edges)
