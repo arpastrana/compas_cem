@@ -1,14 +1,10 @@
-from compas_cem.optimization.constraint import Constraint
-
-from compas.geometry import distance_point_point_sqrd
-
-import numpy as np
+from compas_cem.optimization.constraint import VectorConstraint
 
 
 __all__ = ["TrimeshConstraint"]
 
 
-class TrimeshConstraint(Constraint):
+class TrimeshConstraint(VectorConstraint):
     """
     Pulls the xyz position of a node to a target triangular mesh.
 
@@ -16,14 +12,6 @@ class TrimeshConstraint(Constraint):
     """
     def __init__(self, node=None, trimesh=None, weight=1.0):
         super(TrimeshConstraint, self).__init__(node, trimesh, weight)
-
-    def error(self, data):
-        """
-        """
-        point_a = self.reference(data)
-        point_b = self.target(point_a)
-
-        return distance_point_point_sqrd(point_a, point_b) * self.weight
 
     def reference(self, data):
         """
@@ -33,7 +21,7 @@ class TrimeshConstraint(Constraint):
     def target(self, ref):
         """
         """
-        points = np.array([ref])
+        points = [ref]
         trimesh = self._target
         closest, dist, _ = trimesh.nearest.on_surface(points)
 

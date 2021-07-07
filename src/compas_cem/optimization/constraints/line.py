@@ -1,45 +1,27 @@
 from compas.geometry import closest_point_on_line
-from compas.geometry import distance_point_point_sqrd
 
-from compas_cem.optimization.constraints import Constraint
+from compas_cem.optimization.constraints import VectorConstraint
 
 
 __all__ = ["LineConstraint"]
 
 
-class LineConstraint(Constraint):
+class LineConstraint(VectorConstraint):
     """
     Pulls the xyz position of a node to a target line ray.
     """
     def __init__(self, node=None, line=None, weight=1.0):
         super(LineConstraint, self).__init__(node, line, weight)
 
-    def error(self, data):
-        """
-        The error between the xyz coords of a node and its closest point on a line.
-
-        Returns
-        -------
-        error : ``float``
-            The squared distance between the two points.
-        """
-        point_a = self.reference(data)
-        point_b = self.target(point_a)
-
-        return distance_point_point_sqrd(point_a, point_b) * self.weight
-
     def reference(self, data):
         """
         """
-        point = data["node_xyz"][self.key()]
-
-        return point
+        return data["node_xyz"][self.key()]
 
     def target(self, point):
         """
         """
         line = self._target
-
         return closest_point_on_line(point, line)
 
 

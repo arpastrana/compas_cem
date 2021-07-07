@@ -79,6 +79,7 @@ class EdgeParameter(Serializable):
             * "bound up" : ``float``
             * "bound low" : ``float``
             * "attr name" : ``str``
+            * "datatype" : ``str``
 
         Notes
         -----

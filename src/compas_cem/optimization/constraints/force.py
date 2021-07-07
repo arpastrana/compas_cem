@@ -1,70 +1,35 @@
-from compas_cem.optimization.constraints import Constraint
-
-from compas.geometry import distance_point_point_sqrd
+from compas_cem.optimization.constraints import FloatConstraint
+from compas_cem.optimization.constraints import VectorConstraint
 
 
 __all__ = ["TrailEdgeForceConstraint",
            "ReactionForceConstraint"]
 
 
-class TrailEdgeForceConstraint(Constraint):
+class TrailEdgeForceConstraint(FloatConstraint):
     """
     Make a trail edge reach a target force value.
     """
     def __init__(self, edge=None, force=None, weight=1.0):
-        # TODO: needs different serialization mechanism?
         super(TrailEdgeForceConstraint, self).__init__(edge, force, weight)
-
-    def error(self, data):
-        """
-        The error between the current and the target forces in a trail edge.
-
-        Returns
-        -------
-        error : ``float``
-            The squared difference.
-        """
-        force_a = self.reference(data)
-        force_b = self.target()
-        diff = force_a - force_b
-
-        return diff * diff * self.weight
 
     def reference(self, data):
         """
         """
-        force = data["trail_forces"][self.key()]
-
-        return force
+        return data["trail_forces"][self.key()]
 
 
-class ReactionForceConstraint(Constraint):
+class ReactionForceConstraint(VectorConstraint):
     """
     Makes the support reaction force at a node match a target vector.
     """
     def __init__(self, node=None, vector=None, weight=1.0):
         super(ReactionForceConstraint, self).__init__(node, vector, weight)
 
-    def error(self, data):
-        """
-        The error between the current and the target residual force in a node.
-
-        Returns
-        -------
-        error : ``float``
-            The squared difference.
-        """
-        reaction_a = self.reference(data)
-        reaction_b = self.target()
-
-        return distance_point_point_sqrd(reaction_a, reaction_b) * self.weight
-
     def reference(self, data):
         """
         """
-        force = data["reaction_forces"][self.key()]
-
-        return force
+        return data["reaction_forces"][self.key()]
 
 
 if __name__ == "__main__":

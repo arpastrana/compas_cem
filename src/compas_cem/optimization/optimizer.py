@@ -270,11 +270,11 @@ class Optimizer():
     def _calculate_penalty(self, eq_state):
         """
         """
-        error = 0.0
-        for goal in self.constraints.values():
-            error += goal.error(eq_state)
+        penalty = 0.0
+        for constraint in self.constraints.values():
+            penalty += constraint.penalty(eq_state)
 
-        return error
+        return penalty
 
     def _optimize_form(self, parameters, topology):
         """
