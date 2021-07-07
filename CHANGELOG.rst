@@ -10,8 +10,20 @@ Unreleased
 ----------
 
 **Added**
+* Added automatical creation of auxiliary trails.
+* Added `auxiliary_trails=False` to the signature of `TopologyDiagram.build_trails()`.
+* Added `TopologyDiagram.auxiliary_trails()` iterator.
+* Added `TopologyDiagram.auxiliary_trail_edges()` iterator.
+* Added `TopologyDiagram.is_auxiliary_trail_edge()` edge filter.
+* Added `TopologyDiagram.number_of_auxiliary_trails()`.
+* Added property `TopologyDiagram.auxiliary_trail_length` with setter.
+* Added property `TopologyDiagram.auxiliary_trail_vector` with setter.
 
 **Changed**
+
+* Changed `TopologyDiagram.trails()` to return an iterable of trails instead of a dictionary.
+* Changed `TopologyDiagram.build_trails()` to not return anything.
+* The type of a trail is `tuple`, no longer `list` to reflect they are immutable.
 
 **Fixed**
 

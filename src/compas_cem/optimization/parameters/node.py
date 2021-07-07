@@ -24,27 +24,40 @@ class NodeParameter(Serializable):
 
     def key(self):
         """
+        The node key.
         """
         return self._key
 
     def start_value(self, topology):
         """
+        The initial value of the node optimization parameter.
         """
         val = topology.node_attribute(key=self.key(), name=self._attr_name)
         return val
 
     def bound_low(self, topology):
         """
+        The lower bound of the node optimization parameter.
+
+        Notes
+        -----
+        Calculated as the initial parameter minus this bound's absolute value.
         """
         return self.start_value(topology) - fabs(self._bound_low)
 
     def bound_up(self, topology):
         """
+        The upper bound of the node optimization parameter.
+
+        Notes
+        -----
+        Calculated as the initial parameter plus this bound's absolute value.
         """
         return self.start_value(topology) + fabs(self._bound_up)
 
     def attr_name(self):
         """
+        The name of the node attribute to parametrize.
         """
         return self._attr_name
 
@@ -55,7 +68,7 @@ class NodeParameter(Serializable):
     @property
     def data(self):
         """
-        A data dictionary that represents an ``NodeConstraint`` object.
+        A data dictionary that represents an ``NodeParameter`` object.
 
         Returns
         -------

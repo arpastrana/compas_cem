@@ -1,3 +1,5 @@
+from math import sqrt
+
 import pytest
 
 from compas_cem.diagrams import TopologyDiagram
@@ -64,27 +66,22 @@ def threebar_funicular():
 @pytest.fixture
 def braced_tower_2d():
     """
+    A braced tower in 2d.
     """
-    points = [
-        (0, [0.0, 0.0, 0.0]),
-        (1, [0.0, 1.0, 0.0]),
-        (2, [0.0, 2.0, 0.0]),
-        (3, [1.0, 0.0, 0.0]),
-        (4, [1.0, 1.0, 0.0]),
-        (5, [1.0, 2.0, 0.0])
-    ]
+    points = [(0, [0.0, 0.0, 0.0]),
+              (1, [0.0, 1.0, 0.0]),
+              (2, [0.0, 2.0, 0.0]),
+              (3, [1.0, 0.0, 0.0]),
+              (4, [1.0, 1.0, 0.0]),
+              (5, [1.0, 2.0, 0.0])]
 
-    trail_edges = [
-        (0, 1),
-        (1, 2),
-        (3, 4),
-        (4, 5)
-    ]
+    trail_edges = [(0, 1),
+                   (1, 2),
+                   (3, 4),
+                   (4, 5)]
 
-    deviation_edges = [
-        (1, 4),
-        (2, 5)
-    ]
+    deviation_edges = [(1, 4),
+                       (2, 5)]
 
     load = [0.0, -1.0, 0.0]
 
@@ -111,6 +108,38 @@ def braced_tower_2d():
 
     return topology
 
+@pytest.fixture
+def tree_2d_needs_auxiliary_trails():
+    """
+    An planar tree that is missing two auxiliary trails to be valid topologically.
+    """
+    width = 4
+    height = width / 2
+
+    # Topology diagram
+    topology = TopologyDiagram()
+
+    # add nodes
+    topology.add_node(Node(1, [-width / 2, height, 0.0]))
+    topology.add_node(Node(2, [width / 2, height, 0.0]))
+    topology.add_node(Node(3, [0.0, height / 2, 0.0]))
+    topology.add_node(Node(4, [0.0, 0.0, 0.0]))
+
+    # add edges with negative values for a compression-only structure
+    topology.add_edge(TrailEdge(3, 4, length=-height/2))
+
+    topology.add_edge(DeviationEdge(1, 3, force=-sqrt(4.0)))
+    topology.add_edge(DeviationEdge(2, 3, force=-sqrt(2.0)))
+    topology.add_edge(DeviationEdge(1, 2, force=2.0))
+
+    # add supports
+    topology.add_support(NodeSupport(4))
+
+    # add loads
+    topology.add_load(NodeLoad(1, [0.0, -1.0, 0.0]))
+    topology.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
+
+    return topology
 
 @pytest.fixture
 def support_missing_topology():

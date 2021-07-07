@@ -1,4 +1,13 @@
+from compas.geometry import scale_vector
+from compas.geometry import add_vectors
+from compas.geometry import normalize_vector
+
 from compas_cem.diagrams import Diagram
+
+from compas_cem.elements import Node
+from compas_cem.elements import TrailEdge
+
+from compas_cem.supports import NodeSupport
 
 
 __all__ = ["TopologyDiagram"]
@@ -28,7 +37,50 @@ class TopologyDiagram(Diagram):
     def __init__(self, *args, **kwargs):
         super(TopologyDiagram, self).__init__(*args, **kwargs)
 
-        self.attributes["trails"] = {}
+        self.attributes["_trails"] = dict()
+        self.attributes["_auxiliary_trails"] = dict()
+        self.attributes["_aux_length"] = -1.0
+        self.attributes["_aux_vector"] = normalize_vector([1.0, 1.0, 1.0])
+
+# ==============================================================================
+# Properties
+# ==============================================================================
+
+    @property
+    def auxiliary_trail_length(self):
+        """
+        The default length used to automatically create an auxiliary trail edge.
+
+        Returns
+        -------
+        length : ``float``
+            The edge length.
+        """
+        return self.attributes["_aux_length"]
+
+    @auxiliary_trail_length.setter
+    def auxiliary_trail_length(self, length):
+        """
+        """
+        self.attributes["_aux_length"] = length
+
+    @property
+    def auxiliary_trail_vector(self):
+        """
+        The default vector used to automatically create an auxiliary trail edge.
+
+        Returns
+        -------
+        length : ``float``
+            The edge length.
+        """
+        return self.attributes["_aux_vector"]
+
+    @auxiliary_trail_vector.setter
+    def auxiliary_trail_vector(self, vector):
+        """
+        """
+        self.attributes["_aux_vector"] = vector
 
 # ==============================================================================
 # Node Additions
@@ -81,15 +133,34 @@ class TopologyDiagram(Diagram):
 
     def trails(self):
         """
-        The trails in the topology diagram.
+        Iterate over all the existing trails in the topology diagram.
 
-        Returns
-        -------
-        trails : ``dict``
-            A dictionary with trails.
-            Every trail is stored with its origin node as key.
+        Yields
+        ------
+        trail : ``list``
+            The next trail.
+
+        Notes
+        -----
+        A trail is an ordered sequence of node keys.
+        This iterator include auxiliary trails, if any.
         """
-        return self.attributes["trails"]
+        return self.attributes["_trails"].values()
+
+    def auxiliary_trails(self):
+        """
+        Iterate over all the available auxiliary trails in the topology diagram.
+
+        Yields
+        ------
+        auxiliary_trail : ``list``
+            The next auxiliary trail.
+
+        Notes
+        -----
+        An auxiliary trail is a trail with at least two nodes.
+        """
+        return self.attributes["_auxiliary_trails"].values()
 
     def number_of_trails(self):
         """
@@ -100,24 +171,38 @@ class TopologyDiagram(Diagram):
         number : ``int``
             The number of trails.
         """
-        return len(self.trails())
+        return len(list(self.trails()))
 
-    def build_trails(self):
+    def number_of_auxiliary_trails(self):
         """
-        Automatically builds the trails in the topology diagram.
+        Number of auxiliary trails in the topology diagram.
 
+        Return
+        ------
+        number : ``int``
+            The number of auxiliary trails.
+        """
+        return len(list(self.auxiliary_trails()))
+
+    def build_trails(self, auxiliary_trails=False):
+        """
+        Automatically generate the trails in the topology diagram.
+
+        The process starts a graph traversal that begins from the support nodes in the diagram.
         A trail is an ordered sequence of nodes with two characteristics:
-        there is a root node at the start, and a support node at the end.
+        - An origin node is the first node in the trail
+        - A support node is the last node in the trail
 
-        Returns
-        -------
-        trails : ``dict``
-            The trails.
-            Their keys in the dictionary correspond to the found origin nodes.
+        Parameters
+        ----------
+        auxiliary_trails : ``bool``
+            A flag to automatically append auxiliary trails to trail-unassigned nodes.
 
         Notes
         -----
-            Origin nodes are computed as part of the trail-making process.
+            Origin nodes are computed in automatic as part of the trail-making process.
+            Previous trails and auxiliary trails are recalculated every time
+            this function is called.
         """
         tr = {}
 
@@ -176,19 +261,36 @@ class TopologyDiagram(Diagram):
             for index, node in enumerate(trail):
                 self.node_attribute(node, "_k", index)
 
-            tr[origin] = trail
+            tr[origin] = tuple(trail)
             nodes_in_trails.update(visited)
 
         # output sanity checks
         # all nodes must belong to a trail
-        unassigned_nodes = set(self.nodes()) - nodes_in_trails
-        msg = "Nodes {} haven't been assigned to a trail. Check your topology!"
-        assert len(unassigned_nodes) == 0, msg
+        unassigned = set(self.nodes()) - nodes_in_trails
+
+        # automatically create auxiliary trails
+        if auxiliary_trails:
+            aux_trails = dict()
+            for node in unassigned:
+                aux_vector = scale_vector(self.auxiliary_trail_vector, self.auxiliary_trail_length)
+                aux_xyz = add_vectors(self.node_coordinates(node), aux_vector)
+                aux_node = self.add_node(Node(xyz=aux_xyz))
+
+                self.add_support(NodeSupport(aux_node))
+                edge = self.add_edge(TrailEdge(node, aux_node, self.auxiliary_trail_length))
+                aux_trails[node] = edge
+
+            self.attributes["_auxiliary_trails"] = aux_trails
+
+            print("Warning: {} auxiliary trails have been added to the diagram".format(len(aux_trails)))
+
+            return self.build_trails(auxiliary_trails=False)
+
+        msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(unassigned)
+        assert len(unassigned) == 0, msg
 
         # store trails in topology diagram
-        self.attributes["trails"] = tr
-
-        return tr
+        self.attributes["_trails"] = tr
 
 # ==============================================================================
 #  Node Collections
@@ -352,6 +454,28 @@ class TopologyDiagram(Diagram):
         """
         return self.edges_where({"type": "deviation"}, data)
 
+    def auxiliary_trail_edges(self, data=False):
+        """
+        Iterates over the keys of all trail edges in the auxiliary trails.
+
+        Parameters
+        ----------
+        data : ``bool``
+            ``True`` if the edges attributes should be yielded simultaneously.
+            Defaults to ``False``.
+
+        Yields
+        -------
+        deviation_edge : ``tuple``
+            The key of the next trail edge.
+        attributes : ``dict``
+            The attributes of the next trail edge if ``data=True``.
+        """
+        def predicate(edge, attr):
+            return self.is_auxiliary_trail_edge(edge)
+
+        return self.edges_where_predicate(predicate, data)
+
 # ==============================================================================
 # Node Filters
 # ==============================================================================
@@ -410,6 +534,24 @@ class TopologyDiagram(Diagram):
             ``True``if the edge is a deviation edge. ``False`` otherwise.
         """
         if self.edge_attribute(edge, "type") == "deviation":
+            return True
+        return False
+
+    def is_auxiliary_trail_edge(self, edge):
+        """
+        Tests whether or not an edge is the edge of an auxiliary trail.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            The key of the edge to test.
+
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the edge is in an auxiliary trail. ``False`` otherwise.
+        """
+        if edge in set(self.auxiliary_trails()):
             return True
         return False
 
@@ -505,7 +647,7 @@ class TopologyDiagram(Diagram):
         """
         k = self.node_attribute(key=node, name="_k")
         if k is None:
-            msg = "Node {} is unassigned. Try building trails first."
+            msg = "Node {} doesn't belong to a sequence yet. Try adding trails first."
             raise ValueError(msg.format(node))
 
         return k
@@ -547,7 +689,7 @@ class TopologyDiagram(Diagram):
         sequence : `int`
             The largest sequence number.
         """
-        return max([len(trail) for trail in self.trails().values()])
+        return max([len(trail) for trail in self.trails()])
 
 # ==============================================================================
 # Main

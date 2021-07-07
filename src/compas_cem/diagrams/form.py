@@ -37,7 +37,11 @@ class FormDiagram(Diagram):
         Construct the base of a form diagram from a topology diagram.
         """
         form = topology.copy(cls=cls)
-        del form.attributes["trails"]
+
+        del form.attributes["_trails"]
+        del form.attributes["_auxiliary_trails"]
+        del form.attributes["_aux_length"]
+        del form.attributes["_aux_vector"]
 
         return form
 

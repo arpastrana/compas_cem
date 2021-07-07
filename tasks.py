@@ -241,7 +241,7 @@ def chdir(dirname=None):
 @task(help={
       'gh_io_folder': 'Folder where GH_IO.dll is located. Usually Rhino installation folder.',
       'ironpython': 'Command for running the IronPython executable. Defaults to `sh temp/ipy.sh`.'})
-def build_ghuser_components(ctx, gh_io_folder=None, ironpython=None):
+def ghplugin(ctx, gh_io_folder=None, ironpython=None):
     """Build Grasshopper user objects from source"""
     clean(ctx, docs=False, bytecode=False, builds=False, ghuser=True)
     with chdir(BASE_FOLDER):

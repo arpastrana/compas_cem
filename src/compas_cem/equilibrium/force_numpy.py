@@ -38,7 +38,10 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
     """
     Equilibrate forces in a topology.
     """
-    trails = topology.trails()  # calls attribute self.attributes["trails"]
+    trails = list(topology.trails())
+
+    # there must be at least one trail
+    assert len(trails) != 0, "No trails in the diagram!"
 
     # input, output
     node_xyz = {n: np.array(topology.node_coordinates(n)) for n in topology.nodes()}
@@ -69,7 +72,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
 
         for i in topology.sequences():  # layers
 
-            for _, trail in trails.items():
+            for trail in trails:
 
                 # if index is larger than available nodes in trails
                 if i > (len(trail) - 1):

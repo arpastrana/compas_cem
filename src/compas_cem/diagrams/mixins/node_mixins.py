@@ -20,6 +20,7 @@ class NodeMixins(object):
         key = node.key
         xyz = node.xyz
         x, y, z = xyz
+
         node = super(NodeMixins, self).add_node(key=key, x=x, y=y, z=z)
         self.gkey_node[self.gkey(xyz)] = node
         return node

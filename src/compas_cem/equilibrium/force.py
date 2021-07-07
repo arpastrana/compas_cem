@@ -50,7 +50,7 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
     """
     Equilibrate forces in a form.
     """
-    trails = topology.trails()  # calls attribute self.attributes["trails"]
+    trails = list(topology.trails())
 
     # there must be at least one trail
     assert len(trails) != 0, "No trails in the diagram!"
@@ -68,7 +68,7 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
 
         for i in topology.sequences():  # sequences
 
-            for trail in trails.values():
+            for trail in trails:
 
                 # if index is larger than available nodes in trails
                 if i > (len(trail) - 1):
