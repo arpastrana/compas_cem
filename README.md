@@ -9,11 +9,13 @@ Constrained form-finding meets automatic differentiation.
 COMPAS CEM is a structural design tool that generates efficient form for spatial bar structures subjected to combinations of tension and compression forces.
 Examples of such structures are gridshells, bridges, stadiums, tensegrities and multistory buildings.
 
-The generated forms can be steered to meet force and geometrical constraints, such as limiting the length of a selection of elements in the structure, best-fitting an arbitrary target surface, or restraining the magnitude of the reactions forces at the supports of a structure. This constrained form-finding process is solved under the hood using numerical optimization and automatic differentiation -- two commonplace techniques in the world of machine learning that COMPAS CEM makes readily accesible to designers around the world.
+The generated forms can be steered to meet force and geometrical constraints, such as limiting the length of a selection of elements in the structure, best-fitting an arbitrary target surface, or restraining the magnitude of the reactions forces at the supports of a structure. 
+
+This constrained form-finding process is solved under the hood using numerical optimization and automatic differentiation -- two commonplace techniques in the world of machine learning that COMPAS CEM makes readily accesible to designers around the world.
 
 COMPAS CEM is a [COMPAS](https://compas.dev) extension written in pure Python. It runs on Windows, MacOS and Linux and it does not depend on any CAD software to work.
 
-Are you a [Grasshopper](https://grasshopper3d.com) person though? Worry not. CAD-independence doesn't mean CAD-incompatibility: we ship COMPAS CEM as a ***Grasshopper plugin** so that you can readily integrate our constrained form-finding engine into your next parametric pipeline.
+Are you a [Grasshopper](https://grasshopper3d.com) person though? Worry not. CAD-independence doesn't mean CAD-incompatibility: we ship COMPAS CEM as a **Grasshopper plugin** so that you can readily integrate our constrained form-finding engine into your next parametric pipeline.
 
 Feel free to check the [examples](https://github.com/arpastrana/compas_cem/tree/master/examples/) and the [docs](https://arpastrana.github.io/compas_cem) to get a glimpse of what COMPAS CEM can do for you.
 If you are further interested in learning more about the underpinnings of the CEM framework, the constrained form-finding method that COMPAS CEM implements, we refer you to this [journal paper](https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342).

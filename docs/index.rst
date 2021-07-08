@@ -27,7 +27,9 @@ Introduction
 COMPAS CEM is a structural design tool that generates efficient form for spatial bar structures subjected to combinations of tension and compression forces.
 Examples of such structures are gridshells, bridges, stadiums, tensegrities and multistory buildings.
 
-The generated forms can be steered to meet force and geometrical constraints, such as limiting the length of a selection of elements in the structure, best-fitting an arbitrary target surface, or restraining the magnitude of the reactions forces at the supports of a structure. This constrained form-finding process is solved under the hood using numerical optimization and automatic differentiation -- two commonplace techniques in the world of machine learning that COMPAS CEM makes readily accesible to designers around the world.
+The generated forms can be steered to meet force and geometrical constraints, such as limiting the length of a selection of elements in the structure, best-fitting an arbitrary target surface, or restraining the magnitude of the reactions forces at the supports of a structure.
+
+This constrained form-finding process is solved under the hood using numerical optimization and automatic differentiation -- two commonplace techniques in the world of machine learning that COMPAS CEM makes readily accesible to designers around the world.
 
 COMPAS CEM is a `COMPAS`_ extension written in pure Python. It runs on Windows, MacOS and Linux and it does not depend on any CAD software to work.
 
