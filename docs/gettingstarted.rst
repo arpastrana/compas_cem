@@ -2,11 +2,9 @@
 Getting Started
 ********************************************************************************
 
-.. _Anaconda: https://www.continuum.io/
+.. _Anaconda: https://www.anaconda.com/
 .. _Rhino: https://www.rhino3d.com/
 .. _Grasshopper: https://www.grasshopper3d.com/
-.. _repo: https://github.com/compas-dev/compas_viewers/
-.. _Github: https://github.com/arpastrana/compas_cem/
 
 
 .. highlight:: bash
@@ -14,52 +12,42 @@ Getting Started
 Installation
 ============
 
-The preferred way to install ``compas_cem`` is to build it from source in only five simple steps.
-
-
-1. Create a virtual environment
--------------------------------
-
-First, create and activate a new `Anaconda`_ environment from your command line.
-The only dependencies are ``python``, ``COMPAS``, and ``rtree``.
-
-::
-
-    conda create -n cem python=3.7 COMPAS=0.16.2 rtree=0.9.4
-    conda activate cem
+Install ``compas_cem`` in only three simple steps.
 
 .. note::
-	Make sure you install ``python`` version ``3.7``, ``COMPAS`` version
-	``0.16.4``, and ``rtree`` version ``0.9.4``. In this case, the name of the
-	new environment will be ``cem`` but feel free the change it to your liking.
 
-2. Clone the ``compas_cem`` repo
+   We assume you have `Anaconda`_ installed in your machine. If not, please download and install it before continuing.
+
+1. Create a virtual environment
 --------------------------------
 
-We need to fetch ``compas_cem`` from `Github`_. Move to the folder
-where you want to store it clone the source repository. For example, if you are
-a macOS user and wish to put it in a pre-existing ``~/code/`` folder:
+First, create a new anaconda environment from your command line. The only dependency is ``compas``.
+Here we chose the name of the environment to be ``cem``, but you can call it ``spacecowboy`` if you prefer.
 
 ::
 
-    cd ~/code/
-    git clone https://github.com/arpastrana/compas_cem.git
+    conda create -n cem COMPAS
 
 
-3. Install ``compas_cem`` from source
--------------------------------------
+2. Activate the virtual environment
+-----------------------------------
 
-Next, move into the the repository's folder (the one we've just cloned) and
-install ``compas_cem`` as an editable package via ``pip``:
+Next, activate the ``cem`` environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts of your machine. In other words, what happens in ``cem`` stays in ``cem``! 🕺🏻
 
 ::
 
-    cd compas_cem
-    pip install -e .
+    conda activate cem
 
 
-4. Verify your installation
-----------------------------
+3. Install ``compas_cem`` via pip
+---------------------------------
+
+Finally, install ``compas_cem`` with a one-liner:
+
+::
+
+   pip install compas-cem
+
 
 To double-check that everything is up and running, type the following in the
 command line and hit enter:
@@ -72,69 +60,46 @@ If no errors show up, celebrate 🎉! You have a working installation of
 ``compas_cem``.
 
 
-5. Optional Dependencies
-------------------------
+Grasshopper Plugin
+==================
 
-As a CAD-agnostic framework, ``COMPAS`` has developed ``compas_viewers``, a
-standalone package to display 3d geometry from the command line. This is pretty
-helpful when you want to orbit and zoom around a form-found model without
-resorting to a full-blown CAD software like `Rhino`_. 
+There will be times when modeling a complex structure is easier to do with a few mouse-clicks instead of a hundred lines of code.
+The `Grasshopper`_ version of ``compas_cem`` allows you to use all the important bits of our constrained form-finding engine in a (familiar) visual programming environment.
 
-Some of the examples presented here depend on ``compas_viewers`` to display a form-found structure. However, the viewers package **is entirely
-optional**, and is not required for ``compas_cem`` internals to operate.
-
-If you are still interested in installing ``compas_viewers``, please follow the
-instructions provided in this `repo`_.
-
-
-Linking ``compas_cem`` to Rhino and Grasshopper
-===============================================
-
-There will be times when modeling a complex structure is easier to do with a few
-mouse-clicks instead of a hundred lines of code. ``COMPAS`` enables connecting
-``compas_cem`` to `Rhino`_ and `Grasshopper`_ to access (almost) all of its
-functionality from the inside.
-
-To link it, follow the next three steps from the command line:
+To additionally install ``compas_cem`` as a grasshopper plugin, close `Rhino`_, go to the command line and follow the next three steps:
 
 .. note::
 
-	Make sure that we are in the ``cem`` anaconda environment we created
-	earlier while we do this.
+   Make sure that the ``cem`` anaconda environment is active and that ``compas_cem`` has been already installed from the command line before proceeding.
 
 1. Remove any leftovers
 ------------------------
 
-In case there was an older **COMPAS** version linked to Rhino.
+In case there was an older ``COMPAS`` or ``compas_cem`` version linked to `Rhino`_.
 
 ::
 
     python -m compas_rhino.uninstall
 
+
 2. Link ``compas_cem``
 ----------------------
 
 Let's connect ``compas_cem``, ``compas_rhino`` and ``compas_ghpython`` to
-Rhino. If you were wondering, the last two come with a default ``COMPAS`` installation.
+Rhino. If you were wondering, the last two are installed by default by ``COMPAS``.
 
 Type in your command line:
 
 ::
 
-    python -m compas_rhino.install -p compas_cem compas_rhino compas_ghpython
+    python -m compas_rhino.install
 
 
-3. Check your Rhino installation
----------------------------------
+3. Check your Grasshopper installation
+--------------------------------------
 
-Open Rhino and try to import ``compas``, ``compas_rhino``, ``compas_ghpython``,
-and ``compas_cem`` with a ``RhinoPython`` script.
+Launch grasshopper and start dropping ``compas_cem`` components onto the canvas! Send pictures! 🏖
 
-.. code-block:: python
+.. note::
 
-	import compas
-	import compas_rhino
-	import compas_ghpython
-	import compas_cem
-
-And voilá 🥐
+   The ``compas_cem`` plugin for grasshopper is a collection of ``.ghuser`` objects. As such, they have one important limitation: once used in a document, they forget who they are. The don't know they were created out of a ghuser component, they will be simple GHPython components. This has an important consequence: if you update ``compas_cem``, those components already in use will NOT be automatically updated.
