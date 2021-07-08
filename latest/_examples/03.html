@@ -50,7 +50,7 @@
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            0.1.9
+            0.1.10
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -97,12 +97,8 @@
 <img alt="../_images/03_bridge_2d.png" class="figure-img img-fluid" src="../_images/03_bridge_2d.png" />
 </figure>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
-
-<span class="kn">from</span> <span class="nn">compas_cem</span> <span class="kn">import</span> <span class="n">JSON_DATA</span>
-<span class="kn">from</span> <span class="nn">compas_cem</span> <span class="kn">import</span> <span class="n">TEMP</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">TopologyDiagram</span>
 
@@ -110,27 +106,23 @@
 <span class="kn">from</span> <span class="nn">compas_cem.supports</span> <span class="kn">import</span> <span class="n">NodeSupport</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">FormPlotter</span>
-<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">TopologyPlotter</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">static_equilibrium</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">PointConstraint</span>
-<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">PlaneConstraint</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">TrailEdgeParameter</span>
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">DeviationEdgeParameter</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Plane</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">length_vector</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Data</span>
 <span class="c1">#-------------------------------------------------------------------------------</span>
 
-<span class="c1"># IN = os.path.abspath(os.path.join(JSON_DATA, &quot;w1_cem_2d_bridge_rhino.json&quot;))</span>
-<span class="n">IN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JSON_DATA</span><span class="p">,</span> <span class="s2">&quot;bridge_2d.json&quot;</span><span class="p">))</span>
+<span class="n">HERE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">IN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">HERE</span><span class="p">,</span> <span class="s2">&quot;03_bridge_2d.json&quot;</span><span class="p">))</span>
 <span class="n">optimize</span> <span class="o">=</span> <span class="kc">True</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -361,7 +353,7 @@
   <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
   URL_ROOT          : '',
-  VERSION           : '0.1.9',
+  VERSION           : '0.1.10',
   COLLAPSE_INDEX    : false,
   FILE_SUFFIX       : '.html',
   HAS_SOURCE        : 'false',
