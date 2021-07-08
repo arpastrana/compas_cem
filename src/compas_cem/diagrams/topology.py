@@ -206,12 +206,6 @@ class TopologyDiagram(Diagram):
         """
         tr = {}
 
-        # input sanity checks
-        # there must be at least one trail edge
-        assert len(list(self.trail_edges())) > 0, "No trail edges defined!"
-        # there must be at least one support node for trails to run
-        assert len(list(self.support_nodes())) > 0, "No supports assigned!"
-
         # trail search
         nodes_in_trails = set()
 
@@ -270,8 +264,10 @@ class TopologyDiagram(Diagram):
 
         # automatically create auxiliary trails
         if auxiliary_trails:
+
             aux_trails = dict()
             aux_dir = normalize_vector(self.auxiliary_trail_vector)
+
             for node in unassigned:
                 aux_vector = scale_vector(aux_dir, self.auxiliary_trail_length)
                 aux_xyz = add_vectors(self.node_coordinates(node), aux_vector)
@@ -287,6 +283,12 @@ class TopologyDiagram(Diagram):
 
             return self.build_trails(auxiliary_trails=False)
 
+        # sanity checks
+        # there must be at least one trail edge
+        assert len(list(self.trail_edges())) > 0, "No trail edges defined!"
+        # there must be at least one support node for trails to run
+        assert len(list(self.support_nodes())) > 0, "No supports assigned!"
+        # no free nodes
         msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(unassigned)
         assert len(unassigned) == 0, msg
 
