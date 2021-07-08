@@ -7,8 +7,7 @@ If you use :mod:`compas_cem` for a project or research, please refer to the GitH
 .. code-block:: latex
 
     @misc{compas_cem,
-        title={{COMPAS~CEM}: A COMPAS-flavored combinatorial equilibrium
-        modeling},
+        title={{COMPAS~CEM}: Constrained form-finding meets automatic differentiation},
         author={
             Pastrana, Rafael and
             Ohlbrock, Patrick Ole and 
