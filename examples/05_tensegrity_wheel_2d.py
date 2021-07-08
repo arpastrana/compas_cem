@@ -137,7 +137,7 @@ plotter.show()
 plotter = FormPlotter(form, figsize=(16, 9))
 
 keys = list(topology.origin_nodes())
-plotter.draw_nodes(radius=0.001, keys=keys)
+plotter.draw_nodes(radius=0.01, keys=keys)
 
 # plot only edges with a force larger than 0.001
 keys = [edge for edge in form.edges() if fabs(form.edge_force(edge)) > 0.001]

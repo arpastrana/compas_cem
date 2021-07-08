@@ -1,9 +1,9 @@
 ================================================================================
-03. Bridge Optimization in 2d
+04. Tree Structure in 2D
 ================================================================================
 
-.. figure:: ../_images/03_bridge_2d.png
+.. figure:: ../_images/04_tree_2d.png
     :figclass: figure
     :class: figure-img img-fluid
 
-.. literalinclude:: ../../examples/03_bridge_2d.py
+.. literalinclude:: ../../examples/04_tree_2d.py

@@ -41,7 +41,7 @@ equilibrium with Python using an object-oriented interface.
 
 .. literalinclude:: ../examples/01_quick_start.py
 
-.. figure:: /_images/simplest_arch.png
+.. figure:: /_images/01_quick_start.png
     :figclass: figure
     :class: figure-img img-fluid
 

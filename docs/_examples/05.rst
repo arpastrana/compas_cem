@@ -1,9 +1,9 @@
 ================================================================================
-03. Bridge Optimization in 2d
+05. Planar Tensegrity Wheel
 ================================================================================
 
-.. figure:: ../_images/03_bridge_2d.png
+.. figure:: ../_images/05_tensegrity_wheel_2d.png
     :figclass: figure
     :class: figure-img img-fluid
 
-.. literalinclude:: ../../examples/03_bridge_2d.py
+.. literalinclude:: ../../examples/05_tensegrity_wheel_2d.py
