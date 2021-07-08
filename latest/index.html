@@ -19,7 +19,7 @@
   <link rel="stylesheet" type="text/css" href="_static/css/compas-reference.css" />
 
   
-    <link rel="next" title="Getting Started" href="gettingstarted.html" />
+    <link rel="next" title="Installation" href="installation.html" />
   
 
   
@@ -48,7 +48,7 @@
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            0.1.8
+            0.1.9
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -89,23 +89,27 @@
         
         <section id="compas-cem">
 <h1>COMPAS CEM</h1>
-<p class="lead">A <strong>COMPAS</strong>-flavored combinatorial equilibrium modeling.</p>
-<figure class="figure align-default">
+<p class="lead">Constrained form-finding meets automatic differentiation.</p>
+<figure class="figure align-default" id="id1">
 <img alt="_images/front_cover.png" class="figure-img img-fluid" src="_images/front_cover.png" />
+<figcaption>
+<p><span class="caption-text">Structural model of a form-found bridge over the Sihl river, Switzerland.</span></p>
+</figcaption>
 </figure>
 <section id="introduction">
 <h2>Introduction</h2>
-<p><strong>CEM</strong> is a form-finding method to create mixed tension-compression
-structures in equilibrium. This <strong>COMPAS</strong> package is developed by <a class="reference external" href="https://github.com/arpastrana/">Rafael
-Pastrana</a> at the CREATE Laboratory at <a class="reference external" href="https://soa.princeton.edu/">Princeton University</a> in collaboration
-with Patrick Ole Ohlbrock and Pierluigi D’Acunto from the Chair of Structural
-Design at <a class="reference external" href="http://www.schwartz.arch.ethz.ch/">ETH Zürich</a>.</p>
-<p>To better picture CEM’s underpinnings, please refer to these two excellent resources:</p>
-<ul class="simple">
-<li><p>The <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342/">journal paper</a>.</p></li>
-<li><p>The <a class="reference external" href="https://github.com/OleOhlbrock/CEM/">original CEM implementation</a> by Ole and Pierluigi.</p></li>
-</ul>
-<p>Additionally, feel free to check the <a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a> section to get a first impression of what <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> can do for you.</p>
+<p>COMPAS CEM is a structural design tool that generates efficient form for spatial bar structures subjected to combinations of tension and compression forces.
+Examples of such structures are gridshells, bridges, stadiums, tensegrities and multistory buildings.</p>
+<p>The generated forms can be steered to meet force and geometrical constraints, such as limiting the length of a selection of elements in the structure, best-fitting an arbitrary target surface, or restraining the magnitude of the reactions forces at the supports of a structure.</p>
+<p>This constrained form-finding process is solved under the hood using numerical optimization and automatic differentiation – two commonplace techniques in the world of machine learning that COMPAS CEM makes readily accesible to designers around the world.</p>
+<p>COMPAS CEM is a <a class="reference external" href="https://compas.dev/">COMPAS</a> extension written in pure Python. It runs on Windows, MacOS and Linux and it does not depend on any CAD software to work.</p>
+<p>Are you a <a class="reference external" href="https://grasshopper3d.com/">Grasshopper</a> person though? Worry not. CAD-independence doesn’t mean CAD-incompatibility: we ship COMPAS CEM as a Grasshopper plugin so that you can readily integrate our constrained form-finding engine into your next parametric pipeline.</p>
+<p>Feel free to check the <a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a> and the <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> sections to glimpse into what COMPAS CEM can do for you.</p>
+<p>If you are further interested in learning more about the underpinnings of the CEM framework, the constrained form-finding method that COMPAS CEM implements, we refer you to this <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342/">journal paper</a>.</p>
+<section id="authors">
+<h3>Authors</h3>
+<p>COMPAS CEM is developed by <a class="reference external" href="https://github.com/arpastrana/">Rafael Pastrana</a> at the <a class="reference external" href="https://createlaboratory.org/">CREATE Laboratory</a> at the <a class="reference external" href="https://soa.princeton.edu/">Princeton University School of Architecture</a> in collaboration with Patrick Ole Ohlbrock from the Chair of Structural Design at <a class="reference external" href="https://www.schwartz.arch.ethz.ch/">ETH Zürich</a> and Pierluigi D’Acunto from the Professorship of Structural Design at the <a class="reference external" href="https://www.tum.de/en/">Technical University of Munich</a>.</p>
+</section>
 </section>
 <section id="first-example">
 <h2>First Example</h2>
@@ -179,7 +183,7 @@ equilibrium with Python using an object-oriented interface.</p>
 <div class="toctree-wrapper compound">
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="_examples/01.html">01. Simple Compression Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_examples/02.html">02. Braced Tower in 2d</a></li>
@@ -226,7 +230,7 @@ equilibrium with Python using an object-oriented interface.</p>
           <div id="compas-navigation" class="collapse compas-navigation">
           <ul class="nav flex-column active">
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">Introduction</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="installation.html">Installation</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="api.html">API Reference</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
@@ -242,7 +246,10 @@ equilibrium with Python using an object-oriented interface.</p>
         
         <ul class="nav flex-column" id="compas-toc">
 <li class="nav-item"><a class="nav-link reference internal" href="#">COMPAS CEM</a><ul class="nav flex-column">
-<li class="nav-item"><a class="nav-link reference internal" href="#introduction">Introduction</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#introduction">Introduction</a><ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="#authors">Authors</a></li>
+</ul>
+</li>
 <li class="nav-item"><a class="nav-link reference internal" href="#first-example">First Example</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#table-of-contents">Table of Contents</a></li>
 </ul>
@@ -260,10 +267,10 @@ equilibrium with Python using an object-oriented interface.</p>
       
 
       
-        <a href="gettingstarted.html" title="Getting Started" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
+        <a href="installation.html" title="Installation" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
           <div class="nav-title footer-link flex-grow-1 align-self-center">
             <div class="nav-direction small font-weight-light">Next</div>
-            Getting Started
+            Installation
           </div>
           <div class="nav-button p-2 m-2"><i class="fas fa-arrow-right"></i></div>
         </a>
@@ -306,7 +313,7 @@ equilibrium with Python using an object-oriented interface.</p>
   <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
   URL_ROOT          : '',
-  VERSION           : '0.1.8',
+  VERSION           : '0.1.9',
   COLLAPSE_INDEX    : false,
   FILE_SUFFIX       : '.html',
   HAS_SOURCE        : 'false',
