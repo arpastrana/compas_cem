@@ -22,7 +22,7 @@ If you are further interested in learning more about the underpinnings of the CE
 
 ## Authors
 
-COMPAS CEM is developed by [Rafael Pastrana](https://pastrana.xyz) at the [CREATE Laboratory](https://createlaboratory.org) at the [Princeton University School of Architecture](https://soa.princeton.edu/) in collaboration Patrick Ole Ohlbrock from the Chair of Structural Design at [ETH Zürich](http://www.schwartz.arch.ethz.ch/) and Pierluigi D'Acunto from the Professorship of Structural Design at the [Technical University of Munich](https://www.tum.de/en/).
+COMPAS CEM is developed by [Rafael Pastrana](https://pastrana.xyz) at the [CREATE Laboratory](https://createlaboratory.org) at the [Princeton University School of Architecture](https://soa.princeton.edu/) in collaboration with Patrick Ole Ohlbrock from the Chair of Structural Design at [ETH Zürich](http://www.schwartz.arch.ethz.ch/) and Pierluigi D'Acunto from the Professorship of Structural Design at the [Technical University of Munich](https://www.tum.de/en/).
 
 ## Installation
 
@@ -37,7 +37,7 @@ Here we chose the name of the environment to be `cem`, but you can call it `spac
 conda create -n cem COMPAS
 ```
 
-Next, activate the `cem` environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts of your machine. In other words, what happens in `cem` stays in `cem`! 🕺🏻
+Next, activate the `cem` environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts in your machine. In other words, what happens in `cem` stays in `cem`! 🕺🏻
 
 ```bash
 conda activate cem

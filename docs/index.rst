@@ -42,7 +42,7 @@ If you are further interested in learning more about the underpinnings of the CE
 Authors
 -------
 
-COMPAS CEM is developed by `Rafael Pastrana`_ at the `CREATE Laboratory`_ at the `Princeton University School of Architecture`_ in collaboration Patrick Ole Ohlbrock from the Chair of Structural Design at `ETH Zürich`_ and Pierluigi D'Acunto from the Professorship of Structural Design at the `Technical University of Munich`_.
+COMPAS CEM is developed by `Rafael Pastrana`_ at the `CREATE Laboratory`_ at the `Princeton University School of Architecture`_ in collaboration with Patrick Ole Ohlbrock from the Chair of Structural Design at `ETH Zürich`_ and Pierluigi D'Acunto from the Professorship of Structural Design at the `Technical University of Munich`_.
 
 First Example
 ==============
@@ -64,7 +64,7 @@ Table of Contents
    :titlesonly:
 
    Introduction <self>
-   gettingstarted
+   installation
    examples
    api
    license

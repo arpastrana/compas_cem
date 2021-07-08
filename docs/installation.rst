@@ -1,5 +1,5 @@
 ********************************************************************************
-Getting Started
+Installation
 ********************************************************************************
 
 .. _Anaconda: https://www.anaconda.com/
@@ -32,7 +32,7 @@ Here we chose the name of the environment to be ``cem``, but you can call it ``s
 2. Activate the virtual environment
 -----------------------------------
 
-Next, activate the ``cem`` environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts of your machine. In other words, what happens in ``cem`` stays in ``cem``! 🕺🏻
+Next, activate the ``cem`` environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts in your machine. In other words, what happens in ``cem`` stays in ``cem``! 🕺🏻
 
 ::
 
