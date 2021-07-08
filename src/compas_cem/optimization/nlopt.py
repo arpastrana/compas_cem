@@ -86,7 +86,7 @@ def nlopt_algorithms():
     return algorithms
 
 
-def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, stop_val, ftol):
+def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, eps, ftol):
     """
     Wrapper around a typical nlopt solver routine.
     """
@@ -100,8 +100,8 @@ def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, stop_val, fto
     if ftol is not None:
         solver.set_ftol_abs(ftol)  # abs per recommendation in the NLOpt docs
 
-    if stop_val is not None:
-        solver.set_stopval(stop_val)
+    if eps is not None:
+        solver.set_stopval(eps)
 
     solver.set_min_objective(f)
 

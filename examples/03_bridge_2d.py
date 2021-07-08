@@ -1,10 +1,6 @@
 import os
-import matplotlib.pyplot as plt
 
 from time import time
-
-from compas_cem import JSON_DATA
-from compas_cem import TEMP
 
 from compas_cem.diagrams import TopologyDiagram
 
@@ -12,27 +8,23 @@ from compas_cem.loads import NodeLoad
 from compas_cem.supports import NodeSupport
 
 from compas_cem.plotters import FormPlotter
-from compas_cem.plotters import TopologyPlotter
 
 from compas_cem.equilibrium import static_equilibrium
 
 from compas_cem.optimization import Optimizer
 
 from compas_cem.optimization import PointConstraint
-from compas_cem.optimization import PlaneConstraint
 
 from compas_cem.optimization import TrailEdgeParameter
 from compas_cem.optimization import DeviationEdgeParameter
 
-from compas.geometry import Plane
-from compas.geometry import length_vector
 
 # ------------------------------------------------------------------------------
 # Data
 #-------------------------------------------------------------------------------
 
-# IN = os.path.abspath(os.path.join(JSON_DATA, "w1_cem_2d_bridge_rhino.json"))
-IN = os.path.abspath(os.path.join(JSON_DATA, "bridge_2d.json"))
+HERE = os.path.dirname(__file__)
+IN = os.path.abspath(os.path.join(HERE, "03_bridge_2d.json"))
 optimize = True
 
 # ------------------------------------------------------------------------------

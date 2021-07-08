@@ -149,7 +149,7 @@ class Optimizer():
                             "bounds_low": bounds_low,
                             "bounds_up": bounds_up,
                             "iters": iters,
-                            "stopval": eps,
+                            "eps": eps,
                             "ftol": None}
 
         # assemble optimization solver

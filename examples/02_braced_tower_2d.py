@@ -8,7 +8,6 @@ from compas_cem.loads import NodeLoad
 from compas_cem.supports import NodeSupport
 
 from compas_cem.equilibrium import static_equilibrium
-# from compas_cem.equilibrium.force_numpy import static_equilibrium_numpy
 
 from compas_cem.plotters import TopologyPlotter
 from compas_cem.plotters import FormPlotter
