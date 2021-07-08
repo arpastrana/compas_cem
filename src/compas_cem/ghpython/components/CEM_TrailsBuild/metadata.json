@@ -1,0 +1,50 @@
+{
+    "name": "Build Trails",
+    "nickname": "BuildTrails",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Automatically find the trails in a topology diagram.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "add_auxiliary_trails",
+                "description": "Append auxiliary trail edges to the free nodes of the topology diagram. Defaults to False.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "auxiliary_trail_length",
+                "description": "The length of the auxiliary trail edges to add. Defaults to 1.0.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "auxiliary_trail_vector",
+                "description": "The direction to which the auxiliary trail edges will initially point to. Defaults to [1.0, 1.0, 1.0].",
+                "typeHintID": "vector"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "topology",
+                "description": "The input topology diagram. But now with computed trails.",
+                "optional": false
+            },
+            {
+                "name": "trails",
+                "description": "The keys of the nodes in each of the found trails.",
+                "optional": false
+            },
+            {
+                "name": "auxiliary_trails",
+                "description": "The keys of the appended auxiliary trail edges.",
+                "optional": false
+            }
+        ]
+    }
+}

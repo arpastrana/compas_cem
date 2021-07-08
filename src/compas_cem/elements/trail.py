@@ -14,5 +14,6 @@ class TrailEdge(Edge):
         """
         return "{}(length={})".format(self.__class__.__name__, self.attributes["length"])
 
+
 if __name__ == "__main__":
     pass

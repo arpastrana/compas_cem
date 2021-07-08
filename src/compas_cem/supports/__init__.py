@@ -21,6 +21,6 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .node_support import *
+from .node_support import *  # noqa F403
 
 __all__ = [name for name in dir() if not name.startswith('_')]

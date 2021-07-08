@@ -14,5 +14,6 @@ class DeviationEdge(Edge):
         """
         return "{}(force={})".format(self.__class__.__name__, self.attributes["force"])
 
+
 if __name__ == "__main__":
     pass

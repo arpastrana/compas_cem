@@ -11,6 +11,7 @@ __all__ = ["NodeLoad"]
 # Node Load
 # ==============================================================================
 
+
 class NodeLoad(object):
     """
     A load defined by a position and a vector.
@@ -38,7 +39,7 @@ class NodeLoad(object):
             The xyz coordinates of the positions where to applied the load.
         vector : ``list`` of ``float``
             The xyz coordinates of the load vector.
-        
+
         Returns
         -------
         load : ``NodeLoad``
@@ -59,7 +60,7 @@ class NodeLoad(object):
             The load application point.
         rhino_vector : ``Rhino.Geometry.Vector3d``
             A vector that encodes the magnitude and direction of the load.
-        
+
         Returns
         -------
         load : ``NodeLoad``

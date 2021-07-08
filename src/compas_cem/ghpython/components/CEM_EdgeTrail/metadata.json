@@ -1,0 +1,31 @@
+{
+    "name": "Trail Edge",
+    "nickname": "TrailEdge",
+    "category": "COMPAS CEM",
+    "subcategory": "02_Elements",
+    "description": "Create a trail edge from a Rhino line.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "line",
+                "description": "A line that defines the end nodes of the edge.",
+                "typeHintID": "line"
+            },
+            {
+                "name": "length",
+                "description": "The desired length of the edge. If negative, the edge is in compression. Otherwise, it is in tension.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "trail_edge",
+                "description": "A COMPAS CEM trail edge.",
+                "optional": false
+            }
+        ]
+    }
+}

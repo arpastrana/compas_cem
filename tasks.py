@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import contextlib
+import tempfile
 import glob
 import os
 import sys
@@ -66,10 +67,10 @@ def help(ctx):
 @task(help={
     'docs': 'True to clean up generated documentation, otherwise False',
     'bytecode': 'True to clean up compiled python files, otherwise False.',
-    'builds': 'True to clean up build/packaging artifacts, otherwise False.'})
-def clean(ctx, docs=True, bytecode=True, builds=True):
+    'builds': 'True to clean up build/packaging artifacts, otherwise False.',
+    'ghuser': 'True to clean up ghuser files, otherwise False.'})
+def clean(ctx, docs=True, bytecode=True, builds=True, ghuser=True):
     """Cleans the local copy from compiled artifacts."""
-
     with chdir(BASE_FOLDER):
         if builds:
             ctx.run('python setup.py clean')
@@ -86,8 +87,7 @@ def clean(ctx, docs=True, bytecode=True, builds=True):
 
         if docs:
             folders.append('docs/api/generated')
-
-        folders.append('dist/')
+            folders.append('dist/')
 
         if bytecode:
             for t in ('src', 'tests'):
@@ -97,6 +97,9 @@ def clean(ctx, docs=True, bytecode=True, builds=True):
             folders.append('build/')
             folders.append('src/compas_cem.egg-info/')
 
+        if ghuser:
+            folders.append('src/compas_cem/ghpython/components/ghuser')
+
         for folder in folders:
             rmtree(os.path.join(BASE_FOLDER, folder), ignore_errors=True)
 
@@ -105,7 +108,7 @@ def clean(ctx, docs=True, bytecode=True, builds=True):
       'rebuild': 'True to clean all previously built docs before starting, otherwise False.',
       'doctest': 'True to run doctests, otherwise False.',
       'check_links': 'True to check all web links in docs for validity, otherwise False.'})
-def docs(ctx, doctest=False, rebuild=True, check_links=False):
+def docs(ctx, doctest=False, rebuild=False, check_links=False):
     """Builds package's HTML documentation."""
 
     if rebuild:
@@ -113,12 +116,35 @@ def docs(ctx, doctest=False, rebuild=True, check_links=False):
 
     with chdir(BASE_FOLDER):
         if doctest:
-            ctx.run('sphinx-build -E -b doctest docsource docs')
+            testdocs(ctx)
 
-        ctx.run('sphinx-build -E -b html docsource docs')
+        opts = '-E' if rebuild else ''
+        ctx.run('sphinx-build {} -b html docs dist/docs'.format(opts))
 
         if check_links:
-            ctx.run('sphinx-build -E -b linkcheck docsource docs')
+            linkcheck(ctx, rebuild=rebuild)
+
+
+@task()
+def lint(ctx):
+    """Check the consistency of coding style."""
+    log.write('Running flake8 python linter...')
+    ctx.run('flake8 src')
+
+
+@task()
+def testdocs(ctx):
+    """Test the examples in the docstrings."""
+    log.write('Running doctest...')
+    ctx.run('pytest --doctest-modules')
+
+
+@task()
+def linkcheck(ctx, rebuild=False):
+    """Check links in documentation."""
+    log.write('Running link check...')
+    opts = '-E' if rebuild else ''
+    ctx.run('sphinx-build {} -b linkcheck docs dist/docs'.format(opts))
 
 
 @task()
@@ -126,17 +152,13 @@ def check(ctx):
     """Check the consistency of documentation, coding style and a few other things."""
 
     with chdir(BASE_FOLDER):
+        lint(ctx)
+
         log.write('Checking MANIFEST.in...')
-        ctx.run('check-manifest --ignore-bad-ideas=test.so,fd.so,smoothing.so,drx_c.so')
+        ctx.run('check-manifest')
 
         log.write('Checking metadata...')
         ctx.run('python setup.py check --strict --metadata')
-
-        log.write('Running flake8 python linter...')
-        ctx.run('flake8 --count --statistics src tests')
-
-        # log.write('Checking python imports...')
-        # ctx.run('isort --check-only --diff --recursive src tests setup.py')
 
 
 @task(help={
@@ -157,22 +179,27 @@ def test(ctx, checks=False, doctest=False):
 @task
 def prepare_changelog(ctx):
     """Prepare changelog for next release."""
-    UNRELEASED_CHANGELOG_TEMPLATE = '## Unreleased\n\n### Added\n\n### Changed\n\n### Removed\n\n\n## '
+    UNRELEASED_CHANGELOG_TEMPLATE = '\nUnreleased\n----------\n\n**Added**\n\n**Changed**\n\n**Fixed**\n\n**Deprecated**\n\n**Removed**\n'
 
     with chdir(BASE_FOLDER):
         # Preparing changelog for next release
-        with open('CHANGELOG.md', 'r+') as changelog:
+        with open('CHANGELOG.rst', 'r+') as changelog:
             content = changelog.read()
+            start_index = content.index('----------')
+            start_index = content.rindex('\n', 0, start_index - 1)
+            last_version = content[start_index:start_index + 11].strip()
+
+            if last_version == 'Unreleased':
+                log.write('Already up-to-date')
+                return
+
             changelog.seek(0)
-            changelog.write(content.replace(
-                '## ', UNRELEASED_CHANGELOG_TEMPLATE, 1))
+            changelog.write(content[0:start_index] + UNRELEASED_CHANGELOG_TEMPLATE + content[start_index:])
 
-        ctx.run('git add CHANGELOG.md && git commit -m "Prepare changelog for next release"')
-
+        ctx.run('git add CHANGELOG.rst && git commit -m "Prepare changelog for next release"')
 
 
-@task(help={
-      'release_type': 'Type of release follows semver rules. Must be one of: major, minor, patch.'})
+@task(help={'release_type': 'Type of release follows semver rules. Must be one of: major, minor, patch.'})
 def release(ctx, release_type):
     """Releases the project in one swift command!"""
     if release_type not in ('patch', 'minor', 'major'):
@@ -182,24 +209,22 @@ def release(ctx, release_type):
     ctx.run('invoke check test')
 
     # Bump version and git tag it
-    ctx.run('bumpversion %s --verbose' % release_type)
+    ctx.run('bump2version %s --verbose' % release_type)
 
     # Build project
     ctx.run('python setup.py clean --all sdist bdist_wheel')
 
+    # Prepare changelog for next release
+    prepare_changelog(ctx)
+
+    # Clean up local artifacts
+    clean(ctx)
+
     # Upload to pypi
-    if confirm('You are about to upload the release to pypi.org. Are you sure? [y/N]'):
-        files = ['dist/*.whl', 'dist/*.gz', 'dist/*.zip']
-        dist_files = ' '.join([pattern for f in files for pattern in glob.glob(f)])
-
-        if len(dist_files):
-            ctx.run('twine upload --skip-existing %s' % dist_files)
-
-            prepare_changelog(ctx)
-        else:
-            raise Exit('No files found to release')
+    if confirm('Everything is ready. You are about to push to git which will trigger a release to pypi.org. Are you sure? [y/N]'):
+        ctx.run('git push --tags && git push')
     else:
-        raise Exit('Aborted release')
+        raise Exit('You need to manually revert the tag/commits created.')
 
 
 @contextlib.contextmanager
@@ -211,3 +236,25 @@ def chdir(dirname=None):
         yield
     finally:
         os.chdir(current_dir)
+
+
+@task(help={
+      'gh_io_folder': 'Folder where GH_IO.dll is located. Usually Rhino installation folder.',
+      'ironpython': 'Command for running the IronPython executable. Defaults to `sh temp/ipy.sh`.'})
+def ghplugin(ctx, gh_io_folder=None, ironpython=None):
+    """Build Grasshopper user objects from source"""
+    clean(ctx, docs=False, bytecode=False, builds=False, ghuser=True)
+    with chdir(BASE_FOLDER):
+        with tempfile.TemporaryDirectory('actions.ghcomponentizer') as action_dir:
+            source_dir = os.path.abspath('src/compas_cem/ghpython/components')
+            target_dir = os.path.join(source_dir, 'ghuser')
+            ctx.run('git clone https://github.com/compas-dev/compas-actions.ghpython_components.git {}'.format(action_dir))
+
+            if not gh_io_folder:
+                import compas_ghpython
+                gh_io_folder = compas_ghpython.get_grasshopper_plugin_path('6.0')
+
+            if not ironpython:
+                ironpython = 'sh temp/ipy.sh'  # 'ipy'
+
+            ctx.run('{} {} {} {} --ghio "{}"'.format(ironpython, os.path.join(action_dir, 'componentize.py'), source_dir, target_dir, os.path.abspath(gh_io_folder)))

@@ -1,0 +1,66 @@
+{
+    "name": "CEM Colors",
+    "nickname": "CEM Colors",
+    "category": "COMPAS CEM",
+    "subcategory": "08_Artists",
+    "description": "Get the artist color scheme for the objects of the CEM framework.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+        ],
+        "outputParameters": [
+            {
+                "name": "color_tension",
+                "description": "The color for edges under a tension force.",
+                "optional": false
+            },
+            {
+                "name": "color_compression",
+                "description": "The color for edges under a compression force.",
+                "optional": false
+            },
+            {
+                "name": "color_edge",
+                "description": "The color for a regular edge.",
+                "optional": false
+            },
+            {
+                "name": "color_node",
+                "description": "The color for a regular node.",
+                "optional": false
+            },
+            {
+                "name": "color_node_support",
+                "description": "The color for a support node.",
+                "optional": false
+            },
+            {
+                "name": "color_node_origin",
+                "description": "The color for an origin node.",
+                "optional": false
+            },
+            {
+                "name": "color_load",
+                "description": "The color for an applied load.",
+                "optional": false
+            },
+            {
+                "name": "color_reaction",
+                "description": "The color for a reaction force.",
+                "optional": false
+            },
+            {
+                "name": "color_trail",
+                "description": "The color to paint a trail.",
+                "optional": false
+            },
+            {
+                "name": "color_auxiliary_trail",
+                "description": "The color to paint an auxiliary trail.",
+                "optional": false
+            }
+        ]
+    }
+}

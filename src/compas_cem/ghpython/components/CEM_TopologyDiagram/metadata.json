@@ -1,0 +1,46 @@
+{
+    "name": "Topology Diagram",
+    "nickname": "TopologyDiagram",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Build a topology diagram from nodes, edges, loads and supports.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "nodes",
+                "description": "A list of COMPAS CEM nodes to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "trail_edges",
+                "description": "A list of COMPAS CEM trail edges to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "deviation_edges",
+                "description": "A list of COMPAS CEM deviation edges to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "loads",
+                "description": "A list of COMPAS CEM loads to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "supports",
+                "description": "A list of COMPAS CEM supports to add to the diagram.",
+                "scriptParamAccess": "list"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram.",
+                "optional": false
+            }
+        ]
+    }
+}

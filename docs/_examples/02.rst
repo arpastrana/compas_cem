@@ -1,0 +1,9 @@
+================================================================================
+02. Braced Tower in 2d
+================================================================================
+
+.. figure:: ../_images/02_braced_tower_2d.png
+    :figclass: figure
+    :class: figure-img img-fluid
+
+.. literalinclude:: ../../examples/02_braced_tower_2d.py

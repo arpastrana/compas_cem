@@ -11,12 +11,9 @@ from nlopt import LN_COBYLA
 from nlopt import LN_SBPLX
 
 
-
-__all__ = [
-    "nlopt_algorithm",
-    "nlopt_algorithms",
-    "nlopt_solver"
-]
+__all__ = ["nlopt_algorithm",
+           "nlopt_algorithms",
+           "nlopt_solver"]
 
 
 def nlopt_algorithm(name):
@@ -44,7 +41,7 @@ def nlopt_algorithm(name):
         - LD_AUGLAG
         - LD_SLSQP
         - LD_TNEWTON
-    
+
     Derivative-free:
 
         - LN_BOBYQA

@@ -1,0 +1,26 @@
+{
+    "name": "Node Support",
+    "nickname": "NodeSupport",
+    "category": "COMPAS CEM",
+    "subcategory": "03_BoundaryConditions",
+    "description": "Create a node support from a rhino point.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "point",
+                "description": "The position of the node where to assign a support.",
+                "typeHintID": "point"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "node_support",
+                "description": "A COMPAS CEM node support.",
+                "optional": false
+            }
+        ]
+    }
+}

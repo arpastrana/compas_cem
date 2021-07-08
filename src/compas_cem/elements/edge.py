@@ -10,6 +10,7 @@ __all__ = ["Edge"]
 # Edge
 # ==============================================================================
 
+
 class Edge(object):
     """
     The edge base class.
@@ -32,7 +33,7 @@ class Edge(object):
             Additional arguments.
         **kwargs : ``dict``
             Extra keyword arguments.
-        
+
         Returns
         -------
         edge : ``Edge``
@@ -40,7 +41,7 @@ class Edge(object):
         """
         edge = cls(line[0], line[1], *args, **kwargs)
         return edge
-    
+
     @classmethod
     def from_rhino_line(cls, rhino_line, *args, **kwargs):
         """
@@ -54,7 +55,7 @@ class Edge(object):
             Additional arguments.
         **kwargs : ``dict``
             Extra keyword arguments.
-        
+
         Returns
         -------
         edge : ``Edge``
@@ -75,7 +76,6 @@ class Edge(object):
         for node in (self.u, self.v):
             yield node
 
+
 if __name__ == "__main__":
     pass
-
-

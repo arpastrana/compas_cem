@@ -1,0 +1,65 @@
+{
+    "name": "Constrained Form-Finding",
+    "nickname": "ConstrainedFormFinding",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Optimize for a form in equilibrium that meets geometric and force constraints.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "constraints",
+                "description": "A list of COMPAS CEM optimization constraints.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "parameters",
+                "description": "A list of COMPAS CEM optimization parameters.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "algorithm",
+                "description": "The name of the optimization algorithm to use.",
+                "typeHintID": "str"
+            },
+            {
+                "name": "iters_max",
+                "description": "The maximum number of iterations to run the optimization algorithm for.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "eps",
+                "description": "The minimum penalty value to declare convergence.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram in static equilibrium.",
+                "optional": false
+            },
+            {
+                "name": "penalty",
+                "description": "The penalty score after optimization.",
+                "optional": false
+            },
+            {
+                "name": "iters",
+                "description": "The elapsed number of iterations.",
+                "optional": false
+            },
+            {
+                "name": "time",
+                "description": "The optimization elapsed time.",
+                "optional": false
+            }
+        ]
+    }
+}

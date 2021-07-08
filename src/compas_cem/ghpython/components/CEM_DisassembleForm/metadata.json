@@ -1,0 +1,35 @@
+{
+    "name": "Disassemble Form Diagram",
+    "nickname": "FormDisassembly",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Disassemble a form diagram into its constituent parts.",
+    "exposure": 8,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram."
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "nodes",
+                "description": "All the node keys in the form diagram.",
+                "optional": false
+            },
+            {
+                "name": "support_nodes",
+                "description": "The keys of the support nodes in the form diagram.",
+                "optional": false
+            },
+            {
+                "name": "edges",
+                "description": "All the edge keys in the form diagram.",
+                "optional": false
+            }
+        ]
+    }
+}

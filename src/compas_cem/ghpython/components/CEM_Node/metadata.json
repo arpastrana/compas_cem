@@ -1,0 +1,26 @@
+{
+    "name": "Node",
+    "nickname": "Node",
+    "category": "COMPAS CEM",
+    "subcategory": "02_Elements",
+    "description": "Create a node from a rhino point.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "point",
+                "description": "A point that defines the starting position of a node.",
+                "typeHintID": "point"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "node",
+                "description": "A COMPAS CEM node.",
+                "optional": false
+            }
+        ]
+    }
+}

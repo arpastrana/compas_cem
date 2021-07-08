@@ -112,5 +112,15 @@ temp/**
 !temp/PLACEHOLDER
 
 .DS_Store
+
+.vscode
+
+docs/api/generated/
+
+conda.recipe/
+
 *.code-workspace
+
 .obsidian
+
+src/compas_cem/ghpython/components/ghuser/

@@ -1,9 +1,0 @@
-================================================================================
-01. Simple Compression Structure
-================================================================================
-
-.. figure:: ../_images/simplest_arch.png
-    :figclass: figure
-    :class: figure-img img-fluid
-
-.. literalinclude:: ../../examples/01_quick_start.py

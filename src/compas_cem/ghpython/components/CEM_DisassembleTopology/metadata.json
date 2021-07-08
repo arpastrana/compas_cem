@@ -1,0 +1,60 @@
+{
+    "name": "Disassemble Topology Diagram",
+    "nickname": "TopologyDisassembly",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Disassemble a topology diagram into its constituent parts.",
+    "exposure": 8,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "nodes",
+                "description": "All the node keys in the topology diagram.",
+                "optional": false
+            },
+            {
+                "name": "origin_nodes",
+                "description": "The keys of the origin nodes in the topology diagram.",
+                "optional": false
+            },
+            {
+                "name": "support_nodes",
+                "description": "The keys of the support nodes in the topology diagram.",
+                "optional": false
+            },
+            {
+                "name": "edges",
+                "description": "All the edge keys in the topology diagram.",
+                "optional": false
+            },
+            {
+                "name": "trail_edges",
+                "description": "The keys of the trail edges in the topology diagram.",
+                "optional": false
+            },
+            {
+                "name": "deviation_edges",
+                "description": "The keys of the deviation edges in the topology diagram.",
+                "optional": false
+            },
+            {
+                "name": "trails",
+                "description": "The trails in the topology diagram.",
+                "optional": false
+            },
+            {
+                "name": "auxiliary_trails",
+                "description": "The auxiliary trails in the topology diagram.",
+                "optional": false
+            }
+        ]
+    }
+}

@@ -31,9 +31,9 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .node import *
-from .edge import *
-from .trail import *
-from .deviation import *
+from .node import *  # noqa F403
+from .edge import *  # noqa F403
+from .trail import *  # noqa F403
+from .deviation import *  # noqa F403
 
 __all__ = [name for name in dir() if not name.startswith('_')]

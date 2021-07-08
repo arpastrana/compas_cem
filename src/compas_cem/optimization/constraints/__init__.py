@@ -26,8 +26,17 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+
 # from .<module> import *
-from .edge import *
-from .node import *
+from .constraint import *  # noqa F403
+from .point import *  # noqa F403
+from .plane import *  # noqa F403
+from .line import *  # noqa F403
+from .force import *  # noqa F403
+from .length import *  # noqa F403
+
+# import compas
+# if not compas.IPY:
+#     from .mesh import *
 
 __all__ = [name for name in dir() if not name.startswith('_')]

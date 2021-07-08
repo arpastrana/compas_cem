@@ -12,6 +12,7 @@ Diagrams
     :toctree: generated/
     :nosignatures:
 
+    TopologyDiagram
     FormDiagram
 """
 
@@ -21,8 +22,10 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .mixins import *
-from .diagram import *
-from .form_diagram import *
+from .mixins import *  # noqa F403
+from .diagram import *  # noqa F403
+from .topology import *  # noqa F403
+from .form import *  # noqa F403
+
 
 __all__ = [name for name in dir() if not name.startswith('_')]

@@ -1,21 +1,19 @@
 graft src
 
 prune .github
-
 prune data
 prune docs
-prune docsource
 prune examples
-prune temp
 prune tests
+prune temp
 
 include LICENSE
 include README.md
 include AUTHORS.md
-include CHANGELOG.md
+include CHANGELOG.rst
 include requirements.txt
 
-exclude requirements-dev.txt 
+exclude requirements-dev.txt
 exclude pytest.ini .bumpversion.cfg .editorconfig
 exclude tasks.py
 exclude CONTRIBUTING.md

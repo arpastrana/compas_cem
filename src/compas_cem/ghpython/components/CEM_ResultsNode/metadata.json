@@ -1,0 +1,35 @@
+{
+    "name": "Node Results",
+    "nickname": "NodeResults",
+    "category": "COMPAS CEM",
+    "subcategory": "07_Results",
+    "description": "Extract the post form-finding results of the nodes in a form diagram.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram."
+            },
+            {
+                "name": "node",
+                "description": "A selection of node keys to query the results on. Defaults to all the nodes.",
+                "scriptParamAccess": "list"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "point",
+                "description": "The position of the nodes.",
+                "optional": false
+            },
+            {
+                "name": "reaction_force",
+                "description": "The reaction force vectors at the support nodes.",
+                "optional": false
+            }
+        ]
+    }
+}

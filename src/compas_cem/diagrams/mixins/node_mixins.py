@@ -1,17 +1,14 @@
 from compas_cem.elements import Node
 
 from compas.utilities import geometric_key
-from compas.utilities import is_item_iterable
 
 
-__all__ = [
-    "NodeMixins"
-]
-
+__all__ = ["NodeMixins"]
 
 # ==============================================================================
 # Node Mixins
 # ==============================================================================
+
 
 class NodeMixins(object):
     """
@@ -23,6 +20,7 @@ class NodeMixins(object):
         key = node.key
         xyz = node.xyz
         x, y, z = xyz
+
         node = super(NodeMixins, self).add_node(key=key, x=x, y=y, z=z)
         self.gkey_node[self.gkey(xyz)] = node
         return node
@@ -31,7 +29,9 @@ class NodeMixins(object):
         """
         Checks
         """
-        return self.node_key(value) != None
+        if self.node_key(value) is not None:
+            return True
+        return False
 
     def node_key(self, value):
         """
@@ -42,7 +42,7 @@ class NodeMixins(object):
         else:
             key = self.gkey_node.get(self.gkey(value))
         return key
-  
+
     def update_node_xyz(self, key, xyz):
         """
         Modifies
@@ -56,7 +56,7 @@ class NodeMixins(object):
         """
         Gets or sets node coordinates.
         """
-        if not xyz:
+        if xyz is None:
             return self.node_coordinates(key)
         self.update_node_xyz(key, xyz)
 
@@ -70,13 +70,14 @@ class NodeMixins(object):
 # Main
 # ==============================================================================
 
-if __name__ == "__main__":
-    from compas_cem.diagrams.form_diagram import FormDiagram
-    
-    form = FormDiagram()
 
-    node = form.add_node()
+if __name__ == "__main__":
+    from compas_cem.diagrams import TopologyDiagram
+
+    topology = TopologyDiagram()
+
+    node = topology.add_node(Node())
     xyz = [1.0, 0.0, 0.0]
-    form.node_xyz(node, xyz)
-    
-    assert form.node_xyz(node) == xyz
+    topology.node_xyz(node, xyz)
+
+    assert topology.node_xyz(node) == xyz
