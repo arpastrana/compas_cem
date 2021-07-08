@@ -1,0 +1,35 @@
+{
+    "name": "Form-Finding",
+    "nickname": "FormFinding",
+    "category": "COMPAS CEM",
+    "subcategory": "05_Equilibrium",
+    "description": "Find a form in static equilibrium.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "tmax",
+                "description": "The maximum number of iterations to run the form-finding algorithm for. Defaults to 100.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "eps_min",
+                "description": "The convergence threshold of the form-finding algorithm. Default to 1e-6.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram in static equilibrium.",
+                "optional": false
+            }
+        ]
+    }
+}

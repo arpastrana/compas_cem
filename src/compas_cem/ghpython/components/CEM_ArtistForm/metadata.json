@@ -1,0 +1,68 @@
+{
+    "name": "Form Artist",
+    "nickname": "FormArtist",
+    "category": "COMPAS CEM",
+    "subcategory": "08_Artists",
+    "description": "Draw a form diagram.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "node",
+                "description": "A selection of the nodes in the diagram. Defaults to all the nodes.",
+                "scriptParamAccess": "list",
+                "typeHintID": "int"
+            },
+            {
+                "name": "edge",
+                "description": "A selection of the edges in the diagram. Defaults to all the edges.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "force_min",
+                "description": "The smallest force magnitude to draw. Defaults to 1e-3",
+                "typeHintID": "float"
+            },
+            {
+                "name": "force_scale",
+                "description": "The scale of the loads and the reactions. Defaults to 1.",
+                "typeHintID": "float"
+            }
+
+
+        ],
+        "outputParameters": [
+            {
+                "name": "nodes",
+                "description": "The nodes of the diagram as points.",
+                "optional": false
+            },
+            {
+                "name": "support_nodes",
+                "description": "The support nodes of the diagram as points",
+                "optional": false
+            },
+            {
+                "name": "edges",
+                "description": "The edges of the diagram as lines.",
+                "optional": false
+            },
+            {
+                "name": "loads",
+                "description": "The applied loads as lines.",
+                "optional": false
+            },
+            {
+                "name": "reactions",
+                "description": "The reaction forces at the supports, as lines.",
+                "optional": false
+            }
+        ]
+    }
+}

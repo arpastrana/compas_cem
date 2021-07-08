@@ -1,0 +1,36 @@
+{
+    "name": "Reaction Force Constraint",
+    "nickname": "ReactionForceConstraint",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Make the reaction force on a trail edge to meet a target force vector.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "node_key",
+                "description": "The key of a COMPAS CEM support node.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "vector",
+                "description": "The target force vector.",
+                "typeHintID": "vector"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the constraint in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "constraint",
+                "description": "A COMPAS CEM reaction force constraint.",
+                "optional": false
+            }
+        ]
+    }
+}

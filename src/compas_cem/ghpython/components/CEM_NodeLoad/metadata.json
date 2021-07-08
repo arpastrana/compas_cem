@@ -1,0 +1,31 @@
+{
+    "name": "Node Load",
+    "nickname": "NodeLoad",
+    "category": "COMPAS CEM",
+    "subcategory": "03_BoundaryConditions",
+    "description": "Create a load vector to be applied at a node.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "point",
+                "description": "The position of the node where to apply the load.",
+                "typeHintID": "point"
+            },
+            {
+                "name": "vector",
+                "description": "The load vector.",
+                "typeHintID": "vector"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "node_load",
+                "description": "A COMPAS CEM node load.",
+                "optional": false
+            }
+        ]
+    }
+}

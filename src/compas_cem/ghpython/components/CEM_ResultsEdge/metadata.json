@@ -1,0 +1,35 @@
+{
+    "name": "Edge Results",
+    "nickname": "EdgeResults",
+    "category": "COMPAS CEM",
+    "subcategory": "07_Results",
+    "description": "Extract the post form-finding results of the edges in a form diagram.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram."
+            },
+            {
+                "name": "edge",
+                "description": "A selection of edge keys to query the results on. Defaults to all the edges.",
+                "scriptParamAccess": "list"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "length",
+                "description": "The edge lengths.",
+                "optional": false
+            },
+            {
+                "name": "force",
+                "description": "The edge forces.",
+                "optional": false
+            }
+        ]
+    }
+}

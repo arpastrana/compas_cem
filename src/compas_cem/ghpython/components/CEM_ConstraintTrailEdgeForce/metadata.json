@@ -1,0 +1,35 @@
+{
+    "name": "Trail Edge Force Constraint",
+    "nickname": "TrailEdgeForceConstraint",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Make the force on a trail edge to reach a goal force value.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "edge_key",
+                "description": "The key of a COMPAS CEM trail edge."
+            },
+            {
+                "name": "force",
+                "description": "The target force.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the constraint in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "constraint",
+                "description": "A COMPAS CEM trail force constraint.",
+                "optional": false
+            }
+        ]
+    }
+}

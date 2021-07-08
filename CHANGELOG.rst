@@ -18,18 +18,26 @@ Unreleased
 * Added `TopologyDiagram.number_of_auxiliary_trails()`.
 * Added property `TopologyDiagram.auxiliary_trail_length` with setter.
 * Added property `TopologyDiagram.auxiliary_trail_vector` with setter.
+* Created first full version of GH plugin under `compas_cem.ghpython.components`
 
 **Changed**
 
 * Changed `TopologyDiagram.trails()` to return an iterable of trails instead of a dictionary.
 * Changed `TopologyDiagram.build_trails()` to not return anything.
 * The type of a trail is `tuple`, no longer `list` to reflect they are immutable.
+* Splitted `Constraint()` into children classes `VectorConstraint()` and `FloatConstraint()`.
+* Renamed `error` to `penalty` in `compas_cem.optimization`.
+* Refactores examples folder.
 
 **Fixed**
+
+* Changed check for `None` in `NodeMixins.node_xyz()`.
 
 **Deprecated**
 
 **Removed**
+
+* Removed `None` from default arguments in optimization constraints and parameters.
 
 0.1.8
 ----------

@@ -1,0 +1,31 @@
+{
+    "name": "Deviation Edge",
+    "nickname": "DeviationEdge",
+    "category": "COMPAS CEM",
+    "subcategory": "02_Elements",
+    "description": "Create a deviation edge from a Rhino line.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "line",
+                "description": "A line that defines the end nodes of the edge.",
+                "typeHintID": "line"
+            },
+            {
+                "name": "force",
+                "description": "The desired force on the edge. If negative, the edge is in compression. Otherwise, it is in tension.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "deviation_edge",
+                "description": "A COMPAS CEM deviation edge.",
+                "optional": false
+            }
+        ]
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "name": "Plane Constraint",
+    "nickname": "PlaneConstraint",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Pull the position of a node to a target plane.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "node_key",
+                "description": "The key of a COMPAS CEM node.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "plane",
+                "description": "The target plane.",
+                "typeHintID": "plane"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the constraint in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "constraint",
+                "description": "A COMPAS CEM node plane constraint.",
+                "optional": false
+            }
+        ]
+    }
+}

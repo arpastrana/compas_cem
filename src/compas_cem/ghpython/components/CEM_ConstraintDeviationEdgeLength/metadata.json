@@ -1,0 +1,35 @@
+{
+    "name": "Deviation Edge Length Constraint",
+    "nickname": "DeviationEdgeLengthConstraint",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Make the length of a deviation edge to reach a target length.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "edge_key",
+                "description": "The key of a COMPAS CEM deviation edge."
+            },
+            {
+                "name": "length",
+                "description": "The target length.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the constraint in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "constraint",
+                "description": "A COMPAS CEM deviation edge length constraint.",
+                "optional": false
+            }
+        ]
+    }
+}
