@@ -20,8 +20,8 @@ class TopologyArtistComponent(component):
             support_nodes = artist.draw_nodes_support(node)
 
             edges = artist.draw_edges(edge)
-            trail_edges = artist.draw_edges_trail(node)
-            deviation_edges = artist.draw_edges_deviation(node)
+            trail_edges = artist.draw_edges_trail(edge)
+            deviation_edges = artist.draw_edges_deviation(edge)
 
             loads = artist.draw_loads(node, min_load=load_min, scale=load_scale)
 
