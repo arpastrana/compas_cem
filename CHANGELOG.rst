@@ -15,6 +15,10 @@ Unreleased
 
 **Fixed**
 
+* Fixed bug in `static_equilibrium` and `static_equilibrium_numpy` when calculating support forces
+* Fixed bug in `TopologyArtist` gh component: took in list of nodes instead of list of edges
+* Temporary patch in length calculation in `DeviationEdgeLengthConstraint` that raised error with `autograd`.
+
 **Deprecated**
 
 **Removed**

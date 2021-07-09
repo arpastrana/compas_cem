@@ -21,7 +21,14 @@ class DeviationEdgeLengthConstraint(FloatConstraint):
         point_a = data["node_xyz"][u]
         point_b = data["node_xyz"][v]
 
-        return distance_point_point(point_a, point_b)
+        try:
+            length = distance_point_point(point_a, point_b)
+        except TypeError:
+            # TODO: This import should not happen here
+            import autograd.numpy as np
+            length = np.linalg.norm(point_a - point_b)
+
+        return length
 
 
 if __name__ == "__main__":
