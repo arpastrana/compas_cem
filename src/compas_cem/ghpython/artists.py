@@ -98,7 +98,7 @@ class DiagramArtist(NetworkArtist):
 
         return draw_lines(lines)
 
-    def draw_loads(self, nodes=None, scale=1.0, gap=0.05, min_load=1e-3):
+    def draw_loads(self, nodes=None, scale=1.0, gap=0.0, min_load=1e-3):
         """
         Draw the loads applied to a selection of nodes.
 
@@ -112,7 +112,7 @@ class DiagramArtist(NetworkArtist):
             Defaults to ``1.0``.
         gap : ``float``
             The offset between a node and the incident load.
-            Defaults to ``0.05``.
+            Defaults to ``0.0``.
         min_load: ``float``
             The smallest load magnitude to draw.
             Defaults to ``1e-3``
@@ -240,7 +240,7 @@ class FormArtist(DiagramArtist):
     def __init__(self, form_diagram, *args, **kwargs):
         super(FormArtist, self).__init__(form_diagram, *args, **kwargs)
 
-    def draw_reactions(self, nodes=None, scale=1.0, gap=0.05, min_force=1e-3):
+    def draw_reactions(self, nodes=None, scale=1.0, gap=0.0, min_force=1e-3):
         """
         Draw the reaction forces at a selection of support nodes.
 
@@ -254,7 +254,7 @@ class FormArtist(DiagramArtist):
             Defaults to ``1.0``.
         gap : ``float``
             The offset between a node and the incident reaction force.
-            Defaults to ``0.05``.
+            Defaults to ``0.0``.
         min_load: ``float``
             The smallest reaction force magnitude to draw.
             Defaults to ``1e-3``
