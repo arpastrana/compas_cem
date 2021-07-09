@@ -59,7 +59,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
     edge_keys = {e for e in topology.edges()}
 
     # internals
-    trail_vectors = {}
+    residual_vectors = {}
 
     # output
     reaction_forces = {}
@@ -84,11 +84,11 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
                 # set initial trail vector and position for first iteration
                 pos = node_xyz[node]
                 if i == 0:
-                    t_vec = np.zeros(3)
+                    rvec = np.zeros(3)
 
                 # otherwise, select last trail vector and position from dictionary
                 else:
-                    t_vec = trail_vectors[node]
+                    rvec = residual_vectors[node]
 
                 # node load
                 q_vec = node_loads[node]
@@ -104,10 +104,12 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
                     ri_vec = deviation_edges_resultant_vector(node, node_xyz, indir_edges, edge_forces)
 
                 # node equilibrium, bottleneck 60%
-                t_vec = node_equilibrium(t_vec, q_vec, rd_vec, ri_vec)
+                rvec = node_equilibrium(rvec, q_vec, rd_vec, ri_vec)
 
                 # if this is the last node, exit
                 if i == (len(trail) - 1):
+                    # store reaction force in support node
+                    reaction_forces[node] = rvec
                     continue
 
                 # otherwise, pick next node in the trail
@@ -121,19 +123,16 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
                 # query trail edge's length
                 length = edge_lengths[edge]
 
-                trail_force = length_vector(t_vec)
+                # store trail force
+                trail_force = length_vector(rvec)
                 trail_forces[edge] = trail_force
 
-                next_pos = pos + length * t_vec / trail_force
-
-                # store new position and trail vector
-                trail_vectors[next_node] = t_vec
-
-                # store node coordinates
+                # store next node position
+                next_pos = pos + length * rvec / trail_force
                 node_xyz[next_node] = next_pos
 
-                # store reaction force in support node
-                reaction_forces[next_node] = t_vec
+                # store residual
+                residual_vectors[next_node] = rvec
 
                 # do callback
                 if callback:

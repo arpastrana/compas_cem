@@ -55,8 +55,8 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
     # there must be at least one trail
     assert len(trails) != 0, "No trails in the diagram!"
 
-    positions = {}
-    trail_vectors = {}
+    # positions = {}
+    residual_vectors = {}
     reaction_forces = {}
     trail_forces = {}
     node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
@@ -64,7 +64,7 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
     for t in range(tmax):  # max iterations
 
         # store last positions for residual
-        last_positions = {k: v for k, v in positions.items()}
+        last_xyz = {k: v for k, v in node_xyz.items()}
 
         for i in topology.sequences():  # sequences
 
@@ -78,52 +78,45 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
                 node = trail[i]
 
                 # set initial trail vector and position for first iteration
+                pos = node_xyz[node]
                 if i == 0:
-                    t_vec = [0.0, 0.0, 0.0]
-                    pos = topology.node_coordinates(node)
+                    rvec = [0.0, 0.0, 0.0]
 
                 # otherwise, select last trail vector and position from dictionary
                 else:
-                    t_vec = trail_vectors[node]
-                    pos = positions[node]
+                    rvec = residual_vectors[node]
 
-                # calculate nodal equilibrium to get trail direction
+                # calculate nodal equilibrium to get new residual vector
                 indirect = True
                 if t == 0:
                     indirect = False
-                t_vec = node_equilibrium(topology, node, t_vec, node_xyz, indirect)
+                rvec = node_equilibrium(topology, node, rvec, node_xyz, indirect)
 
-                # if this is the last node, exit
-                if i == (len(trail) - 1):
+                # if this is the last node, store reaction force and exit loop
+                if topology.is_node_support(node):
+                    reaction_forces[node] = rvec[:]
                     continue
 
                 # otherwise, pick next node in the trail
                 next_node = trail[i + 1]
 
-                # query trail edge's length
+                # correct edge key and query trail edge length
                 try:
                     edge = (node, next_node)
                     length = topology.edge_attribute(key=edge, name="length")
-
                 except KeyError:
                     edge = (next_node, node)
                     length = topology.edge_attribute(key=edge, name="length")
 
-                next_pos = add_vectors(pos, scale_vector(normalize_vector(t_vec), length))
-
-                # store new position and trail vector
-                positions[next_node] = next_pos
-                trail_vectors[next_node] = t_vec
-
-                # store node coordinates
+                # store next node position
+                next_pos = add_vectors(pos, scale_vector(normalize_vector(rvec), length))
                 node_xyz[next_node] = next_pos
 
-                # store trail forces
-                trail_forces[edge] = length_vector(t_vec)
+                # store trail force
+                trail_forces[edge] = length_vector(rvec)
 
-                # store reaction force in support node
-                if topology.is_node_support(next_node):
-                    reaction_forces[next_node] = t_vec[:]
+                # store residual vector
+                residual_vectors[next_node] = rvec
 
                 # do callback
                 if callback:
@@ -135,8 +128,8 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
 
         # calculate residual
         residual = 0.0
-        for key, pos in positions.items():
-            last_pos = last_positions[key]
+        for key, pos in node_xyz.items():
+            last_pos = last_xyz[key]
             residual += distance_point_point(last_pos, pos)
 
         # if residual smaller than threshold, stop iterating
