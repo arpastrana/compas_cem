@@ -1,78 +1,80 @@
 from time import time
 
+from autograd import grad
+
 from compas_cem.diagrams import FormDiagram
 from compas_cem.elements import Node
 from compas_cem.elements import TrailEdge
-from compas_cem.elements import DeviationEdge
 from compas_cem.loads import NodeLoad
 from compas_cem.supports import NodeSupport
-from compas_cem.equilibrium import force_equilibrium
 from compas_cem.plotters import FormPlotter
 
 from compas_cem.optimization import Optimizer
 from compas_cem.optimization import PointGoal
-from compas_cem.optimization import TrailEdgeForceGoal
 from compas_cem.optimization import TrailEdgeConstraint
 
+from compas_cem.equilibrium import force_equilibrium
 from compas_cem.equilibrium.force_numpy import form_equilibrate_numpy
-
-from autograd import grad
 
 
 # global controls
 PLOT = True
-OPTIMIZE = False
+GRADIENT = True
+OPTIMIZE = True
 
-# create a form diagram
+# diagram
 form = FormDiagram()
 
 # add nodes
-form.add_node(Node(1, [0.0, 0.0, 0.0]))
-form.add_node(Node(2, [1.0, 1.0, 0.0]))
+form.add_node(Node(1, xyz=[0, 0, 0]))
+form.add_node(Node(2, xyz=[0, 0, 0]))
+form.add_node(Node(3, xyz=[0, 0, 0]))
 
-# add edges with negative values for a compression-only structure
-form.add_edge(TrailEdge(1, 2, length=-2.0))
+# add edges
+form.add_edge(TrailEdge(1, 2, length=-1.0))
+form.add_edge(TrailEdge(2, 3, length=-1.0))
 
-# add supports
-form.add_support(NodeSupport(2))
+# indicate support node
+form.add_support(NodeSupport(3))
 
-# add loads
-form.add_load(NodeLoad(1, [1.0, 1.0, 0.0]))
+# add load
+form.add_load(NodeLoad(1, vector=[1.0, 0.0, 0.0]))
 
-# autograd stuff
-# create optimizer
-optimizer = Optimizer()
-optimizer.add_goal(PointGoal(node=2, point=[2.0, 2.0, 0.0]))
-optimizer.add_constraint(TrailEdgeConstraint((1, 2), 2.0, 0))
-
-form.trails()
+# calculate equilibrium state
 force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
 
-# grad stuff
-def loss(x, form):
-    optimizer.form = form
-    optimizer._update_form_edges(x)
-    eq_state = form_equilibrate_numpy(form, kmax=100, eps=1e-5)
-    error = optimizer._compute_error(eq_state)
-    optimizer.form = None
-    return error
+# create optimizer
+optimizer = Optimizer()
+# constraint goal
+optimizer.add_goal(PointGoal(node=3, point=[3.0, 0.0, 0.0]))
+# optimization parameters
+optimizer.add_constraint(TrailEdgeConstraint((1, 2), 2.0, 0))
+optimizer.add_constraint(TrailEdgeConstraint((2, 3), 2.0, 0))
 
-X = optimizer.optimization_parameters(form)
-print(f"X: {X}")
-error = optimizer._grad_optimize_form(X, form)
-print(f"error: {error}")
-my_func = optimizer._grad_optimize_form
-my_func = loss
-grad_func = grad(loss)
-grad_val = grad_func(X, form)
-print(f"grad: {grad_val}")
+if GRADIENT:
+    # make a copy of the form as it will be modified in-place
+    form2 = form.copy()
+    # a single gradient run
+    # objective function
+    def objective_function(x, form_diagram):
+        optimizer.form = form_diagram
+        optimizer._update_form_edges(x)
+        eq_state = form_equilibrate_numpy(form_diagram, kmax=100, eps=1e-5)
+        error = optimizer._compute_error(eq_state)
+        optimizer.form = None
+        return error
 
+    # calculate gradient
+    X = optimizer.optimization_parameters(form2)
+    penalty = objective_function(X, form2)
+    grad_func = grad(objective_function)
+    grad_value = grad_func(X, form2)
+
+    print(f"X: {X}")
+    print(f"penalty: {penalty}")
+    print(f"gradient: {grad_value}")
 
 if OPTIMIZE:
-
-    force_equilibrium(form, eps=1e-5, kmax=100, verbose=True)
-
-    # optimize
     start = time()
 
     # optimization constants
@@ -93,7 +95,6 @@ if OPTIMIZE:
     print("Elapsed time: {}".format(time() - start))
     print("Total error: {}".format(l_opt))
 
-    # calculate equilibrium
     print("Final node coordinates")
     for node in form.nodes():
         print(node, ":", form.node_coordinates(node))
@@ -102,9 +103,7 @@ if OPTIMIZE:
     for edge in form.trail_edges():
         print(edge, ":", form.edge_attribute(edge, name="length"))
 
-# plot
 if PLOT:
-
     plotter = FormPlotter(form, figsize=(16, 9))
 
     plotter.draw_nodes(radius=0.03, text="key-xyz")
