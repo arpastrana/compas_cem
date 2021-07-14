@@ -50,7 +50,7 @@
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            0.1.11
+            0.1.12
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -140,8 +140,12 @@ The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshop
 <section id="remove-any-leftovers">
 <h3>1. Remove any leftovers</h3>
 <p>In case there was an older <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> or <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> version linked to <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>.</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.uninstall
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.uninstall -v <span class="m">7</span>.0
 </code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The flag <cite>-v 7.0</cite> indicates that we will be uninstalling <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> and company from Rhino 7. If you are working with Rhino 6, replace that last bit with <cite>-v 6.0</cite>.</p>
 </div>
 </section>
 <section id="link-compas-cem">
@@ -149,8 +153,12 @@ The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshop
 <p>Let’s connect <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, <code class="docutils literal notranslate"><span class="pre">compas_rhino</span></code> and <code class="docutils literal notranslate"><span class="pre">compas_ghpython</span></code> to
 Rhino. If you were wondering, the last two are installed by default by <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code>.</p>
 <p>Type in your command line:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.install
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.install -v <span class="m">7</span>.0
 </code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The flag <cite>-v 7.0</cite> indicates that we will be installing <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> and company in Rhino 7. If you are working with Rhino 6, replace that last bit with <cite>-v 6.0</cite>.</p>
 </div>
 </section>
 <section id="check-your-grasshopper-installation">
@@ -279,7 +287,7 @@ Rhino. If you were wondering, the last two are installed by default by <code cla
   <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
   URL_ROOT          : '',
-  VERSION           : '0.1.11',
+  VERSION           : '0.1.12',
   COLLAPSE_INDEX    : false,
   FILE_SUFFIX       : '.html',
   HAS_SOURCE        : 'false',
