@@ -67,21 +67,17 @@ To additionally install `compas_cem` as a grasshopper plugin, close Rhino, go to
 ```bash
 conda activate cem
 ```
-
-Remove any leftovers inn case there was an older `compas` or ``compas_cem`` version linked to Rhino.
-
-```bash
-python -m compas_rhino.uninstall
-```
-
-Let's connect ``compas_cem``, ``compas_rhino`` and ``compas_ghpython`` to
-Rhino. If you were wondering, the last two are installed by default by ``compas``.
+Let's connect ``compas_cem``, ``compas_rhino`` and ``compas_ghpython`` to Rhino from te command line. 
+If you were wondering, the last two are installed by default by ``compas``.
 
 ```bash
-python -m compas_rhino.install
+python -m compas_rhino.install -v 7.0
 ```
 
-Launch grasshopper and start dropping `compas_cem` components onto the canvas! Send pictures! 🏖 
+Note that the flag `-v 7.0` indicates that we will be installing `compas_cem` and company to Rhino 7.
+If you are working with Rhino 6, replace that last bit with `-v 6.0`.
+
+Finally, launch grasshopper and start dropping `compas_cem` components onto the canvas! Send pictures! 🏖 
 
 ### Caveat
 

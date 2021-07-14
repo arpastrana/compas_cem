@@ -79,8 +79,11 @@ In case there was an older ``COMPAS`` or ``compas_cem`` version linked to `Rhino
 
 ::
 
-    python -m compas_rhino.uninstall
+    python -m compas_rhino.uninstall -v 7.0
 
+.. note::
+
+   The flag `-v 7.0` indicates that we will be uninstalling ``compas_cem`` and company from Rhino 7. If you are working with Rhino 6, replace that last bit with `-v 6.0`.
 
 2. Link ``compas_cem``
 ----------------------
@@ -92,7 +95,11 @@ Type in your command line:
 
 ::
 
-    python -m compas_rhino.install
+    python -m compas_rhino.install -v 7.0
+
+.. note::
+
+   The flag `-v 7.0` indicates that we will be installing ``compas_cem`` and company in Rhino 7. If you are working with Rhino 6, replace that last bit with `-v 6.0`.
 
 
 3. Check your Grasshopper installation
