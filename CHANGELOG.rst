@@ -11,13 +11,22 @@ Unreleased
 
 **Added**
 
+* Added node coloring for free and support nodes in `FormPlotter()`.
+* Added `TopologyPlotter.draw_segments()`
+* Added color scheme for `auxiliary_trail_edges` when using `TopologyPlotter.draw_edges()`
+
 **Changed**
 
 **Fixed**
 
+* Set `tight=False` when `axes.autoscale` is called by `Plotter.save()`. Overcropped saved image
+
 **Deprecated**
 
 **Removed**
+
+* Deleted custom edge and node keys in `form_plotter_proxy` and in `topology_plotter_proxy`
+* Removed frame polygon from `form_plotter_proxy` and in `topology_plotter_proxy`
 
 0.1.11
 ----------
