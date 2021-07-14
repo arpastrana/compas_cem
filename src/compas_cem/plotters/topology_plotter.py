@@ -32,7 +32,8 @@ class TopologyPlotter(NetworkPlotter):
 
         self._edge_state_colors = {-1.0: COLORS["compression"],
                                    1.0: COLORS["tension"],
-                                   0.0: COLORS["edge"]}
+                                   0.0: COLORS["edge"],
+                                   "auxiliary_trail": COLORS["auxiliary_trail"]}
 
         self._edge_linestyles = {"trail": "-",  # solid
                                  "deviation": "--"}  # dashed
@@ -178,9 +179,14 @@ class TopologyPlotter(NetworkPlotter):
         cmap = self.edge_state_colors
 
         keys = list(ds.edges())
+        aux_keys = [tuple(aux_edge) for aux_edge in ds.auxiliary_trails()]
 
         ec = {}
         for edge in keys:
+            if edge in aux_keys:
+                ec[edge] = cmap["auxiliary_trail"]
+                continue
+
             if ds.is_trail_edge(edge):
                 attr_name = "length"
             else:
@@ -193,7 +199,7 @@ class TopologyPlotter(NetworkPlotter):
         els = [lsmap[ds.edge_attribute(e, "type")] for e in keys]
         edges.set_linestyle(els)
 
-        return keys
+        return ec
 
     def draw_loads(self, keys=None, radius=0.1, width=0.5):
         """
@@ -241,6 +247,36 @@ class TopologyPlotter(NetworkPlotter):
 
         return lines
 
+    def draw_segments(self, segments, color=(50, 50, 50), width=0.5, ls="--"):
+        """
+        Draws additional line segments on a ``TopologyDiagram``.
+
+        Parameters
+        ----------
+        segments : ``list``
+            The line segments as tuples of xyz coordinates.
+        color : ``tuple``
+            The lines uniform color in rgb. Defaults to gray, ``(40, 40, 40)``.
+        width : ``float``
+            The lines' uniform display width. Defaults to ``0.5``.
+        """
+        lines = []
+        for segment in segments:
+            line = {}
+            start, end = segment
+
+            line["start"] = start
+            line["end"] = end
+            line["color"] = color
+            line["width"] = width
+
+            lines.append(line)
+
+        lines = super(TopologyPlotter, self).draw_lines(lines)
+        lines.set_linestyle(ls)
+
+        return lines
+
     def save(self, filepath, tight=True, autoscale=True, bbox_inches="tight", pad_inches=0.0, **kwargs):
         """
         Saves the plot to a file.
@@ -251,7 +287,7 @@ class TopologyPlotter(NetworkPlotter):
             Full path of the file.
         """
         if autoscale:
-            self.axes.autoscale(tight=tight)
+            self.axes.autoscale(tight=False)
 
         if tight:
             plt.tight_layout()

@@ -34,6 +34,9 @@ class FormPlotter(NetworkPlotter):
                                    1: COLORS["tension"],
                                    0: COLORS["edge"]}
 
+        self._node_colors = {"support": COLORS["node_support"],
+                             "default": COLORS["node"]}
+
         self._form = self.datastructure
         self._float_precision = "3f"
 
@@ -48,6 +51,18 @@ class FormPlotter(NetworkPlotter):
             A form diagram.
         """
         return self._form
+
+    @property
+    def node_colors(self):
+        """
+        The colors to draw the nodes of a form diagram.
+
+        Returns
+        -------
+        node_colors : ``dict`` of ``color``
+            A dictionary that maps node type to RGB color.
+        """
+        return self._node_colors
 
     @property
     def edge_state_colors(self):
@@ -85,7 +100,7 @@ class FormPlotter(NetworkPlotter):
             Full path of the file.
         """
         if autoscale:
-            self.axes.autoscale(tight=tight)
+            self.axes.autoscale(tight=False)
 
         if tight:
             plt.tight_layout()
@@ -129,13 +144,21 @@ class FormPlotter(NetworkPlotter):
         that maps ``{node_key: attribute}`` is supplied, specific values can be
         assigned individually.
         """
-        fc = COLORS["node"]
+        cmap = self.node_colors
+        ds = self.datastructure
 
         text = kwargs.get("text")
         if text and text != "key":
             kwargs["text"] = self._text_labels_nodes(text)
 
-        super(FormPlotter, self).draw_nodes(facecolor=fc, *args, **kwargs)
+        nc = {}
+        for node in ds.nodes():
+            if ds.is_node_support(node):
+                nc[node] = cmap["support"]
+            else:
+                nc[node] = cmap["default"]
+
+        super(FormPlotter, self).draw_nodes(facecolor=nc, *args, **kwargs)
 
     def draw_edges(self, *args, **kwargs):
         """

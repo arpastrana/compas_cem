@@ -46,7 +46,7 @@ def form_plotter_proxy(**kwargs):
     plotter.draw_edges(keys=edge_key, width=edge_width)
     plotter.draw_nodes(keys=node_key, radius=node_radius, edgewidth=node_edgewidth)
     plotter.draw_loads(width=load_width, scale=load_scale, gap=load_gap)
-    plotter.draw_residuals(width=reaction_width, scale=reaction_scale, gap=reaction_gap)
+    plotter.draw_reactions(width=reaction_width, scale=reaction_scale, gap=reaction_gap)
 
     if frame_polygon:
         polygons = [{"points": frame_polygon, "edgecolor": (255, 255, 255)}]
@@ -69,10 +69,8 @@ def topology_plotter_proxy(**kwargs):
     topology = kwargs["topology"]
     filepath = kwargs["filepath"]
 
-    edge_key = kwargs.get("edge_key")
     edge_width = kwargs.get("edge_width", 1.0)
 
-    node_key = kwargs.get("node_key")
     node_radius = kwargs.get("node_radius", 0.1)
     node_edgewidth = kwargs.get("node_edgewidth", 1.0)
 
@@ -88,22 +86,14 @@ def topology_plotter_proxy(**kwargs):
     fig_height = kwargs.get("fig_height", 9)
     fig_dpi = kwargs.get("fig_dpi", 100)
 
-    frame_polygon = kwargs.get("frame_polygon", None)
-
     # plot
     plotter = TopologyPlotter(topology, figsize=(fig_width, fig_height), dpi=fig_dpi)
 
-    plotter.draw_loads(keys=node_key, radius=load_radius, width=load_width)
-    plotter.draw_nodes(keys=node_key, radius=node_radius, edgewidth=node_edgewidth)
-    plotter.draw_edges(keys=edge_key, width=edge_width)
-
-    if frame_polygon:
-        polygons = [{"points": frame_polygon, "edgecolor": (255, 255, 255)}]
-        plotter.draw_polygons(polygons)
+    plotter.draw_loads(radius=load_radius, width=load_width)
+    plotter.draw_nodes(radius=node_radius, edgewidth=node_edgewidth)
+    plotter.draw_edges(width=edge_width)
 
     for seg, ls, color, width in zip(segment, segment_ls, segment_color, segment_width):
-        if sum(color) == 255 * 3:
-            continue
         plotter.draw_segments([seg], color, width, ls)
 
     plotter.save(filepath)
