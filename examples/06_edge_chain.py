@@ -18,9 +18,9 @@ from compas_cem.equilibrium.force_numpy import form_equilibrate_numpy
 
 
 # global controls
-PLOT = True
+PLOT = False
 GRADIENT = True
-OPTIMIZE = True
+OPTIMIZE = False
 
 # diagram
 form = FormDiagram()
@@ -62,7 +62,7 @@ if GRADIENT:
         eq_state = form_equilibrate_numpy(form_diagram, kmax=100, eps=1e-5)
         error = optimizer._compute_error(eq_state)
         optimizer.form = None
-        return error
+        return error * 0.5
 
     # calculate gradient
     X = optimizer.optimization_parameters(form2)
