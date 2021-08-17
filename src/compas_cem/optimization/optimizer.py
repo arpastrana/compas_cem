@@ -28,6 +28,7 @@ class Optimizer():
         self.x_opt = None
         self.penalty = None
         self.evals = None
+        self.gradient_norm = None
 
 # ------------------------------------------------------------------------------
 # Counters
@@ -103,29 +104,29 @@ class Optimizer():
 # Objective Function
 # ------------------------------------------------------------------------------
 
-    def objective_func(self, topology, grad_func):
+    def objective_func(self, topology, grad_func, tmax, eta):
         """
         Test with autodiff.
         """
         obj_func = objective_function_numpy
-        func = partial(self._optimize_form, topology=topology)
+        func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
         return partial(obj_func, x_func=func, grad_func=grad_func)
 
 # ------------------------------------------------------------------------------
 # Gradient Function
 # ------------------------------------------------------------------------------
 
-    def gradient_func(self, topology):
+    def gradient_func(self, topology, tmax, eta):
         """
         """
-        x_func = partial(self._optimize_form, topology=topology)
+        x_func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
         return partial(grad_autograd, grad_func=x_func)
 
 # ------------------------------------------------------------------------------
 # Solver
 # ------------------------------------------------------------------------------
 
-    def solve_nlopt(self, topology, algorithm, iters, eps=None):
+    def solve_nlopt(self, topology, algorithm, iters, eps=None, tmax=100, eta=1e-6):
         """
         Solve an optimization problem with NLOpt.
         """
@@ -133,8 +134,8 @@ class Optimizer():
         self.check_optimization_sanity()
 
         # compose gradient and objective functions
-        grad_func = self.gradient_func(topology.copy())
-        penalty_func = self.objective_func(topology, grad_func)
+        grad_func = self.gradient_func(topology.copy(), tmax, eta)
+        penalty_func = self.objective_func(topology, grad_func, tmax, eta)
 
         # generate optimization variables
         x = self.optimization_parameters(topology)
@@ -174,6 +175,11 @@ class Optimizer():
         self.x_opt = x_opt
         self.penalty = loss_opt
         self.evals = evals
+
+        # set norm of the gradient
+        # np.zeros is a dummy array (signature requirement by nlopt)
+        self.gradient = grad_func(x_opt, np.zeros(x_opt.size))
+        self.gradient_norm = np.linalg.norm(self.gradient)
 
         # exit like a champion
         return static_equilibrium(topology)
@@ -276,13 +282,13 @@ class Optimizer():
 
         return penalty
 
-    def _optimize_form(self, parameters, topology):
+    def _optimize_form(self, parameters, topology, tmax, eta):
         """
         """
         self._update_topology_origin_nodes(parameters, topology)
         self._update_topology_edges(parameters, topology)
 
-        eq_state = equilibrium_state_numpy(topology, tmax=100, eta=1e-5)
+        eq_state = equilibrium_state_numpy(topology, tmax, eta)
 
         return self._calculate_penalty(eq_state)
 

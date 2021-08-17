@@ -10,6 +10,7 @@ Unreleased
 ----------
 
 **Added**
+* Added `Optimizer.gradient` and `Optimizer.gradient_norm` as attributes.
 
 **Changed**
 * Exposed `eta` and `tmax` in the signature of `Optimizer.solve_nlopt()` instead of hard-coded values.
