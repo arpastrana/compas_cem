@@ -14,6 +14,7 @@ Unreleased
 **Changed**
 
 **Fixed**
+* Converted `Frame` returned by `RhinoPlane.to_compas()` to `Plane` for compatibility of `PlaneConstraint()` in ghplugin.
 
 **Deprecated**
 
