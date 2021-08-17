@@ -12,10 +12,12 @@ Unreleased
 **Added**
 
 **Changed**
+* Exposed `eta` and `tmax` in the signature of `Optimizer.solve_nlopt()` instead of hard-coded values.
+* Updated ghcomponent `ConstrainedFormFinding` to include `eta` and `tmax` as extra inputs.
 
 **Fixed**
 * Converted `Frame` returned by `RhinoPlane.to_compas()` to `Plane` for compatibility of `PlaneConstraint()` in ghplugin.
-* Renamed input of ghcomponent `FormFinding` from `eps_min` to `eta_min`.
+* Renamed input of ghcomponent `FormFinding` from `eps_min` to `eta`.
 
 **Deprecated**
 

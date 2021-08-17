@@ -13,11 +13,12 @@ __all__ = ["grad_finite_difference_numpy",
 
 def grad_autograd(x, grad, grad_func):
     """
-    Calculates the gradient with automatic differentiation, baby.
+    Calculates the gradient with automatic differentiation. And updated grad in-place.
     """
     grad_func = agrad(grad_func)
-    new_grad = grad_func(x)  # bottleneck
-    grad[:] = new_grad
+    grad[:] = grad_func(x)
+
+    return grad
 
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences

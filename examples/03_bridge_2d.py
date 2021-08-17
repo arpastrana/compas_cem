@@ -109,7 +109,8 @@ if optimize:
     print("Optimizer. # Parameters {}, # Constraints {}".format(optimizer.number_of_parameters(),
                                                                 optimizer.number_of_constraints()))
     print("Elapsed time: {}".format(time() - start))
-    print("Total penalty: {}".format(optimizer.penalty))
+    print("Value of the objective function: {}".format(optimizer.penalty))
+    print("Norm of the gradient of the objective function: {}".format(optimizer.gradient_norm))
 
 # ------------------------------------------------------------------------------
 # Print put residual forces at supports (a.k.a reaction forces)

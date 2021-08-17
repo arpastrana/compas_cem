@@ -35,7 +35,18 @@
             },
             {
                 "name": "eps",
-                "description": "The minimum objective or gradient value to declare convergence. Defaults to 1e-6.",
+                "description": "The minimum objective or norm of the gradient value to declare convergence. Defaults to 1e-6.",
+                "typeHintID": "float"
+
+            },
+            {
+                "name": "tmax",
+                "description": "The maximum number of iterations to run the form-finding algorithm for. Defaults to 100.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "eta",
+                "description": "The convergence threshold of the form-finding algorithm. Default to 1e-6.",
                 "typeHintID": "float"
             }
         ],
@@ -46,8 +57,13 @@
                 "optional": false
             },
             {
-                "name": "penalty",
-                "description": "The penalty score after optimization.",
+                "name": "objective",
+                "description": "The resulting value of the objective function.",
+                "optional": false
+            },
+            {
+                "name": "grad_norm",
+                "description": "The norm of the gradient of the objective function.",
                 "optional": false
             },
             {

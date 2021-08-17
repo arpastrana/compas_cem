@@ -115,8 +115,10 @@ print("Optimizer. # Parameters {}, # Constraints {}".format(optimizer.number_of_
                                                      optimizer.number_of_constraints()))
 print("Elapsed time: {}".format(time() - start))
 
-# penalty should be lower or equal to eps
-print("Total penalty: {}".format(optimizer.penalty))
+# the following values should be lower or equal to eps
+print("Value of the objective function: {}".format(optimizer.penalty))
+print("Norm of the gradient of the objective function: {}".format(optimizer.gradient_norm))
+
 
 # ------------------------------------------------------------------------------
 # Plot topology

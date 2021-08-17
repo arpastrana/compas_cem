@@ -8,9 +8,9 @@ __all__ = ["solve_nlopt_proxy"]
 # Optimization
 # ------------------------------------------------------------------------------
 
-def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps):
+def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps, tmax=100, eta=1e-6):
     """
-    Deprecated version of ``optimizer_solve_nlopt_proxy``.
+    Solve a constrained form-finding task through a Proxy server.
     """
     from compas_cem.optimization import Optimizer
 
@@ -25,13 +25,14 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps):
         optimizer.add_parameter(parameter)
 
     start = time()
-    form = optimizer.solve_nlopt(topology, algorithm, iters, eps)
+    form = optimizer.solve_nlopt(topology, algorithm, iters, eps, tmax, eta)
 
     duration = time() - start
-    penalty = optimizer.penalty
+    objective = optimizer.penalty
     evals = optimizer.evals
+    gradient_norm = optimizer.gradient_norm
 
-    return form, penalty, evals, duration
+    return form, objective, gradient_norm, evals, duration
 
 # ------------------------------------------------------------------------------
 # Main

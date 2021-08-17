@@ -73,8 +73,9 @@ if OPTIMIZE:
     # optimize
     form = optimizer.solve_nlopt(topology, "LD_SLSQP", 100, 1e-6)
 
-    # print out penalty, should be a small number
-    print("Total penalty: {}".format(optimizer.penalty))
+    # print out value of the objective function, should be a small number
+    print("Total value of the objective function: {}".format(optimizer.penalty))
+    print("Norm of the gradient of the objective function: {}".format(optimizer.gradient_norm))
 
 if PLOT:
 

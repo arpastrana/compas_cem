@@ -19,7 +19,7 @@
                 "typeHintID": "int"
             },
             {
-                "name": "eta_min",
+                "name": "eta",
                 "description": "The convergence threshold of the form-finding algorithm. Default to 1e-6.",
                 "typeHintID": "float"
             }
