@@ -15,6 +15,7 @@ Unreleased
 
 **Fixed**
 * Converted `Frame` returned by `RhinoPlane.to_compas()` to `Plane` for compatibility of `PlaneConstraint()` in ghplugin.
+* Renamed input of ghcomponent `FormFinding` from `eps_min` to `eta_min`.
 
 **Deprecated**
 

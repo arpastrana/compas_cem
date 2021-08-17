@@ -30,12 +30,12 @@
             },
             {
                 "name": "iters_max",
-                "description": "The maximum number of iterations to run the optimization algorithm for.",
+                "description": "The maximum number of iterations to run the optimization algorithm for. Defaults to 100.",
                 "typeHintID": "int"
             },
             {
                 "name": "eps",
-                "description": "The minimum penalty value to declare convergence.",
+                "description": "The minimum objective or gradient value to declare convergence. Defaults to 1e-6.",
                 "typeHintID": "float"
             }
         ],
