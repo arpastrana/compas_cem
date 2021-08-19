@@ -99,9 +99,13 @@
 <h1>TrailEdge</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.elements.TrailEdge">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">compas_cem.elements.</span></span><span class="sig-name descname"><span class="pre">TrailEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/elements/trail.py#L4"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">compas_cem.elements.</span></span><span class="sig-name descname"><span class="pre">TrailEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/elements/trail.py#L4"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.elements.edge.Edge</span></code></p>
 <p>A trail edge.</p>
+<p class="rubric">Notes</p>
+<p>If a plane is defined, it will override the absolute length of the trail edge.
+However, the sign of the length (e.g. the combinatorial state) is preserved.</p>
+<p>TODO: addexplicit combinatorial state to the signature of the constructor.</p>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -109,10 +113,10 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_line.html#compas_cem.elements.TrailEdge.from_line" title="compas_cem.elements.TrailEdge.from_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_line</span></code></a>(line, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_line.html#compas_cem.elements.TrailEdge.from_line" title="compas_cem.elements.TrailEdge.from_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_line</span></code></a>(line, **kwargs)</p></td>
 <td><p>Create an edge from a line described by two xyz coordinates.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_rhino_line.html#compas_cem.elements.TrailEdge.from_rhino_line" title="compas_cem.elements.TrailEdge.from_rhino_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_rhino_line</span></code></a>(rhino_line, *args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_rhino_line.html#compas_cem.elements.TrailEdge.from_rhino_line" title="compas_cem.elements.TrailEdge.from_rhino_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_rhino_line</span></code></a>(rhino_line, **kwargs)</p></td>
 <td><p>Create an edge from a rhino line.</p></td>
 </tr>
 </tbody>

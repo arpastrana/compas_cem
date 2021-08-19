@@ -213,8 +213,10 @@
                                                      <span class="n">optimizer</span><span class="o">.</span><span class="n">number_of_constraints</span><span class="p">()))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span>
 
-<span class="c1"># penalty should be lower or equal to eps</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total penalty: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">penalty</span><span class="p">))</span>
+<span class="c1"># the following values should be lower or equal to eps</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Value of the objective function: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">penalty</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Norm of the gradient of the objective function: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">gradient_norm</span><span class="p">))</span>
+
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Plot topology</span>

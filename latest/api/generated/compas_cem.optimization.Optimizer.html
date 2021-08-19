@@ -99,7 +99,7 @@
 <h1>Optimizer</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.optimization.Optimizer">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L21"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L23"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>An object that modifies a form diagram to meet multiple constraints.</p>
 <p class="rubric">Methods</p>
@@ -118,7 +118,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.check_optimization_sanity.html#compas_cem.optimization.Optimizer.check_optimization_sanity" title="compas_cem.optimization.Optimizer.check_optimization_sanity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_optimization_sanity</span></code></a>()</p></td>
 <td><p>Verify the optimization problem is in its sane mind.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.gradient_func.html#compas_cem.optimization.Optimizer.gradient_func" title="compas_cem.optimization.Optimizer.gradient_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gradient_func</span></code></a>(topology)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.gradient_func.html#compas_cem.optimization.Optimizer.gradient_func" title="compas_cem.optimization.Optimizer.gradient_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gradient_func</span></code></a>(topology, tmax, eta)</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.index_parameter.html#compas_cem.optimization.Optimizer.index_parameter" title="compas_cem.optimization.Optimizer.index_parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_parameter</span></code></a>()</p></td>
@@ -130,7 +130,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.number_of_parameters.html#compas_cem.optimization.Optimizer.number_of_parameters" title="compas_cem.optimization.Optimizer.number_of_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_parameters</span></code></a>()</p></td>
 <td><p>The number of optimization parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.objective_func.html#compas_cem.optimization.Optimizer.objective_func" title="compas_cem.optimization.Optimizer.objective_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">objective_func</span></code></a>(topology, grad_func)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.objective_func.html#compas_cem.optimization.Optimizer.objective_func" title="compas_cem.optimization.Optimizer.objective_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">objective_func</span></code></a>(topology, grad_func, tmax, eta)</p></td>
 <td><p>Test with autodiff.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.optimization_bounds.html#compas_cem.optimization.Optimizer.optimization_bounds" title="compas_cem.optimization.Optimizer.optimization_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimization_bounds</span></code></a>(form)</p></td>
@@ -148,7 +148,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.remove_parameter.html#compas_cem.optimization.Optimizer.remove_parameter" title="compas_cem.optimization.Optimizer.remove_parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_parameter</span></code></a>(key)</p></td>
 <td><p>Removes an optimization parameter.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.solve_nlopt.html#compas_cem.optimization.Optimizer.solve_nlopt" title="compas_cem.optimization.Optimizer.solve_nlopt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve_nlopt</span></code></a>(topology, algorithm, iters[, eps])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.solve_nlopt.html#compas_cem.optimization.Optimizer.solve_nlopt" title="compas_cem.optimization.Optimizer.solve_nlopt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve_nlopt</span></code></a>(topology, algorithm, iters[, …])</p></td>
 <td><p>Solve an optimization problem with NLOpt.</p></td>
 </tr>
 </tbody>
