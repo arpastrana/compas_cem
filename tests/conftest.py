@@ -2,6 +2,8 @@ from math import sqrt
 
 import pytest
 
+from compas.geometry import Plane
+
 from compas_cem.diagrams import TopologyDiagram
 from compas_cem.elements import Node
 from compas_cem.elements import TrailEdge
@@ -12,6 +14,7 @@ from compas_cem.supports import NodeSupport
 # ==============================================================================
 # Fixtures
 # ==============================================================================
+
 
 @pytest.fixture
 def compression_strut():
@@ -29,6 +32,56 @@ def compression_strut():
     topology.add_support(NodeSupport(0))
     # add loads at the unsupported edge
     topology.add_load(NodeLoad(1, [0, -1.0, 0.0]))
+
+    return topology
+
+
+@pytest.fixture
+def tension_chain():
+    """
+    A chain with three edges in tension.
+    The lengths of the first and the last edges are implicitly pulled to planes.
+    """
+    topology = TopologyDiagram()
+
+    # add nodes
+    topology.add_node(Node(0, [0.0, 0.0, 0.0]))
+    topology.add_node(Node(1, [1.0, 0.0, 0.0]))
+    topology.add_node(Node(2, [2.0, 0.0, 0.0]))
+    topology.add_node(Node(3, [3.0, 0.0, 0.0]))
+    # add edges
+    topology.add_edge(TrailEdge(0, 1, length=1, plane=Plane([1.5, 0, 0], [1, 0, 0])))
+    topology.add_edge(TrailEdge(1, 2, length=1))  # unit length in tension
+    topology.add_edge(TrailEdge(2, 3, length=1, plane=Plane([4.0, 0, 0], [1, 0, 0])))
+    # add support
+    topology.add_support(NodeSupport(3))
+    # add load
+    topology.add_load(NodeLoad(0, [-1, 0, 0]))
+
+    return topology
+
+
+@pytest.fixture
+def compression_chain():
+    """
+    A chain with three edges in compression.
+    The lengths of the first and the last edges are implicitly pulled to planes.
+    """
+    topology = TopologyDiagram()
+
+    # add nodes
+    topology.add_node(Node(0, [0.0, 0.0, 0.0]))
+    topology.add_node(Node(1, [1.0, 0.0, 0.0]))
+    topology.add_node(Node(2, [2.0, 0.0, 0.0]))
+    topology.add_node(Node(3, [3.0, 0.0, 0.0]))
+    # add edges
+    topology.add_edge(TrailEdge(0, 1, length=-1, plane=Plane([1.5, 0, 0], [1, 0, 0])))
+    topology.add_edge(TrailEdge(1, 2, length=-1))  # unit length in tension
+    topology.add_edge(TrailEdge(2, 3, length=-1, plane=Plane([4.0, 0, 0], [1, 0, 0])))
+    # add support
+    topology.add_support(NodeSupport(3))
+    # add load
+    topology.add_load(NodeLoad(0, [1, 0, 0]))
 
     return topology
 
