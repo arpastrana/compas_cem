@@ -13,7 +13,8 @@ from nlopt import LN_SBPLX
 
 __all__ = ["nlopt_algorithm",
            "nlopt_algorithms",
-           "nlopt_solver"]
+           "nlopt_solver",
+           "nlopt_status"]
 
 
 def nlopt_algorithm(name):
@@ -84,6 +85,41 @@ def nlopt_algorithms():
     algorithms.update(gradient_based)
 
     return algorithms
+
+
+def nlopt_status(constant):
+    """
+    Convert the enumerated constant returned by the optimization process into a human-readable string.
+
+    Input
+    -----
+    constant : ``int``
+        The constant returned by the optimization algorithm as result.
+
+    Returns
+    -------
+    status : ``str``
+        A human-readable string.
+    """
+    results = {}
+
+    success = {1: "NLOPT_SUCCESS",
+               2: "NLOPT_STOPVAL_REACHED",
+               3: "NLOPT_FTOL_REACHED",
+               4: "NLOPT_XTOL_REACHED",
+               5: "NLOPT_MAXEVAL_REACHED",
+               6: "NLOPT_MAXTIME_REACHED"}
+
+    failure = {-1: "NLOPT_GENERIC_FAILURE",
+               -2: "NLOPT_INVALID_ARGS",
+               -3: "NLOPT_OUT_OF_MEMORY",
+               -4: "NLOPT_ROUNDOFF_LIMITED",
+               -5: "NLOPT_FORCED_STOP"}
+
+    results.update(success)
+    results.update(failure)
+
+    return results[constant]
 
 
 def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, eps, ftol):

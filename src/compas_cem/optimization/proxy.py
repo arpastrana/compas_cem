@@ -30,9 +30,10 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps, 
     duration = time() - start
     objective = optimizer.penalty
     evals = optimizer.evals
-    gradient_norm = optimizer.gradient_norm
+    grad_norm = optimizer.gradient_norm
+    status = optimizer.status
 
-    return form, objective, gradient_norm, evals, duration
+    return form, objective, grad_norm, evals, duration, status
 
 # ------------------------------------------------------------------------------
 # Main

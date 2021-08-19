@@ -20,12 +20,14 @@ class ConstrainedFormFindingComponent(component):
             topology = topology.copy()
 
             with Proxy("compas_cem.optimization", port=PROXY_PORT) as opt:
-                form, objective, grad_norm, iters, time = opt.solve_nlopt_proxy(topology,
-                                                                                constraints,
-                                                                                parameters,
-                                                                                algorithm,
-                                                                                iters_max,
-                                                                                eps,
-                                                                                tmax,
-                                                                                eta)
-            return form, objective, grad_norm, iters, time
+                solution = opt.solve_nlopt_proxy(topology,
+                                                 constraints,
+                                                 parameters,
+                                                 algorithm,
+                                                 iters_max,
+                                                 eps,
+                                                 tmax,
+                                                 eta)
+
+            form, objective, grad_norm, iters, time, status = solution
+            return form, objective, grad_norm, iters, time, status

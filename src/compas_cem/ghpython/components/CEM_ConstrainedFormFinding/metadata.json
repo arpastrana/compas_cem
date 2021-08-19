@@ -7,6 +7,7 @@
     "exposure": 2,
 
     "ghpython": {
+        "hideOutput": false,
         "isAdvancedMode": true,
         "inputParameters": [
             {
@@ -25,7 +26,7 @@
             },
             {
                 "name": "algorithm",
-                "description": "The name of the optimization algorithm to use.",
+                "description": "The name of the optimization algorithm to use. Defaults to LD_SLSQP.",
                 "typeHintID": "str"
             },
             {
@@ -75,7 +76,13 @@
                 "name": "time",
                 "description": "The optimization elapsed time.",
                 "optional": false
+            },
+            {
+                "name": "status",
+                "description": "The final status of the optimization process.",
+                "optional": false
             }
+
         ]
     }
 }

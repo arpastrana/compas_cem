@@ -9,7 +9,9 @@ from compas_cem.equilibrium.force_numpy import equilibrium_state_numpy
 from compas_cem.optimization import nlopt_solver
 from compas_cem.optimization import grad_autograd
 from compas_cem.optimization import objective_function_numpy
+from compas_cem.optimization import nlopt_status
 
+from nlopt import RoundoffLimited
 
 __all__ = ["Optimizer"]
 
@@ -29,6 +31,7 @@ class Optimizer():
         self.penalty = None
         self.evals = None
         self.gradient_norm = None
+        self.status = None
 
 # ------------------------------------------------------------------------------
 # Counters
@@ -134,7 +137,8 @@ class Optimizer():
         self.check_optimization_sanity()
 
         # compose gradient and objective functions
-        grad_func = self.gradient_func(topology.copy(), tmax, eta)
+        topology_b = topology.copy()
+        grad_func = self.gradient_func(topology_b, tmax, eta)
         penalty_func = self.objective_func(topology, grad_func, tmax, eta)
 
         # generate optimization variables
@@ -157,6 +161,7 @@ class Optimizer():
         solver = nlopt_solver(**hyper_parameters)
 
         # solve optimization problem
+        x_opt = None
         try:
             x_opt = solver.optimize(x)
             evals = solver.get_numevals()
@@ -166,20 +171,28 @@ class Optimizer():
             evals = solver.get_numevals()
             print("Tol unreached and max iters exhausted! Try increasing them.")
             print("Number of evaluations incurred: {}".format(evals))
-            x_opt = None
+        except RoundoffLimited:
+            print("Optimization was halted because roundoff errors limited progress")
+            print("Returned results are generally still useful though!")
+            x_opt = self.optimization_parameters(topology)
 
         # fetch last optimum value of loss function
         loss_opt = solver.last_optimum_value()
+        evals = solver.get_numevals()
+        status = nlopt_status(solver.last_optimize_result())
 
         # set optimizer attributes
         self.x_opt = x_opt
         self.penalty = loss_opt
         self.evals = evals
+        self.status = status
 
         # set norm of the gradient
-        # np.zeros is a dummy array (signature requirement by nlopt)
+        # np.zeros is a dummy array (signature requirement set by nlopt)
         self.gradient = grad_func(x_opt, np.zeros(x_opt.size))
         self.gradient_norm = np.linalg.norm(self.gradient)
+
+        print("Optimization status: {}".format(status))
 
         # exit like a champion
         return static_equilibrium(topology)
