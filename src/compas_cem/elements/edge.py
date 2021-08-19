@@ -15,13 +15,16 @@ class Edge(object):
     """
     The edge base class.
     """
-    def __init__(self, u, v):
+    def __init__(self, u, v, **kwargs):
         self.u = u
         self.v = v
         self.attributes = {}
 
+        kwargs = kwargs or {}
+        self.attributes.update(kwargs)
+
     @classmethod
-    def from_line(cls, line, *args, **kwargs):
+    def from_line(cls, line, **kwargs):
         """
         Create an edge from a line described by two xyz coordinates.
 
@@ -29,8 +32,6 @@ class Edge(object):
         ----------
         line : ``tuple`` or ``list``
             The xyz coordinates of the line's two end points.
-        *args : ``tuple``
-            Additional arguments.
         **kwargs : ``dict``
             Extra keyword arguments.
 
@@ -39,11 +40,11 @@ class Edge(object):
         edge : ``Edge``
             An edge object.
         """
-        edge = cls(line[0], line[1], *args, **kwargs)
+        edge = cls(line[0], line[1], **kwargs)
         return edge
 
     @classmethod
-    def from_rhino_line(cls, rhino_line, *args, **kwargs):
+    def from_rhino_line(cls, rhino_line, **kwargs):
         """
         Create an edge from a rhino line.
 
@@ -51,8 +52,6 @@ class Edge(object):
         ----------
         rhino_line : ``Rhino.Geometry.Line``
             A rhino line.
-        *args : ``tuple``
-            Additional arguments.
         **kwargs : ``dict``
             Extra keyword arguments.
 
@@ -62,7 +61,7 @@ class Edge(object):
             An edge object.
         """
         line = RhinoLine.from_geometry(rhino_line).to_compas()
-        return cls.from_line(line, *args, **kwargs)
+        return cls.from_line(line, **kwargs)
 
     def __iter__(self):
         """
