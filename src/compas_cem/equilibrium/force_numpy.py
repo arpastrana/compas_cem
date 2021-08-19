@@ -6,6 +6,9 @@ from compas_cem.diagrams import FormDiagram
 __all__ = ["static_equilibrium_numpy"]
 
 
+SMALL_VALUE = 1e-3
+
+
 def static_equilibrium_numpy(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
     """
     Generate a form diagram in static equilibrium using a numpy backend.
@@ -58,6 +61,15 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
     node_indirect = {n: topology._connected_indirect_deviation_edges(n) for n in topology.nodes()}
     edge_keys = {e for e in topology.edges()}
 
+    # edge planes
+    edge_planes = {}
+    for edge in topology.trail_edges():
+        plane = topology.edge_attribute(edge, "plane")
+        if not plane:
+            continue
+        plane = [np.array(vector) for vector in plane]
+        edge_planes[edge] = plane
+
     # internals
     residual_vectors = {}
 
@@ -106,7 +118,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
                 # node equilibrium, bottleneck 60%
                 rvec = node_equilibrium(rvec, q_vec, rd_vec, ri_vec)
 
-                # if this is the last node, exit
+                # if this is the last node, store and exit
                 if i == (len(trail) - 1):
                     # store reaction force in support node
                     reaction_forces[node] = rvec
@@ -122,6 +134,31 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
 
                 # query trail edge's length
                 length = edge_lengths[edge]
+
+                # query trail edge plane, if any
+                plane = edge_planes.get(edge)
+
+                # override length if a plane exists
+                if plane is not None:
+                    # get length from line plane intersection
+                    p_length = trail_edge_length_from_plane_numpy(pos, rvec, plane)
+
+                    # check that returned length is not null
+                    if p_length is None:
+                        # print("Warning! No intersection found between edge {} and plane {}".format(edge, plane))
+                        # print("Falling back to input length: {}".format(length))
+                        p_length = length
+                    # print out warning if zero length.
+                    # elif p_length < SMALL_VALUE:
+                    #     msg = "Warning! Length for edge after {} intersection is {}. Check the plane."
+                    #     print(msg.format(edge, p_length))
+
+                    # correct length sign based on internal force state
+                    dot = p_length * length
+                    if dot < 0:
+                        length = p_length * -1.0
+                    else:
+                        length = p_length
 
                 # store trail force
                 trail_force = length_vector(rvec)
@@ -384,6 +421,51 @@ def length_vector(vector):
     Calculates the norm of a vector.
     """
     return np.linalg.norm(vector)
+
+
+def trail_edge_length_from_plane_numpy(pos, direction, plane):
+    """
+    Calculates the length of a trail edge from a line-plane intersection.
+
+    Parameters
+    ----------
+    pos : ``np.array``
+        The XYZ coordinates of the starting node of an edge.
+    direction : ``np.array``
+        The XYZ coordinates of the direction the edge points to.
+    plane : ``tuple`` of ``np.array``
+        The origin node and the normal vector of a plane.
+
+    Returns
+    -------
+    length : ``float``
+        The distance between ``pos`` and the resulting line-plane intersection.
+        If not intersection is found, it returns ``None``.
+
+    Notes
+    -----
+    A line will be created by adding ``pos`` and ``direction``.
+    The line functions as a line ray, not as finite-length segment.
+    """
+    a = pos
+    b = a + direction
+
+    # intersection line plane
+    o, n = plane
+
+    ab = b - a
+    cosa = np.dot(n, ab)
+
+    if np.abs(cosa) <= SMALL_VALUE:
+        # raise ValueError("np abs cosa {} <= {}, pos:{}, vec:{}, normal:{}".format(np.abs(cosa), SMALL_VALUE, pos, ab, n))
+        return None
+
+    oa = a - o
+    ratio = - np.dot(n, oa) / cosa
+    ab = ab * ratio
+    pos_plane = a + ab
+
+    return length_vector(pos - pos_plane)
 
 
 if __name__ == "__main__":

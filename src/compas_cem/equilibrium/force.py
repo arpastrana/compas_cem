@@ -6,11 +6,15 @@ from compas.geometry import subtract_vectors
 from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 from compas.geometry import distance_point_point
+from compas.geometry import intersection_line_plane
 
 from compas_cem.diagrams import FormDiagram
 
 
 __all__ = ["static_equilibrium"]
+
+
+SMALL_VALUE = 1e-3
 
 
 def static_equilibrium(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
@@ -48,7 +52,7 @@ def static_equilibrium(topology, tmax=100, eta=1e-5, verbose=False, callback=Non
 
 def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
     """
-    Equilibrate forces in a form.
+    Equilibrate forces at the nodes of a topology diagram.
     """
     trails = list(topology.trails())
 
@@ -100,13 +104,39 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
                 # otherwise, pick next node in the trail
                 next_node = trail[i + 1]
 
-                # correct edge key and query trail edge length
-                try:
-                    edge = (node, next_node)
-                    length = topology.edge_attribute(key=edge, name="length")
-                except KeyError:
+                # correct edge key
+                edge = (node, next_node)
+                if not topology.has_edge(*edge):
                     edge = (next_node, node)
-                    length = topology.edge_attribute(key=edge, name="length")
+
+                # query trail edge length
+                length = topology.edge_attribute(key=edge, name="length")
+
+                # query trail edge plane, it takes precedence over length
+                plane = topology.edge_attribute(key=edge, name="plane")
+
+                # override length if a plane exists
+                if plane is not None:
+                    # compute length from line plane intersection
+                    p_length = trail_edge_length_from_plane(pos, rvec, plane)
+
+                    # check that returned length is not null
+                    if p_length is None:
+                        print("Warning! No intersection found between edge {} and plane {}".format(edge, plane))
+                        print("Falling back to input length: {}".format(length))
+                        p_length = length
+                        # raise ValueError("No intersection found between edge {} and plane {}".format(edge, plane))
+                    # print out warning if zero length
+                    elif p_length < SMALL_VALUE:
+                        msg = "Warning! Length for edge after {} intersection is {}."
+                        print(msg.format(edge, length), "Check the plane.")
+
+                    # correct length sign based on internal force state
+                    dot = p_length * length
+                    if dot < 0:
+                        length = p_length * -1.0
+                    else:
+                        length = p_length
 
                 # store next node position
                 next_pos = add_vectors(pos, scale_vector(normalize_vector(rvec), length))
@@ -360,6 +390,37 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     for vec in vectors:
         tvec = add_vectors(tvec, vec)
     return scale_vector(tvec, -1.0)
+
+
+def trail_edge_length_from_plane(pos, direction, plane):
+    """
+    Calculates the length of a trail edge from a line-plane intersection.
+
+    Parameters
+    ----------
+    pos : ``list`` of ``float``
+        The XYZ coordinates of the starting node of an edge.
+    direction : ``list`` of ``float``
+        The XYZ coordinates of the direction the edge points to.
+    plane : ``Plane``
+        A COMPAS plane.
+
+    Returns
+    -------
+    length : ``float``
+        The distance between ``pos`` and the resulting line-plane intersection.
+        If not intersection is found, it returns ``None``.
+
+    Notes
+    -----
+    A line will be created by adding ``pos`` and ``direction``.
+    The line functions as a line ray, not as finite-length segment.
+    """
+    # compute length from line plane intersection
+    line = (pos, add_vectors(pos, direction))
+    pos_plane = intersection_line_plane(line, plane)
+    if pos_plane:
+        return distance_point_point(pos, pos_plane)
 
 
 if __name__ == "__main__":
