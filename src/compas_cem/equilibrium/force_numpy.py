@@ -160,13 +160,20 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-5, verbose=False, callbac
                     else:
                         length = p_length
 
-                # store trail force
-                trail_force = length_vector(rvec)
-                trail_forces[edge] = trail_force
+                # compute trail force
+                trail_force = length_vector(rvec)  # always positive
 
                 # store next node position
                 next_pos = pos + length * rvec / trail_force
                 node_xyz[next_node] = next_pos
+
+                # correct trail force sign based on trail signed length
+                # TODO: autograd.np does not support derivatives on copysign
+                if trail_force * length < 0:  #
+                    trail_force = trail_force * -1.0
+
+                # store trail force
+                trail_forces[edge] = trail_force
 
                 # store residual
                 residual_vectors[next_node] = rvec
@@ -218,8 +225,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
 
     # assign forces on trail edges
     for edge, tforce in trail_forces.items():
-        tlength = form.edge_attribute(key=edge, name="length")
-        tforce = np.copysign(tforce, tlength)
+        # tlength = form.edge_attribute(key=edge, name="length")
+        # tforce = np.copysign(tforce, tlength)
         form.edge_attribute(key=edge, name="force", value=tforce)
 
     # assign reaction forces
@@ -231,6 +238,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
     for u, v in form.edges():
         # length = form.edge_length(u, v)
         length = length_vector(node_xyz[u] - node_xyz[v])
+        force = form.edge_attribute(key=edge, name="force")
+        length = np.copysign(length, force)
         form.edge_attribute(key=(u, v), name="length", value=length)
 
 

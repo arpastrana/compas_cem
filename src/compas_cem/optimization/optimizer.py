@@ -167,10 +167,6 @@ class Optimizer():
             evals = solver.get_numevals()
             print("Optimization ended correctly!")
             print("Number of evaluations incurred: {}".format(evals))
-        except RuntimeError:
-            evals = solver.get_numevals()
-            print("Tol unreached and max iters exhausted! Try increasing them.")
-            print("Number of evaluations incurred: {}".format(evals))
         except RoundoffLimited:
             print("Optimization was halted because roundoff errors limited progress")
             print("Returned results are generally still useful though!")

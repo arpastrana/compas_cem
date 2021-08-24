@@ -19,6 +19,7 @@ Unreleased
 **Fixed**
 * Converted `Frame` returned by `RhinoPlane.to_compas()` to `Plane` for compatibility of `PlaneConstraint()` in ghplugin.
 * Renamed input of ghcomponent `FormFinding` from `eps_min` to `eta`.
+* Fixed bug in trail force sign calculation in `equilibrium_state` and in `equilibrium_state_numpy`.
 
 **Deprecated**
 

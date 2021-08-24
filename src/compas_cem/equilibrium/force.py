@@ -143,7 +143,7 @@ def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None
                 node_xyz[next_node] = next_pos
 
                 # store trail force
-                trail_forces[edge] = length_vector(rvec)
+                trail_forces[edge] = copysign(length_vector(rvec), length)
 
                 # store residual vector
                 residual_vectors[next_node] = rvec
@@ -194,8 +194,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
 
     # assign forces on trail edges
     for edge, tforce in trail_forces.items():
-        tlength = form.edge_attribute(key=edge, name="length")
-        tforce = copysign(tforce, tlength)
+        # tlength = form.edge_attribute(key=edge, name="length")
+        # tforce = copysign(tforce, tlength)
         form.edge_attribute(key=edge, name="force", value=tforce)
 
     # assign reaction forces
@@ -205,6 +205,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
     # assign lengths to deviation edges
     for u, v in form.edges():
         length = form.edge_length(u, v)
+        force = form.edge_attribute(key=edge, name="force")
+        length = copysign(length, force)
         form.edge_attribute(key=(u, v), name="length", value=length)
 
 
