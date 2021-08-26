@@ -225,8 +225,6 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
 
     # assign forces on trail edges
     for edge, tforce in trail_forces.items():
-        # tlength = form.edge_attribute(key=edge, name="length")
-        # tforce = np.copysign(tforce, tlength)
         form.edge_attribute(key=edge, name="force", value=tforce)
 
     # assign reaction forces
