@@ -1,0 +1,25 @@
+{
+    "name": "Import Topology Diagram",
+    "nickname": "TopologyDiagramFromJSON",
+    "category": "COMPAS CEM",
+    "subcategory": "09_Serialization",
+    "description": "Create a COMPAS CEM topology diagram from JSON file.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+             {
+                "name": "filepath",
+                "description": "The full filepath to the JSON file that stores the diagram. Do not forget to add the extension .json to the filename.",
+                 "typeHintID": "str"
+             }
+        ],
+        "outputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            }
+        ]
+    }
+}

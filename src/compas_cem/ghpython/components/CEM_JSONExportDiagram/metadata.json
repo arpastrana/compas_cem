@@ -1,0 +1,29 @@
+{
+    "name": "Export Diagram",
+    "nickname": "DiagramToJSON",
+    "category": "COMPAS CEM",
+    "subcategory": "09_Serialization",
+    "description": "Export a COMPAS CEM diagram and save it as a JSON file.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+             {
+                "name": "diagram",
+                "description": "A COMPAS CEM diagram."
+             },
+             {
+                "name": "filepath",
+                "description": "The full filepath of where to save the diagram as a JSON file. Do not forget to add the extension .json to the filename.",
+                 "typeHintID": "str"
+             }
+        ],
+        "outputParameters": [
+            {
+                "name": "data",
+                "description": "The exported JSON representation of the diagram."
+            }
+        ]
+    }
+}
