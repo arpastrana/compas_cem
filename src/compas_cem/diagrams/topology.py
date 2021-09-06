@@ -128,6 +128,54 @@ class TopologyDiagram(Diagram):
         self.node_attributes(node, ["qx", "qy", "qz"], load.vector)
 
 # ==============================================================================
+# Counters
+# ==============================================================================
+
+    def number_of_trails(self):
+        """
+        Number of trails in the topology diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of trails.
+        """
+        return len(list(self.trails()))
+
+    def number_of_auxiliary_trails(self):
+        """
+        Number of auxiliary trails in the topology diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of auxiliary trails.
+        """
+        return len(list(self.auxiliary_trails()))
+
+    def number_of_deviation_edges(self):
+        """
+        Number of deviation edges in the topology diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of deviation edges.
+        """
+        return len(list(self.deviation_edges()))
+
+    def number_of_trail_edges(self):
+        """
+        Number of trail edges in the topology diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of trail edges.
+        """
+        return len(list(self.trail_edges()))
+
+# ==============================================================================
 # Trails
 # ==============================================================================
 
@@ -161,28 +209,6 @@ class TopologyDiagram(Diagram):
         An auxiliary trail is a trail with at least two nodes.
         """
         return self.attributes["_auxiliary_trails"].values()
-
-    def number_of_trails(self):
-        """
-        Number of trails in the topology diagram.
-
-        Return
-        ------
-        number : ``int``
-            The number of trails.
-        """
-        return len(list(self.trails()))
-
-    def number_of_auxiliary_trails(self):
-        """
-        Number of auxiliary trails in the topology diagram.
-
-        Return
-        ------
-        number : ``int``
-            The number of auxiliary trails.
-        """
-        return len(list(self.auxiliary_trails()))
 
     def build_trails(self, auxiliary_trails=False):
         """
@@ -693,6 +719,25 @@ class TopologyDiagram(Diagram):
             The largest sequence number.
         """
         return max([len(trail) for trail in self.trails()])
+
+# ==============================================================================
+# Magic methods
+# ==============================================================================
+
+    def __repr__(self):
+        """
+        """
+        tpl = "{}(\n\tEdges: {}\n\tTrail edges: {}\n\tDeviation edges: {}\n\tNodes: {}\n\tSupport Nodes: {}\n\tLoaded nodes: {}\n\tTrails: {}\n\tAuxiliary trails: {}\n\t)"
+        data = [self.__class__.__name__,
+                self.number_of_edges(),
+                self.number_of_trail_edges(),
+                self.number_of_deviation_edges(),
+                self.number_of_nodes(),
+                self.number_of_support_nodes(),
+                self.number_of_loaded_nodes(),
+                self.number_of_trails(),
+                self.number_of_auxiliary_trails()]
+        return tpl.format(*data)
 
 # ==============================================================================
 # Main
