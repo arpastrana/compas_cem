@@ -44,8 +44,8 @@ COLORS = {"tension": (227, 6, 75),  # red
           "node": (255, 255, 255),  # green
           "node_support": (0, 150, 10),  # green
           "node_origin": (155, 100, 255),  # purple
-          "load": (0, 150, 10),  # green
           "support_force": (0, 150, 10),  # green
+          "load": (50, 250, 100),  # light green
           "trail": (250, 80, 210),  # pink
           "auxiliary_trail": (255, 155, 15)}  # orange
 
@@ -53,3 +53,19 @@ PROXY_PORT = 7123
 
 __all_plugins__ = ['compas_cem.ghpython.install', 'compas_cem.ghpython.uninstall']
 __all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]
+
+
+# ==============================================================================
+# Base element
+# ==============================================================================
+
+class Data(object):
+    """
+    Base class for all COMPAS data objects
+    The base element.
+    """
+    def ToString(self):
+        """
+        Show object representation as string in Rhino/Grasshopper.
+        """
+        return self.__repr__()
