@@ -8,6 +8,7 @@ from compas.geometry import translate_points
 
 from compas_ghpython import draw_points
 from compas_ghpython import draw_lines
+from compas_ghpython import draw_polylines
 
 from compas_ghpython.artists import NetworkArtist
 
@@ -311,7 +312,7 @@ class TopologyArtist(DiagramArtist):
 
         Returns
         -------
-        nodes : list of :class:`Rhino.Geometry.Point3d`
+        rhino_nodes : list of :class:`Rhino.Geometry.Point3d`
         """
         if nodes is None:
             nodes = list(self.diagram.origin_nodes())
@@ -331,7 +332,7 @@ class TopologyArtist(DiagramArtist):
             The default is ``None``, in which case all deviation edges are drawn.
         Returns
         -------
-        edges: list of :class:`Rhino.Geometry.Line`
+        rhino_edges : list of :class:`Rhino.Geometry.Line`
         """
 
         edges = self._collection_keys("deviation_edges", "is_deviation_edge", edges)
@@ -349,8 +350,24 @@ class TopologyArtist(DiagramArtist):
             The default is ``None``, in which case all trail edges are drawn.
         Returns
         -------
-        edges: list of :class:`Rhino.Geometry.Line`
+        rhino_edges : list of :class:`Rhino.Geometry.Line`
         """
         edges = self._collection_keys("trail_edges", "is_trail_edge", edges)
         if not len(edges) == 0:
             return self.draw_edges(edges)
+
+    def draw_trails(self):
+        """
+        Draw the trails as Rhino polylines.
+
+        Returns
+        -------
+        rhino_polylines : list of :class:`Rhino.Geometry.Polyline`
+        """
+        polylines = []
+        for trail in self.diagram.trails():
+            p = {}
+            p["points"] = [self.diagram.node_xyz(node) for node in trail]
+            polylines.append(p)
+
+        return draw_polylines(polylines)
