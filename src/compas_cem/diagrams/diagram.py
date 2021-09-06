@@ -2,6 +2,8 @@ from compas.datastructures import Network
 
 from compas.geometry import length_vector
 
+from compas_cem import Data
+
 from compas_cem.diagrams import NodeMixins
 from compas_cem.diagrams import EdgeMixins
 
@@ -14,7 +16,7 @@ __all__ = ["Diagram"]
 # ==============================================================================
 
 
-class Diagram(NodeMixins, EdgeMixins, Network):
+class Diagram(NodeMixins, EdgeMixins, Network, Data):
     """
     Base class that shares functionality across diagrams.
     """
@@ -71,12 +73,12 @@ class Diagram(NodeMixins, EdgeMixins, Network):
 
     def support_nodes(self):
         """
-        Nodes whose position is meant to be fixed in space.
+        Nodes where a support has been assigned.
 
         Yields
         -------
         support_node : ``int``
-            The key of the next support node.
+            The key of the next node with a support.
         """
         return self.nodes_where({"type": "support"})
 
@@ -98,6 +100,32 @@ class Diagram(NodeMixins, EdgeMixins, Network):
         for node in self.nodes():
             if self.is_node_loaded(node, min_force):
                 yield node
+
+# ==============================================================================
+# Counters
+# ==============================================================================
+
+    def number_of_support_nodes(self):
+        """
+        Number of nodes in the topology diagram with an assigned support.
+
+        Return
+        ------
+        number : ``int``
+            The number of nodes with a support.
+        """
+        return len(list(self.support_nodes()))
+
+    def number_of_loaded_nodes(self):
+        """
+        Number of nodes in the topology diagram where a load is applied.
+
+        Return
+        ------
+        number : ``int``
+            The number of nodes with an applied load.
+        """
+        return len(list(self.loaded_nodes()))
 
 # ==============================================================================
 # Node Filters
@@ -210,67 +238,24 @@ class Diagram(NodeMixins, EdgeMixins, Network):
         return self.edge_attribute(key=edge, name="length")
 
 # ==============================================================================
-# Edge Vectors
+# Magic methods
 # ==============================================================================
 
-#     def incoming_edge_vectors(self, node, edges, normalize=False):
-#         """
-#         Calculates the edge vectors so that they point towards a node.
-
-#         Parameters
-#         ----------
-#         node : ``int``
-#             A node key.
-#         edges : ``list``
-#             A list of edge keys.
-#         normalize : ``bool``
-#             A boolean flag to normalize all the resulting edge vectors.
-#             Defaults to ``False``.
-
-#         Returns
-#         -------
-#         edge_vectors : ``list``
-#             A list of xyz vectors.
-#         """
-#         vectors = []
-#         for u, v in edges:
-#             other_node = u if u != node else v
-#             vector = self.two_node_vector((other_node, node), normalize)
-
-#             if normalize:
-#                 vector = normalize_vector(vector)
-
-#             vectors.append(vector)
-
-#         return vectors
-
-
-#     def two_node_vector(self, nodes, normalize=False):
-#         """
-#         Calculates the vector between two nodes in a diagram.
-
-#         Parameters
-#         ----------
-#         nodes : ``list``
-#             A list with two node keys.
-#         normalize : ``bool``
-#             A boolean flag to normalize all the resulting edge vectors.
-#             Defaults to ``False``.
-
-#         Returns
-#         -------
-#         vector : ``list``
-#             The calculated xyz vector.
-#         """
-#         assert len(nodes) == 2, "Supply only two nodes!"
-#         vector = subtract_vectors(*[self.node_coordinates(n) for n in nodes])
-#         if not normalize:
-#             return vector
-#         return normalize_vector(vector)
+    def __repr__(self):
+        """
+        """
+        tpl = "{}(\n\tEdges: {}\n\tNodes: {}\n\tSupport Nodes: {}\n\tLoaded nodes: {}\n\t)"
+        data = [self.__class__.__name__,
+                self.number_of_edges(),
+                self.number_of_nodes(),
+                self.number_of_support_nodes(),
+                self.number_of_loaded_nodes()]
+        return tpl.format(*data)
 
 # ==============================================================================
 # Main
 # ==============================================================================
+
 
 if __name__ == "__main__":
     pass
