@@ -81,7 +81,7 @@ if PLOT:
 
     plotter = TopologyPlotter(topology, figsize=(16, 9))
     plotter.draw_nodes(radius=0.05, text="key")
-    plotter.draw_loads(radius=0.05)
+    plotter.draw_loads(radius=0.05, draw_arrows=True, scale=0.5)
     plotter.draw_edges()
     plotter.show()
 

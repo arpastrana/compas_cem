@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 
 from compas.geometry import add_vectors
 from compas.geometry import rotate_points_xy
+from compas.geometry import length_vector
+from compas.geometry import scale_vector
+from compas.geometry import translate_points
+from compas.geometry import normalize_vector
 
 from compas_plotters import NetworkPlotter
 
@@ -201,7 +205,7 @@ class TopologyPlotter(NetworkPlotter):
 
         return ec
 
-    def draw_loads(self, keys=None, radius=0.1, width=0.5):
+    def draw_loads(self, keys=None, radius=0.1, width=0.5, draw_arrows=False, **kwargs):
         """
         Draws the node loads as crosses inscribed in a circle.
 
@@ -215,6 +219,10 @@ class TopologyPlotter(NetworkPlotter):
             The radius of the loads. Defaults to ``0.1``.
         width : ``float``
             The arrows uniform display width. Defaults to ``0.5``.
+        draw_arrows : ``bool``
+            A flag to draw the loads as arrows. Defaults to ``False``.
+        kwargs : ``dict``
+            The named attributes to display the the arrows. Defaults to ``None``.
         """
         topology = self.datastructure
         flips = (-1, 1)
@@ -245,7 +253,35 @@ class TopologyPlotter(NetworkPlotter):
         lines = self.draw_lines(loads)
         lines.set_zorder(4000)
 
+        if draw_arrows:
+            self._draw_load_arrows(keys=keys, width=width, **kwargs)
+
         return lines
+
+    def _draw_load_arrows(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
+        """
+        Draws the node loads in a ``TopologyDiagram`` as scaled arrows.
+
+        Parameters
+        ----------
+        keys : ``list``
+            The list of node keys where to draw forces.
+            If nodes is ``None``, all nodes in will be considered.
+            Defaults to ``None``.
+        scale : ``float``
+            The scale of the load arrows. Defaults to ``1.0``.
+        width : ``float``
+            The arrows uniform display width. Defaults to ``1.0``.
+        gap : ``float``
+            The offset between the node and the load. Defaults to ``0.2``.
+        tol : ``float``
+            The minimum force magnitude to draw. Defaults to ``1e-3``.
+        """
+        keys = keys or list(self.datastructure.nodes())
+        attrs = ["qx", "qy", "qz"]
+        color = COLORS["load"]
+        shift = {key: False for key in keys}
+        self._draw_forces(keys, attrs, scale, color, width, shift, gap, tol)
 
     def draw_segments(self, segments, color=(50, 50, 50), width=0.5, ls="--"):
         """
@@ -295,6 +331,63 @@ class TopologyPlotter(NetworkPlotter):
             kwargs.update(kwargs_tight)
 
         plt.savefig(filepath, **kwargs)
+
+    def _draw_forces(self, keys, attrs, scale, color, width, shift, gap, tol):
+        """
+        Base method to draw forces (residuals or loads) as scaled arrows.
+
+        Parameters
+        ----------
+        keys : ``list``
+            The list of node keys where to draw forces.
+        attrs : ``list``
+            The attribute names of the force vector to draw.
+        scale : ``float``
+            The forces scale factor.
+        color : ``tuple``
+            The forces' color in rgb.
+        width : ``float``
+            The forces  display width.
+        shift : ``bool``
+            A flat to shift an arrow one length along its own axis.
+        gap : ``float``
+            The offset between the node and the force.
+        tol : ``float``
+            The minimum force magnitude to draw.
+        """
+        ds = self.datastructure
+        arrows = []
+
+        for node in keys:
+            q_vec = ds.node_attributes(node, attrs)
+            q_vec_scaled = scale_vector(q_vec, scale)
+            q_vec_norm = normalize_vector(q_vec)
+            q_len = length_vector(q_vec)
+
+            if q_len < tol:
+                continue
+
+            arrow = {}
+            start = ds.node_xyz(node)
+            end = add_vectors(start, q_vec_scaled)
+
+            # shift
+            gap_arrow = gap
+            if shift[node]:
+                gap_arrow = (gap + length_vector(q_vec_scaled)) * -1
+
+            gap_vector = scale_vector(q_vec_norm, gap_arrow)
+            start, end = translate_points([start, end], gap_vector)
+
+            # create gap
+            arrow["start"] = start
+            arrow["end"] = end
+            arrow["color"] = color
+            arrow["width"] = width
+
+            arrows.append(arrow)
+
+        super(TopologyPlotter, self).draw_arrows(arrows)
 
 
 if __name__ == "__main__":

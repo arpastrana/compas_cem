@@ -104,7 +104,7 @@ for node in form.support_nodes():
 
 plotter = TopologyPlotter(topology, figsize=(16, 9))
 
-plotter.draw_loads(radius=0.025)
+plotter.draw_loads(radius=0.025, draw_arrows=True, scale=0.5, gap=-0.55)
 plotter.draw_nodes(radius=0.025)
 plotter.draw_edges()
 
@@ -118,7 +118,7 @@ plotter = FormPlotter(form, figsize=(16, 9))
 
 plotter.draw_nodes(radius=0.025, text="key")
 plotter.draw_edges(text="force")
-plotter.draw_loads(scale=0.5)
+plotter.draw_loads(scale=0.5, gap=-0.55)
 plotter.draw_reactions(scale=0.25)
 plotter.draw_segments(edge_lines)
 
