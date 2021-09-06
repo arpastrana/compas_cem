@@ -2,6 +2,8 @@ import autograd.numpy as np
 
 from functools import partial
 
+from compas_cem import Data
+
 from compas_cem.equilibrium import static_equilibrium
 
 from compas_cem.equilibrium.force_numpy import equilibrium_state_numpy
@@ -20,7 +22,7 @@ __all__ = ["Optimizer"]
 # Optimizer
 # ------------------------------------------------------------------------------
 
-class Optimizer():
+class Optimizer(Data):
     """
     An object that modifies a form diagram to meet multiple constraints.
     """
@@ -316,6 +318,16 @@ class Optimizer():
         if len(self.constraints) == 0:
             msg = "No constraints defined. Optimization not possible."
             raise ValueError(msg)
+
+# ------------------------------------------------------------------------------
+# Magic methods
+# ------------------------------------------------------------------------------
+
+    def __repr__(self):
+        """
+        """
+        tpl = "{} with {} parameters and {} constraints. Status: {}"
+        return tpl.format(self.__class__.__name__, self.number_of_parameters(), self.number_of_constraints(), self.status)
 
 # ------------------------------------------------------------------------------
 # Main

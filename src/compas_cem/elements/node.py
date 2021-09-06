@@ -3,6 +3,8 @@ import compas
 if compas.RHINO:
     from compas_rhino.geometry import RhinoPoint
 
+from compas_cem import Data
+
 
 __all__ = ["Node"]
 
@@ -11,7 +13,7 @@ __all__ = ["Node"]
 # ==============================================================================
 
 
-class Node(object):
+class Node(Data):
     """
     A node.
     """
@@ -66,7 +68,11 @@ class Node(object):
     def __repr__(self):
         """
         """
-        return "{}(key={}, xyz={})".format(self.__class__.__name__, self.key, self.xyz)
+        return "{0!r}(key={1!r}, xyz={2!r})".format(self.__class__.__name__, self.key, self.xyz)
+
+# ==============================================================================
+# Main
+# ==============================================================================
 
 
 if __name__ == "__main__":

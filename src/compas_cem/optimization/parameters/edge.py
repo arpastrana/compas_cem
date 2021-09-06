@@ -61,6 +61,12 @@ class EdgeParameter(Serializable):
         """
         return self._attr_name
 
+    def __repr__(self):
+        """
+        """
+        st = "{0}(key={1!r}, bound_low={2!r}, bound_up={3!r})"
+        return st.format(self.__class__.__name__, self._key, self._bound_low, self._bound_up)
+
 # ------------------------------------------------------------------------------
 # Data
 # ------------------------------------------------------------------------------

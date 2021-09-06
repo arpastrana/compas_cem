@@ -3,6 +3,8 @@ import compas
 if compas.RHINO:
     from compas_rhino.geometry import RhinoPoint
 
+from compas_cem import Data
+
 
 __all__ = ["NodeSupport"]
 
@@ -11,7 +13,7 @@ __all__ = ["NodeSupport"]
 # ==============================================================================
 
 
-class NodeSupport(object):
+class NodeSupport(Data):
     """
     A support assigned to a node.
 
@@ -77,6 +79,15 @@ class NodeSupport(object):
         """
         xyz = RhinoPoint.from_geometry(rhino_point).to_compas()
         return cls.from_point(xyz)
+
+    def __repr__(self):
+        """
+        """
+        return "{0}(xyz={1!r})".format(self.__class__.__name__, self.xyz)
+
+# ==============================================================================
+# Main
+# ==============================================================================
 
 
 if __name__ == "__main__":

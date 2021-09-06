@@ -4,6 +4,7 @@ if compas.RHINO:
     from compas_rhino.geometry import RhinoPoint
     from compas_rhino.geometry import RhinoVector
 
+from compas_cem import Data
 
 __all__ = ["NodeLoad"]
 
@@ -12,7 +13,7 @@ __all__ = ["NodeLoad"]
 # ==============================================================================
 
 
-class NodeLoad(object):
+class NodeLoad(Data):
     """
     A load defined by a position and a vector.
 
@@ -69,6 +70,16 @@ class NodeLoad(object):
         point = RhinoPoint.from_geometry(rhino_point).to_compas()
         vector = RhinoVector.from_geometry(rhino_vector).to_compas()
         return cls.from_point_and_vector(point, vector)
+
+    def __repr__(self):
+        """
+        """
+        msg = "{0}(xyz={1!r}, load={2!r})"
+        return msg.format(self.__class__.__name__, self.xyz, self.vector)
+
+# ==============================================================================
+# Main
+# ==============================================================================
 
 
 if __name__ == "__main__":

@@ -12,7 +12,11 @@ class DeviationEdge(Edge):
     def __repr__(self):
         """
         """
-        return "{}(force={})".format(self.__class__.__name__, self.attributes["force"])
+        return "{0}(force={1!r})".format(self.__class__.__name__, self.attributes["force"])
+
+# ==============================================================================
+# Main
+# ==============================================================================
 
 
 if __name__ == "__main__":

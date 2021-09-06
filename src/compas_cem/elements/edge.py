@@ -3,6 +3,8 @@ import compas
 if compas.RHINO:
     from compas_rhino.geometry import RhinoLine
 
+from compas_cem import Data
+
 
 __all__ = ["Edge"]
 
@@ -11,7 +13,7 @@ __all__ = ["Edge"]
 # ==============================================================================
 
 
-class Edge(object):
+class Edge(Data):
     """
     The edge base class.
     """
@@ -74,6 +76,9 @@ class Edge(object):
         """
         for node in (self.u, self.v):
             yield node
+# ==============================================================================
+# Main
+# ==============================================================================
 
 
 if __name__ == "__main__":

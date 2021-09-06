@@ -60,6 +60,10 @@ class Constraint(Serializable):
         """
         return
 
+    def __repr__(self):
+        st = "{0}(key={1!r}, target={2!r}, weight={3!r})"
+        return st.format(self.__class__.__name__, self._key, self._target, self._weight)
+
 # ------------------------------------------------------------------------------
 # Vector Constraint
 # ------------------------------------------------------------------------------
@@ -188,6 +192,10 @@ class FloatConstraint(Constraint):
         """
         self._key = literal_eval(data["key"])
         self._target = literal_eval(data["target"])
+
+# ==============================================================================
+# Main
+# ==============================================================================
 
 
 if __name__ == "__main__":
