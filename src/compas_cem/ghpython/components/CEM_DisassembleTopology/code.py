@@ -7,15 +7,15 @@ from ghpythonlib.componentbase import executingcomponent as component
 class TopologyDisassemblyComponent(component):
     def RunScript(self, topology):
         if topology:
-            trails = list(topology.trails())
-            auxiliary_trails = list(topology.auxiliary_trails())
+            trail_keys = list(topology.trails())
+            auxiliary_trail_keys = list(topology.auxiliary_trails())
 
-            edges = list(topology.edges())
-            trail_edges = list(topology.trail_edges())
-            deviation_edges = list(topology.deviation_edges())
+            edge_keys = list(topology.edges())
+            trail_edge_keys = list(topology.trail_edges())
+            deviation_edge_keys = list(topology.deviation_edges())
 
-            nodes = list(topology.nodes())
-            origin_nodes = list(topology.origin_nodes())
-            support_nodes = list(topology.support_nodes())
+            node_keys = list(topology.nodes())
+            origin_node_keys = list(topology.origin_nodes())
+            support_node_keys = list(topology.support_nodes())
 
-            return nodes, origin_nodes, support_nodes, edges, trail_edges, deviation_edges, trails, auxiliary_trails
+            return node_keys, origin_node_keys, support_node_keys, edge_keys, trail_edge_keys, deviation_edge_keys, trail_keys, auxiliary_trail_keys

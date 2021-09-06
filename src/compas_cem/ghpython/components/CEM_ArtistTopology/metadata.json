@@ -14,23 +14,23 @@
                 "description": "A COMPAS CEM topology diagram."
             },
             {
-                "name": "node",
-                "description": "A selection of the nodes in the diagram. Defaults to all the nodes.",
+                "name": "node_keys",
+                "description": "A selection of the node keys in the diagram. Defaults to all the node keys.",
                 "scriptParamAccess": "list",
                 "typeHintID": "int"
             },
             {
-                "name": "edge",
-                "description": "A selection of the edges in the diagram. Defaults to all the edges.",
+                "name": "edge_keys",
+                "description": "A selection of the edge keys in the diagram. Defaults to all the edge keys.",
                 "scriptParamAccess": "list"
             },
             {
-                "name": "load_min",
-                "description": "The minimum load magnitude to plot. Defaults to 1e-3.",
+                "name": "force_min",
+                "description": "The minimum force magnitude to plot. Defaults to 1e-3.",
                 "typeHinID": "float"
             },
             {
-                "name": "load_scale",
+                "name": "force_scale",
                 "description": "The scaling factor of the loads. Defaults to 1.",
                 "typeHinID": "float"
             }
@@ -50,7 +50,7 @@
             },
             {
                 "name": "support_nodes",
-                "description": "The position of the support nodes in the diagram.",
+                "description": "The support nodes in the diagram as points.",
                 "optional": false
             },
             {
@@ -68,6 +68,12 @@
                 "description": "The deviation edges in the diagram as lines.",
                 "optional": false
             },
+            {
+                "name": "trails",
+                "description": "The trails in the diagram as polylines.",
+                "optional": false
+            },
+
             {
                 "name": "loads",
                 "description": "The applied node loads as lines.",

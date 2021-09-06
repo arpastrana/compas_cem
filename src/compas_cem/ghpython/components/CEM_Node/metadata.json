@@ -3,7 +3,7 @@
     "nickname": "Node",
     "category": "COMPAS CEM",
     "subcategory": "02_Elements",
-    "description": "Create a node from a rhino point.",
+    "description": "Create a node from a Rhino point.",
     "exposure": 4,
 
     "ghpython": {

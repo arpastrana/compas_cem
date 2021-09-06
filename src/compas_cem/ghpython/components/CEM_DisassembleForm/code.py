@@ -7,8 +7,8 @@ from ghpythonlib.componentbase import executingcomponent as component
 class FormDisassemblyComponent(component):
     def RunScript(self, form):
         if form:
-            edges = list(form.edges())
-            nodes = list(form.nodes())
-            support_nodes = list(form.support_nodes())
+            edge_keys = list(form.edges())
+            node_keys = list(form.nodes())
+            support_node_keys = list(form.support_nodes())
 
-            return nodes, support_nodes, edges
+            return node_keys, support_node_keys, edge_keys

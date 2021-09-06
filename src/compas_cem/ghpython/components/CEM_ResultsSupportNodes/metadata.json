@@ -1,0 +1,30 @@
+{
+    "name": "Support Node Results",
+    "nickname": "SupportNodeResults",
+    "category": "COMPAS CEM",
+    "subcategory": "07_Results",
+    "description": "Get reaction forces at the support nodes of a form diagram.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram."
+            },
+            {
+                "name": "node",
+                "description": "A selection of support node keys to query the results on. Defaults to all the support nodes.",
+                "scriptParamAccess": "list"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "reaction_forces",
+                "description": "The reaction forces at the support nodes.",
+                "optional": false
+            }
+        ]
+    }
+}

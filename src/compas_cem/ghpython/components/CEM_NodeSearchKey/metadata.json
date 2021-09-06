@@ -15,15 +15,14 @@
             },
             {
                 "name": "point",
-                "description": "The points to search for in the diagram.",
-                "scriptParamAccess": "list",
+                "description": "The point to search for in the diagram.",
                 "typeHintID": "point"
             }
         ],
         "outputParameters": [
             {
-                "name": "node",
-                "description": "The node keys.",
+                "name": "node_key",
+                "description": "The found node key.",
                 "optional": false
             }
         ]

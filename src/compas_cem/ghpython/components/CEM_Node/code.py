@@ -1,5 +1,5 @@
 """
-Create a node from a rhino point.
+Create a node from a Rhino point.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 

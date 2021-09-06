@@ -1,9 +1,9 @@
 {
-    "name": "Node Results",
-    "nickname": "NodeResults",
+    "name": "Edge Results",
+    "nickname": "EdgeResults",
     "category": "COMPAS CEM",
     "subcategory": "07_Results",
-    "description": "Extract the post form-finding results of the nodes in a form diagram.",
+    "description": "Get the lengths and the forces of the edges in a form diagram.",
     "exposure": 2,
 
     "ghpython": {
@@ -14,20 +14,20 @@
                 "description": "A COMPAS CEM form diagram."
             },
             {
-                "name": "node",
-                "description": "A selection of node keys to query the results on. Defaults to all the nodes.",
+                "name": "edge_keys",
+                "description": "A selection of edge keys to query the results on. Defaults to all the edge keys.",
                 "scriptParamAccess": "list"
             }
         ],
         "outputParameters": [
             {
-                "name": "point",
-                "description": "The position of the nodes.",
+                "name": "lengths",
+                "description": "The edge lengths.",
                 "optional": false
             },
             {
-                "name": "reaction_force",
-                "description": "The reaction force vectors at the support nodes.",
+                "name": "forces",
+                "description": "The edge forces.",
                 "optional": false
             }
         ]

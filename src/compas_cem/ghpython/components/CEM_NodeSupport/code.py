@@ -1,5 +1,5 @@
 """
-Create a node support from a rhino point.
+Create a node support from a Rhino point.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 

@@ -16,12 +16,12 @@
             },
             {
                 "name": "bound_low",
-                "description": "The lower bound of the node optimization parameter. Calculated as the initial node parameter minus the absolute value of this bound.",
+                "description": "The lower bound of the node optimization parameter. It is calculated as the initial node parameter minus the absolute value of this bound.",
                 "typeHintID": "float"
             },
             {
                 "name": "bound_up",
-                "description": "The upper bound of the node optimization parameter. Calculated as the initial node parameter plus the absolute value of this bound.",
+                "description": "The upper bound of the node optimization parameter. It is calculated as the initial node parameter plus the absolute value of this bound.",
                 "typeHintID": "float"
             }
         ],

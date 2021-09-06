@@ -3,7 +3,7 @@
     "nickname": "TrailEdge",
     "category": "COMPAS CEM",
     "subcategory": "02_Elements",
-    "description": "Create a trail edge from a Rhino line and an optional plane.",
+    "description": "Create a trail edge from a line.",
     "exposure": 2,
 
     "ghpython": {
@@ -21,7 +21,7 @@
             },
             {
                 "name": "plane",
-                "description": "An optional plane to implicitly define the length of the trail edge. The force state will be that specified by the length input parameter.",
+                "description": "An optional plane to define the length of the trail edge relative to the projection of its start node onto the plane. The force state will be that specified by the length input parameter.",
                 "typeHintID": "plane"
             }
         ],

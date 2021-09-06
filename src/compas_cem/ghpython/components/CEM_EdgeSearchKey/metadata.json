@@ -3,7 +3,7 @@
     "nickname": "EdgeSearch",
     "category": "COMPAS CEM",
     "subcategory": "02_Elements",
-    "description": "Search an edge key in a topology or a form diagram using a line.",
+    "description": "Search for an edge key in a topology or a form diagram using a line.",
     "exposure": 8,
 
     "ghpython": {
@@ -15,15 +15,14 @@
             },
             {
                 "name": "line",
-                "description": "The lines to search for in the diagram.",
-                "scriptParamAccess": "list",
+                "description": "The line to search for in the diagram.",
                 "typeHintID": "line"
             }
         ],
         "outputParameters": [
             {
-                "name": "edge",
-                "description": "The edge keys.",
+                "name": "edge_key",
+                "description": "The edge key in the diagram.",
                 "optional": false
             }
         ]
