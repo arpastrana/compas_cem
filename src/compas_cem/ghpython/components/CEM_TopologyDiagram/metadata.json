@@ -1,38 +1,38 @@
 {
-    "name": "Topology Diagram",
-    "nickname": "TopologyDiagram",
+    "name": "Assemble Topology Diagram",
+    "nickname": "AssembleTopologyDiagram",
     "category": "COMPAS CEM",
     "subcategory": "04_Diagrams",
-    "description": "Build a topology diagram from nodes, edges, loads and supports.",
+    "description": "Assemble a topology diagram.",
     "exposure": 2,
 
     "ghpython": {
         "isAdvancedMode": true,
         "inputParameters": [
             {
-                "name": "nodes",
-                "description": "A list of COMPAS CEM nodes to add to the diagram.",
-                "scriptParamAccess": "list"
-            },
-            {
                 "name": "trail_edges",
-                "description": "A list of COMPAS CEM trail edges to add to the diagram.",
+                "description": "The COMPAS CEM trail edges to add to the diagram.",
                 "scriptParamAccess": "list"
             },
             {
                 "name": "deviation_edges",
-                "description": "A list of COMPAS CEM deviation edges to add to the diagram.",
+                "description": "The COMPAS CEM deviation edges to add to the diagram.",
                 "scriptParamAccess": "list"
             },
             {
                 "name": "loads",
-                "description": "A list of COMPAS CEM loads to add to the diagram.",
+                "description": "The COMPAS CEM loads to add to the diagram.",
                 "scriptParamAccess": "list"
             },
             {
                 "name": "supports",
-                "description": "A list of COMPAS CEM supports to add to the diagram.",
+                "description": "The COMPAS CEM supports to add to the diagram.",
                 "scriptParamAccess": "list"
+            },
+            {
+                "name": "add_auxiliary_trails",
+                "description": "Append auxiliary trails to the free nodes of the topology diagram. Defaults to False.",
+                "typeHintID": "bool"
             }
         ],
         "outputParameters": [
