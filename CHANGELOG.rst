@@ -11,7 +11,19 @@ Unreleased
 
 **Added**
 
+* Added `draw_arrows` argument to `TopologyPlotter._draw_loads()`
+* Implemented `TopologyPlotter._draw_load_arrows()` to display loads as arrows.
+* Added import/export diagram from JSON to ghplugin.
+* Implemented `TopologyArtist.draw_trails()`.
+* `TopologyArtistComponent` in ghplugin can draw trails.
+* Added `TopologyDiagram.number_of_trail_edges()` and `TopologyDiagram.number_of_deviation_edges()`.
+* Implemented `__repr__()` method in diagrams, elements, supports, loads, parameters, constraints and optimizer.
+
 **Changed**
+
+* Renamed edge to edge_key and node to node_key in ghplugin components.
+* Changed display color of loads from green to light green.
+* Replaced `NodeResults` wit `SupportNodeResults` component in ghplugin.
 
 **Fixed**
 
@@ -19,17 +31,24 @@ Unreleased
 
 **Removed**
 
+* Removed `build_trails` component from gh plugin. Merged with `AssembleTopologyDiagram`.
+* Removed user access to specify auxiliary trails directions and lengths in ghplugin.
+* Removed `nodes` from input to `TopologyDiagram` in ghplugin.
+
 0.1.13
 ----------
 
 **Added**
+
 * Added `Optimizer.gradient` and `Optimizer.gradient_norm` as attributes.
 
 **Changed**
+
 * Exposed `eta` and `tmax` in the signature of `Optimizer.solve_nlopt()` instead of hard-coded values.
 * Updated ghcomponent `ConstrainedFormFinding` to include `eta` and `tmax` as extra inputs.
 
 **Fixed**
+
 * Converted `Frame` returned by `RhinoPlane.to_compas()` to `Plane` for compatibility of `PlaneConstraint()` in ghplugin.
 * Renamed input of ghcomponent `FormFinding` from `eps_min` to `eta`.
 * Fixed bug in trail force sign calculation in `equilibrium_state` and in `equilibrium_state_numpy`.
@@ -94,6 +113,7 @@ Unreleased
 ----------
 
 **Added**
+
 * Added automatical creation of auxiliary trails.
 * Added `auxiliary_trails=False` to the signature of `TopologyDiagram.build_trails()`.
 * Added `TopologyDiagram.auxiliary_trails()` iterator.
@@ -168,6 +188,7 @@ Unreleased
 **Deprecated**
 
 **Removed**
+
 * Removed `compas_cem.rhino_install`
 
 0.1.5
