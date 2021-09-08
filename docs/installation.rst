@@ -21,7 +21,9 @@ Install ``compas_cem`` in only three simple steps.
 1. Create a virtual environment
 --------------------------------
 
-First, create a new anaconda environment from your command line. The only dependency is ``compas``.
+First, create a new anaconda environment from the Anaconda Command Prompt if you are on Windows, or from your Terminal if you are on MacOS or Linux.
+
+The only dependency is ``compas``.
 Here we chose the name of the environment to be ``cem``, but you can call it ``spacecowboy`` if you prefer.
 
 ::

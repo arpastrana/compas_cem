@@ -30,7 +30,8 @@ Install `compas_cem` in only three simple steps.
 
 **We assume you have [Anaconda](https://www.anaconda.com/) installed in your machine. If not, please download and install it before continuing.**
 
-First, create a new anaconda environment from your command line. The only dependency is `compas`.
+First, create a new anaconda environment from the [Anaconda Command Prompt](https://stackoverflow.com/questions/37993175/difference-between-command-prompt-and-anaconda-prompt) if you are on Windows, or from your [Terminal](https://towardsdatascience.com/a-quick-guide-to-using-command-line-terminal-96815b97b955) if you are on MacOS or Linux. 
+The only dependency is `compas`.
 Here we chose the name of the environment to be `cem`, but you can call it `spacecowboy` if you prefer.
 
 ```bash
