@@ -19,6 +19,10 @@ class ConstrainedFormFindingComponent(component):
         if topology and constraints and parameters:
             topology = topology.copy()
 
+            # clean constraints and parameters from None
+            constraints = [c for c in constraints if c is not None]
+            parameters = [p for p in parameters if p is not None]
+
             with Proxy("compas_cem.optimization", port=PROXY_PORT) as opt:
                 solution = opt.solve_nlopt_proxy(topology,
                                                  constraints,

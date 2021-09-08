@@ -14,19 +14,23 @@ class AssembleTopologyDiagramComponent(component):
 
         if trail_edges:
             for trail_edge in trail_edges:
-                topology.add_edge(trail_edge)
+                if trail_edge:
+                    topology.add_edge(trail_edge)
 
         if deviation_edges:
             for deviation_edge in deviation_edges:
-                topology.add_edge(deviation_edge)
+                if deviation_edge:
+                    topology.add_edge(deviation_edge)
 
         if loads:
             for load in loads:
-                topology.add_load(load)
+                if load:
+                    topology.add_load(load)
 
         if supports:
             for support in supports:
-                topology.add_support(support)
+                if support:
+                    topology.add_support(support)
 
         if trail_edges and supports:
             topology.build_trails(add_auxiliary_trails)

@@ -11,6 +11,8 @@ Unreleased
 
 **Added**
 
+* Added check to skip adding None objects to `AssembleTopologyDiagram` in ghplugin.
+
 **Changed**
 
 **Fixed**
