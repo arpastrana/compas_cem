@@ -15,6 +15,8 @@ Unreleased
 
 **Fixed**
 
+* Fixed bug in ghplugin: Wrapped `EdgeSearch` tuple output in a list.
+
 **Deprecated**
 
 **Removed**
