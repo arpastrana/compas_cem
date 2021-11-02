@@ -10,7 +10,7 @@ from compas.rpc import Proxy
 
 class ConstrainedFormFindingComponent(component):
     def RunScript(self, topology, constraints, parameters, algorithm, iters_max, eps, tmax, eta):
-        algorithm = algorithm or "LD_SLSQP"
+        algorithm = algorithm or "SLSQP"
         iters_max = iters_max or 100
         eps = eps or 1e-6
         tmax = tmax or 100
