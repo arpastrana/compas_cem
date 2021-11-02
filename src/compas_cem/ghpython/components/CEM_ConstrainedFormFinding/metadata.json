@@ -26,7 +26,7 @@
             },
             {
                 "name": "algorithm",
-                "description": "The name of the optimization algorithm to use. Defaults to LD_SLSQP.",
+                "description": "The name of the local optimization algorithm to use. Defaults to SLSQP.\nCurrently supported algorithms are:\n\n- SLSQP: Sequential Least Squares Programming\n- LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno\n- AUGLAG: Augmented Lagrangian\n- MMA: Method of Moving Asymptotes\n- TNEWTON: Preconditioned Truncated Newton",
                 "typeHintID": "str"
             },
             {
@@ -47,7 +47,7 @@
             },
             {
                 "name": "eta",
-                "description": "The convergence threshold of the form-finding algorithm. Default to 1e-6.",
+                "description": "The convergence threshold of the form-finding algorithm. Defaults to 1e-6.",
                 "typeHintID": "float"
             }
         ],
@@ -59,7 +59,7 @@
             },
             {
                 "name": "objective",
-                "description": "The resulting value of the objective function.",
+                "description": "The resulting output value of the objective function.",
                 "optional": false
             },
             {
@@ -69,7 +69,7 @@
             },
             {
                 "name": "iters",
-                "description": "The elapsed number of iterations.",
+                "description": "The elapsed number of optimization iterations.",
                 "optional": false
             },
             {
