@@ -101,7 +101,7 @@ if optimize:
     start = time()
 
     # optimize
-    form = optimizer.solve_nlopt(topology=topology, algorithm="LD_SLSQP", iters=100, eps=1e-6)
+    form = optimizer.solve_nlopt(topology=topology, algorithm="SLSQP", iters=100, eps=1e-6)
 
    # print out results
     print("Form. # Nodes: {}, # Edges: {}".format(form.number_of_nodes(),

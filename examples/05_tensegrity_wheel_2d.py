@@ -106,7 +106,7 @@ for edge in topology.deviation_edges():
 
 # optimize
 start = time()
-form = optimizer.solve_nlopt(topology, algorithm="LD_LBFGS", iters=1000, eps=1e-6)
+form = optimizer.solve_nlopt(topology, algorithm="LBFGS", iters=1000, eps=1e-6)
 
 # print out results
 print("Topology. # Nodes: {}, # Edges: {}".format(topology.number_of_nodes(),
