@@ -6,10 +6,6 @@ from nlopt import LD_MMA
 from nlopt import LD_SLSQP
 from nlopt import LD_TNEWTON
 
-from nlopt import LN_BOBYQA
-from nlopt import LN_COBYLA
-from nlopt import LN_SBPLX
-
 
 __all__ = ["nlopt_algorithm",
            "nlopt_algorithms",
@@ -33,25 +29,16 @@ def nlopt_algorithm(name):
 
     Notes
     -----
-    Only the following local optimization algorithms are supported:
+    Only the following local gradient-based optimization algorithms are supported:
 
-    Gradient-based:
+    - SLSQP: Sequential Least Squares Programming
+    - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
+    - AUGLAG: Augmented Lagrangian
+    - MMA: Method of Moving Asymptotes
+    - TNEWTON: Preconditioned Truncated Newton
 
-        - LD_MMA
-        - LD_LBFGS
-        - LD_AUGLAG
-        - LD_SLSQP
-        - LD_TNEWTON
-
-    Derivative-free:
-
-        - LN_BOBYQA
-        - LN_COBYLA
-        - LN_SBPLX
-
-    Refer to nlopt's docs for more details on their theoretical underpinnings.
+    Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
     """
-
     algorithms = nlopt_algorithms()
     return algorithms[name]
 
@@ -64,24 +51,27 @@ def nlopt_algorithms():
     -------
     algorithms : ``dict``
         A dictionary that maps algorithm names to nlopt algorithm objects.
+
+    Notes
+    -----
+    Only the following local gradient-based optimization algorithms are supported:
+
+    - SLSQP: Sequential Least Squares Programming
+    - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
+    - AUGLAG: Augmented Lagrangian
+    - MMA: Method of Moving Asymptotes
+    - TNEWTON: Preconditioned Truncated Newton
+
+    Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
     """
     algorithms = {}
+    gradient_based = {"SLSQP": LD_SLSQP,
+                      "MMA": LD_MMA,
+                      "LBFGS": LD_LBFGS,
+                      "AUGLAG": LD_AUGLAG,
+                      "TNEWTON": LD_TNEWTON
+                      }
 
-    gradient_based = {
-        "LD_MMA": LD_MMA,  # Method of moving asymptotes
-        "LD_LBFGS": LD_LBFGS,  # Low-storage BFGS
-        "LD_AUGLAG": LD_AUGLAG,  # Augmented lagrangian algorithm
-        "LD_SLSQP": LD_SLSQP,  # Sequential quadratic programming algorithm
-        "LD_TNEWTON": LD_TNEWTON,  # Preconditioned truncated Newton
-    }
-
-    derivative_free = {
-        "LN_BOBYQA": LN_BOBYQA,  # BOBYQA
-        "LN_COBYLA": LN_COBYLA,  # Constrained optimization by linear approx
-        "LN_SBPLX": LN_SBPLX,  # Tom Rowan's "Subplex" algorithm
-    }
-
-    algorithms.update(derivative_free)
     algorithms.update(gradient_based)
 
     return algorithms
@@ -89,7 +79,7 @@ def nlopt_algorithms():
 
 def nlopt_status(constant):
     """
-    Convert the enumerated constant returned by the optimization process into a human-readable string.
+    Convert the number constant returned by the optimization process into a human-readable string.
 
     Input
     -----
