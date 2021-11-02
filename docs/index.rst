@@ -67,6 +67,6 @@ Table of Contents
    installation
    examples
    api
-   license
+   changelog
    citing
-
+   license
