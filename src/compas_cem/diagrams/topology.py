@@ -30,8 +30,8 @@ class TopologyDiagram(Diagram):
 
     Returns
     -------
-    topology : ``TopologyDiagram``
-        A topology diagram.
+    topology : :class:`compas_cem.diagrams.Topology`
+        A form diagram.
     """
 
     def __init__(self, *args, **kwargs):

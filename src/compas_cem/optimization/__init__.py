@@ -40,17 +40,6 @@ Optimization Parameters
     OriginNodeXParameter
     OriginNodeYParameter
     OriginNodeZParameter
-
-NLOpt
-=====
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    nlopt_algorithm
-    nlopt_algorithms
-    nlopt_solver
-
 """
 
 from __future__ import absolute_import

@@ -17,27 +17,30 @@ __all__ = ["static_equilibrium"]
 SMALL_VALUE = 1e-3
 
 
-def static_equilibrium(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
+def static_equilibrium(topology, tmax=100, eta=1e-6, verbose=False, callback=None):
     """
     Generate a form diagram in static equilibrium.
 
     Parameters
     ----------
-    topology : ``TopologyDiagram``
-        A topology diagram
-    tmax : ``int``. Optional.
+    topology : :class:`compas_cem.diagrams.TopologyDiagram`
+        A topology diagram.
+    tmax : ``int``, optional
         Maximum number of iterations the algorithm will run for.
         Defaults to ``100``.
-    eta : ``float``. Optional.
+    eta : ``float``, optional
         Distance threshold that marks equilibrium convergence.
         This threshold is compared against the sum of distances of the nodes'
         positions from one iteration to the next one.
         If ``eta`` is hit before consuming ``tmax`` iterations, calculations
-        will stop early. Defaults to ``1e-5``.
-    verbose : ``bool``. Optional.
-        Flag to print out internal operations. Defaults to ``False``.
-    callback : ``function``. Optional.
+        will stop early.
+        Defaults to ``1e-6``.
+    verbose : ``bool``, optional
+        Flag to print out internal operations.
+        Defaults to ``False``.
+    callback : ``function``, optional
         An optional callback function to run at every iteration.
+        Defaults to ``None``.
 
     Returns
     -------
@@ -50,7 +53,7 @@ def static_equilibrium(topology, tmax=100, eta=1e-5, verbose=False, callback=Non
     return form
 
 
-def equilibrium_state(topology, tmax=100, eta=1e-5, verbose=False, callback=None):
+def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None):
     """
     Equilibrate forces at the nodes of a topology diagram.
     """

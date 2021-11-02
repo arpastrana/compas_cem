@@ -21,7 +21,7 @@ class FormDiagram(Diagram):
 
     Returns
     -------
-    form : ``FormDiagram``
+    form : :class:`compas_cem.diagrams.FormDiagram`
         A form diagram.
     """
     def __init__(self, *args, **kwargs):

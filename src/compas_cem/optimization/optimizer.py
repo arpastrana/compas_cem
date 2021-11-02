@@ -15,12 +15,13 @@ from compas_cem.optimization import nlopt_status
 
 from nlopt import RoundoffLimited
 
-__all__ = ["Optimizer"]
 
+__all__ = ["Optimizer"]
 
 # ------------------------------------------------------------------------------
 # Optimizer
 # ------------------------------------------------------------------------------
+
 
 class Optimizer(Data):
     """
@@ -111,7 +112,7 @@ class Optimizer(Data):
 
     def objective_func(self, topology, grad_func, tmax, eta):
         """
-        Test with autodiff.
+        The objective function to minimize.
         """
         obj_func = objective_function_numpy
         func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
@@ -123,6 +124,7 @@ class Optimizer(Data):
 
     def gradient_func(self, topology, tmax, eta):
         """
+        The objective function to calculate gradients from.
         """
         x_func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
         return partial(grad_autograd, grad_func=x_func)
@@ -134,6 +136,42 @@ class Optimizer(Data):
     def solve_nlopt(self, topology, algorithm, iters, eps=None, tmax=100, eta=1e-6):
         """
         Solve an optimization problem with NLOpt.
+
+        Parameters
+        ----------
+        topology : :class:`compas_cem.diagrams.TopologyDiagram`
+            A topology diagram.
+        algorithm : ``str``
+            The name of the gradient-based local optimization algorithm to use.
+            Only the following local gradient-based optimization algorithms are supported:
+
+            - SLSQP: Sequential Least Squares Programming
+            - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
+            - AUGLAG: Augmented Lagrangian
+            - MMA: Method of Moving Asymptotes
+            - TNEWTON: Preconditioned Truncated Newton
+
+            Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
+        iters : ``int``
+            The maximum number of iterations to run the optimization algorithm for.
+        eps : ``float``, optional
+            The numerical convergence threshold for the optimization algorithm.
+            If value is set to ``None``, this parameter is ignored and the
+            optimization algorithm will run until ``iters`` is exhausted.
+            Defaults to ``None``.
+        tmax : ``int``, optional
+            The maximum number of iterations the CEM form-finding algorithm will run for.
+            If ``eta`` is hit first, the form-finding algorithm will stop early.
+            Defaults to ``100``.
+        eta : ``float``, optional
+            The numerical converge threshold of the CEM form-finding algorithm.
+            If ``tmax`` is hit first, the form-finding algorithm will stop early.
+            Defaults to ``1e-6``.
+
+        Returns
+        -------
+        form : :class:`compas_cem.diagrams.FormDiagram`
+            A form diagram.
         """
         # test for bad stuff before going any further
         self.check_optimization_sanity()
