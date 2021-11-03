@@ -35,4 +35,7 @@ class AssembleTopologyDiagramComponent(component):
         if trail_edges and supports:
             topology.build_trails(add_auxiliary_trails)
 
+        elif deviation_edges and add_auxiliary_trails:
+            topology.build_trails(add_auxiliary_trails)
+
         return topology
