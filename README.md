@@ -2,7 +2,7 @@
 
 Constrained form-finding meets automatic differentiation.
 
-![sihl_bridge](./docs/_images/front_cover.png)
+![staircase](./docs/_images/staircase_24_fps_128_colors.gif)
 
 ## Introduction
 
