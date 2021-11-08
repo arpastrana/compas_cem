@@ -8,7 +8,7 @@ COMPAS CEM
 .. _COMPAS: https://compas.dev/
 .. _COMPAS CEM Docs: https://arpastrana.github.io/compas_cem/latest/index.html
 .. _Rafael Pastrana: https://pastrana.xyz/
-.. _Princeton University School of Architecture: https://soa.princeton.edu/
+.. _Princeton: https://soa.princeton.edu/
 .. _Ole Ohlbrock: https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en
 .. _Pierluigi D'Acunto: https://www.professoren.tum.de/en/dacunto-pierluigi
 .. _Stefana Parascho: https://soa.princeton.edu/content/stefana-parascho
@@ -28,7 +28,6 @@ The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>
 
 The CEM framework is a numerical form-finding approach to generate forms in static equilibrium for spatial bar structures subjected to combinations of tension-compression forces and design constraints.
 **COMPAS CEM** encapsulates the `CEM framework <https://arxiv.org/abs/2111.02607>`_ into an open-source structural design tool that enables the formulation and the solution of constrained form-finding problems in plain and simple Python code.
-As one of its extensions, **COMPAS CEM** offers native integration and data exchange with other extensions and plugins in the `COMPAS`_ ecosystem.
 
 
 Main features
@@ -38,7 +37,7 @@ Main features
 
 * **Solve constrained form-finding problems efficiently:** Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar lengths, and controlling the reaction forces at the supports of a structure. Do so efficiently using **automatic differentiation** and **gradient-based optimization**.
 
-* **Usable across 3D modeling software and operating systems:**  is written in Python. It runs on Windows, MacOS and Linux (perhaps one day in the `metaverse`_) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like `Rhino`_, `Blender`_, and `Grasshopper`_.
+* **Usable across 3D modeling software and operating systems:**  is written in Python. It runs on Windows, MacOS and Linux (perhaps one day in the `metaverse`_) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like `Rhino`_, `Blender`_, and `Grasshopper`_. As a `COMPAS`_ extension, **COMPAS CEM** offers native integration and data exchange with other extensions and plugins in the `COMPAS`_ ecosystem.
 
 * **Move those sliders with the Grasshopper plugin** Are you a `Grasshopper`_ person? Worry not. **COMPAS CEM** also ships as a precooked `Grasshopper`_ plugin so that you can readily integrate our constrained form-finding engine into your next spaghetti pipeline 🍝.
 
@@ -69,7 +68,7 @@ If no errors show up, celebrate 🎉! You have a working installation of **COMPA
 Grasshopper plugin
 ------------------
 
-Once **COMPAS CEM** was installed from the comment line, we can additionally link it to `Rhino`_ and deploy it as `Grasshopper`_ plugin:
+Once **COMPAS CEM** was installed from the comment line, we can additionally link it to `Rhino`_ and use it as `Grasshopper`_ plugin:
 
 ::
 
@@ -117,7 +116,7 @@ If you use **COMPAS CEM** for a project or research, please cite us using these 
 Credits
 =======
 
-COMPAS CEM is developed by `Rafael Pastrana`_ at the `Princeton University School of Architecture`_, with the endorsement and support of `Ole Ohlbrock`_, `Pierluigi D'Acunto`_ and `Stefana Parascho`_.
+COMPAS CEM is developed by `Rafael Pastrana`_ at `Princeton`_, with the endorsement and support of `Ole Ohlbrock`_, `Pierluigi D'Acunto`_ and `Stefana Parascho`_.
 
 
 License
