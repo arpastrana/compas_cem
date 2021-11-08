@@ -6,6 +6,7 @@ COMPAS CEM
 .. end-badges
 
 .. _COMPAS: https://compas.dev/
+.. _COMPAS CEM Docs: https://arpastrana.github.io/compas_cem/latest/index.html>
 .. _Rafael Pastrana: https://pastrana.xyz/
 .. _Princeton University School of Architecture: https://soa.princeton.edu/
 .. _Ole Ohlbrock: https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en
@@ -13,17 +14,18 @@ COMPAS CEM
 .. _Stefana Parascho: https://soa.princeton.edu/content/stefana-parascho
 .. _Anaconda: https://www.anaconda.com/
 .. _Rhino: https://www.rhino3d.com/
-.. _Blender: https://www.blender3d.com/
+.. _Blender: https://www.blender.org/
 .. _Grasshopper: https://grasshopper3d.com/
-.. _metaverse: https://bit.ly/3kiBBWC/
+.. _metaverse: https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27
 
-The Combinatorial Equilibrium Modeling (CEM) framework for `COMPAS`_.
+The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
 
-.. figure:: /_images/staircase_24_fps_128_colors.gif
+.. figure:: ./docs/_images/staircase_24_fps_128_colors.gif
     :figclass: figure
     :class: figure-img img-fluid
 
     Constrained form-finding of a spiral staircase. Bars in tension and compression are colored in blue and red, respectively. Given a fixed topology diagram (left), the CEM framework leverages automatic differentiation to compute a constrained form diagram (middle) wherein the lateral chords of the staircase geometrically match the target design curves (middle, in dark gray).  The architectural interpretation of the resulting form diagram is provided on the right.
+
 
 The CEM framework is a numerical form-finding approach to generate forms in static equilibrium for spatial bar structures subjected to combinations of tension-compression forces and design constraints.
 **COMPAS CEM** encapsulates the CEM framework into an open-source structural design tool that enables the formulation and the solution of constrained form-finding problems in plain and simple Python code.
@@ -33,11 +35,11 @@ As one of its extensions, **COMPAS CEM** offers native integration and data exch
 Main features
 =============
 
-* **Mix tension and compression forces.** Explore a wider spectrum of structural typologies by combining internal tension and compression forces in the same structure. Design space frames, bridges, stadiums, tensegrities and staircases and go beyond the conventional catalog of compression-only shells and cable-nets!
+* **Mix tension and compression forces:** Explore a wider spectrum of structural typologies by combining internal tension and compression forces in the same structure. Design space frames, bridges, stadiums, tensegrities and staircases and go beyond the conventional catalog of compression-only shells and cable-nets!
 
-* **Solve constrained form-finding problems efficiently.** Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar forces and lengths, and controlling the reaction forces at the supports of a structure. Do so efficiently using **automatic differentiation** and **gradient-based optimization**.
+* **Solve constrained form-finding problems efficiently:** Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar forces and lengths, and controlling the reaction forces at the supports of a structure. Do so efficiently using **automatic differentiation** and **gradient-based optimization**.
 
-* **Usable across 3D modeling software and operating systems.**  **COMPAS CEM** is written in Python. It runs on Windows, MacOS and Linux (perhaps one day in the `metaverse`_) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like `Rhino`_, `Blender`_, and `Grasshopper`_.
+* **Usable across 3D modeling software and operating systems:**  is written in Python. It runs on Windows, MacOS and Linux (perhaps one day in the `metaverse`_) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like `Rhino`_, `Blender`_, and `Grasshopper`_.
 
 * **Move those sliders with the Grasshopper plugin** Are you a Grasshopper person? Worry not. COMPAS CEM also ships as a precooked Grasshopper plugin so that you can readily integrate COMPAS CEM's constrained form-finding engine into your next spaghetti pipeline 🍝.
 
@@ -45,10 +47,11 @@ Main features
 Installation
 ============
 
-.. note::
-   Here we provide succint instructions to install **COMPAS CEM** and it `Grasshopper`_ plugin. For detailed installation and upgrade guidance, please refer to the docs.
 
-Install **COMPAS CEM** in a dedicated `Anaconda`_ environment with a one-liner via `pip`:
+These are succint instructions to install **COMPAS CEM** and its `Grasshopper`_ plugin.
+For detailed guidance, please refer to the `COMPAS CEM Docs`_.
+
+Install **COMPAS CEM** in a dedicated `Anaconda`_ environment via ``pip``:
 
 ::
 
@@ -73,13 +76,13 @@ Once **COMPAS CEM** was installed from the comment line, we can additionally lin
 
     python -m compas_rhino.install -v 7.0
 
-The flag `-v 7.0` indicates that we will be installing **COMPAS CEM** and company in Rhino 7. If you are working with Rhino 6, replace that last bit with `-v 6.0`.
+The flag ``-v 7.0`` indicates that we will be installing **COMPAS CEM** and company in Rhino 7. If you are working with Rhino 6, replace that last bit with ``-v 6.0``.
 
 
 First steps
 ===========
 
-* `COMPAS CEM Docs <https://arpastrana.github.io/compas_cem/latest/index.html>`_
+* `COMPAS CEM Docs`_
 * `COMPAS CEM Examples <https://arpastrana.github.io/compas_cem/latest/examples.html>`_
 * `COMPAS CEM API Reference <https://arpastrana.github.io/compas_cem/latest/api.html>`_
 * `COMPAS Tutorials <https://compas.dev/compas/latest/tutorial.html>`_
