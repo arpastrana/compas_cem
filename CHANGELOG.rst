@@ -13,13 +13,21 @@ Unreleased
 
 **Changed**
 
+* Changed reaction forces display color from dark green to dark gray.
+* Changed loads display color from light green to dark green.
+
 **Fixed**
 
-* Fixed bug in ghplugin: Wrapped `EdgeSearch` tuple output in a list.
+* Trail-building was ignored assembling deviation-only topology diagrams in ghplugin.
+* Fixed bug: Wrapped `EdgeSearch` tuple output in a list in ghplugin.
 
 **Deprecated**
 
 **Removed**
+
+* Removed support for gradient-free NLopt optimization algorithms.
+* Dropped "LD" subscript to identify NLopt optimization algorithms.
+
 
 0.1.15
 ----------
