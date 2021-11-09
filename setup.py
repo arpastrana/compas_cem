@@ -22,19 +22,19 @@ def read(*names, **kwargs):
     ).read()
 
 
-long_description = read("README.md")
+long_description = read("README.rst")
 requirements = read("requirements.txt").split("\n")
 optional_requirements = {}
 
 setup(
     name="compas_cem",
     version="0.1.15",
-    description="Constrained form-finding meets automatic differentiation.",
+    description="The Combinatorial Equilibrium Modeling framework for COMPAS",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/arpastrana/compas_cem",
     author="Rafael Pastrana",
-    author_email="arpastrana@princeton.edu",
+    author_email="arpj@princeton.edu",
     license="MIT license",
     classifiers=[
         "Development Status :: 4 - Beta",

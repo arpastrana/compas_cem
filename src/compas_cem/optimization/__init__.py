@@ -14,8 +14,8 @@ Optimizers
     Optimizer
     solve_nlopt_proxy
 
-Constraints
-===========
+Optimization Constraints
+========================
 
 .. autosummary::
     :toctree: generated/

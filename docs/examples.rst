@@ -4,7 +4,7 @@
 Examples
 ********************************************************************************
 
-If you are excited about using ``compas_cem``, these examples may help you to
+If you are excited about using COMPAS CEM, these examples may help you to
 get started.
 
 .. toctree::
