@@ -46,12 +46,11 @@ COMPAS CEM
 .. _metaverse: https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27
 
 
+The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
+
 .. figure:: ./docs/_images/staircase_24_fps_128_colors.gif
     :figclass: figure
     :class: figure-img img-fluid
-
-
-The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
 
 The `CEM framework`_ is a numerical form-finding approach to generate forms in static equilibrium for spatial bar structures subjected to combinations of tension-compression forces and design constraints.
 **COMPAS CEM** encapsulates the `CEM framework`_ into an open-source structural design tool that enables the formulation and the solution of constrained form-finding problems in plain and simple `Python <https://www.python.org/>`_ code.
