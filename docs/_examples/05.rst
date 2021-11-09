@@ -1,9 +1,0 @@
-================================================================================
-05. Planar Tensegrity Wheel
-================================================================================
-
-.. figure:: ../_images/05_tensegrity_wheel_2d.png
-    :figclass: figure
-    :class: figure-img img-fluid
-
-.. literalinclude:: ../../examples/05_tensegrity_wheel_2d.py

@@ -8,6 +8,10 @@ COMPAS CEM
     :target: https://github.com/arpastrana/compas_cem/actions
     :alt: Github Actions Build Status
 
+.. image:: https://img.shields.io/github/license/arpastrana/compas_cem.svg
+    :target: https://github.com/arpastrana/compas_cem/blob/main/LICENSE
+    :alt: License
+
 .. image:: https://img.shields.io/pypi/v/compas-cem.svg
     :target: https://pypi.python.org/pypi/compas-cem
     :alt: PyPI Package latest release
@@ -20,14 +24,9 @@ COMPAS CEM
    :target: https://zenodo.org/badge/latestdoi/107952684
    :alt: Zenodo DOI
 
-.. image:: https://img.shields.io/github/license/arpastrana/compas_cem.svg
-    :target: https://github.com/arpastrana/compas_cem/blob/main/LICENSE
-    :alt: License
-
 .. image:: https://img.shields.io/twitter/follow/compas_dev?style=social
    :target: https://twitter.com/compas_dev
    :alt: Twitter follow
-
 
 .. end-badges
 
@@ -46,11 +45,12 @@ COMPAS CEM
 .. _metaverse: https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27
 
 
-The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
-
-.. figure:: ./docs/_images/staircase_24_fps_128_colors.gif
+.. figure:: ./docs/images/staircase_24_fps_128_colors.gif
     :figclass: figure
     :class: figure-img img-fluid
+
+
+The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
 
 The `CEM framework`_ is a numerical form-finding approach to generate forms in static equilibrium for spatial bar structures subjected to combinations of tension-compression forces and design constraints.
 **COMPAS CEM** encapsulates the `CEM framework`_ into an open-source structural design tool that enables the formulation and the solution of constrained form-finding problems in plain and simple `Python <https://www.python.org/>`_ code.
@@ -61,11 +61,11 @@ Main features
 
 * **Mix tension and compression forces:** Explore a wider spectrum of structural typologies by combining internal tension and compression forces in the same structure. Design space frames, bridges, tensegrities, and staircases and go beyond the conventional catalog of compression-only shells and cable-nets!
 
-* **Solve constrained form-finding problems efficiently:** Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar lengths, and controlling the reaction forces at the supports of a structure. Do so efficiently using **automatic differentiation** and **gradient-based optimization**.
+* **Solve constrained form-finding problems efficiently:** Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar lengths, and controlling the reaction forces at the supports of a structure. Do so efficiently using **automatic differentiation** and gradient-based optimization.
 
 * **Usable across 3D modeling software and operating systems:**  is written in Python. It runs on Windows, MacOS and Linux (perhaps one day in the `metaverse`_) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like `Rhino`_, `Blender`_, and `Grasshopper`_. As a `COMPAS`_ extension, **COMPAS CEM** offers native integration and data exchange with other extensions and plugins in the `COMPAS`_ ecosystem.
 
-* **Move those sliders with the Grasshopper plugin** Are you a `Grasshopper`_ person? Worry not. **COMPAS CEM** also ships as a precooked `Grasshopper`_ plugin so that you can readily integrate our constrained form-finding engine into your next spaghetti pipeline 🍝.
+* **Move those sliders with the Grasshopper plugin:** Are you a `Grasshopper`_ person? Worry not. **COMPAS CEM** also ships as a precooked `Grasshopper`_ plugin so that you can readily integrate our constrained form-finding engine into your next spaghetti pipeline 🍝.
 
 
 Installation

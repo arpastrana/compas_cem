@@ -7,7 +7,7 @@ Installation
 .. _Grasshopper: https://www.grasshopper3d.com/
 
 
-.. highlight::
+.. highlight:: bash
 
 
 Install COMPAS CEM

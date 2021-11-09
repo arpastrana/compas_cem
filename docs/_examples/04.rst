@@ -1,9 +1,0 @@
-================================================================================
-04. Tree Structure in 2D
-================================================================================
-
-.. figure:: ../_images/04_tree_2d.png
-    :figclass: figure
-    :class: figure-img img-fluid
-
-.. literalinclude:: ../../examples/04_tree_2d.py

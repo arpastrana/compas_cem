@@ -1,9 +1,0 @@
-================================================================================
-03. Bridge Optimization in 2d
-================================================================================
-
-.. figure:: ../_images/03_bridge_2d.png
-    :figclass: figure
-    :class: figure-img img-fluid
-
-.. literalinclude:: ../../examples/03_bridge_2d.py
