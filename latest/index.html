@@ -48,7 +48,7 @@
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            0.1.15
+            0.2.0
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -96,27 +96,36 @@
 <p><span class="caption-text">Constrained form-finding of a spiral staircase.</span></p>
 </figcaption>
 </figure>
-<section id="introduction">
-<h2>Introduction</h2>
 <p>The <a class="reference external" href="https://arxiv.org/abs/2111.02607">CEM framework</a> is a numerical form-finding approach to generate forms in static equilibrium for spatial bar structures subjected to combinations of tension-compression forces and design constraints.
 <strong>COMPAS CEM</strong> encapsulates the <a class="reference external" href="https://arxiv.org/abs/2111.02607">CEM framework</a> into an open-source structural design tool that enables the formulation and the solution of constrained form-finding problems in plain and simple <a class="reference external" href="https://www.python.org/">Python</a> code.</p>
+<section id="main-features">
+<h2>Main features</h2>
+<ul class="simple">
+<li><p><strong>Mix tension and compression forces:</strong> Explore a wider spectrum of structural typologies by combining internal tension and compression forces in the same structure. Design space frames, bridges, tensegrities, and staircases and go beyond the conventional catalog of compression-only shells and cable-nets!</p></li>
+<li><p><strong>Solve constrained form-finding problems efficiently:</strong> Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar lengths, and controlling the reaction forces at the supports of a structure. Do so efficiently using <strong>automatic differentiation</strong> and gradient-based optimization.</p></li>
+<li><p><strong>Usable across 3D modeling software and operating systems:</strong>  is written in Python. It runs on Windows, MacOS and Linux (perhaps one day in the <a class="reference external" href="https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27">metaverse</a>) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>, <a class="reference external" href="https://www.blender.org/">Blender</a>, and <a class="reference external" href="https://grasshopper3d.com/">Grasshopper</a>. As a <a class="reference external" href="https://compas.dev/">COMPAS</a> extension, <strong>COMPAS CEM</strong> offers native integration and data exchange with other extensions and plugins in the <a class="reference external" href="https://compas.dev/">COMPAS</a> ecosystem.</p></li>
+<li><p><strong>Move those sliders with the Grasshopper plugin:</strong> Are you a <a class="reference external" href="https://grasshopper3d.com/">Grasshopper</a> person? Worry not. <strong>COMPAS CEM</strong> also ships as a precooked <a class="reference external" href="https://grasshopper3d.com/">Grasshopper</a> plugin so that you can readily integrate our constrained form-finding engine into your next spaghetti pipeline 🍝.</p></li>
+</ul>
+</section>
 <section id="credits">
-<h3>Credits</h3>
+<h2>Credits</h2>
 <p>COMPAS CEM is developed by <a class="reference external" href="https://pastrana.xyz/">Rafael Pastrana</a> at <a class="reference external" href="https://soa.princeton.edu/">Princeton</a>, with the endorsement and support of <a class="reference external" href="https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en">Ole Ohlbrock</a>, <a class="reference external" href="https://www.professoren.tum.de/en/dacunto-pierluigi">Pierluigi D’Acunto</a> and <a class="reference external" href="https://soa.princeton.edu/content/stefana-parascho">Stefana Parascho</a>.</p>
-</section>
-</section>
 <section id="table-of-contents">
-<h2>Table of Contents</h2>
+<h3>Table of Contents</h3>
 <div class="toctree-wrapper compound">
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_examples/01.html">01. Simple Compression Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_examples/02.html">02. Braced Tower in 2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_examples/03.html">03. Bridge Optimization in 2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_examples/04.html">04. Tree Structure in 2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_examples/05.html">05. Planar Tensegrity Wheel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/01_python.html">Python</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_examples/01_python/01.html">01. Simple Compression Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_examples/01_python/02.html">02. Braced Tower in 2d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_examples/01_python/03.html">03. Bridge Optimization in 2d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_examples/01_python/04.html">04. Tree Structure in 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_examples/01_python/05.html">05. Planar Tensegrity Wheel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/02_ghpython.html">Grasshopper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
@@ -136,6 +145,7 @@
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 </div>
+</section>
 </section>
 </section>
 
@@ -174,11 +184,11 @@
         
         <ul class="nav flex-column" id="compas-toc">
 <li class="nav-item"><a class="nav-link reference internal" href="#">COMPAS CEM</a><ul class="nav flex-column">
-<li class="nav-item"><a class="nav-link reference internal" href="#introduction">Introduction</a><ul class="nav flex-column">
-<li class="nav-item"><a class="nav-link reference internal" href="#credits">Credits</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#main-features">Main features</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#credits">Credits</a><ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="#table-of-contents">Table of Contents</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="#table-of-contents">Table of Contents</a></li>
 </ul>
 </li>
 </ul>
@@ -240,7 +250,7 @@
   <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
   URL_ROOT          : '',
-  VERSION           : '0.1.15',
+  VERSION           : '0.2.0',
   COLLAPSE_INDEX    : false,
   FILE_SUFFIX       : '.html',
   HAS_SOURCE        : 'false',

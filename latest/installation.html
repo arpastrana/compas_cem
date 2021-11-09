@@ -50,7 +50,7 @@
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            0.1.15
+            0.2.0
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -103,26 +103,26 @@
 <p>First, create a new anaconda environment from the Anaconda Command Prompt if you are on Windows, or from your Terminal if you are on MacOS or Linux.</p>
 <p>The only dependency is <strong>COMPAS</strong>.
 Here we chose the name of the environment to be <code class="docutils literal notranslate"><span class="pre">cem</span></code>, but you can call it <code class="docutils literal notranslate"><span class="pre">spacecowboy</span></code> if you prefer.</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">cem</span> <span class="n">COMPAS</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>conda create -n cem COMPAS
 </code></pre></div>
 </div>
 </section>
 <section id="activate-the-virtual-environment">
 <h3>2. Activate the virtual environment</h3>
 <p>Next, activate the <code class="docutils literal notranslate"><span class="pre">cem</span></code> environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts in your machine. In other words, what happens in <code class="docutils literal notranslate"><span class="pre">cem</span></code> stays in <code class="docutils literal notranslate"><span class="pre">cem</span></code>! 🕺🏻</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">cem</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>conda activate cem
 </code></pre></div>
 </div>
 </section>
 <section id="install-compas-cem-via-pip">
 <h3>3. Install COMPAS CEM via pip</h3>
 <p>Finally, install <strong>COMPAS CEM</strong> with a one-liner:</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">compas</span><span class="o">-</span><span class="n">cem</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install compas-cem
 </code></pre></div>
 </div>
 <p>To double-check that everything is up and running, type the following in the
 command line and hit enter:</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;import compas_cem&quot;</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -c <span class="s2">&quot;import compas_cem&quot;</span>
 </code></pre></div>
 </div>
 <p>If no errors show up, celebrate 🎉! You have a working installation of <strong>COMPAS CEM</strong>.</p>
@@ -131,11 +131,11 @@ command line and hit enter:</p>
 <section id="update-compas-cem">
 <h2>Update COMPAS CEM</h2>
 <p>If you installed COMPAS CEM one day with <code class="docutils literal notranslate"><span class="pre">pip</span></code> and you want to update it to the latest available version, the update command is the following:</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">compas</span><span class="o">-</span><span class="n">cem</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install --upgrade compas-cem
 </code></pre></div>
 </div>
 <p>Alternatively, if you want to switch to a specific version, type this:</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">compas</span><span class="o">-</span><span class="n">cem</span><span class="o">==</span><span class="mf">0.16.1</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install compas-cem<span class="o">==</span><span class="m">0</span>.16.1
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -155,7 +155,7 @@ The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshop
 <section id="remove-any-leftovers">
 <h3>1. Remove any leftovers</h3>
 <p>In case there was an older COMPAS or COMPAS CEM version linked to <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>.</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">uninstall</span> <span class="o">-</span><span class="n">v</span> <span class="mf">7.0</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.uninstall -v <span class="m">7</span>.0
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -168,7 +168,7 @@ The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshop
 <p>Let’s connect COMPAS, COMPAS CEM, <code class="docutils literal notranslate"><span class="pre">compas_rhino</span></code> and <code class="docutils literal notranslate"><span class="pre">compas_ghpython</span></code> to
 Rhino. If you were wondering, the last two are installed automatically when we installed COMPAS.</p>
 <p>Type in your command line:</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">install</span> <span class="o">-</span><span class="n">v</span> <span class="mf">7.0</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.install -v <span class="m">7</span>.0
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -304,7 +304,7 @@ Rhino. If you were wondering, the last two are installed automatically when we i
   <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
   URL_ROOT          : '',
-  VERSION           : '0.1.15',
+  VERSION           : '0.2.0',
   COLLAPSE_INDEX    : false,
   FILE_SUFFIX       : '.html',
   HAS_SOURCE        : 'false',
