@@ -107,13 +107,13 @@
 <td><p>An object that modifies a form diagram to meet multiple constraints.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/compas_cem.optimization.solve_nlopt_proxy.html#compas_cem.optimization.solve_nlopt_proxy" title="compas_cem.optimization.solve_nlopt_proxy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve_nlopt_proxy</span></code></a></p></td>
-<td><p>Solve a constrained form-finding task through a Proxy server.</p></td>
+<td><p>Solve a constrained form-finding task through a Proxy server hyperspace tunnel.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="constraints">
-<h2>Constraints</h2>
+<section id="optimization-constraints">
+<h2>Optimization Constraints</h2>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -167,26 +167,6 @@
 </tbody>
 </table>
 </section>
-<section id="nlopt">
-<h2>NLOpt</h2>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.nlopt_algorithm.html#compas_cem.optimization.nlopt_algorithm" title="compas_cem.optimization.nlopt_algorithm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlopt_algorithm</span></code></a></p></td>
-<td><p>Fetches an optimization algorithm from the nlopt library by name.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/compas_cem.optimization.nlopt_algorithms.html#compas_cem.optimization.nlopt_algorithms" title="compas_cem.optimization.nlopt_algorithms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlopt_algorithms</span></code></a></p></td>
-<td><p>A dictionary with all the supported nlopt algorithms.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/compas_cem.optimization.nlopt_solver.html#compas_cem.optimization.nlopt_solver" title="compas_cem.optimization.nlopt_solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nlopt_solver</span></code></a></p></td>
-<td><p>Wrapper around a typical nlopt solver routine.</p></td>
-</tr>
-</tbody>
-</table>
-</section>
 </section>
 
         
@@ -217,13 +197,13 @@
 <li class="nav-item"><a class="nav-link reference internal" href="compas_cem.supports.html">compas_cem.supports</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">compas_cem.optimization</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="compas_cem.plotters.html">compas_cem.plotters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
 </ul>
 
           </div>
@@ -236,9 +216,8 @@
         <ul class="nav flex-column" id="compas-toc">
 <li class="nav-item"><a class="nav-link reference internal" href="#">compas_cem.optimization</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#optimizers">Optimizers</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#constraints">Constraints</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#optimization-constraints">Optimization Constraints</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#optimization-parameters">Optimization Parameters</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#nlopt">NLOpt</a></li>
 </ul>
 </li>
 </ul>
@@ -339,10 +318,6 @@
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -355,6 +330,13 @@
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

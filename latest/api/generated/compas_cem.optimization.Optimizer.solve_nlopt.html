@@ -101,8 +101,40 @@
 <h1>Optimizer.solve_nlopt</h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="compas_cem.optimization.Optimizer.solve_nlopt">
-<span class="sig-prename descclassname"><span class="pre">Optimizer.</span></span><span class="sig-name descname"><span class="pre">solve_nlopt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L134"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">Optimizer.</span></span><span class="sig-name descname"><span class="pre">solve_nlopt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L136"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Solve an optimization problem with NLOpt.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul>
+<li><p><strong>topology</strong> (<a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.html#compas_cem.diagrams.TopologyDiagram" title="compas_cem.diagrams.TopologyDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.TopologyDiagram</span></code></a>) – A topology diagram.</p></li>
+<li><p><strong>algorithm</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – The name of the gradient-based local optimization algorithm to use.
+Only the following local gradient-based optimization algorithms are supported:</p>
+<ul class="simple">
+<li><p>SLSQP: Sequential Least Squares Programming</p></li>
+<li><p>LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno</p></li>
+<li><p>AUGLAG: Augmented Lagrangian</p></li>
+<li><p>MMA: Method of Moving Asymptotes</p></li>
+<li><p>TNEWTON: Preconditioned Truncated Newton</p></li>
+</ul>
+<p>Refer to the NLopt <a class="reference external" href="https://nlopt.readthedocs.io/en/latest/">documentation</a> for more details on their theoretical underpinnings.</p>
+</li>
+<li><p><strong>iters</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – The maximum number of iterations to run the optimization algorithm for.</p></li>
+<li><p><strong>eps</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) – The numerical convergence threshold for the optimization algorithm.
+If value is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, this parameter is ignored and the
+optimization algorithm will run until <code class="docutils literal notranslate"><span class="pre">iters</span></code> is exhausted.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>tmax</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) – The maximum number of iterations the CEM form-finding algorithm will run for.
+If <code class="docutils literal notranslate"><span class="pre">eta</span></code> is hit first, the form-finding algorithm will stop early.
+Defaults to <code class="docutils literal notranslate"><span class="pre">100</span></code>.</p></li>
+<li><p><strong>eta</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) – The numerical converge threshold of the CEM form-finding algorithm.
+If <code class="docutils literal notranslate"><span class="pre">tmax</span></code> is hit first, the form-finding algorithm will stop early.
+Defaults to <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>form</strong> (<a class="reference internal" href="compas_cem.diagrams.FormDiagram.html#compas_cem.diagrams.FormDiagram" title="compas_cem.diagrams.FormDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.FormDiagram</span></code></a>) – A form diagram.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -135,13 +167,13 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.supports.html">compas_cem.supports</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="nav-item active"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
 </ul>
 
           </div>
@@ -251,10 +283,6 @@
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -267,6 +295,13 @@
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

@@ -91,9 +91,9 @@
         
         <section id="installation">
 <h1>Installation</h1>
-<section id="id1">
-<h2>Installation</h2>
-<p>Install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> in only three simple steps.</p>
+<section id="install-compas-cem">
+<h2>Install COMPAS CEM</h2>
+<p>Install <strong>COMPAS CEM</strong> in only three simple steps.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>We assume you have <a class="reference external" href="https://www.anaconda.com/">Anaconda</a> installed in your machine. If not, please download and install it before continuing.</p>
@@ -101,73 +101,87 @@
 <section id="create-a-virtual-environment">
 <h3>1. Create a virtual environment</h3>
 <p>First, create a new anaconda environment from the Anaconda Command Prompt if you are on Windows, or from your Terminal if you are on MacOS or Linux.</p>
-<p>The only dependency is <code class="docutils literal notranslate"><span class="pre">compas</span></code>.
+<p>The only dependency is <strong>COMPAS</strong>.
 Here we chose the name of the environment to be <code class="docutils literal notranslate"><span class="pre">cem</span></code>, but you can call it <code class="docutils literal notranslate"><span class="pre">spacecowboy</span></code> if you prefer.</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>conda create -n cem COMPAS
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">cem</span> <span class="n">COMPAS</span>
 </code></pre></div>
 </div>
 </section>
 <section id="activate-the-virtual-environment">
 <h3>2. Activate the virtual environment</h3>
 <p>Next, activate the <code class="docutils literal notranslate"><span class="pre">cem</span></code> environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts in your machine. In other words, what happens in <code class="docutils literal notranslate"><span class="pre">cem</span></code> stays in <code class="docutils literal notranslate"><span class="pre">cem</span></code>! 🕺🏻</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>conda activate cem
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">cem</span>
 </code></pre></div>
 </div>
 </section>
 <section id="install-compas-cem-via-pip">
-<h3>3. Install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> via pip</h3>
-<p>Finally, install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> with a one-liner:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install compas-cem
+<h3>3. Install COMPAS CEM via pip</h3>
+<p>Finally, install <strong>COMPAS CEM</strong> with a one-liner:</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">compas</span><span class="o">-</span><span class="n">cem</span>
 </code></pre></div>
 </div>
 <p>To double-check that everything is up and running, type the following in the
 command line and hit enter:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -c <span class="s2">&quot;import compas_cem&quot;</span>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;import compas_cem&quot;</span>
 </code></pre></div>
 </div>
-<p>If no errors show up, celebrate 🎉! You have a working installation of
-<code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>.</p>
+<p>If no errors show up, celebrate 🎉! You have a working installation of <strong>COMPAS CEM</strong>.</p>
 </section>
 </section>
-<section id="grasshopper-plugin">
-<h2>Grasshopper Plugin</h2>
-<p>There will be times when modeling a complex structure is easier to do with a few mouse-clicks instead of a hundred lines of code.
-The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshopper</a> version of <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> allows you to use all the important bits of our constrained form-finding engine in a (familiar) visual programming environment.</p>
-<p>To additionally install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> as a grasshopper plugin, close <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>, go to the command line and follow the next three steps:</p>
+<section id="update-compas-cem">
+<h2>Update COMPAS CEM</h2>
+<p>If you installed COMPAS CEM one day with <code class="docutils literal notranslate"><span class="pre">pip</span></code> and you want to update it to the latest available version, the update command is the following:</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">compas</span><span class="o">-</span><span class="n">cem</span>
+</code></pre></div>
+</div>
+<p>Alternatively, if you want to switch to a specific version, type this:</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">compas</span><span class="o">-</span><span class="n">cem</span><span class="o">==</span><span class="mf">0.16.1</span>
+</code></pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Make sure that the <code class="docutils literal notranslate"><span class="pre">cem</span></code> anaconda environment is active and that <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> has been already installed from the command line before proceeding.</p>
+<p>If you update COMPAS CEM and you had installed the grasshopper plugin, the components already in use may no longer work.</p>
+</div>
+</section>
+<section id="install-the-grasshopper-plugin">
+<h2>Install the Grasshopper Plugin</h2>
+<p>There will be times when modeling a complex structure is easier to do with a few mouse-clicks instead of a hundred lines of code.
+The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshopper</a> (GH) version of COMPAS CEM allows you to use all the important bits of our constrained form-finding engine in a (familiar) visual programming environment.</p>
+<p>To additionally install COMPAS CEM as a GH plugin, close <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>, go to the command line and follow the next three steps:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure that the <code class="docutils literal notranslate"><span class="pre">cem</span></code> anaconda environment is active and that COMPAS CEM has been already installed from the command line before proceeding.</p>
 </div>
 <section id="remove-any-leftovers">
 <h3>1. Remove any leftovers</h3>
-<p>In case there was an older <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code> or <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> version linked to <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>.</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.uninstall -v <span class="m">7</span>.0
+<p>In case there was an older COMPAS or COMPAS CEM version linked to <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>.</p>
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">uninstall</span> <span class="o">-</span><span class="n">v</span> <span class="mf">7.0</span>
 </code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The flag <cite>-v 7.0</cite> indicates that we will be uninstalling <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> and company from Rhino 7. If you are working with Rhino 6, replace that last bit with <cite>-v 6.0</cite>.</p>
+<p>The flag <cite>-v 7.0</cite> indicates that we will be uninstalling COMPAS CEM and company from Rhino 7. If you are working with Rhino 6, replace that last bit with <cite>-v 6.0</cite>.</p>
 </div>
 </section>
 <section id="link-compas-cem">
-<h3>2. Link <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code></h3>
-<p>Let’s connect <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, <code class="docutils literal notranslate"><span class="pre">compas_rhino</span></code> and <code class="docutils literal notranslate"><span class="pre">compas_ghpython</span></code> to
-Rhino. If you were wondering, the last two are installed by default by <code class="docutils literal notranslate"><span class="pre">COMPAS</span></code>.</p>
+<h3>2. Link COMPAS CEM</h3>
+<p>Let’s connect COMPAS, COMPAS CEM, <code class="docutils literal notranslate"><span class="pre">compas_rhino</span></code> and <code class="docutils literal notranslate"><span class="pre">compas_ghpython</span></code> to
+Rhino. If you were wondering, the last two are installed automatically when we installed COMPAS.</p>
 <p>Type in your command line:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>python -m compas_rhino.install -v <span class="m">7</span>.0
+<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">compas_rhino</span><span class="o">.</span><span class="n">install</span> <span class="o">-</span><span class="n">v</span> <span class="mf">7.0</span>
 </code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The flag <cite>-v 7.0</cite> indicates that we will be installing <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> and company in Rhino 7. If you are working with Rhino 6, replace that last bit with <cite>-v 6.0</cite>.</p>
+<p>The flag <cite>-v 7.0</cite> indicates that we will be installing COMPAS CEM and company in Rhino 7. If you are working with Rhino 6, replace that last bit with <cite>-v 6.0</cite>.</p>
 </div>
 </section>
 <section id="check-your-grasshopper-installation">
 <h3>3. Check your Grasshopper installation</h3>
-<p>Launch grasshopper and start dropping <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> components onto the canvas! Send pictures! 🏖</p>
+<p>Launch grasshopper and start dropping COMPAS CEM components onto the canvas! Send pictures! 🏖</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> plugin for grasshopper is a collection of <code class="docutils literal notranslate"><span class="pre">.ghuser</span></code> objects. As such, they have one important limitation: once used in a document, they forget who they are. The don’t know they were created out of a ghuser component, they will be simple GHPython components. This has an important consequence: if you update <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, those components already in use will NOT be automatically updated.</p>
+<p>The COMPAS CEM plugin for grasshopper is a collection of <code class="docutils literal notranslate"><span class="pre">.ghuser</span></code> objects. As such, they have one important limitation: once used in a document, they forget who they are. The don’t know they were created out of a ghuser component, they will be simple GHPython components. This has an important consequence: if you update COMPAS CEM, those components already in use will NOT be automatically updated.</p>
 </div>
 </section>
 </section>
@@ -194,8 +208,9 @@ Rhino. If you were wondering, the last two are installed by default by <code cla
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">Installation</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="api.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
 </ul>
 
           </div>
@@ -207,15 +222,16 @@ Rhino. If you were wondering, the last two are installed by default by <code cla
         
         <ul class="nav flex-column" id="compas-toc">
 <li class="nav-item"><a class="nav-link reference internal" href="#">Installation</a><ul class="nav flex-column">
-<li class="nav-item"><a class="nav-link reference internal" href="#id1">Installation</a><ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="#install-compas-cem">Install COMPAS CEM</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#create-a-virtual-environment">1. Create a virtual environment</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#activate-the-virtual-environment">2. Activate the virtual environment</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#install-compas-cem-via-pip">3. Install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> via pip</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#install-compas-cem-via-pip">3. Install COMPAS CEM via pip</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="#grasshopper-plugin">Grasshopper Plugin</a><ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="#update-compas-cem">Update COMPAS CEM</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#install-the-grasshopper-plugin">Install the Grasshopper Plugin</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#remove-any-leftovers">1. Remove any leftovers</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#link-compas-cem">2. Link <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code></a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#link-compas-cem">2. Link COMPAS CEM</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#check-your-grasshopper-installation">3. Check your Grasshopper installation</a></li>
 </ul>
 </li>
@@ -319,10 +335,6 @@ Rhino. If you were wondering, the last two are installed by default by <code cla
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -335,6 +347,13 @@ Rhino. If you were wondering, the last two are installed by default by <code cla
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

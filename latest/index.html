@@ -89,94 +89,21 @@
         
         <section id="compas-cem">
 <h1>COMPAS CEM</h1>
-<p class="lead">Constrained form-finding meets automatic differentiation.</p>
+<p class="lead">The <a class="reference external" href="https://arxiv.org/abs/2111.02607">Combinatorial Equilibrium Modeling (CEM)</a> framework for <a class="reference external" href="https://compas.dev/">COMPAS</a>.</p>
 <figure class="figure align-default" id="id1">
-<img alt="_images/front_cover.png" class="figure-img img-fluid" src="_images/front_cover.png" />
+<img alt="_images/staircase_24_fps_128_colors.gif" class="figure-img img-fluid" src="_images/staircase_24_fps_128_colors.gif" />
 <figcaption>
-<p><span class="caption-text">Structural model of a form-found bridge over the Sihl river, Switzerland.</span></p>
+<p><span class="caption-text">Constrained form-finding of a spiral staircase.</span></p>
 </figcaption>
 </figure>
 <section id="introduction">
 <h2>Introduction</h2>
-<p>COMPAS CEM is a structural design tool that generates efficient form for spatial bar structures subjected to combinations of tension and compression forces.
-Examples of such structures are gridshells, bridges, stadiums, tensegrities and multistory buildings.</p>
-<p>The generated forms can be steered to meet force and geometrical constraints, such as limiting the length of a selection of elements in the structure, best-fitting an arbitrary target surface, or restraining the magnitude of the reactions forces at the supports of a structure.</p>
-<p>This constrained form-finding process is solved under the hood using numerical optimization and automatic differentiation – two commonplace techniques in the world of machine learning that COMPAS CEM makes readily accesible to designers around the world.</p>
-<p>COMPAS CEM is a <a class="reference external" href="https://compas.dev/">COMPAS</a> extension written in pure Python. It runs on Windows, MacOS and Linux and it does not depend on any CAD software to work.</p>
-<p>Are you a <a class="reference external" href="https://grasshopper3d.com/">Grasshopper</a> person though? Worry not. CAD-independence doesn’t mean CAD-incompatibility: we ship COMPAS CEM as a Grasshopper plugin so that you can readily integrate our constrained form-finding engine into your next parametric pipeline.</p>
-<p>Feel free to check the <a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a> and the <a class="reference internal" href="api.html#api"><span class="std std-ref">API Reference</span></a> sections to glimpse into what COMPAS CEM can do for you.</p>
-<p>If you are further interested in learning more about the underpinnings of the CEM framework, the constrained form-finding method that COMPAS CEM implements, we refer you to this <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0010448519305342/">journal paper</a>.</p>
-<section id="authors">
-<h3>Authors</h3>
-<p>COMPAS CEM is developed by <a class="reference external" href="https://github.com/arpastrana/">Rafael Pastrana</a> at the <a class="reference external" href="https://createlaboratory.org/">CREATE Laboratory</a> at the <a class="reference external" href="https://soa.princeton.edu/">Princeton University School of Architecture</a> in collaboration with Patrick Ole Ohlbrock from the Chair of Structural Design at <a class="reference external" href="https://www.schwartz.arch.ethz.ch/">ETH Zürich</a> and Pierluigi D’Acunto from the Professorship of Structural Design at the <a class="reference external" href="https://www.tum.de/en/">Technical University of Munich</a>.</p>
+<p>The <a class="reference external" href="https://arxiv.org/abs/2111.02607">CEM framework</a> is a numerical form-finding approach to generate forms in static equilibrium for spatial bar structures subjected to combinations of tension-compression forces and design constraints.
+<strong>COMPAS CEM</strong> encapsulates the <a class="reference external" href="https://arxiv.org/abs/2111.02607">CEM framework</a> into an open-source structural design tool that enables the formulation and the solution of constrained form-finding problems in plain and simple <a class="reference external" href="https://www.python.org/">Python</a> code.</p>
+<section id="credits">
+<h3>Credits</h3>
+<p>COMPAS CEM is developed by <a class="reference external" href="https://pastrana.xyz/">Rafael Pastrana</a> at <a class="reference external" href="https://soa.princeton.edu/">Princeton</a>, with the endorsement and support of <a class="reference external" href="https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en">Ole Ohlbrock</a>, <a class="reference external" href="https://www.professoren.tum.de/en/dacunto-pierluigi">Pierluigi D’Acunto</a> and <a class="reference external" href="https://soa.princeton.edu/content/stefana-parascho">Stefana Parascho</a>.</p>
 </section>
-</section>
-<section id="first-example">
-<h2>First Example</h2>
-<p>With <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, you can create a tension-compression structure in
-equilibrium with Python using an object-oriented interface.</p>
-<div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">TopologyDiagram</span>
-
-<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">Node</span>
-<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">TrailEdge</span>
-<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">DeviationEdge</span>
-
-<span class="kn">from</span> <span class="nn">compas_cem.loads</span> <span class="kn">import</span> <span class="n">NodeLoad</span>
-<span class="kn">from</span> <span class="nn">compas_cem.supports</span> <span class="kn">import</span> <span class="n">NodeSupport</span>
-
-<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">TopologyPlotter</span>
-<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">FormPlotter</span>
-<span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">static_equilibrium</span>
-
-
-<span class="c1"># create a topology diagram</span>
-<span class="n">topology</span> <span class="o">=</span> <span class="n">TopologyDiagram</span><span class="p">()</span>
-
-<span class="c1"># add nodes</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mf">3.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-
-<span class="c1"># add edges with negative values for a compression-only structure</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">DeviationEdge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">force</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
-
-<span class="c1"># add supports</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_support</span><span class="p">(</span><span class="n">NodeSupport</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_support</span><span class="p">(</span><span class="n">NodeSupport</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-
-<span class="c1"># add loads</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">NodeLoad</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_load</span><span class="p">(</span><span class="n">NodeLoad</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-
-<span class="c1"># assemble trails</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">build_trails</span><span class="p">()</span>
-
-<span class="c1"># print(&quot;trails&quot;, topology.trails(), &quot;*trail edges&quot;, list(topology.trail_edges()))</span>
-<span class="c1"># calculate equilibrium</span>
-<span class="n">form</span> <span class="o">=</span> <span class="n">static_equilibrium</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># plot topology</span>
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">TopologyPlotter</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_loads</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">draw_arrows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="c1"># plot form</span>
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">FormPlotter</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;key-xyz&quot;</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s2">&quot;force-length&quot;</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_loads</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_reactions</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-</div>
-<figure class="figure align-default">
-<img alt="_images/01_quick_start.png" class="figure-img img-fluid" src="_images/01_quick_start.png" />
-</figure>
 </section>
 <section id="table-of-contents">
 <h2>Table of Contents</h2>
@@ -200,13 +127,13 @@ equilibrium with Python using an object-oriented interface.</p>
 <li class="toctree-l3"><a class="reference internal" href="api/compas_cem.supports.html">compas_cem.supports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/compas_cem.optimization.html">compas_cem.optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/compas_cem.plotters.html">compas_cem.plotters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 </div>
 </section>
@@ -233,8 +160,9 @@ equilibrium with Python using an object-oriented interface.</p>
 <li class="nav-item"><a class="nav-link reference internal" href="installation.html">Installation</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="api.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
 </ul>
 
           </div>
@@ -247,10 +175,9 @@ equilibrium with Python using an object-oriented interface.</p>
         <ul class="nav flex-column" id="compas-toc">
 <li class="nav-item"><a class="nav-link reference internal" href="#">COMPAS CEM</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#introduction">Introduction</a><ul class="nav flex-column">
-<li class="nav-item"><a class="nav-link reference internal" href="#authors">Authors</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#credits">Credits</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="#first-example">First Example</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#table-of-contents">Table of Contents</a></li>
 </ul>
 </li>
@@ -344,10 +271,6 @@ equilibrium with Python using an object-oriented interface.</p>
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -360,6 +283,13 @@ equilibrium with Python using an object-oriented interface.</p>
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

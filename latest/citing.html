@@ -19,9 +19,11 @@
   <link rel="stylesheet" type="text/css" href="_static/css/compas-reference.css" />
 
   
+    <link rel="next" title="License" href="license.html" />
+  
 
   
-    <link rel="prev" title="License" href="license.html" />
+    <link rel="prev" title="Changelog" href="changelog.html" />
   
 
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -89,20 +91,29 @@
         
         <section id="citing">
 <h1>Citing</h1>
-<p>If you use <a class="reference internal" href="api/compas_cem.html#module-compas_cem" title="compas_cem"><code class="xref py py-mod docutils literal notranslate"><span class="pre">compas_cem</span></code></a> for a project or research, please refer to the GitHub repository and cite:</p>
+<p>If you use <strong>COMPAS CEM</strong> for a project or research, please cite our paper and the github repository:</p>
 <div class="language-latex notranslate"><div class="highlight"><pre><code><span></span>@misc<span class="nb">{</span>compas<span class="nb">_</span>cem,
-    title=<span class="nb">{{</span>COMPAS~CEM<span class="nb">}</span>: Constrained form-finding meets automatic differentiation<span class="nb">}</span>,
+    title=<span class="nb">{{</span>COMPAS~CEM<span class="nb">}</span>: The <span class="nb">{</span>Combinatorial Equilibrium Modeling<span class="nb">}</span> framework for <span class="nb">{</span>COMPAS<span class="nb">}}</span>,
     author=<span class="nb">{</span>
         Pastrana, Rafael and
         Ohlbrock, Patrick Ole and
         D&#39;Acunto, Pierluigi and
         Parascho, Stefana
         <span class="nb">}</span>,
+    year=<span class="nb">{</span>2020-2021<span class="nb">}</span>
     url=<span class="nb">{</span>https://github.com/arpastrana/compas<span class="nb">_</span>cem<span class="nb">}</span>,
-    year=<span class="nb">{</span>2020<span class="nb">}</span>
 <span class="nb">}</span>
 </code></pre></div>
 </div>
+<section id="authors">
+<h2>Authors</h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pastrana.xyz">Rafael Pastrana</a></p></li>
+<li><p><a class="reference external" href="https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en">Ole Ohlbrock</a></p></li>
+<li><p><a class="reference external" href="https://www.professoren.tum.de/en/dacunto-pierluigi">Pierluigi D’Acunto</a></p></li>
+<li><p><a class="reference external" href="https://soa.princeton.edu/content/stefana-parascho">Stefana Parascho</a></p></li>
+</ul>
+</section>
 </section>
 
         
@@ -126,8 +137,9 @@
 <li class="nav-item"><a class="nav-link reference internal" href="installation.html">Installation</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="api.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="changelog.html">Changelog</a></li>
 <li class="nav-item active"><a class="nav-link active current reference internal" href="#">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
 </ul>
 
           </div>
@@ -138,7 +150,10 @@
       <div class="d-none d-xl-block col-xl-2 compas-toc" role="toc">
         
         <ul class="nav flex-column" id="compas-toc">
-<li class="nav-item"><a class="nav-link reference internal" href="#">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#">Citing</a><ul class="nav flex-column">
+<li class="nav-item"><a class="nav-link reference internal" href="#authors">Authors</a></li>
+</ul>
+</li>
 </ul>
 
       </div>
@@ -150,15 +165,23 @@
   <footer class="compas-footer">
     <nav class="nav p-2">
       
-        <a href="license.html" title="License" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
+        <a href="changelog.html" title="Changelog" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
           <div class="nav-button p-2 m-2"><i class="fas fa-arrow-left"></i></div>
           <div class="nav-title flex-grow-1 align-self-center">
             <div class="nav-direction small font-weight-light">Previous</div>
-            License
+            Changelog
           </div>
         </a>
       
 
+      
+        <a href="license.html" title="License" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
+          <div class="nav-title footer-link flex-grow-1 align-self-center">
+            <div class="nav-direction small font-weight-light">Next</div>
+            License
+          </div>
+          <div class="nav-button p-2 m-2"><i class="fas fa-arrow-right"></i></div>
+        </a>
       
     </nav>  
   </footer>
@@ -229,10 +252,6 @@
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -245,6 +264,13 @@
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

@@ -99,21 +99,24 @@
 <h1>static_equilibrium</h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="compas_cem.equilibrium.static_equilibrium">
-<span class="sig-prename descclassname"><span class="pre">compas_cem.equilibrium.</span></span><span class="sig-name descname"><span class="pre">static_equilibrium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/equilibrium/force.py#L20"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">compas_cem.equilibrium.</span></span><span class="sig-name descname"><span class="pre">static_equilibrium</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/equilibrium/force.py#L20"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Generate a form diagram in static equilibrium.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topology</strong> (<code class="docutils literal notranslate"><span class="pre">TopologyDiagram</span></code>) – A topology diagram</p></li>
-<li><p><strong>tmax</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>. Optional.) – Maximum number of iterations the algorithm will run for.
+<li><p><strong>topology</strong> (<a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.html#compas_cem.diagrams.TopologyDiagram" title="compas_cem.diagrams.TopologyDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.TopologyDiagram</span></code></a>) – A topology diagram.</p></li>
+<li><p><strong>tmax</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>, optional) – Maximum number of iterations the algorithm will run for.
 Defaults to <code class="docutils literal notranslate"><span class="pre">100</span></code>.</p></li>
-<li><p><strong>eta</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>. Optional.) – Distance threshold that marks equilibrium convergence.
+<li><p><strong>eta</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, optional) – Distance threshold that marks equilibrium convergence.
 This threshold is compared against the sum of distances of the nodes’
 positions from one iteration to the next one.
 If <code class="docutils literal notranslate"><span class="pre">eta</span></code> is hit before consuming <code class="docutils literal notranslate"><span class="pre">tmax</span></code> iterations, calculations
-will stop early. Defaults to <code class="docutils literal notranslate"><span class="pre">1e-5</span></code>.</p></li>
-<li><p><strong>verbose</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>. Optional.) – Flag to print out internal operations. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>callback</strong> (<code class="docutils literal notranslate"><span class="pre">function</span></code>. Optional.) – An optional callback function to run at every iteration.</p></li>
+will stop early.
+Defaults to <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p></li>
+<li><p><strong>verbose</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) – Flag to print out internal operations.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>callback</strong> (<code class="docutils literal notranslate"><span class="pre">function</span></code>, optional) – An optional callback function to run at every iteration.
+Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -152,13 +155,13 @@ will stop early. Defaults to <code class="docutils literal notranslate"><span cl
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.supports.html">compas_cem.supports</a></li>
 <li class="nav-item active"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
 </ul>
 
           </div>
@@ -268,10 +271,6 @@ will stop early. Defaults to <code class="docutils literal notranslate"><span cl
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -284,6 +283,13 @@ will stop early. Defaults to <code class="docutils literal notranslate"><span cl
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

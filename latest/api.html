@@ -93,7 +93,15 @@
 <span id="api"></span><h1>API Reference</h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/compas_cem.html">compas_cem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/compas_cem.html">compas_cem</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.diagrams.html">compas_cem.diagrams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.elements.html">compas_cem.elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.loads.html">compas_cem.loads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.supports.html">compas_cem.supports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/compas_cem.optimization.html">compas_cem.optimization</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -122,8 +130,9 @@
 <li class="nav-item"><a class="nav-link reference internal" href="api/compas_cem.html">compas_cem</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
 </ul>
 
           </div>
@@ -233,10 +242,6 @@
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -249,6 +254,13 @@
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

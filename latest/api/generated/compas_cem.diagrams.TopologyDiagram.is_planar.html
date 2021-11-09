@@ -101,7 +101,7 @@
 <h1>TopologyDiagram.is_planar</h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="compas_cem.diagrams.TopologyDiagram.is_planar">
-<span class="sig-prename descclassname"><span class="pre">TopologyDiagram.</span></span><span class="sig-name descname"><span class="pre">is_planar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology.py#L166"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">TopologyDiagram.</span></span><span class="sig-name descname"><span class="pre">is_planar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology.py#L161"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Check if the network is planar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -112,7 +112,7 @@
 False otherwise.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.9)"><strong>ImportError</strong></a> – If the planarity package is not installed.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.10)"><strong>ImportError</strong></a> – If the planarity package is not installed.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -161,13 +161,13 @@ It is available on Anaconda: <a class="reference external" href="https://anacond
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.supports.html">compas_cem.supports</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
 </ul>
 
           </div>
@@ -277,10 +277,6 @@ It is available on Anaconda: <a class="reference external" href="https://anacond
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -293,6 +289,13 @@ It is available on Anaconda: <a class="reference external" href="https://anacond
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

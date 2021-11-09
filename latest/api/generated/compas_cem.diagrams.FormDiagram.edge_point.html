@@ -19,7 +19,7 @@
   <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
   
-    <link rel="next" title="FormDiagram.edge_vector" href="compas_cem.diagrams.FormDiagram.edge_vector.html" />
+    <link rel="next" title="FormDiagram.edge_sample" href="compas_cem.diagrams.FormDiagram.edge_sample.html" />
   
 
   
@@ -149,13 +149,13 @@ lie in the direction of the edge, but not on the edge vector.</p></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.supports.html">compas_cem.supports</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
 </ul>
 
           </div>
@@ -188,10 +188,10 @@ lie in the direction of the edge, but not on the edge vector.</p></li>
       
 
       
-        <a href="compas_cem.diagrams.FormDiagram.edge_vector.html" title="FormDiagram.edge_vector" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
+        <a href="compas_cem.diagrams.FormDiagram.edge_sample.html" title="FormDiagram.edge_sample" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
           <div class="nav-title footer-link flex-grow-1 align-self-center">
             <div class="nav-direction small font-weight-light">Next</div>
-            FormDiagram.edge_vector
+            FormDiagram.edge_sample
           </div>
           <div class="nav-button p-2 m-2"><i class="fas fa-arrow-right"></i></div>
         </a>
@@ -265,10 +265,6 @@ lie in the direction of the edge, but not on the edge vector.</p></li>
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -281,6 +277,13 @@ lie in the direction of the edge, but not on the edge vector.</p></li>
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

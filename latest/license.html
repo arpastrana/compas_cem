@@ -19,11 +19,9 @@
   <link rel="stylesheet" type="text/css" href="_static/css/compas-reference.css" />
 
   
-    <link rel="next" title="Citing" href="citing.html" />
-  
 
   
-    <link rel="prev" title="FormPlotter.update_polygoncollection" href="api/generated/compas_cem.plotters.FormPlotter.update_polygoncollection.html" />
+    <link rel="prev" title="Citing" href="citing.html" />
   
 
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -93,7 +91,7 @@
 <h1>License</h1>
 <div class="language-python notranslate"><div class="highlight"><pre><code><span></span><span class="n">MIT</span> <span class="n">License</span>
 
-<span class="n">Rafael</span> <span class="n">Pastrana</span>
+<span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2020</span><span class="o">-</span><span class="mi">2021</span> <span class="n">Rafael</span> <span class="n">Pastrana</span>
 
 <span class="n">Permission</span> <span class="ow">is</span> <span class="n">hereby</span> <span class="n">granted</span><span class="p">,</span> <span class="n">free</span> <span class="n">of</span> <span class="n">charge</span><span class="p">,</span> <span class="n">to</span> <span class="nb">any</span> <span class="n">person</span> <span class="n">obtaining</span> <span class="n">a</span> <span class="n">copy</span>
 <span class="n">of</span> <span class="n">this</span> <span class="n">software</span> <span class="ow">and</span> <span class="n">associated</span> <span class="n">documentation</span> <span class="n">files</span> <span class="p">(</span><span class="n">the</span> <span class="s2">&quot;Software&quot;</span><span class="p">),</span> <span class="n">to</span> <span class="n">deal</span>
@@ -137,8 +135,9 @@
 <li class="nav-item"><a class="nav-link reference internal" href="installation.html">Installation</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="examples.html">Examples</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="api.html">API Reference</a></li>
-<li class="nav-item active"><a class="nav-link active current reference internal" href="#">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="citing.html">Citing</a></li>
+<li class="nav-item active"><a class="nav-link active current reference internal" href="#">License</a></li>
 </ul>
 
           </div>
@@ -161,23 +160,15 @@
   <footer class="compas-footer">
     <nav class="nav p-2">
       
-        <a href="api/generated/compas_cem.plotters.FormPlotter.update_polygoncollection.html" title="FormPlotter.update_polygoncollection" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
+        <a href="citing.html" title="Citing" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
           <div class="nav-button p-2 m-2"><i class="fas fa-arrow-left"></i></div>
           <div class="nav-title flex-grow-1 align-self-center">
             <div class="nav-direction small font-weight-light">Previous</div>
-            FormPlotter.update_polygoncollection
+            Citing
           </div>
         </a>
       
 
-      
-        <a href="citing.html" title="Citing" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
-          <div class="nav-title footer-link flex-grow-1 align-self-center">
-            <div class="nav-direction small font-weight-light">Next</div>
-            Citing
-          </div>
-          <div class="nav-button p-2 m-2"><i class="fas fa-arrow-right"></i></div>
-        </a>
       
     </nav>  
   </footer>
@@ -248,10 +239,6 @@
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -264,6 +251,13 @@
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

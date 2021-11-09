@@ -123,7 +123,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.from_point_and_vector.html#compas_cem.loads.NodeLoad.from_point_and_vector" title="compas_cem.loads.NodeLoad.from_point_and_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_point_and_vector</span></code></a>(point, vector)</p></td>
 <td><p>Create a NodeLoad from a point and a vector.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.from_rhino_point_and_vector.html#compas_cem.loads.NodeLoad.from_rhino_point_and_vector" title="compas_cem.loads.NodeLoad.from_rhino_point_and_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_rhino_point_and_vector</span></code></a>(rhino_point, …)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.from_rhino_point_and_vector.html#compas_cem.loads.NodeLoad.from_rhino_point_and_vector" title="compas_cem.loads.NodeLoad.from_rhino_point_and_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_rhino_point_and_vector</span></code></a>(rhino_point, ...)</p></td>
 <td><p>Create a NodeLoad from a rhino point and a rhino vector.</p></td>
 </tr>
 </tbody>
@@ -160,13 +160,13 @@
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.supports.html">compas_cem.supports</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../../license.html">License</a></li>
 </ul>
 
           </div>
@@ -276,10 +276,6 @@
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -292,6 +288,13 @@
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

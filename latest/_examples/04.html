@@ -169,7 +169,7 @@
     <span class="n">optimizer</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="n">DeviationEdgeParameter</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
 
     <span class="c1"># optimize</span>
-    <span class="n">form</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">solve_nlopt</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="s2">&quot;LD_SLSQP&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">solve_nlopt</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="s2">&quot;SLSQP&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
 
     <span class="c1"># print out value of the objective function, should be a small number</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total value of the objective function: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">penalty</span><span class="p">))</span>
@@ -234,8 +234,9 @@
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="../api.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="../citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="../license.html">License</a></li>
 </ul>
 
           </div>
@@ -345,10 +346,6 @@
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -361,6 +358,13 @@
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>

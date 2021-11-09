@@ -91,7 +91,7 @@
         
         <section id="examples">
 <span id="id1"></span><h1>Examples</h1>
-<p>If you are excited about using <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, these examples may help you to
+<p>If you are excited about using COMPAS CEM, these examples may help you to
 get started.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -132,8 +132,9 @@ get started.</p>
 </ul>
 </li>
 <li class="nav-item"><a class="nav-link reference internal" href="api.html">API Reference</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="changelog.html">Changelog</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="citing.html">Citing</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="license.html">License</a></li>
 </ul>
 
           </div>
@@ -243,10 +244,6 @@ get started.</p>
     hljs.initHighlighting();
     anchors.add();
 
-    $('.nav-versions .dropdown-item').filter(function(i, ver) {
-      return window.location.href.startsWith(ver.href);
-    }).addClass("active");
-
   });
 
 
@@ -259,6 +256,13 @@ get started.</p>
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
+
+      var selected_version = $('.nav-versions .dropdown-item').filter(function(i, ver) {
+        return window.location.href.startsWith(ver.href);
+      });
+      selected_version.addClass('active');
+      $("#bd-versions").text(selected_version.text());
+
     })
   }
   </script>
