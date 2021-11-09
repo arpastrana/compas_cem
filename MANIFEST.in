@@ -8,8 +8,8 @@ prune tests
 prune temp
 
 include LICENSE
-include README.md
-include AUTHORS.md
+include README.rst
+include AUTHORS.rst
 include CHANGELOG.rst
 include requirements.txt
 
