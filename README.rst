@@ -2,25 +2,6 @@
 COMPAS CEM
 ********************************************************************************
 
-.. _COMPAS: https://compas.dev/
-.. _COMPAS CEM Docs: https://arpastrana.github.io/compas_cem/latest/index.html
-.. _CEM Framework: https://arxiv.org/abs/2111.02607
-.. _Rafael Pastrana: https://pastrana.xyz/
-.. _Princeton: https://soa.princeton.edu/
-.. _Ole Ohlbrock: https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en
-.. _Pierluigi D'Acunto: https://www.professoren.tum.de/en/dacunto-pierluigi
-.. _Stefana Parascho: https://soa.princeton.edu/content/stefana-parascho
-.. _Anaconda: https://www.anaconda.com/
-.. _Rhino: https://www.rhino3d.com/
-.. _Blender: https://www.blender.org/
-.. _Grasshopper: https://grasshopper3d.com/
-.. _metaverse: https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27
-
-
-.. figure:: ./docs/images/staircase_24_fps_128_colors.gif
-    :figclass: figure
-    :class: figure-img img-fluid
-
 .. start-badges
 
 .. image:: https://github.com/arpastrana/compas_cem/workflows/build/badge.svg
@@ -48,6 +29,27 @@ COMPAS CEM
    :alt: Twitter follow
 
 .. end-badges
+
+.. _COMPAS: https://compas.dev/
+.. _COMPAS CEM Docs: https://arpastrana.github.io/compas_cem/latest/index.html
+.. _CEM Framework: https://arxiv.org/abs/2111.02607
+.. _Rafael Pastrana: https://pastrana.xyz/
+.. _Princeton: https://soa.princeton.edu/
+.. _Ole Ohlbrock: https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en
+.. _Pierluigi D'Acunto: https://www.professoren.tum.de/en/dacunto-pierluigi
+.. _Stefana Parascho: https://soa.princeton.edu/content/stefana-parascho
+.. _Anaconda: https://www.anaconda.com/
+.. _Rhino: https://www.rhino3d.com/
+.. _Blender: https://www.blender.org/
+.. _Grasshopper: https://grasshopper3d.com/
+.. _metaverse: https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27
+
+
+
+.. figure:: ./docs/images/staircase_24_fps_128_colors.gif
+    :figclass: figure
+    :class: figure-img img-fluid
+
 
 The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
 
