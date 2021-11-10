@@ -35,11 +35,11 @@ Main features
 
 * **Mix tension and compression forces:** Explore a wider spectrum of structural typologies by combining internal tension and compression forces in the same structure. Design space frames, bridges, tensegrities, and staircases and go beyond the conventional catalog of compression-only shells and cable-nets!
 
-* **Solve constrained form-finding problems efficiently:** Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar lengths, and controlling the reaction forces at the supports of a structure. Do so efficiently using **automatic differentiation** and gradient-based optimization.
+* **Solve constrained form-finding problems efficiently via automatic differentiation:** Generate forms in static equilibrium that simultaneously meet a priori design constraints such as best-fitting a global target shape, restraining bar lengths, and controlling the reaction forces at the supports of a structure.
 
-* **Usable across 3D modeling software and operating systems:**  is written in Python. It runs on Windows, MacOS and Linux (perhaps one day in the `metaverse`_) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like `Rhino`_, `Blender`_, and `Grasshopper`_. As a `COMPAS`_ extension, **COMPAS CEM** offers native integration and data exchange with other extensions and plugins in the `COMPAS`_ ecosystem.
+* **Usable across different 3D modeling software and operating systems:** COMPAS CEM runs on Windows, MacOS and Linux (perhaps one day also in the `metaverse`_) and it does not depend on any CAD software to work. However, it provides the necessary interfaces to be seamlessly used inside popular design environments like `Rhino`_, `Blender`_, and `Grasshopper`_. As a `COMPAS`_ extension, COMPAS CEM offers native integration and data exchange with other extensions and plugins in the COMPAS ecosystem.
 
-* **Move those sliders with the Grasshopper plugin:** Are you a `Grasshopper`_ person? Worry not. **COMPAS CEM** also ships as a precooked `Grasshopper`_ plugin so that you can readily integrate our constrained form-finding engine into your next spaghetti pipeline 🍝.
+* **Move those sliders with the Grasshopper plugin:** Are you a `Grasshopper`_ person? Worry not. COMPAS CEM is shipped too as a precooked Grasshopper plugin to readily integrate our constrained form-finding engine into your next spaghetti pipeline 🍝.
 
 
 Credits

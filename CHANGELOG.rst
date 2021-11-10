@@ -26,19 +26,6 @@ Unreleased
 
 **Changed**
 
-**Fixed**
-
-**Deprecated**
-
-**Removed**
-
-0.2.0
-----------
-
-**Added**
-
-**Changed**
-
 * Changed reaction forces display color from dark green to dark gray.
 * Changed loads display color from light green to dark green.
 
@@ -53,7 +40,6 @@ Unreleased
 
 * Removed support for gradient-free NLopt optimization algorithms.
 * Dropped "LD" subscript to identify NLopt optimization algorithms.
-
 
 0.1.15
 ----------
@@ -160,19 +146,6 @@ Unreleased
 
 **Removed**
 
-0.1.10
-----------
-
-**Added**
-
-**Changed**
-
-**Fixed**
-
-**Deprecated**
-
-**Removed**
-
 0.1.9
 ----------
 
@@ -207,32 +180,6 @@ Unreleased
 
 * Removed `None` from default arguments in optimization constraints and parameters.
 
-0.1.8
-----------
-
-**Added**
-
-**Changed**
-
-**Fixed**
-
-**Deprecated**
-
-**Removed**
-
-0.1.7
-----------
-
-**Added**
-
-**Changed**
-
-**Fixed**
-
-**Deprecated**
-
-**Removed**
-
 0.1.6
 ----------
 
@@ -254,19 +201,6 @@ Unreleased
 **Removed**
 
 * Removed `compas_cem.rhino_install`
-
-0.1.5
-----------
-
-**Added**
-
-**Changed**
-
-**Fixed**
-
-**Deprecated**
-
-**Removed**
 
 0.1.4
 ----------
