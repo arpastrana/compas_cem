@@ -110,9 +110,9 @@ form = optimizer.solve_nlopt(topology, algorithm="LBFGS", iters=1000, eps=1e-6)
 
 # print out results
 print("Topology. # Nodes: {}, # Edges: {}".format(topology.number_of_nodes(),
-                                              topology.number_of_edges()))
+                                                  topology.number_of_edges()))
 print("Optimizer. # Parameters {}, # Constraints {}".format(optimizer.number_of_parameters(),
-                                                     optimizer.number_of_constraints()))
+                                                            optimizer.number_of_constraints()))
 print("Elapsed time: {}".format(time() - start))
 
 # the following values should be lower or equal to eps

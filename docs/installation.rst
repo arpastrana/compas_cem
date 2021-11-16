@@ -29,7 +29,7 @@ Here we chose the name of the environment to be ``cem``, but you can call it ``s
 
 ::
 
-    conda create -n cem COMPAS
+    conda create -n cem COMPAS==1.8.1
 
 
 2. Activate the virtual environment

@@ -15,6 +15,8 @@ Unreleased
 
 **Fixed**
 
+* Pinned COMPAS dependency to version 1.8.1 due to NetworkPlotter deprecation.
+
 **Deprecated**
 
 **Removed**

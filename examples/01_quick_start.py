@@ -37,7 +37,6 @@ topology.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
 # assemble trails
 topology.build_trails()
 
-# print("trails", topology.trails(), "*trail edges", list(topology.trail_edges()))
 # calculate equilibrium
 form = static_equilibrium(topology, eta=1e-6, tmax=100, verbose=True)
 
