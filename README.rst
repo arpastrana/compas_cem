@@ -20,8 +20,8 @@ COMPAS CEM
    :target: https://pypi.org/project/compas-cem
    :alt: Python versions
 
-.. image:: https://zenodo.org/badge/107952684.svg
-   :target: https://zenodo.org/badge/latestdoi/107952684
+.. image:: https://zenodo.org/badge/278780552.svg
+   :target: https://zenodo.org/badge/latestdoi/278780552
    :alt: Zenodo DOI
 
 .. image:: https://img.shields.io/twitter/follow/compas_dev?style=social
