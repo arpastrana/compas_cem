@@ -21,14 +21,16 @@ And the code repository:
 
 .. code-block:: latex
 
-    @misc{compas_cem,
+    @software{compas_cem,
         title={{COMPAS~CEM}: The {Combinatorial Equilibrium Modeling} framework for {COMPAS}},
         author={Pastrana, Rafael and
                 Ohlbrock, Patrick Ole and
                 D'Acunto, Pierluigi and
                 Parascho, Stefana},
-        year={2020-2021}
-        url={https://github.com/arpastrana/compas_cem}}
+        year={2021},
+        doi={10.5281/zenodo.5705740},
+        url={https://doi.org/10.5281/zenodo.5705740},
+        note={https://https://arpastrana.github.io/compas\_cem}}
 
 
 Authors

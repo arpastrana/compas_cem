@@ -13,6 +13,8 @@ Unreleased
 
 **Changed**
 
+- Changed reaction force global color from dark blue to dark gray
+
 **Fixed**
 
 **Deprecated**
