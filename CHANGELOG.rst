@@ -11,6 +11,9 @@ Unreleased
 
 **Added**
 
+- Added spiral staircase ghpython example
+- Added Jenssen tensegrity ghpython example
+
 **Changed**
 
 - Changed reaction force global color from dark blue to dark gray

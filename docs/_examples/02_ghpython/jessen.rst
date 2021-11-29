@@ -1,5 +1,5 @@
 ================================================================================
-03. Jessen Tensegrity
+B. Jessen Tensegrity
 ================================================================================
 
 .. figure:: ../../_images/tensegrity_jessen.png
@@ -10,6 +10,6 @@
 
    Download the Grasshopper file `here <https://github.com/arpastrana/compas_cem/blob/main/examples/ghpython/tensegrity_jessen.ghx>`_.
 
-.. figure:: ../../_images/tensegrity_jessen.png
+.. figure:: ../../_images/tensegrity_jessen_gh.png
     :figclass: figure
     :class: figure-img img-fluid
