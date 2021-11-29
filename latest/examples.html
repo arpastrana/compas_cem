@@ -104,8 +104,9 @@ get started.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="_examples/02_ghpython.html">Grasshopper</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_examples/02_ghpython/bridge_3d.html">01. Bridge 3D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_examples/02_ghpython/spiral.html">02. Spiral Staircase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/02_ghpython/bridge_3d.html">A. Tubular Bridge in 3D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/02_ghpython/jessen.html">B. Jessen Tensegrity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_examples/02_ghpython/spiral.html">C. Spiral Staircase</a></li>
 </ul>
 </li>
 </ul>
@@ -258,6 +259,8 @@ get started.</p>
   if (url) {
     $.get(url, res=>{
       var lines = res.match(/[^\r\n]+/g);
+      lines.sort( (a, b) => a.localeCompare(b, undefined, { numeric:true }) );
+      lines.reverse();
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });

@@ -97,6 +97,10 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <section id="unreleased">
 <h2>Unreleased</h2>
 <p><strong>Added</strong></p>
+<ul class="simple">
+<li><p>Added spiral staircase ghpython example</p></li>
+<li><p>Added Jenssen tensegrity ghpython example</p></li>
+</ul>
 <p><strong>Changed</strong></p>
 <ul class="simple">
 <li><p>Changed reaction force global color from dark blue to dark gray</p></li>
@@ -463,6 +467,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
   if (url) {
     $.get(url, res=>{
       var lines = res.match(/[^\r\n]+/g);
+      lines.sort( (a, b) => a.localeCompare(b, undefined, { numeric:true }) );
+      lines.reverse();
       lines.forEach(version => {
         $("#doc_version_list").append("<a class=\"dropdown-item\" href=\""+ docs_site + version + "\">" + version + "</a>");
       });
