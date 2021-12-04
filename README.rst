@@ -24,6 +24,10 @@ COMPAS CEM
    :target: https://zenodo.org/badge/latestdoi/278780552
    :alt: Zenodo DOI
 
+.. image:: https://img.shields.io/badge/arXiv-2111.02607-b31b1b.svg
+   :target: https://arxiv.org/abs/2111.02607
+   :alt: ArXiv paper
+
 .. image:: https://img.shields.io/twitter/follow/compas_dev?style=social
    :target: https://twitter.com/compas_dev
    :alt: Twitter follow
