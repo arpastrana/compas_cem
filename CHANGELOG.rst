@@ -13,6 +13,8 @@ Unreleased
 
 - Added spiral staircase ghpython example
 - Added Jenssen tensegrity ghpython example
+- Added tube bridge 3d ghpython example
+- Added bridge 2d ghpython example
 
 **Changed**
 
