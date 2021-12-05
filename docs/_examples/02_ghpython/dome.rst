@@ -1,15 +1,15 @@
 ================================================================================
-B. Tubular Bridge in 3D
+C. Circular Dome
 ================================================================================
 
-.. figure:: ../../_images/bridge_3d.png
+.. figure:: ../../_images/dome.png
     :figclass: figure
     :class: figure-img img-fluid
 
 .. note::
 
-   Download the `Grasshopper file <https://github.com/arpastrana/compas_cem/blob/main/examples/ghpython/bridge_3d.ghx>`_.
+   Download the `Grasshopper file <https://github.com/arpastrana/compas_cem/blob/main/examples/ghpython/dome.ghx>`_.
 
-.. figure:: ../../_images/bridge_3d_gh.png
+.. figure:: ../../_images/dome_gh.png
     :figclass: figure
     :class: figure-img img-fluid

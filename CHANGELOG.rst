@@ -15,6 +15,7 @@ Unreleased
 - Added Jenssen tensegrity ghpython example
 - Added tube bridge 3d ghpython example
 - Added bridge 2d ghpython example
+- Added dome ghpython example
 
 **Changed**
 
