@@ -62,27 +62,6 @@ command line and hit enter:
 If no errors show up, celebrate 🎉! You have a working installation of **COMPAS CEM**.
 
 
-Update COMPAS CEM
-=================
-
-If you installed COMPAS CEM one day with ``pip`` and you want to update it to the latest available version, the update command is the following:
-
-::
-
-    pip install --upgrade compas-cem
-
-
-Alternatively, if you want to switch to a specific version, type this:
-
-::
-
-    pip install compas-cem==0.16.1
-
-.. note::
-
-   If you update COMPAS CEM and you had installed the grasshopper plugin, the components already in use may no longer work.
-
-
 Install the Grasshopper Plugin
 ==============================
 
@@ -133,3 +112,24 @@ Launch grasshopper and start dropping COMPAS CEM components onto the canvas! Sen
 .. note::
 
    The COMPAS CEM plugin for grasshopper is a collection of ``.ghuser`` objects. As such, they have one important limitation: once used in a document, they forget who they are. The don't know they were created out of a ghuser component, they will be simple GHPython components. This has an important consequence: if you update COMPAS CEM, those components already in use will NOT be automatically updated.
+
+
+Update COMPAS CEM
+=================
+
+If you installed COMPAS CEM one day in the past with ``pip`` and you want to update it to the latest available version, the update command is the following:
+
+::
+
+    pip install --upgrade compas-cem
+
+
+Alternatively, if you want to switch to a specific version, type this:
+
+::
+
+    pip install compas-cem==0.16.1
+
+.. note::
+
+   If you update COMPAS CEM and you had installed the grasshopper plugin, the components already in use may no longer work.
