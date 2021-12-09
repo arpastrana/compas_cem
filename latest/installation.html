@@ -128,21 +128,6 @@ command line and hit enter:</p>
 <p>If no errors show up, celebrate 🎉! You have a working installation of <strong>COMPAS CEM</strong>.</p>
 </section>
 </section>
-<section id="update-compas-cem">
-<h2>Update COMPAS CEM</h2>
-<p>If you installed COMPAS CEM one day with <code class="docutils literal notranslate"><span class="pre">pip</span></code> and you want to update it to the latest available version, the update command is the following:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install --upgrade compas-cem
-</code></pre></div>
-</div>
-<p>Alternatively, if you want to switch to a specific version, type this:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install compas-cem<span class="o">==</span><span class="m">0</span>.16.1
-</code></pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you update COMPAS CEM and you had installed the grasshopper plugin, the components already in use may no longer work.</p>
-</div>
-</section>
 <section id="install-the-grasshopper-plugin">
 <h2>Install the Grasshopper Plugin</h2>
 <p>There will be times when modeling a complex structure is easier to do with a few mouse-clicks instead of a hundred lines of code.
@@ -184,6 +169,21 @@ Rhino. If you were wondering, the last two are installed automatically when we i
 <p>The COMPAS CEM plugin for grasshopper is a collection of <code class="docutils literal notranslate"><span class="pre">.ghuser</span></code> objects. As such, they have one important limitation: once used in a document, they forget who they are. The don’t know they were created out of a ghuser component, they will be simple GHPython components. This has an important consequence: if you update COMPAS CEM, those components already in use will NOT be automatically updated.</p>
 </div>
 </section>
+</section>
+<section id="update-compas-cem">
+<h2>Update COMPAS CEM</h2>
+<p>If you installed COMPAS CEM one day in the past with <code class="docutils literal notranslate"><span class="pre">pip</span></code> and you want to update it to the latest available version, the update command is the following:</p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install --upgrade compas-cem
+</code></pre></div>
+</div>
+<p>Alternatively, if you want to switch to a specific version, type this:</p>
+<div class="language-bash notranslate"><div class="highlight"><pre><code><span></span>pip install compas-cem<span class="o">==</span><span class="m">0</span>.16.1
+</code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you update COMPAS CEM and you had installed the grasshopper plugin, the components already in use may no longer work.</p>
+</div>
 </section>
 </section>
 
@@ -228,13 +228,13 @@ Rhino. If you were wondering, the last two are installed automatically when we i
 <li class="nav-item"><a class="nav-link reference internal" href="#install-compas-cem-via-pip">3. Install COMPAS CEM via pip</a></li>
 </ul>
 </li>
-<li class="nav-item"><a class="nav-link reference internal" href="#update-compas-cem">Update COMPAS CEM</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#install-the-grasshopper-plugin">Install the Grasshopper Plugin</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#remove-any-leftovers">1. Remove any leftovers</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#link-compas-cem">2. Link COMPAS CEM</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#check-your-grasshopper-installation">3. Check your Grasshopper installation</a></li>
 </ul>
 </li>
+<li class="nav-item"><a class="nav-link reference internal" href="#update-compas-cem">Update COMPAS CEM</a></li>
 </ul>
 </li>
 </ul>
