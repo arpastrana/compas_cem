@@ -526,6 +526,23 @@ class TopologyDiagram(Diagram):
         """
         return self.node_attribute(key=node, name="type") == "_origin"
 
+    def is_node_support(self, node):
+        """
+        Tests if a node is a support node.
+
+        Parameters
+        ----------
+        node : ``int``
+            A node key.
+
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if the node is a support node.
+            ``False`` otherwise.
+        """
+        return self.node_attribute(key=node, name="type") == "support"
+
 # ==============================================================================
 # Edge Predicates
 # ==============================================================================

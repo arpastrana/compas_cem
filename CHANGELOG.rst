@@ -16,6 +16,7 @@ Unreleased
 - Added tube bridge 3d ghpython example
 - Added bridge 2d ghpython example
 - Added dome ghpython example
+- Implemented `TopologyDiagram.is_node_support()`
 
 **Changed**
 
