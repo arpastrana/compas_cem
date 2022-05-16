@@ -10,17 +10,18 @@ from compas.geometry import normalize_vector
 from compas.geometry import translate_points
 
 from compas.utilities import geometric_key
-from compas_plotters import NetworkPlotter
+# from compas_plotters import NetworkPlotter
+from compas_plotters.artists import NetworkArtist
 
 from compas_cem import COLORS
 
 
-__all__ = ["FormPlotter"]
+__all__ = ["FormArtist"]
 
 
-class FormPlotter(NetworkPlotter):
+class FormArtist(NetworkArtist):
     """
-    A plotter tailored to draw form-related matters.
+    An artist that draws a form diagram.
 
     Parameters
     ----------
@@ -28,7 +29,7 @@ class FormPlotter(NetworkPlotter):
         The form diagram to plot.
     """
     def __init__(self, form_diagram, *args, **kwargs):
-        super(FormPlotter, self).__init__(form_diagram, *args, **kwargs)
+        super(FormArtist, self).__init__(form_diagram, *args, **kwargs)
 
         self._edge_state_colors = {-1: COLORS["compression"],
                                    1: COLORS["tension"],
@@ -158,7 +159,7 @@ class FormPlotter(NetworkPlotter):
             else:
                 nc[node] = cmap["default"]
 
-        super(FormPlotter, self).draw_nodes(facecolor=nc, *args, **kwargs)
+        super(FormArtist, self).draw_nodes(facecolor=nc, *args, **kwargs)
 
     def draw_edges(self, *args, **kwargs):
         """
@@ -199,7 +200,7 @@ class FormPlotter(NetworkPlotter):
         if text and text != "key":
             kwargs["text"] = self._text_labels_edges(text)
 
-        return super(FormPlotter, self).draw_edges(color=ec, *args, **kwargs)
+        return super(FormArtist, self).draw_edges(color=ec, *args, **kwargs)
 
     def draw_loads(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
         """
@@ -320,7 +321,7 @@ class FormPlotter(NetworkPlotter):
 
             arrows.append(arrow)
 
-        super(FormPlotter, self).draw_arrows(arrows)
+        super(FormArtist, self).draw_arrows(arrows)
 
     def draw_segments(self, segments, color=(50, 50, 50), width=0.5, ls="--"):
         """
@@ -347,7 +348,7 @@ class FormPlotter(NetworkPlotter):
 
             lines.append(line)
 
-        lines = super(FormPlotter, self).draw_lines(lines)
+        lines = super(FormArtist, self).draw_lines(lines)
         lines.set_linestyle(ls)
 
         return lines
