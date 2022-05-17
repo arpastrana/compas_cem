@@ -9,8 +9,11 @@ from compas.geometry import scale_vector
 from compas.geometry import normalize_vector
 from compas.geometry import translate_points
 
+from compas.geometry import Vector
+from compas.geometry import Point
+
 from compas.utilities import geometric_key
-# from compas_plotters import NetworkPlotter
+
 from compas_plotters.artists import NetworkArtist
 
 from compas_cem import COLORS
@@ -28,8 +31,20 @@ class FormArtist(NetworkArtist):
     form_diagram : :class:`compas_cem.diagrams.FormDiagram`
         The form diagram to plot.
     """
-    def __init__(self, form_diagram, *args, **kwargs):
-        super(FormArtist, self).__init__(form_diagram, *args, **kwargs)
+    def __init__(self,
+                 form_diagram,
+                 nodetext=None,
+                 edgetext=None,
+                 loadtol=1e-3,
+                 loadscale=1.0,
+                 reactiontol=1e-3,
+                 reactionscale=1.0,
+                 show_loads=True,
+                 show_reactions=True,
+                 show_nodetext=False,
+                 show_edgetext=False,
+                 **kwargs):
+        super(FormArtist, self).__init__(form_diagram, **kwargs)
 
         self._edge_state_colors = {-1: COLORS["compression"],
                                    1: COLORS["tension"],
@@ -38,8 +53,28 @@ class FormArtist(NetworkArtist):
         self._node_colors = {"support": COLORS["node_support"],
                              "default": COLORS["node"]}
 
-        self._form = self.datastructure
-        self._float_precision = "3f"
+        self._form = self.network
+
+        self._float_precision = "2f"
+
+        self.load_color = COLORS["load"]
+        self.load_attrs = ["qx", "qy", "qz"]
+        self.load_tol = loadtol
+        self.load_scale = loadscale
+
+        self.reaction_color = COLORS["support_force"]
+        self.reaction_attrs = ["rx", "ry", "rz"]
+        self.reaction_tol = reactiontol
+        self.reaction_scale = reactionscale
+
+        self.edge_text = self._edge_textlabel(edgetext)
+        self.node_text = self._node_textlabel(nodetext)
+
+        self.show_loads = show_loads
+        self.show_reactions = show_reactions
+        self.show_nodetext = show_nodetext
+        self.show_edgetext = show_edgetext
+
 
     @property
     def form(self):
@@ -91,26 +126,7 @@ class FormArtist(NetworkArtist):
         """
         return self._float_precision
 
-    def save(self, filepath, tight=True, autoscale=True, bbox_inches="tight", pad_inches=0.0, **kwargs):
-        """
-        Saves the plot to a file.
-
-        Parameters
-        ----------
-        filepath : str
-            Full path of the file.
-        """
-        if autoscale:
-            self.axes.autoscale(tight=False)
-
-        if tight:
-            plt.tight_layout()
-            kwargs_tight = {"bbox_inches": bbox_inches, "pad_inches": pad_inches}
-            kwargs.update(kwargs_tight)
-
-        plt.savefig(filepath, **kwargs)
-
-    def draw_nodes(self, *args, **kwargs):
+    def draw_nodes(self, **kwargs):
         """
         Draws the nodes of a ``FormDiagram``.
 
@@ -146,22 +162,21 @@ class FormArtist(NetworkArtist):
         assigned individually.
         """
         cmap = self.node_colors
-        ds = self.datastructure
 
         text = kwargs.get("text")
         if text and text != "key":
             kwargs["text"] = self._text_labels_nodes(text)
 
         nc = {}
-        for node in ds.nodes():
-            if ds.is_node_support(node):
+        for node in self.form.nodes():
+            if self.form.is_node_support(node):
                 nc[node] = cmap["support"]
             else:
                 nc[node] = cmap["default"]
 
-        super(FormArtist, self).draw_nodes(facecolor=nc, *args, **kwargs)
+        super(FormArtist, self).draw_nodes(color=nc, **kwargs)
 
-    def draw_edges(self, *args, **kwargs):
+    def draw_edges(self, **kwargs):
         """
         Draws the edges of a ``FormDiagram``.
 
@@ -192,42 +207,34 @@ class FormArtist(NetworkArtist):
         that maps ``{edge_key: attribute}`` is supplied, specific values can be
         assigned individually.
         """
-        ds = self.datastructure
         cmap = self.edge_state_colors
-        ec = {e: cmap[copysign(1.0, ds.edge_attribute(e, "force") or 0.0)] for e in ds.edges()}
+        ec = {e: cmap[copysign(1.0, self.form.edge_attribute(e, "force") or 0.0)] for e in self.form.edges()}
 
         text = kwargs.get("text")
         if text and text != "key":
             kwargs["text"] = self._text_labels_edges(text)
 
-        return super(FormArtist, self).draw_edges(color=ec, *args, **kwargs)
+        return super(FormArtist, self).draw_edges(color=ec, **kwargs)
 
-    def draw_loads(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
+    def draw_loads(self, nodes=None):
         """
         Draws the node loads in a ``FormDiagram`` as scaled arrows.
 
         Parameters
         ----------
-        keys : ``list``
+        nodes : ``list``
             The list of node keys where to draw forces.
-            If nodes is ``None``, all nodes in will be considered.
+            If nodes is ``None``, all nodes are considered.
             Defaults to ``None``.
-        scale : ``float``
-            The scale of the load arrows. Defaults to ``1.0``.
-        width : ``float``
-            The arrows uniform display width. Defaults to ``1.0``.
-        gap : ``float``
-            The offset between the node and the load. Defaults to ``0.2``.
-        tol : ``float``
-            The minimum force magnitude to draw. Defaults to ``1e-3``.
         """
-        keys = keys or list(self.datastructure.nodes())
-        attrs = ["qx", "qy", "qz"]
-        color = COLORS["load"]
-        shift = {key: False for key in keys}
-        self._draw_forces(keys, attrs, scale, color, width, shift, gap, tol)
+        self._draw_forces(nodes=self.nodes,
+                          attr_names=self.load_attrs,
+                          scale=self.load_scale,
+                          color=self.load_color,
+                          tol=self.load_tol,
+                          shift={key: False for key in self.nodes})
 
-    def draw_reactions(self, keys=None, scale=1.0, width=1.0, gap=0.05, tol=1e-3):
+    def draw_reactions(self, keys=None):
         """
         Draws the support reaction forces in a ``FormDiagram`` as scaled arrows.
 
@@ -237,123 +244,77 @@ class FormArtist(NetworkArtist):
             The list of node keys where to draw forces.
             If nodes is ``None``, all nodes in will be considered.
             Defaults to ``None``.
-        scale : ``float``
-            The scale of the residual arrows. Defaults to ``1.0``.
-        width : ``float``
-            The arrows uniform display width. Defaults to ``1.0``.
-        gap : ``float``
-            The offset between the node and the force. Defaults to ``0.2``.
-        tol : ``float``
-            The minimum force magnitude to draw. Defaults to ``1e-3``.
         """
-        keys = keys or list(self.datastructure.support_nodes())
-        attrs = ["rx", "ry", "rz"]
-        color = COLORS["support_force"]
+        def _reaction_shifts():
+            # TODO: needs a more robust check for arrow orientation
+            # what we need is to know whether the arrow needs a full shift.
+            # here we say we shift if the connected trail edge is in compression
+            shift = {}
+            for key in self.nodes:
+                # every support must connect to only one trail edge
+                s = False
+                forces = [self.form.edge_force(e) for e in self.form.connected_edges(key)]
+                max_force = max(forces, key=lambda f: fabs(f))
+                if max_force < 0.0:
+                    s = True
+                shift[key] = s
+            return shift
 
-        # TODO: needs a more robust check for arrow orientation
-        # what we need is to know whether the arrow needs a full shift.
-        # here we say we shift if the connected trail edge is in compression
-        form = self.datastructure
-        shift = {}
-        for key in keys:
-            # every support must connect to only one trail edge
-            s = False
-            forces = [form.edge_force(e) for e in form.connected_edges(key)]
-            max_force = max(forces, key=lambda f: fabs(f))
-            if max_force < 0.0:
-                s = True
-            shift[key] = s
+        # keys = keys or list(self.form.support_nodes())
+        self._draw_forces(nodes=self.nodes,
+                          attr_names=self.reaction_attrs,
+                          scale=self.reaction_scale,
+                          color=self.reaction_color,
+                          tol=self.reaction_tol,
+                          shift=_reaction_shifts())
 
-        self._draw_forces(keys, attrs, scale, color, width, shift, gap, tol)
-
-    def _draw_forces(self, keys, attrs, scale, color, width, shift, gap, tol):
+    def _draw_forces(self, nodes, attr_names, scale, color, shift, tol):
         """
-        Base method to draw forces (residuals or loads) as scaled arrows.
+        Draw forces (loads or reaction forces) as scaled arrows.
 
         Parameters
         ----------
-        keys : ``list``
-            The list of node keys where to draw forces.
-        attrs : ``list``
+        nodes : ``list``
+            The list of node identifiers where to draw forces.
+        attr_names : ``list``
             The attribute names of the force vector to draw.
         scale : ``float``
             The forces scale factor.
         color : ``tuple``
             The forces' color in rgb.
-        width : ``float``
-            The forces  display width.
         shift : ``bool``
-            A flat to shift an arrow one length along its own axis.
-        gap : ``float``
-            The offset between the node and the force.
+            A flag to shift an arrow one length along its own axis.
         tol : ``float``
             The minimum force magnitude to draw.
         """
-        ds = self.datastructure
-        arrows = []
+        for node in nodes:
 
-        for node in keys:
-            q_vec = ds.node_attributes(node, attrs)
+            q_vec = self.form.node_attributes(node, attr_names)
             q_vec_scaled = scale_vector(q_vec, scale)
             q_vec_norm = normalize_vector(q_vec)
             q_len = length_vector(q_vec)
 
+            # skip if force is smaller than tolerance
             if q_len < tol:
                 continue
 
-            arrow = {}
-            start = ds.node_xyz(node)
+            start = self.form.node_xyz(node)
             end = add_vectors(start, q_vec_scaled)
 
             # shift
-            gap_arrow = gap
+            gap_arrow = self.node_size[node]
             if shift[node]:
-                gap_arrow = (gap + length_vector(q_vec_scaled)) * -1
+                gap_arrow = (gap_arrow + length_vector(q_vec_scaled)) * -1
 
             gap_vector = scale_vector(q_vec_norm, gap_arrow)
             start, end = translate_points([start, end], gap_vector)
 
-            # create gap
-            arrow["start"] = start
-            arrow["end"] = end
-            arrow["color"] = color
-            arrow["width"] = width
+            start = Point(*start)
+            force = Vector.from_start_end(start, end)
 
-            arrows.append(arrow)
+            self.plotter.add(force, point=start, color=color)
 
-        super(FormArtist, self).draw_arrows(arrows)
-
-    def draw_segments(self, segments, color=(50, 50, 50), width=0.5, ls="--"):
-        """
-        Draws additional line segments on a ``FormDiagram``.
-
-        Parameters
-        ----------
-        segments : ``list``
-            The line segments as tuples of xyz coordinates.
-        color : ``tuple``
-            The lines uniform color in rgb. Defaults to gray, ``(40, 40, 40)``.
-        width : ``float``
-            The lines' uniform display width. Defaults to ``0.5``.
-        """
-        lines = []
-        for segment in segments:
-            line = {}
-            start, end = segment
-
-            line["start"] = start
-            line["end"] = end
-            line["color"] = color
-            line["width"] = width
-
-            lines.append(line)
-
-        lines = super(FormArtist, self).draw_lines(lines)
-        lines.set_linestyle(ls)
-
-        return lines
-
-    def _text_labels_nodes(self, text_tag):
+    def _node_textlabel(self, text_tag):
         """
         Generates text labels to plot on the nodes of a ``FormDiagram``.
 
@@ -364,16 +325,15 @@ class FormArtist(NetworkArtist):
 
         Returns
         -------
-        text_labels : ``list``
-            A list of text labels
+        text_labels : ``dict``
+            A dictionary of text labels
         """
         def gkey_format(x):
-            return geometric_key(ds.node_xyz(x), precision)
+            return geometric_key(self.form.node_xyz(x), precision)
 
         def key_gkey_format(x):
             return "{} / {}".format(x, gkey_format(x))
 
-        ds = self.datastructure
         precision = self.float_precision
 
         tags_formatter = {"xyz": gkey_format,
@@ -385,13 +345,13 @@ class FormArtist(NetworkArtist):
         text_labels = {}
         formatter = tags_formatter[text_tag]
 
-        for node in ds.nodes():
+        for node in self.form.nodes():
             label = formatter(node)
             text_labels[node] = label
 
         return text_labels
 
-    def _text_labels_edges(self, text_tag):
+    def _edge_textlabel(self, text_tag):
         """
         Generates text labels to plot on the edges of a ``FormDiagram``.
 
@@ -403,19 +363,18 @@ class FormArtist(NetworkArtist):
 
         Returns
         -------
-        text_labels : ``list``
-            A list of text labels
+        text_labels : ``dict``
+            A dictionary of text labels
         """
         def force_format(x):
-            return "{0:.{1}}".format(ds.edge_force(x), precision)
+            return "{0:.{1}}".format(self.form.edge_force(x), precision)
 
         def length_format(x):
-            return "{0:.{1}}".format(ds.edge_length(*x), precision)
+            return "{0:.{1}}".format(self.form.edge_length(*x), precision)
 
         def force_length_format(x):
             return "f: {} / lt: {}".format(force_format(x), length_format(x))
 
-        ds = self.datastructure
         precision = self.float_precision
 
         tags_formatter = {"force": force_format,
@@ -428,11 +387,49 @@ class FormArtist(NetworkArtist):
         text_labels = {}
         formatter = tags_formatter[text_tag]
 
-        for edge in ds.edges():
+        for edge in self.form.edges():
             label = formatter(edge)
             text_labels[edge] = label
 
         return text_labels
+
+    def draw(self):
+        """
+        Draw nodes, edges, loads and labels.
+        """
+        self.clear()
+
+        if self.show_nodes:
+            self.draw_nodes()
+        if self.show_edges:
+            self.draw_edges()
+        if self.show_loads:
+            self.draw_loads()
+        if self.show_reactions:
+            self.draw_reactions()
+        if self.show_nodetext:
+            self.draw_nodelabels()
+        if self.show_edgetext:
+            self.draw_edgelabels()
+
+    # def save(self, filepath, tight=True, autoscale=True, bbox_inches="tight", pad_inches=0.0, **kwargs):
+    #     """
+    #     Saves the plot to a file.
+
+    #     Parameters
+    #     ----------
+    #     filepath : str
+    #         Full path of the file.
+    #     """
+    #     if autoscale:
+    #         self.axes.autoscale(tight=False)
+
+    #     if tight:
+    #         plt.tight_layout()
+    #         kwargs_tight = {"bbox_inches": bbox_inches, "pad_inches": pad_inches}
+    #         kwargs.update(kwargs_tight)
+
+    #     plt.savefig(filepath, **kwargs)
 
 
 if __name__ == "__main__":

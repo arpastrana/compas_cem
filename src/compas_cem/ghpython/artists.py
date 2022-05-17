@@ -224,6 +224,18 @@ class DiagramArtist(NetworkArtist):
             keys = [key for key in keys if filterer(key)]
         return keys
 
+    def clear_edges(self):
+        """
+        GH Artists are state-less. Therefore, clear does not have any effect.
+        """
+        pass
+
+    def clear_nodes(self):
+        """
+        GH Artists are state-less. Therefore, clear does not have any effect.
+        """
+        pass
+
 
 class FormArtist(DiagramArtist):
     """

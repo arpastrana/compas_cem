@@ -125,7 +125,7 @@ class TopologyArtist(NetworkArtist):
         """
         return self._float_precision
 
-    def draw_nodes(self, *args, **kwargs):
+    def draw_nodes(self, **kwargs):
         """
         Draws the nodes of a ``TopologyDiagram``.
 
@@ -165,7 +165,7 @@ class TopologyArtist(NetworkArtist):
         cmap["d"] = (255, 255, 255)  # default color
         nc = {n: cmap[ds.node_attribute(n, "type") or "d"] for n in ds.nodes()}
 
-        super(TopologyArtist, self).draw_nodes(color=nc, *args, **kwargs)
+        super(TopologyArtist, self).draw_nodes(color=nc, **kwargs)
 
     def draw_loads(self, nodes_load=None):
         """
@@ -203,7 +203,7 @@ class TopologyArtist(NetworkArtist):
                                  zorder=4000,
                                  linewidth=0.3)  # hardcoded, following value from COMPAS
 
-    def draw_edges(self, *args, **kwargs):
+    def draw_edges(self, **kwargs):
         """
         Draws the edges of a ``TopologyDiagram``.
 
@@ -256,7 +256,7 @@ class TopologyArtist(NetworkArtist):
                 attr_name = "force"
             ec[edge] = cmap[copysign(1.0, ds.edge_attribute(edge, attr_name))]
 
-        super(TopologyArtist, self).draw_edges(color=ec, *args, **kwargs)
+        super(TopologyArtist, self).draw_edges(color=ec, **kwargs)
         edges = self._edgecollection
         lsmap = self.edge_linestyles
         els = [lsmap[ds.edge_attribute(e, "type")] for e in keys]
