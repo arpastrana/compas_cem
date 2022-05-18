@@ -13,12 +13,13 @@ from compas_cem.supports import NodeSupport
 
 from compas_cem.equilibrium import static_equilibrium
 
-from compas_cem.plotters import TopologyPlotter
-from compas_cem.plotters import FormPlotter
-
 from compas_cem.optimization import Optimizer
 from compas_cem.optimization import TrailEdgeForceConstraint
 from compas_cem.optimization import DeviationEdgeParameter
+
+# from compas_cem.plotters import TopologyPlotter
+# from compas_cem.plotters import FormPlotter
+from compas_plotters import Plotter
 
 
 # global controls
@@ -79,28 +80,37 @@ if OPTIMIZE:
 
 if PLOT:
 
-    plotter = TopologyPlotter(topology, figsize=(16, 9))
-    plotter.draw_nodes(radius=0.05, text="key")
-    plotter.draw_loads(radius=0.05, draw_arrows=True, scale=0.5)
-    plotter.draw_edges()
+    plotter = Plotter()
+    plotter.add(topology, nodesize=0.3)
+    plotter.zoom_extents()
+    plotter.show()
+    # plotter = TopologyPlotter(topology, figsize=(16, 9))
+    # plotter.draw_nodes(radius=0.05, text="key")
+    # plotter.draw_loads(radius=0.05, draw_arrows=True, scale=0.5)
+    # plotter.draw_edges()
+    # plotter.show()
+
+    plotter = Plotter()
+    plotter.add(form, nodesize=0.3)
+    plotter.zoom_extents()
     plotter.show()
 
-    plotter = FormPlotter(form, figsize=(16, 9))
+    # plotter = FormPlotter(form, figsize=(16, 9))
 
-    keys = []
-    for node in form.nodes():
-        if form.is_node_support(node):
-            if length_vector(form.reaction_force(node)) <= 0.001:
-                continue
-        keys.append(node)
+    # keys = []
+    # for node in form.nodes():
+    #     if form.is_node_support(node):
+    #         if length_vector(form.reaction_force(node)) <= 0.001:
+    #             continue
+    #     keys.append(node)
 
-    # keys = None
+    # # keys = None
 
-    plotter.draw_nodes(keys=keys, radius=0.05, text="key-xyz")
-    plotter.draw_loads(keys=keys, scale=0.5)
-    plotter.draw_reactions(keys=keys, scale=0.5)
+    # plotter.draw_nodes(keys=keys, radius=0.05, text="key-xyz")
+    # plotter.draw_loads(keys=keys, scale=0.5)
+    # plotter.draw_reactions(keys=keys, scale=0.5)
 
-    keys = [edge for edge in form.edges() if fabs(form.edge_force(edge)) >= 0.001]
-    # keys = None
-    plotter.draw_edges(keys=keys, text="force-length")
-    plotter.show()
+    # keys = [edge for edge in form.edges() if fabs(form.edge_force(edge)) >= 0.001]
+    # # keys = None
+    # plotter.draw_edges(keys=keys, text="force-length")
+    # plotter.show()

@@ -7,8 +7,6 @@ from compas_cem.diagrams import TopologyDiagram
 from compas_cem.loads import NodeLoad
 from compas_cem.supports import NodeSupport
 
-from compas_cem.plotters import FormPlotter
-
 from compas_cem.equilibrium import static_equilibrium
 
 from compas_cem.optimization import Optimizer
@@ -17,6 +15,10 @@ from compas_cem.optimization import PointConstraint
 
 from compas_cem.optimization import TrailEdgeParameter
 from compas_cem.optimization import DeviationEdgeParameter
+
+from compas_cem.plotters import TopologyArtist
+
+from compas_plotters import Plotter
 
 
 # ------------------------------------------------------------------------------
@@ -124,23 +126,37 @@ if optimize:
 # Plotter
 # ------------------------------------------------------------------------------
 
-plotter = FormPlotter(form, figsize=(16, 9))
+plotter = Plotter()
+# plotter.add(form, nodesize=3.5)
+plotter.add(topology,
+            artist_type=TopologyArtist,
+            nodesize=3.5,
+            show_loads=True,
+            nodetext='key',
+            show_nodetext=True,
+            edgetext='index',
+            show_edgetext=True)
 
-plotter.draw_nodes(radius=0.30, text="key")
-plotter.draw_edges()
-plotter.draw_loads(scale=2.0, gap=0.75)
-plotter.draw_reactions(scale=2.0, gap=0.75)
-
-if optimize:
-    plotter.draw_segments(form_lines)
-
-    points = []
-    for key, constraint in optimizer.constraints.items():
-        if not isinstance(constraint, PointConstraint):
-            continue
-        pt = constraint.target()
-        points.append({"pos": pt[:2], "radius": 0.5, "facecolor": (255, 153, 0)})
-
-    plotter.draw_points(points)
-
+plotter.zoom_extents()
 plotter.show()
+
+# plotter = FormPlotter(form, figsize=(16, 9))
+
+# plotter.draw_nodes(radius=0.30, text="key")
+# plotter.draw_edges()
+# plotter.draw_loads(scale=2.0, gap=0.75)
+# plotter.draw_reactions(scale=2.0, gap=0.75)
+
+# if optimize:
+#     plotter.draw_segments(form_lines)
+
+#     points = []
+#     for key, constraint in optimizer.constraints.items():
+#         if not isinstance(constraint, PointConstraint):
+#             continue
+#         pt = constraint.target()
+#         points.append({"pos": pt[:2], "radius": 0.5, "facecolor": (255, 153, 0)})
+
+#     plotter.draw_points(points)
+
+# plotter.show()

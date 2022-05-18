@@ -13,8 +13,6 @@ from compas_cem.diagrams import TopologyDiagram
 from compas_cem.elements import Node
 from compas_cem.elements import DeviationEdge
 
-from compas_cem.supports import NodeSupport
-
 from compas_cem.equilibrium import static_equilibrium
 
 from compas_cem.optimization import Optimizer
@@ -22,8 +20,9 @@ from compas_cem.optimization import Optimizer
 from compas_cem.optimization import TrailEdgeForceConstraint
 from compas_cem.optimization import DeviationEdgeParameter
 
-from compas_cem.plotters import FormPlotter
-from compas_cem.plotters import TopologyPlotter
+from compas_plotters import Plotter
+# from compas_cem.plotters import FormPlotter
+# from compas_cem.plotters import TopologyPlotter
 
 
 diameter = 1.0
@@ -124,27 +123,37 @@ print("Norm of the gradient of the objective function: {}".format(optimizer.grad
 # Plot topology
 # ------------------------------------------------------------------------------
 
-plotter = TopologyPlotter(topology, figsize=(16, 9))
-
-plotter.draw_loads(radius=0.01)
-plotter.draw_nodes(radius=0.01)
-plotter.draw_edges()
-
+plotter = Plotter()
+plotter.add(topology, nodesize=0.4)
+plotter.zoom_extents()
 plotter.show()
+
+# plotter = TopologyPlotter(topology, figsize=(16, 9))
+
+# plotter.draw_loads(radius=0.01)
+# plotter.draw_nodes(radius=0.01)
+# plotter.draw_edges()
+
+# plotter.show()
 
 # ------------------------------------------------------------------------------
 # Plot Form
 # ------------------------------------------------------------------------------
 
-plotter = FormPlotter(form, figsize=(16, 9))
-
-keys = list(topology.origin_nodes())
-plotter.draw_nodes(radius=0.01, keys=keys)
-
-# plot only edges with a force larger than 0.001
-keys = [edge for edge in form.edges() if fabs(form.edge_force(edge)) > 0.001]
-plotter.draw_edges(keys=keys)
-plotter.draw_loads(scale=0.1)
-plotter.draw_reactions(scale=0.10)
-
+plotter = Plotter()
+plotter.add(form, nodesize=0.4)
+plotter.zoom_extents()
 plotter.show()
+
+# plotter = FormPlotter(form, figsize=(16, 9))
+
+# keys = list(topology.origin_nodes())
+# plotter.draw_nodes(radius=0.01, keys=keys)
+
+# # plot only edges with a force larger than 0.001
+# keys = [edge for edge in form.edges() if fabs(form.edge_force(edge)) > 0.001]
+# plotter.draw_edges(keys=keys)
+# plotter.draw_loads(scale=0.1)
+# plotter.draw_reactions(scale=0.10)
+
+# plotter.show()
