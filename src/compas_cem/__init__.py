@@ -41,7 +41,7 @@ JSON_DATA = os.path.abspath(os.path.join(DATA, "json"))
 COLORS = {"tension": (227, 6, 75),  # red
           "compression": (12, 119, 184),  # blue
           "edge": (50, 50, 50),  # dark gray
-          "node": (255, 255, 255),  # green
+          "node": (255, 255, 255),  # white
           "node_support": (0, 150, 10),  # green
           "node_origin": (155, 100, 255),  # purple
           "support_force": (75, 75, 75),  # dark gray / green (0, 150, 10)
