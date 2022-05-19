@@ -2,6 +2,11 @@ import os
 
 from time import time
 
+from compas.geometry import Point
+from compas.geometry import Translation
+
+from compas_plotters import Plotter
+
 from compas_cem.diagrams import TopologyDiagram
 
 from compas_cem.loads import NodeLoad
@@ -17,20 +22,18 @@ from compas_cem.optimization import TrailEdgeParameter
 from compas_cem.optimization import DeviationEdgeParameter
 
 from compas_cem.plotters import TopologyArtist
-
-from compas_plotters import Plotter
+from compas_cem.plotters import FormArtist
 
 
 # ------------------------------------------------------------------------------
 # Data
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 HERE = os.path.dirname(__file__)
 IN = os.path.abspath(os.path.join(HERE, "03_bridge_2d.json"))
-optimize = True
 
 # ------------------------------------------------------------------------------
-# Topology Diagram
+# Load topology diagram from JSON
 # ------------------------------------------------------------------------------
 
 topology = TopologyDiagram.from_json(IN)
@@ -46,9 +49,8 @@ topology.add_support(NodeSupport(5))
 # Apply loads
 # ------------------------------------------------------------------------------
 
-load = [0.0, -1.0, 0.0]
-topology.add_load(NodeLoad(2, load))
-topology.add_load(NodeLoad(6, load))
+topology.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
+topology.add_load(NodeLoad(6, [0.0, -1.0, 0.0]))
 
 # ------------------------------------------------------------------------------
 # Generate trails
@@ -63,100 +65,97 @@ topology.build_trails()
 form = static_equilibrium(topology)
 
 # ------------------------------------------------------------------------------
-# Collect form edge lines
-# ------------------------------------------------------------------------------
-
-form_lines = [form.edge_coordinates(*edge) for edge in form.edges()]
-
-# ------------------------------------------------------------------------------
 # Initialize optimizer
 # ------------------------------------------------------------------------------
 
-if optimize:
-    optimizer = Optimizer()
+opt = Optimizer()
 
 # ------------------------------------------------------------------------------
 # Define constraints
 # ------------------------------------------------------------------------------
 
-    optimizer.add_constraint(PointConstraint(node=1, point=[-20.67, 42.7, 0.0]))
-    optimizer.add_constraint(PointConstraint(node=5, point=[15.7, 28.84, 0.0]))
+nodes_opt = [1, 5]
+target_points = [(-20.67, 42.7, 0.0), (15.7, 28.84, 0.0)]
+for node, target_point in zip(nodes_opt, target_points):
+    opt.add_constraint(PointConstraint(node, target_point))
 
 # ------------------------------------------------------------------------------
 # Define optimization parameters
 # ------------------------------------------------------------------------------
 
-    bound_t = 15.0
-    bound_d = 10.0
+for edge in topology.trail_edges():
+    opt.add_parameter(TrailEdgeParameter(edge, bound_low=15.0, bound_up=5.0))
 
-    for edge in topology.trail_edges():
-        optimizer.add_parameter(TrailEdgeParameter(edge, bound_t, bound_t))
-
-    for edge in topology.deviation_edges():
-        optimizer.add_parameter(DeviationEdgeParameter(edge, bound_d, bound_d))
+for edge in topology.deviation_edges():
+    opt.add_parameter(DeviationEdgeParameter(edge, bound_low=10.0, bound_up=10.0))
 
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
 
-    # record starting time
-    start = time()
+# record starting time
+start = time()
 
-    # optimize
-    form = optimizer.solve_nlopt(topology=topology, algorithm="SLSQP", iters=100, eps=1e-6)
+# optimize
+form_opt = opt.solve_nlopt(topology=topology, algorithm="SLSQP", iters=100, eps=1e-6)
 
-   # print out results
-    print("Form. # Nodes: {}, # Edges: {}".format(form.number_of_nodes(),
-                                                  form.number_of_edges()))
-    print("Optimizer. # Parameters {}, # Constraints {}".format(optimizer.number_of_parameters(),
-                                                                optimizer.number_of_constraints()))
-    print("Elapsed time: {}".format(time() - start))
-    print("Value of the objective function: {}".format(optimizer.penalty))
-    print("Norm of the gradient of the objective function: {}".format(optimizer.gradient_norm))
-
-# ------------------------------------------------------------------------------
-# Print put residual forces at supports (a.k.a reaction forces)
-# ------------------------------------------------------------------------------
-
-    for node in form.support_nodes():
-        reaction_force = form.reaction_force(node)
-        print("node: {} reaction force: {}".format(node, reaction_force))
+# print out results
+print("----------")
+print(f"Optimizer. # Parameters {opt.number_of_parameters()}, # Constraints {opt.number_of_constraints()}")
+print(f"Optimization elapsed time: {time() - start}")
+print(f"Final value of the objective function: {opt.penalty}")
+print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
 
 # ------------------------------------------------------------------------------
 # Plotter
 # ------------------------------------------------------------------------------
 
-plotter = Plotter()
-# plotter.add(form, nodesize=3.5)
+plotter = Plotter(figsize=(16, 9))
+nodesize = 4.0
+loadscale = 6.0
+
+# ------------------------------------------------------------------------------
+# Plot topology diagram
+# ------------------------------------------------------------------------------
+
 plotter.add(topology,
             artist_type=TopologyArtist,
-            nodesize=3.5,
-            show_loads=True,
-            nodetext='key',
-            show_nodetext=True,
-            edgetext='index',
-            show_edgetext=True)
+            nodesize=nodesize)
+
+# ------------------------------------------------------------------------------
+# Plot translated form diagram
+# ------------------------------------------------------------------------------
+
+T = Translation.from_vector([40.0, 0.0, 0.0])
+plotter.add(form.transformed(T),
+            artist_type=FormArtist,
+            loadscale=loadscale,
+            nodesize=nodesize)
+
+# add target points
+for target_point in target_points:
+    x, y, z = target_point
+    plotter.add(Point(x, y, z).transformed(T), size=5.0, facecolor=(1.0, 0.6, 0.0))
+
+# ------------------------------------------------------------------------------
+# Plot translated optimized form diagram
+# ------------------------------------------------------------------------------
+
+T = Translation.from_vector([90.0, 0.0, 0.0])
+plotter.add(form_opt.transformed(T),
+            artist_type=FormArtist,
+            loadscale=loadscale,
+            reactionscale=5.0,
+            nodesize=nodesize)
+
+# add target points
+for target_point in target_points:
+    x, y, z = target_point
+    plotter.add(Point(x, y, z).transformed(T), size=5.0, facecolor=(1.0, 0.6, 0.0))
+
+# ------------------------------------------------------------------------------
+# Plot scene
+# -------------------------------------------------------------------------------
 
 plotter.zoom_extents()
 plotter.show()
-
-# plotter = FormPlotter(form, figsize=(16, 9))
-
-# plotter.draw_nodes(radius=0.30, text="key")
-# plotter.draw_edges()
-# plotter.draw_loads(scale=2.0, gap=0.75)
-# plotter.draw_reactions(scale=2.0, gap=0.75)
-
-# if optimize:
-#     plotter.draw_segments(form_lines)
-
-#     points = []
-#     for key, constraint in optimizer.constraints.items():
-#         if not isinstance(constraint, PointConstraint):
-#             continue
-#         pt = constraint.target()
-#         points.append({"pos": pt[:2], "radius": 0.5, "facecolor": (255, 153, 0)})
-
-#     plotter.draw_points(points)
-
-# plotter.show()

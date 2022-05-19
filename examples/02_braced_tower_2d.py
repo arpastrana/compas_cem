@@ -1,3 +1,7 @@
+from compas.geometry import Translation
+
+from compas_plotters import Plotter
+
 from compas_cem.diagrams import TopologyDiagram
 
 from compas_cem.elements import Node
@@ -9,8 +13,8 @@ from compas_cem.supports import NodeSupport
 
 from compas_cem.equilibrium import static_equilibrium
 
-from compas_plotters import Plotter
-from compas_plotters.artists import NetworkArtist
+from compas_cem.plotters import TopologyArtist
+from compas_cem.plotters import FormArtist
 
 
 # ------------------------------------------------------------------------------
@@ -83,52 +87,39 @@ topology.add_load(NodeLoad(2, load))
 topology.add_load(NodeLoad(5, load))
 
 # ------------------------------------------------------------------------------
-# Collect Trails and Edge lines
-# ------------------------------------------------------------------------------
-
-edge_lines = [topology.edge_coordinates(*edge) for edge in topology.edges()]
-
-# ------------------------------------------------------------------------------
 # Equilibrium of forces
 # ------------------------------------------------------------------------------
 
 topology.build_trails()
 form = static_equilibrium(topology, eta=1e-6, tmax=100, verbose=True)
 
-for node in form.support_nodes():
-    print(node, form.reaction_force(node))
-
 # ------------------------------------------------------------------------------
-# Topology Plotter
+# Plotter
 # ------------------------------------------------------------------------------
 
 plotter = Plotter()
-plotter.add(topology, nodesize=0.15)
-plotter.zoom_extents()
-plotter.show()
-
-# plotter = TopologyPlotter(topology, figsize=(16, 9))
-
-# plotter.draw_loads(radius=0.025, draw_arrows=True, scale=0.5, gap=-0.55)
-# plotter.draw_nodes(radius=0.025)
-# plotter.draw_edges()
-
-# plotter.show()
 
 # ------------------------------------------------------------------------------
-# Form Plotter
+# Plot topology diagram
 # ------------------------------------------------------------------------------
 
-plotter = Plotter()
-plotter.add(form, nodesize=0.15)
+plotter.add(topology,
+            artist_type=TopologyArtist,
+            nodesize=0.2)
+
+# ------------------------------------------------------------------------------
+# Plot translated form diagram
+# ------------------------------------------------------------------------------
+
+plotter.add(form.transformed(Translation.from_vector([2.0, 0.0, 0.0])),
+            artist_type=FormArtist,
+            nodesize=0.2,
+            loadscale=0.5,
+            reactionscale=0.5)
+
+# ------------------------------------------------------------------------------
+# Plot scene
+# -------------------------------------------------------------------------------
+
 plotter.zoom_extents()
 plotter.show()
-
-# plotter = FormPlotter(form, figsize=(16, 9))
-# plotter.draw_nodes(radius=0.025, text="key")
-# plotter.draw_edges(text="force")
-# plotter.draw_loads(scale=0.5, gap=-0.55)
-# plotter.draw_reactions(scale=0.25)
-# plotter.draw_segments(edge_lines)
-
-# plotter.show()

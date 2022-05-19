@@ -15,70 +15,69 @@ from compas_cem.plotters import FormArtist
 from compas.geometry import Translation
 
 
-# create a topology diagram
+# ------------------------------------------------------------------------------
+# Instantiate a topology diagram
+# ------------------------------------------------------------------------------
+
 topology = TopologyDiagram()
 
-# add nodes
+# ------------------------------------------------------------------------------
+# Add nodes
+# ------------------------------------------------------------------------------
+
 topology.add_node(Node(0, [0.0, 0.0, 0.0]))
 topology.add_node(Node(1, [1.0, 0.0, 0.0]))
 topology.add_node(Node(2, [2.5, 0.0, 0.0]))
 topology.add_node(Node(3, [3.5, 0.0, 0.0]))
 
-# add edges with negative values for a compression-only structure
+# ------------------------------------------------------------------------------
+# Add edges
+# ------------------------------------------------------------------------------
+
 topology.add_edge(TrailEdge(0, 1, length=-1.0))
 topology.add_edge(DeviationEdge(1, 2, force=-1.0))
 topology.add_edge(TrailEdge(2, 3, length=-1.0))
 
-# add supports
+# ------------------------------------------------------------------------------
+# Add supports
+# ------------------------------------------------------------------------------
+
 topology.add_support(NodeSupport(0))
 topology.add_support(NodeSupport(3))
 
-# add loads
+# ------------------------------------------------------------------------------
+# Add loads
+# ------------------------------------------------------------------------------
+
 topology.add_load(NodeLoad(1, [0.0, -1.0, 0.0]))
 topology.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
 
-# assemble trails
+# ------------------------------------------------------------------------------
+# Build trails automatically
+# ------------------------------------------------------------------------------
+
 topology.build_trails()
 
-# calculate equilibrium
+# ------------------------------------------------------------------------------
+# Compute a state of static equilibrium
+# ------------------------------------------------------------------------------
+
 form = static_equilibrium(topology, eta=1e-6, tmax=100, verbose=True)
+
+# ------------------------------------------------------------------------------
+# Plot results
+# ------------------------------------------------------------------------------
 
 # instantiate a plotter
 plotter = Plotter()
 
 # add topology diagram to scene
-plotter.add(topology,
-            artist_type=TopologyArtist,
-            nodesize=0.2)
+plotter.add(topology, artist_type=TopologyArtist, nodesize=0.2)
 
 # add shifted form diagram to the scene
-form = form.transformed(Translation.from_vector([4.0, 0.0, 0.0]))
-plotter.add(form,
-            show_loads=True,
-            show_reactions=True,
-            artist_type=FormArtist,
-            nodesize=0.2,
-            show_nodetext=True,
-            loadscale=0.5,
-            reactionscale=0.5,
-            )
-plotter.zoom_extents(0.5)
+form = form.transformed(Translation.from_vector([0.0, -1.0, 0.0]))
+plotter.add(form, artist_type=FormArtist, nodesize=0.2)
+
+# show plotter contents
+plotter.zoom_extents()
 plotter.show()
-
-# plot topology
-# artist.draw_nodes()
-# plotter.draw_loads(radius=0.03, draw_arrows=True, scale=0.25)
-# plotter.draw_nodes(radius=0.03)
-# plotter.draw_edges()
-# vb = plotter.viewbox
-# print(vb)
-# print("artists", plotter.artists)
-# plotter.show()
-
-# # plot form
-# plotter = FormPlotter(form, figsize=(16, 9))
-# plotter.draw_nodes(radius=0.03, text="key-xyz")
-# plotter.draw_edges(text="force-length")
-# plotter.draw_loads(scale=0.25)
-# plotter.draw_reactions(scale=0.25)
-# plotter.show()
