@@ -110,15 +110,18 @@ class TopologyArtist(NetworkArtist):
             # draw auxiliary trail edges
             if topology.is_auxiliary_trail_edge(edge):
                 edge_color[edge] = cmap["auxiliary_trail"]
-            elif topology.is_trail_edge(edge):
-                attr_name = "length"
-            # draw deviation edges
-            elif topology.is_deviation_edge(edge):
-                attr_name = "force"
+            else:
+                # draw trail edges
+                if topology.is_trail_edge(edge):
+                    attr_name = "length"
+                    # draw deviation edges
+                elif topology.is_deviation_edge(edge):
+                    attr_name = "force"
 
-            ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
-            edge_color[edge] = cmap[ckey]
+                    ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
+                    edge_color[edge] = cmap[ckey]
 
+        # draw edges
         super(TopologyArtist, self).draw_edges(color=edge_color)
 
         # change linestyle
