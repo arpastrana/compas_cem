@@ -193,7 +193,7 @@ class TopologyArtist(NetworkArtist):
         -----
         text_tag : `str`
             Tag query.
-            Supported tags are: "parameter" and "type".
+            Supported tags are: "force", "length", "state", "forcelengthstate" and "type".
 
         Returns
         -------
@@ -220,12 +220,15 @@ class TopologyArtist(NetworkArtist):
         def type_format(x):
             return "{}".format(self.topology.edge_attribute(x, "type"))
 
-        def parameter_format(x):
+        def force_length_state_format(x):
             return "f: {}\nl: {}\ns: {}".format(force_format(x), length_format(x), state_format(x))
 
         precision = self.float_precision
 
-        tags_formatter = {"parameter": parameter_format,
+        tags_formatter = {"force": force_format,
+                          "length": length_format,
+                          "state": state_format,
+                          "forcelengthstate": force_length_state_format,
                           "type": type_format}
 
         if text_tag not in tags_formatter:
