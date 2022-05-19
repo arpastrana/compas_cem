@@ -1,7 +1,54 @@
-# from compas.geometry import Sphere
-# from compas_view2.app import App
-# viewer = App()
-# # viewer.add(Sphere([0, 0, 0], 1.0))
+
+from math import pi as PI
+
+from compas_cem.diagrams import TopologyDiagram
+
+from compas_cem.elements import Node
+from compas_cem.elements import TrailEdge
+from compas_cem.elements import DeviationEdge
+
+from compas_cem.loads import NodeLoad
+from compas_cem.supports import NodeSupport
+
+from compas_cem.equilibrium import static_equilibrium as form_finding
+
+from compas.geometry import Translation
+from compas.geometry import Rotation
+from compas.geometry import Sphere
+from compas_view2.app import App
+
+
+# create a topology diagram
+topology = TopologyDiagram()
+
+# add nodes
+topology.add_node(Node(0, [0.0, 0.0, 0.0]))
+topology.add_node(Node(1, [1.0, 0.0, 0.0]))
+topology.add_node(Node(2, [2.5, 0.0, 0.0]))
+topology.add_node(Node(3, [3.5, 0.0, 0.0]))
+
+# add edges with negative values for a compression-only structure
+topology.add_edge(TrailEdge(0, 1, length=-1.0))
+topology.add_edge(DeviationEdge(1, 2, force=-1.0))
+topology.add_edge(TrailEdge(2, 3, length=-1.0))
+
+# add supports
+topology.add_support(NodeSupport(0))
+topology.add_support(NodeSupport(3))
+
+# add loads
+topology.add_load(NodeLoad(1, [0.0, -1.0, 0.0]))
+topology.add_load(NodeLoad(2, [0.0, -1.0, 0.0]))
+
+# assemble trails
+topology.build_trails()
+
+# calculate static equilibrium
+form = form_finding(topology, eta=1e-6, tmax=100, verbose=True)
+
+viewer = App()
+# viewer.add(Sphere([0, 0, 0], 1.0))
+viewer.add(form)
 # viewer.add(Sphere([0, 0, 0], 1.0),
 #           u=64,
 #           v=64,
@@ -17,84 +64,4 @@
 #           opacity=0.5,
 #           is_selected=False,
 #           is_visible=True)
-# viewer.show()
-
-
-# import compas
-# from compas.geometry import Sphere
-# from compas.colors import Color
-
-# from compas_view2.app import App
-
-# sphere = Sphere([0, 0, 0], 1.0)
-
-# # =============================================================================
-# # Visualization
-# # =============================================================================
-
-# viewer = App(width=960, height=540)
-# viewer.view.camera.rx = -60
-# viewer.view.camera.rz = 0
-# viewer.view.camera.distance = 5
-
-# viewer.add(sphere, u=64, v=64, facecolor=Color.cyan(), linecolor=Color.blue())
-
-
-# @viewer.on(interval=50, frames=180, record=True, record_path="docs/_images/example_orbiting.gif")
-# def orbit(f):
-#     viewer.view.camera.rz += 1
-
-
-# viewer.show()
-
-
-from compas.geometry import Point, Polyline, Bezier
-from compas.colors import Color
-from compas_view2.app import App
-
-curve = Bezier([[0, 0, 0], [3, 6, 0], [5, -3, 0], [10, 0, 0]])
-
-viewer = App(viewmode="shaded", enable_sidebar=True, width=1600, height=900)
-viewer.view.camera.tx = -5.0
-viewer.view.camera.rz = 0
-viewer.view.camera.rx = -20
-
-pointobj = viewer.add(Point(* curve.point(0)), size=20, color=(1, 0, 0))
-curveobj = viewer.add(Polyline(curve.locus()), linewidth=2)
-
-
-@viewer.checkbox(text="Show Point", checked=True)
-def check(checked):
-    pointobj.is_visible = checked
-    viewer.view.update()
-
-
-@viewer.slider(title="Slide Point", maxval=100, step=1, bgcolor=Color.white())
-def slide(value):
-    value = value / 100
-    pointobj._data = curve.point(value)
-    pointobj.update()
-    viewer.view.update()
-
-
-@viewer.button(text="Reset")
-def click():
-    if viewer.confirm('This will reset the point to parameter t=0.'):
-        pointobj._data = curve.point(0)
-        pointobj.update()
-        slide.value = 0
-        viewer.view.update()
-
-
-@viewer.radio(title='Display', items=[
-    {'text': 'Ghosted', 'value': 'ghosted', 'checked': viewer.view.mode == 'ghosted'},
-    {'text': 'Shaded', 'value': 'shaded', 'checked': viewer.view.mode == 'shaded'},
-    {'text': 'Lighted', 'value': 'lighted', 'checked': viewer.view.mode == 'lighted'},
-    {'text': 'Wireframe', 'value': 'wireframe', 'checked': viewer.view.mode == 'wireframe'}
-])
-def select(value):
-    viewer.view.mode = value
-    viewer.view.update()
-
-
-viewer.run()
+viewer.show()

@@ -47,21 +47,23 @@ topology.build_trails()
 form = form_finding(topology, eta=1e-6, tmax=100, verbose=True)
 
 # plot
-plotter = Plotter(figsize=(16, 10))
+# plotter = Plotter(figsize=(16, 10))
+plotter = Plotter()
 
-R = Rotation.from_axis_and_angle([0.0, 0.0, 1.0], PI/2, [1.75, 0.0, 0.0])
-plotter.add(topology.transformed(R),
-            artist_type=TopologyArtist,
-            nodesize=0.2,
-            show_loads=True,
-            nodetext='key',
-            show_nodetext=True,
-            edgetext=False,
-            show_edgetext=False)
+# R = Rotation.from_axis_and_angle([0.0, 0.0, 1.0], PI/2, [1.75, 0.0, 0.0])
+# plotter.add(topology,
+#             artist_type=TopologyArtist,
+#             nodesize=0.2,
+#             show_loads=True,
+#             nodetext='key',
+#             show_nodetext=True,
+#             edgetext='forcelengthstate',
+#             show_edgetext=True)
 
 T = Translation.from_vector([4.0, 0.0, 0.0])
+# form = form.transformed(T)
 edgewidth = {edge: -2 * form.edge_force(edge) for edge in form.edges()}
-plotter.add(form.transformed(T),
+plotter.add(form,
             show_nodes=True,
             artist_type=FormArtist,
             nodesize=0.15,
@@ -70,10 +72,10 @@ plotter.add(form.transformed(T),
             show_reactions=True,
             reactionscale=0.5,
             loadscale=0.5,
-            nodetext='keyxyz',
-            show_nodetext=True,
+            nodetext='key',
+            show_nodetext=False,
             edgetext='forcelength',
-            show_edgetext=True)
+            show_edgetext=False)
 
 plotter.zoom_extents()
 plotter.show()

@@ -10,6 +10,9 @@ from compas_cem.supports import NodeSupport
 from compas_cem.equilibrium import static_equilibrium
 
 from compas_plotters import Plotter
+from compas_cem.plotters import TopologyArtist
+from compas_cem.plotters import FormArtist
+from compas.geometry import Translation
 
 
 # create a topology diagram
@@ -17,8 +20,8 @@ topology = TopologyDiagram()
 
 # add nodes
 topology.add_node(Node(0, [0.0, 0.0, 0.0]))
-topology.add_node(Node(1, [1.0, 0.1, 0.0]))
-topology.add_node(Node(2, [2.5, 0.1, 0.0]))
+topology.add_node(Node(1, [1.0, 0.0, 0.0]))
+topology.add_node(Node(2, [2.5, 0.0, 0.0]))
 topology.add_node(Node(3, [3.5, 0.0, 0.0]))
 
 # add edges with negative values for a compression-only structure
@@ -40,16 +43,26 @@ topology.build_trails()
 # calculate equilibrium
 form = static_equilibrium(topology, eta=1e-6, tmax=100, verbose=True)
 
-# plot topology
+# instantiate a plotter
 plotter = Plotter()
-plotter.add(topology, nodesize=0.2)
-plotter.zoom_extents()
-plotter.show()
 
-# plot topology
-plotter = Plotter()
-plotter.add(form, nodesize=0.2)
-plotter.zoom_extents()
+# add topology diagram to scene
+plotter.add(topology,
+            artist_type=TopologyArtist,
+            nodesize=0.2)
+
+# add shifted form diagram to the scene
+form = form.transformed(Translation.from_vector([4.0, 0.0, 0.0]))
+plotter.add(form,
+            show_loads=True,
+            show_reactions=True,
+            artist_type=FormArtist,
+            nodesize=0.2,
+            show_nodetext=True,
+            loadscale=0.5,
+            reactionscale=0.5,
+            )
+plotter.zoom_extents(0.5)
 plotter.show()
 
 # plot topology
