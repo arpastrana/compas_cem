@@ -1,8 +1,5 @@
 import json
 
-from compas.base import Base
-
-from compas_cem import Data
 
 __all__ = ["Serializable", "cls_from_dtype"]
 
@@ -11,8 +8,7 @@ __all__ = ["Serializable", "cls_from_dtype"]
 # Base Class
 # ------------------------------------------------------------------------------
 
-
-class Serializable(Base, Data):
+class Serializable():
 
     # --------------------------------------------------------------------------
     # Data

@@ -3,7 +3,7 @@ import compas
 if compas.RHINO:
     from compas_rhino.geometry import RhinoPoint
 
-from compas_cem import Data
+from compas_cem.data import Data
 
 
 __all__ = ["Node"]
@@ -17,7 +17,8 @@ class Node(Data):
     """
     A node.
     """
-    def __init__(self, key=None, xyz=[0.0, 0.0, 0.0]):
+    def __init__(self, key=None, xyz=[0.0, 0.0, 0.0], **kwargs):
+        super(Node, self).__init__(**kwargs)
         self.key = key
         self.xyz = xyz
         self.attributes = {}

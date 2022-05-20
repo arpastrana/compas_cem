@@ -2,7 +2,7 @@ import autograd.numpy as np
 
 from functools import partial
 
-from compas_cem import Data
+from compas_cem.data import Data
 
 from compas_cem.equilibrium import static_equilibrium
 
@@ -27,7 +27,9 @@ class Optimizer(Data):
     """
     An object that modifies a form diagram to meet multiple constraints.
     """
-    def __init__(self):
+    def __init__(self, **kwargs):
+        super(Optimizer, self).__init__(**kwargs)
+
         self.parameters = {}
         self.constraints = {}
         self.x_opt = None

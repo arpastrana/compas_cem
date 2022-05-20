@@ -3,7 +3,7 @@ import compas
 if compas.RHINO:
     from compas_rhino.geometry import RhinoPoint
 
-from compas_cem import Data
+from compas_cem.data import Data
 
 
 __all__ = ["NodeSupport"]
@@ -27,7 +27,8 @@ class NodeSupport(Data):
     node_support : ``NodeSupport``
         A node support.
     """
-    def __init__(self, node):
+    def __init__(self, node, **kwargs):
+        super(NodeSupport, self).__init__(**kwargs)
         self.node = node
         self.xyz = None
 

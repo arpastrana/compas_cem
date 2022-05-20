@@ -4,7 +4,8 @@ if compas.RHINO:
     from compas_rhino.geometry import RhinoPoint
     from compas_rhino.geometry import RhinoVector
 
-from compas_cem import Data
+from compas_cem.data import Data
+
 
 __all__ = ["NodeLoad"]
 
@@ -24,7 +25,8 @@ class NodeLoad(Data):
     vector : ``list`` of ``float``
         The load magnitude of the point load in xyz directions.
     """
-    def __init__(self, node, vector=[0, 0, -1]):
+    def __init__(self, node, vector=[0, 0, -1], **kwargs):
+        super(NodeLoad, self).__init__(**kwargs)
         self.node = node
         self.vector = vector
         self.xyz = None

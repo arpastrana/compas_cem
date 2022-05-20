@@ -1,7 +1,7 @@
 from ast import literal_eval
 from math import fabs
 
-from compas_cem.optimization import Serializable
+from compas_cem.optimization.parameters import Parameter
 
 
 __all__ = ["TrailEdgeParameter",
@@ -12,15 +12,12 @@ __all__ = ["TrailEdgeParameter",
 # ------------------------------------------------------------------------------
 
 
-class EdgeParameter(Serializable):
+class EdgeParameter(Parameter):
     """
     Parametrize and edge to solve an optimization problem.
     """
-    def __init__(self, key, bound_low, bound_up):
-        self._key = key
-        self._bound_up = bound_up
-        self._bound_low = bound_low
-        self._attr_name = None
+    def __init__(self, key, bound_low, bound_up, **kwargs):
+        super(EdgeParameter, self).__init__(key, bound_low, bound_up, **kwargs)
 
     def key(self):
         """

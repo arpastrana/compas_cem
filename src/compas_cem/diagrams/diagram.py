@@ -2,7 +2,7 @@ from compas.datastructures import Network
 
 from compas.geometry import length_vector
 
-from compas_cem import Data
+from compas_cem.data import Data
 
 from compas_cem.diagrams import NodeMixins
 from compas_cem.diagrams import EdgeMixins
@@ -16,7 +16,7 @@ __all__ = ["Diagram"]
 # ==============================================================================
 
 
-class Diagram(NodeMixins, EdgeMixins, Network, Data):
+class Diagram(Data, NodeMixins, EdgeMixins, Network):
     """
     Base class that shares functionality across diagrams.
     """

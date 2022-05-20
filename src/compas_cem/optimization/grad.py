@@ -3,7 +3,7 @@ import numpy as np
 from autograd import grad as agrad
 
 
-__all__ = ["grad_finite_difference_numpy",
+__all__ = ["grad_finite_differences_numpy",
            "grad_autograd"]
 
 # ------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ def grad_autograd(x, grad, grad_func):
 # ------------------------------------------------------------------------------
 
 
-def grad_finite_difference_numpy(x, grad, x_func, step_size):
+def grad_finite_differences_numpy(x, grad, x_func, step_size):
     """
     Approximates the gradient of a blackbox function using finite differences.
     """

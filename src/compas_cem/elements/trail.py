@@ -12,11 +12,11 @@ class TrailEdge(Edge):
 
     TODO: addexplicit combinatorial state to the signature of the constructor.
     """
-    def __init__(self, u, v, length, plane=None):
-        super(TrailEdge, self).__init__(u, v)
+    def __init__(self, u, v, length, plane=None, **kwargs):
+        attrs = {"length": length, "type": "trail", "plane": plane}
+        super(TrailEdge, self).__init__(u, v, attrs, **kwargs)
         # TODO
         # self.attributes = {"length": length, "state": state, type": "trail", "plane": plane}
-        self.attributes = {"length": length, "type": "trail", "plane": plane}
 
     def __repr__(self):
         """

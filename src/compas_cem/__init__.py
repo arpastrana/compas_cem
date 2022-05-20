@@ -9,6 +9,7 @@ compas_cem
 .. toctree::
     :maxdepth: 1
 
+    compas_cem.data
     compas_cem.diagrams
     compas_cem.elements
     compas_cem.loads
@@ -53,19 +54,3 @@ PROXY_PORT = 7123
 
 __all_plugins__ = ['compas_cem.ghpython.install', 'compas_cem.ghpython.uninstall']
 __all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]
-
-
-# ==============================================================================
-# Base element
-# ==============================================================================
-
-class Data(object):
-    """
-    Base class for all COMPAS data objects
-    The base element.
-    """
-    def ToString(self):
-        """
-        Show object representation as string in Rhino/Grasshopper.
-        """
-        return self.__repr__()

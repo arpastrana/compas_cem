@@ -1,9 +1,9 @@
 from abc import abstractmethod
 from ast import literal_eval
 
-from compas.geometry import distance_point_point_sqrd
+from compas_cem.data import Data
 
-from compas_cem.optimization import Serializable
+from compas.geometry import distance_point_point_sqrd
 
 
 # ------------------------------------------------------------------------------
@@ -11,11 +11,12 @@ from compas_cem.optimization import Serializable
 # ------------------------------------------------------------------------------
 
 
-class Constraint(Serializable):
+class Constraint(Data):
     """
     The blueprint of a constraint.
     """
-    def __init__(self, key, target, weight):
+    def __init__(self, key, target, weight, **kwargs):
+        super(Constraint, self).__init__(**kwargs)
         self._key = key  # a topological key
         self._target = target  # a geometric target
         self._weight = weight  # the strength of the constraint
