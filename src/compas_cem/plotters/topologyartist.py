@@ -118,8 +118,8 @@ class TopologyArtist(NetworkArtist):
                 elif topology.is_deviation_edge(edge):
                     attr_name = "force"
 
-                    ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
-                    edge_color[edge] = cmap[ckey]
+                ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
+                edge_color[edge] = cmap[ckey]
 
         # draw edges
         super(TopologyArtist, self).draw_edges(color=edge_color)
