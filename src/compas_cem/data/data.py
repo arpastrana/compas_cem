@@ -1,6 +1,6 @@
 from compas.data import Data
 
-from compas_cem.data import Serializable
+# from compas_cem.data import Serializable
 
 
 __all__ = ["Data"]
@@ -14,6 +14,9 @@ class GHData(object):
     """
     Base class for objects that are interoperable with Rhino/Grasshopper.
     """
+    def __init__(self, **kwargs):
+        super(GHData, self).__init__(**kwargs)
+
     def ToString(self):
         """
         Show object representation as string in Rhino/Grasshopper.
@@ -24,7 +27,7 @@ class GHData(object):
 # Data base class
 # ==============================================================================
 
-class Data(Data, GHData, Serializable):
+class Data(Data, GHData):  # Serializable
     """
     """
     def __init__(self, **kwargs):

@@ -4,6 +4,7 @@ from ast import literal_eval
 from compas_cem.data import Data
 
 from compas.geometry import distance_point_point_sqrd
+from compas.geometry import Vector
 
 
 # ------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ class Constraint(Data):
         """
         Calculate the penalty caused by the constraint.
         """
-        return
+        raise NotImplementedError
 
     def __repr__(self):
         st = "{0}(key={1!r}, target={2!r}, weight={3!r})"
@@ -106,9 +107,8 @@ class VectorConstraint(Constraint):
         data = {}
 
         data["key"] = repr(self.key())
-        data["target"] = self._target.to_data()
-        data["datatype"] = self.datatype()
-        data["target_datatype"] = self.object_datatype(self._target)
+        data["weight"] = self._weight
+        data["target"] = self.target().to_data()
 
         return data
 
@@ -128,9 +128,9 @@ class VectorConstraint(Constraint):
             * "target_datatype" : ``str``
         """
         self._key = literal_eval(data["key"])
-        target_cls = self.object_cls_from_dtype(data["target_datatype"])
-        target = target_cls.from_data(data["target"])
-        self._target = target
+        self._weight = float(data["weight"])
+        # TODO: Is hard-coding a Vector here is a good idea?
+        self._target = Vector.from_data(data["target"])
 
 # ------------------------------------------------------------------------------
 # Float Constraint
@@ -174,7 +174,6 @@ class FloatConstraint(Constraint):
 
         data["key"] = repr(self.key())
         data["target"] = repr(self.target())
-        data["datatype"] = self.datatype()
 
         return data
 

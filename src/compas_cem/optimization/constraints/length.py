@@ -11,7 +11,6 @@ class DeviationEdgeLengthConstraint(FloatConstraint):
     Make a deviation edge reach a target length.
     """
     def __init__(self, edge=None, length=None, weight=1.0):
-        # TODO: needs different serialization mechanism
         super(DeviationEdgeLengthConstraint, self).__init__(edge, length, weight)
 
     def reference(self, data):

@@ -97,7 +97,6 @@ class EdgeParameter(Parameter):
         data["bound_up"] = self._bound_up
         data["bound_low"] = self._bound_low
         data["attr_name"] = self._attr_name
-        data["datatype"] = self.datatype()
 
         return data
 
