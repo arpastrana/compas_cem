@@ -13,7 +13,7 @@ class TopologyArtistComponent(component):
         force_min = force_min or 1e-3
         force_scale = force_scale or 1.0
         if topology:
-            artist = TopologyArtist(topology)
+            artist = TopologyArtist(topology, artist_type=TopologyArtist)
 
             nodes = artist.draw_nodes(node_keys)
             origin_nodes = artist.draw_nodes_origin(node_keys)

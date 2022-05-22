@@ -13,7 +13,7 @@ class FormArtistComponent(component):
         force_min = force_min or 1e-3
         force_scale = force_scale or 1
         if form:
-            artist = FormArtist(form)
+            artist = FormArtist(form, artist_type=FormArtist)
 
             nodes = artist.draw_nodes(node_keys)
             edges = artist.draw_edges(edge_keys)
