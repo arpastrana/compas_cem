@@ -7,7 +7,7 @@ from compas_rhino.geometry import RhinoLine
 from compas.utilities import geometric_key
 
 
-class EdgeSearchComponent(component):
+class SearchEdgeKeyComponent(component):
     def RunScript(self, diagram, line):
         if diagram and line:
 
