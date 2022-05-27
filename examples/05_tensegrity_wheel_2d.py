@@ -23,9 +23,6 @@ from compas_cem.optimization import Optimizer
 from compas_cem.optimization import TrailEdgeForceConstraint
 from compas_cem.optimization import DeviationEdgeParameter
 
-from compas_cem.plotters import TopologyArtist
-from compas_cem.plotters import FormArtist
-
 
 # ------------------------------------------------------------------------------
 # Create a topology diagram
@@ -123,15 +120,15 @@ shift = diameter * 1.4
 plotter = Plotter(figsize=(16.0, 9.0))
 
 # plot topology diagram
-plotter.add(topology, nodesize=ns, artist_type=TopologyArtist)
+plotter.add(topology, nodesize=ns)
 
 # plot translated form diagram
 T = Translation.from_vector([shift, 0.0, 0.0])
-plotter.add(form.transformed(T), nodesize=ns, artist_type=FormArtist)
+plotter.add(form.transformed(T), nodesize=ns)
 
 # plot translated optimized form diagram
 T = Translation.from_vector([shift * 2.0, 0.0, 0.0])
-plotter.add(form_opt.transformed(T), nodesize=ns, artist_type=FormArtist)
+plotter.add(form_opt.transformed(T), nodesize=ns)
 
 # show scene
 plotter.zoom_extents(padding=-0.3)

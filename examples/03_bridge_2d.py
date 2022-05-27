@@ -21,9 +21,6 @@ from compas_cem.optimization import PointConstraint
 from compas_cem.optimization import TrailEdgeParameter
 from compas_cem.optimization import DeviationEdgeParameter
 
-from compas_cem.plotters import TopologyArtist
-from compas_cem.plotters import FormArtist
-
 
 # ------------------------------------------------------------------------------
 # Data
@@ -118,9 +115,7 @@ loadscale = 6.0
 # Plot topology diagram
 # ------------------------------------------------------------------------------
 
-plotter.add(topology,
-            artist_type=TopologyArtist,
-            nodesize=nodesize)
+plotter.add(topology, nodesize=nodesize)
 
 # ------------------------------------------------------------------------------
 # Plot translated form diagram
@@ -128,7 +123,6 @@ plotter.add(topology,
 
 T = Translation.from_vector([40.0, 0.0, 0.0])
 plotter.add(form.transformed(T),
-            artist_type=FormArtist,
             loadscale=loadscale,
             nodesize=nodesize)
 
@@ -143,7 +137,6 @@ for target_point in target_points:
 
 T = Translation.from_vector([90.0, 0.0, 0.0])
 plotter.add(form_opt.transformed(T),
-            artist_type=FormArtist,
             loadscale=loadscale,
             reactionscale=5.0,
             nodesize=nodesize)

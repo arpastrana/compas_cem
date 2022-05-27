@@ -13,9 +13,6 @@ from compas_cem.supports import NodeSupport
 
 from compas_cem.equilibrium import static_equilibrium
 
-from compas_cem.plotters import TopologyArtist
-from compas_cem.plotters import FormArtist
-
 
 # ------------------------------------------------------------------------------
 # Data
@@ -103,16 +100,13 @@ plotter = Plotter()
 # Plot topology diagram
 # ------------------------------------------------------------------------------
 
-plotter.add(topology,
-            artist_type=TopologyArtist,
-            nodesize=0.2)
+plotter.add(topology, nodesize=0.2)
 
 # ------------------------------------------------------------------------------
 # Plot translated form diagram
 # ------------------------------------------------------------------------------
 
 plotter.add(form.transformed(Translation.from_vector([2.0, 0.0, 0.0])),
-            artist_type=FormArtist,
             nodesize=0.2,
             loadscale=0.5,
             reactionscale=0.5)

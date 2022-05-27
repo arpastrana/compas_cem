@@ -10,8 +10,6 @@ from compas_cem.supports import NodeSupport
 from compas_cem.equilibrium import static_equilibrium
 
 from compas_plotters import Plotter
-from compas_cem.plotters import TopologyArtist
-from compas_cem.plotters import FormArtist
 from compas.geometry import Translation
 
 
@@ -68,15 +66,14 @@ form = static_equilibrium(topology, eta=1e-6, tmax=100, verbose=True)
 # Plot results
 # ------------------------------------------------------------------------------
 
-# instantiate a plotter
 plotter = Plotter()
 
 # add topology diagram to scene
-plotter.add(topology, artist_type=TopologyArtist, nodesize=0.2)
+plotter.add(topology, nodesize=0.2)
 
 # add shifted form diagram to the scene
 form = form.transformed(Translation.from_vector([0.0, -1.0, 0.0]))
-plotter.add(form, artist_type=FormArtist, nodesize=0.2)
+plotter.add(form, nodesize=0.2)
 
 # show plotter contents
 plotter.zoom_extents()
