@@ -27,9 +27,9 @@ class GHData(object):
 # Data base class
 # ==============================================================================
 
+
 class Data(Data, GHData):  # Serializable
     """
     """
     def __init__(self, **kwargs):
         super(Data, self).__init__(**kwargs)
-
