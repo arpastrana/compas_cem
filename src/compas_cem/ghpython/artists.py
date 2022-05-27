@@ -18,6 +18,11 @@ from compas_cem import COLORS
 __all__ = ["FormArtist", "TopologyArtist"]
 
 
+# ------------------------------------------------------------------------------
+# Diagram artist
+# ------------------------------------------------------------------------------
+
+
 class DiagramArtist(NetworkArtist):
     """
     An artist to draw diagrams.
@@ -236,6 +241,10 @@ class DiagramArtist(NetworkArtist):
         """
         pass
 
+# ------------------------------------------------------------------------------
+# Form diagram artist
+# ------------------------------------------------------------------------------
+
 
 class FormArtist(DiagramArtist):
     """
@@ -294,6 +303,10 @@ class FormArtist(DiagramArtist):
             shift[node] = s
 
         return self._draw_forces(nodes, attrs, scale, shift, gap, min_force)
+
+# ------------------------------------------------------------------------------
+# Topology diagram artist
+# ------------------------------------------------------------------------------
 
 
 class TopologyArtist(DiagramArtist):

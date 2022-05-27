@@ -52,8 +52,10 @@ COLORS = {"tension": (227, 6, 75),  # red
 
 PROXY_PORT = 7123
 
+# TODO: add static equilibrium plugin
 __all_plugins__ = ['compas_cem.ghpython.install',
                    'compas_cem.ghpython.uninstall',
-                   'compas_cem.plotters.plugin']
-                   # TODO: add static equilibrium
+                   'compas_cem.ghpython.register',
+                   'compas_cem.plotters.register']
+
 __all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]
