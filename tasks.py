@@ -252,9 +252,40 @@ def ghplugin(ctx, gh_io_folder=None, ironpython=None):
 
             if not gh_io_folder:
                 import compas_ghpython
-                gh_io_folder = compas_ghpython.get_grasshopper_plugin_path('6.0')
+                gh_io_folder = compas_ghpython.get_grasshopper_managedplugin_path('6.0')
 
             if not ironpython:
                 ironpython = 'sh temp/ipy.sh'  # 'ipy'
 
             ctx.run('{} {} {} {} --ghio "{}"'.format(ironpython, os.path.join(action_dir, 'componentize.py'), source_dir, target_dir, os.path.abspath(gh_io_folder)))
+
+
+@task(help={
+      'gh_io_folder': 'Folder where GH_IO.dll is located. If not specified, it will try to download from NuGet.',
+      'ironpython': 'Command for running the IronPython executable. Defaults to `ipy`.'})
+def ghplugin2(ctx, gh_io_folder=None, ironpython=None):
+    """Build Grasshopper user objects from source"""
+    clean(ctx, docs=False, bytecode=False, builds=False, ghuser=True)
+    with chdir(BASE_FOLDER):
+        with tempfile.TemporaryDirectory('actions.ghcomponentizer') as action_dir:
+            source_dir = os.path.abspath('src/compas_cem/ghpython/components')
+            target_dir = os.path.join(source_dir, 'ghuser')
+            ctx.run('git clone https://github.com/compas-dev/compas-actions.ghpython_components.git {}'.format(action_dir))
+
+            if not gh_io_folder:
+                gh_io_folder = 'temp'
+                import compas_ghpython
+                compas_ghpython.fetch_ghio_lib(gh_io_folder)
+
+            if not ironpython:
+                ironpython = 'ipy'
+
+            gh_io_folder = os.path.abspath(gh_io_folder)
+            componentizer_script = os.path.join(action_dir, 'componentize.py')
+
+            print("ironpython")
+            print(componentizer_script)
+            print(source_dir)
+            print(target_dir)
+            print(gh_io_folder)
+            ctx.run('{} {} {} {} --ghio "{}"'.format(ironpython, componentizer_script, source_dir, target_dir, gh_io_folder))
