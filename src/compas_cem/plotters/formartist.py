@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-
 from math import copysign
 from math import fabs
 
