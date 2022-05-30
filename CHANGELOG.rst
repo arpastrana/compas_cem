@@ -11,22 +11,37 @@ Unreleased
 
 **Added**
 
-- Added spiral staircase ghpython example
-- Added Jenssen tensegrity ghpython example
-- Added tube bridge 3d ghpython example
-- Added bridge 2d ghpython example
-- Added dome ghpython example
-- Implemented `TopologyDiagram.is_node_support()`
+- Added spiral staircase ghpython example.
+- Added Jenssen tensegrity ghpython example.
+- Added tube bridge 3d ghpython example.
+- Added bridge 2d ghpython example.
+- Added dome ghpython example.
+- Implemented `TopologyDiagram.is_node_support()`.
+- Renamed node and endge key search GH components.
+- Implemented `compas_cem.data.Data`.
+- Implemented `compas_cem.plotters.TopologyArtist`.
+- Implemented `compas_cem.plotters.FormArtist`.
+- Implemented `compas_cem.optimization.Parameter`.
+- Added artists registration for plotters and grasshopper via `compas.plugins.plugin`.
 
 **Changed**
 
-- Changed reaction force global color from dark blue to dark gray
+- Changed reaction force global color from dark blue to dark gray.
+- Changed data serialization mechanism to comply with `compas.data.Data`.
 
 **Fixed**
 
+- Fixed bug in auxiliary trails coloring in `compas_cem.plotters`.
+
 **Deprecated**
 
+- Deprecated `TopologyPlotter`.
+- Deprecated `FormPlotter`.
+
 **Removed**
+
+- Removed `compas_cem.optimization.serialization.Serializable`.
+- Removed `compas_cem.ghpython.components.Node` component.
 
 0.2.2
 ----------
