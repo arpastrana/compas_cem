@@ -11,19 +11,6 @@ Unreleased
 
 **Added**
 
-**Changed**
-
-**Fixed**
-
-**Deprecated**
-
-**Removed**
-
-0.3.0
-----------
-
-**Added**
-
 - Added spiral staircase ghpython example
 - Added Jenssen tensegrity ghpython example
 - Added tube bridge 3d ghpython example
