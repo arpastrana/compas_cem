@@ -9,7 +9,6 @@ compas_cem
 .. toctree::
     :maxdepth: 1
 
-    compas_cem.data
     compas_cem.diagrams
     compas_cem.elements
     compas_cem.loads

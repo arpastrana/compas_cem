@@ -12,7 +12,8 @@ Classes
     :toctree: generated/
     :nosignatures:
 
-    FormPlotter
+    FormArtist
+    TopologyArtist
 """
 
 from __future__ import absolute_import
