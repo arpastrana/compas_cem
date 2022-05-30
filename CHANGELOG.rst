@@ -17,7 +17,7 @@ Unreleased
 - Added bridge 2d ghpython example.
 - Added dome ghpython example.
 - Implemented `TopologyDiagram.is_node_support()`.
-- Renamed node and endge key search GH components.
+- Renamed node and edge key search GH components.
 - Implemented `compas_cem.data.Data`.
 - Implemented `compas_cem.plotters.TopologyArtist`.
 - Implemented `compas_cem.plotters.FormArtist`.
