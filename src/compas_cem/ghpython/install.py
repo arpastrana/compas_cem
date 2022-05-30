@@ -5,12 +5,11 @@ from __future__ import print_function
 import os
 
 from compas.plugins import plugin
-
 from compas_ghpython.components import install_userobjects
 
 
 @plugin(category='install')
-def installable_rhino_packages(category='install'):
+def installable_rhino_packages():
     return ['compas_cem']
 
 
