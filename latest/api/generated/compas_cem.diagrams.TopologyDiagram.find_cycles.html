@@ -104,16 +104,15 @@
 <span class="sig-prename descclassname"><span class="pre">TopologyDiagram.</span></span><span class="sig-name descname"><span class="pre">find_cycles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">breakpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology.py#L20"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Find the faces of a network.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>network</strong> (<em>compas.datastructures.Network</em>) – The network object.</p></li>
-<li><p><strong>breakpoints</strong> (<em>list, optional</em>) – The vertices at which to break the found faces.
-Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>network</strong> (<a class="reference external" href="https://compas.dev/compas/latest/api/generated/compas.datastructures.Network.html#compas.datastructures.Network" title="(in COMPAS v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Network</span></code></a>) – The network object.</p></li>
+<li><p><strong>breakpoints</strong> (<em>list, optional</em>) – The vertices at which to break the found faces.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p><code class="docutils literal notranslate"><span class="pre">breakpoints</span></code> are primarily used to break up the outside face in between
+<p>Breakpoints are primarily used to break up the outside face in between
 specific vertices. For example, in structural applications involving dual
 diagrams, any vertices where external forces are applied (loads or reactions)
 should be input as breakpoints.</p>
@@ -124,10 +123,6 @@ It relies on the geometry of the network to be repesented as a planar,
 straight-line embedding. It determines an ordering of the neighboring vertices
 around each vertex, and then follows the <em>walls</em> of the network, always
 taking turns in the same direction.</p>
-</div>
-<p class="rubric">Examples</p>
-<div class="doctest language-python notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span><span class="go">&gt;&gt;&gt;</span>
-</code></pre></div>
 </div>
 </dd></dl>
 

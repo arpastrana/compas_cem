@@ -100,25 +100,21 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.diagrams.TopologyDiagram">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.diagrams.</span></span><span class="sig-name descname"><span class="pre">TopologyDiagram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology.py#L20"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.diagram.Diagram</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Diagram</span></code></p>
 <p>The very heart of life.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) – Arguments.</p></li>
 <li><p><strong>**kwargs</strong> (<code class="docutils literal notranslate"><span class="pre">dict</span></code>) – Keyword arguments.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>topology</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.Topology</span></code>) – A form diagram.</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.add_load.html#compas_cem.diagrams.TopologyDiagram.add_load" title="compas_cem.diagrams.TopologyDiagram.add_load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_load</span></code></a></p></td>
 <td><p>Applies a load.</p></td>
@@ -195,11 +191,7 @@
 </tbody>
 </table>
 <p class="rubric">Inherited Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.ToString.html#compas_cem.diagrams.TopologyDiagram.ToString" title="compas_cem.diagrams.TopologyDiagram.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
 <td><p>Show object representation as string in Rhino/Grasshopper.</p></td>
@@ -276,56 +268,62 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edge_point.html#compas_cem.diagrams.TopologyDiagram.edge_point" title="compas_cem.diagrams.TopologyDiagram.edge_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edge_point</span></code></a></p></td>
 <td><p>Return the location of a point along an edge.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edge_vector.html#compas_cem.diagrams.TopologyDiagram.edge_vector" title="compas_cem.diagrams.TopologyDiagram.edge_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edge_vector</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edge_sample.html#compas_cem.diagrams.TopologyDiagram.edge_sample" title="compas_cem.diagrams.TopologyDiagram.edge_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edge_sample</span></code></a></p></td>
+<td><p>Get the identifiers of a set of random edges.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edge_vector.html#compas_cem.diagrams.TopologyDiagram.edge_vector" title="compas_cem.diagrams.TopologyDiagram.edge_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edge_vector</span></code></a></p></td>
 <td><p>Return the vector of an edge.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges.html#compas_cem.diagrams.TopologyDiagram.edges" title="compas_cem.diagrams.TopologyDiagram.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges.html#compas_cem.diagrams.TopologyDiagram.edges" title="compas_cem.diagrams.TopologyDiagram.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></a></p></td>
 <td><p>Iterate over the edges of the network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_attribute.html#compas_cem.diagrams.TopologyDiagram.edges_attribute" title="compas_cem.diagrams.TopologyDiagram.edges_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_attribute</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_attribute.html#compas_cem.diagrams.TopologyDiagram.edges_attribute" title="compas_cem.diagrams.TopologyDiagram.edges_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_attribute</span></code></a></p></td>
 <td><p>Get or set an attribute of multiple edges.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_attributes.html#compas_cem.diagrams.TopologyDiagram.edges_attributes" title="compas_cem.diagrams.TopologyDiagram.edges_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_attributes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_attributes.html#compas_cem.diagrams.TopologyDiagram.edges_attributes" title="compas_cem.diagrams.TopologyDiagram.edges_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_attributes</span></code></a></p></td>
 <td><p>Get or set multiple attributes of multiple edges.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_where.html#compas_cem.diagrams.TopologyDiagram.edges_where" title="compas_cem.diagrams.TopologyDiagram.edges_where"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_where</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_where.html#compas_cem.diagrams.TopologyDiagram.edges_where" title="compas_cem.diagrams.TopologyDiagram.edges_where"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_where</span></code></a></p></td>
 <td><p>Get edges for which a certain condition or set of conditions is true.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_where_predicate.html#compas_cem.diagrams.TopologyDiagram.edges_where_predicate" title="compas_cem.diagrams.TopologyDiagram.edges_where_predicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_where_predicate</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.edges_where_predicate.html#compas_cem.diagrams.TopologyDiagram.edges_where_predicate" title="compas_cem.diagrams.TopologyDiagram.edges_where_predicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges_where_predicate</span></code></a></p></td>
 <td><p>Get edges for which a certain condition or set of conditions is true using a lambda function.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.embed_in_plane.html#compas_cem.diagrams.TopologyDiagram.embed_in_plane" title="compas_cem.diagrams.TopologyDiagram.embed_in_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embed_in_plane</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.embed_in_plane.html#compas_cem.diagrams.TopologyDiagram.embed_in_plane" title="compas_cem.diagrams.TopologyDiagram.embed_in_plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embed_in_plane</span></code></a></p></td>
 <td><p>Embed the network in the plane.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.find_crossings.html#compas_cem.diagrams.TopologyDiagram.find_crossings" title="compas_cem.diagrams.TopologyDiagram.find_crossings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_crossings</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.find_crossings.html#compas_cem.diagrams.TopologyDiagram.find_crossings" title="compas_cem.diagrams.TopologyDiagram.find_crossings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_crossings</span></code></a></p></td>
 <td><p>Identify all pairs of crossing edges in a network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.find_cycles.html#compas_cem.diagrams.TopologyDiagram.find_cycles" title="compas_cem.diagrams.TopologyDiagram.find_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_cycles</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.find_cycles.html#compas_cem.diagrams.TopologyDiagram.find_cycles" title="compas_cem.diagrams.TopologyDiagram.find_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_cycles</span></code></a></p></td>
 <td><p>Find the faces of a network.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_data.html#compas_cem.diagrams.TopologyDiagram.from_data" title="compas_cem.diagrams.TopologyDiagram.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_data.html#compas_cem.diagrams.TopologyDiagram.from_data" title="compas_cem.diagrams.TopologyDiagram.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
 <td><p>Construct an object of this type from the provided data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_edges.html#compas_cem.diagrams.TopologyDiagram.from_edges" title="compas_cem.diagrams.TopologyDiagram.from_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_edges</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_edges.html#compas_cem.diagrams.TopologyDiagram.from_edges" title="compas_cem.diagrams.TopologyDiagram.from_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_edges</span></code></a></p></td>
+<td><p>Create a new graph instance from information about the edges.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_json.html#compas_cem.diagrams.TopologyDiagram.from_json" title="compas_cem.diagrams.TopologyDiagram.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_json.html#compas_cem.diagrams.TopologyDiagram.from_json" title="compas_cem.diagrams.TopologyDiagram.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_jsonstring.html#compas_cem.diagrams.TopologyDiagram.from_jsonstring" title="compas_cem.diagrams.TopologyDiagram.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_jsonstring.html#compas_cem.diagrams.TopologyDiagram.from_jsonstring" title="compas_cem.diagrams.TopologyDiagram.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_lines.html#compas_cem.diagrams.TopologyDiagram.from_lines" title="compas_cem.diagrams.TopologyDiagram.from_lines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_lines</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_lines.html#compas_cem.diagrams.TopologyDiagram.from_lines" title="compas_cem.diagrams.TopologyDiagram.from_lines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_lines</span></code></a></p></td>
 <td><p>Construct a network from a set of lines represented by their start and end point coordinates.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_networkx.html#compas_cem.diagrams.TopologyDiagram.from_networkx" title="compas_cem.diagrams.TopologyDiagram.from_networkx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_networkx</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_networkx.html#compas_cem.diagrams.TopologyDiagram.from_networkx" title="compas_cem.diagrams.TopologyDiagram.from_networkx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_networkx</span></code></a></p></td>
 <td><p>Create a new graph instance from a NetworkX DiGraph instance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_nodes_and_edges.html#compas_cem.diagrams.TopologyDiagram.from_nodes_and_edges" title="compas_cem.diagrams.TopologyDiagram.from_nodes_and_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_nodes_and_edges</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_nodes_and_edges.html#compas_cem.diagrams.TopologyDiagram.from_nodes_and_edges" title="compas_cem.diagrams.TopologyDiagram.from_nodes_and_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_nodes_and_edges</span></code></a></p></td>
 <td><p>Construct a network from nodes and edges.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_obj.html#compas_cem.diagrams.TopologyDiagram.from_obj" title="compas_cem.diagrams.TopologyDiagram.from_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_obj</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_obj.html#compas_cem.diagrams.TopologyDiagram.from_obj" title="compas_cem.diagrams.TopologyDiagram.from_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_obj</span></code></a></p></td>
 <td><p>Construct a network from the data contained in an OBJ file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.from_pointcloud.html#compas_cem.diagrams.TopologyDiagram.from_pointcloud" title="compas_cem.diagrams.TopologyDiagram.from_pointcloud"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_pointcloud</span></code></a></p></td>
+<td><p>Construct a network from random connections between the points of a pointcloud.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.get_any_edge.html#compas_cem.diagrams.TopologyDiagram.get_any_edge" title="compas_cem.diagrams.TopologyDiagram.get_any_edge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_any_edge</span></code></a></p></td>
 <td><p>Get the identifier of a random edge.</p></td>
@@ -385,7 +383,7 @@
 <td><p>Returns a dictionary that maps node dictionary keys to the corresponding <em>geometric key</em> up to a certain precision.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.key_index.html#compas_cem.diagrams.TopologyDiagram.key_index" title="compas_cem.diagrams.TopologyDiagram.key_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key_index</span></code></a></p></td>
-<td><p>Returns a dictionary that maps node dictionary keys to the corresponding index in a node list or array.</p></td>
+<td><p>Returns a dictionary that maps node identifiers to their corresponding index in a node list or array.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.laplacian_matrix.html#compas_cem.diagrams.TopologyDiagram.laplacian_matrix" title="compas_cem.diagrams.TopologyDiagram.laplacian_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">laplacian_matrix</span></code></a></p></td>
 <td><p>Construct a Laplacian matrix from a Network datastructure.</p></td>
@@ -456,113 +454,116 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.node_neighborhood_centroid.html#compas_cem.diagrams.TopologyDiagram.node_neighborhood_centroid" title="compas_cem.diagrams.TopologyDiagram.node_neighborhood_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">node_neighborhood_centroid</span></code></a></p></td>
 <td><p>Compute the centroid of the neighboring nodes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.node_xyz.html#compas_cem.diagrams.TopologyDiagram.node_xyz" title="compas_cem.diagrams.TopologyDiagram.node_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">node_xyz</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.node_sample.html#compas_cem.diagrams.TopologyDiagram.node_sample" title="compas_cem.diagrams.TopologyDiagram.node_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">node_sample</span></code></a></p></td>
+<td><p>Get a list of identifiers of a random set of n nodes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.node_xyz.html#compas_cem.diagrams.TopologyDiagram.node_xyz" title="compas_cem.diagrams.TopologyDiagram.node_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">node_xyz</span></code></a></p></td>
 <td><p>Gets or sets node coordinates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes.html#compas_cem.diagrams.TopologyDiagram.nodes" title="compas_cem.diagrams.TopologyDiagram.nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes.html#compas_cem.diagrams.TopologyDiagram.nodes" title="compas_cem.diagrams.TopologyDiagram.nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></a></p></td>
 <td><p>Iterate over the nodes of the network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_attribute.html#compas_cem.diagrams.TopologyDiagram.nodes_attribute" title="compas_cem.diagrams.TopologyDiagram.nodes_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_attribute</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_attribute.html#compas_cem.diagrams.TopologyDiagram.nodes_attribute" title="compas_cem.diagrams.TopologyDiagram.nodes_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_attribute</span></code></a></p></td>
 <td><p>Get or set an attribute of multiple nodes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_attributes.html#compas_cem.diagrams.TopologyDiagram.nodes_attributes" title="compas_cem.diagrams.TopologyDiagram.nodes_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_attributes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_attributes.html#compas_cem.diagrams.TopologyDiagram.nodes_attributes" title="compas_cem.diagrams.TopologyDiagram.nodes_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_attributes</span></code></a></p></td>
 <td><p>Get or set multiple attributes of multiple nodes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_where.html#compas_cem.diagrams.TopologyDiagram.nodes_where" title="compas_cem.diagrams.TopologyDiagram.nodes_where"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_where</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_where.html#compas_cem.diagrams.TopologyDiagram.nodes_where" title="compas_cem.diagrams.TopologyDiagram.nodes_where"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_where</span></code></a></p></td>
 <td><p>Get nodes for which a certain condition or set of conditions is true.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_where_predicate.html#compas_cem.diagrams.TopologyDiagram.nodes_where_predicate" title="compas_cem.diagrams.TopologyDiagram.nodes_where_predicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_where_predicate</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.nodes_where_predicate.html#compas_cem.diagrams.TopologyDiagram.nodes_where_predicate" title="compas_cem.diagrams.TopologyDiagram.nodes_where_predicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes_where_predicate</span></code></a></p></td>
 <td><p>Get nodes for which a certain condition or set of conditions is true using a lambda function.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_edges.html#compas_cem.diagrams.TopologyDiagram.number_of_edges" title="compas_cem.diagrams.TopologyDiagram.number_of_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_edges</span></code></a></p></td>
-<td><p>Compute the number of edges of the network.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_edges.html#compas_cem.diagrams.TopologyDiagram.number_of_edges" title="compas_cem.diagrams.TopologyDiagram.number_of_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_edges</span></code></a></p></td>
+<td><p>Compute the number of edges of the graph.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_loaded_nodes.html#compas_cem.diagrams.TopologyDiagram.number_of_loaded_nodes" title="compas_cem.diagrams.TopologyDiagram.number_of_loaded_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_loaded_nodes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_loaded_nodes.html#compas_cem.diagrams.TopologyDiagram.number_of_loaded_nodes" title="compas_cem.diagrams.TopologyDiagram.number_of_loaded_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_loaded_nodes</span></code></a></p></td>
 <td><p>Number of nodes in the topology diagram where a load is applied.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_nodes.html#compas_cem.diagrams.TopologyDiagram.number_of_nodes" title="compas_cem.diagrams.TopologyDiagram.number_of_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_nodes</span></code></a></p></td>
-<td><p>Compute the number of nodes of the network.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_nodes.html#compas_cem.diagrams.TopologyDiagram.number_of_nodes" title="compas_cem.diagrams.TopologyDiagram.number_of_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_nodes</span></code></a></p></td>
+<td><p>Compute the number of nodes of the graph.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_support_nodes.html#compas_cem.diagrams.TopologyDiagram.number_of_support_nodes" title="compas_cem.diagrams.TopologyDiagram.number_of_support_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_support_nodes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.number_of_support_nodes.html#compas_cem.diagrams.TopologyDiagram.number_of_support_nodes" title="compas_cem.diagrams.TopologyDiagram.number_of_support_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_support_nodes</span></code></a></p></td>
 <td><p>Number of nodes in the topology diagram with an assigned support.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.reaction_force.html#compas_cem.diagrams.TopologyDiagram.reaction_force" title="compas_cem.diagrams.TopologyDiagram.reaction_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reaction_force</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.reaction_force.html#compas_cem.diagrams.TopologyDiagram.reaction_force" title="compas_cem.diagrams.TopologyDiagram.reaction_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reaction_force</span></code></a></p></td>
 <td><p>Gets the reaction force vector at a node support.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.shortest_path.html#compas_cem.diagrams.TopologyDiagram.shortest_path" title="compas_cem.diagrams.TopologyDiagram.shortest_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shortest_path</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.shortest_path.html#compas_cem.diagrams.TopologyDiagram.shortest_path" title="compas_cem.diagrams.TopologyDiagram.shortest_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shortest_path</span></code></a></p></td>
 <td><p>Find the shortest path between two nodes of the network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.smooth.html#compas_cem.diagrams.TopologyDiagram.smooth" title="compas_cem.diagrams.TopologyDiagram.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.smooth.html#compas_cem.diagrams.TopologyDiagram.smooth" title="compas_cem.diagrams.TopologyDiagram.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a></p></td>
 <td><p>Smooth a network by moving every free node to the centroid of its neighbors.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.split_edge.html#compas_cem.diagrams.TopologyDiagram.split_edge" title="compas_cem.diagrams.TopologyDiagram.split_edge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_edge</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.split_edge.html#compas_cem.diagrams.TopologyDiagram.split_edge" title="compas_cem.diagrams.TopologyDiagram.split_edge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_edge</span></code></a></p></td>
 <td><p>Split and edge by inserting a node along its length.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.summary.html#compas_cem.diagrams.TopologyDiagram.summary" title="compas_cem.diagrams.TopologyDiagram.summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">summary</span></code></a></p></td>
-<td><p>Print a summary of the graph.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.summary.html#compas_cem.diagrams.TopologyDiagram.summary" title="compas_cem.diagrams.TopologyDiagram.summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">summary</span></code></a></p></td>
+<td><p>Return a summary of the graph.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.support_nodes.html#compas_cem.diagrams.TopologyDiagram.support_nodes" title="compas_cem.diagrams.TopologyDiagram.support_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_nodes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.support_nodes.html#compas_cem.diagrams.TopologyDiagram.support_nodes" title="compas_cem.diagrams.TopologyDiagram.support_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">support_nodes</span></code></a></p></td>
 <td><p>Nodes where a support has been assigned.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_data.html#compas_cem.diagrams.TopologyDiagram.to_data" title="compas_cem.diagrams.TopologyDiagram.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_data.html#compas_cem.diagrams.TopologyDiagram.to_data" title="compas_cem.diagrams.TopologyDiagram.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
 <td><p>Convert an object to its native data representation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_json.html#compas_cem.diagrams.TopologyDiagram.to_json" title="compas_cem.diagrams.TopologyDiagram.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_json.html#compas_cem.diagrams.TopologyDiagram.to_json" title="compas_cem.diagrams.TopologyDiagram.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
 <td><p>Serialize the data representation of an object to a JSON file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_jsonstring.html#compas_cem.diagrams.TopologyDiagram.to_jsonstring" title="compas_cem.diagrams.TopologyDiagram.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_jsonstring.html#compas_cem.diagrams.TopologyDiagram.to_jsonstring" title="compas_cem.diagrams.TopologyDiagram.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
 <td><p>Serialize the data representation of an object to a JSON string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_lines.html#compas_cem.diagrams.TopologyDiagram.to_lines" title="compas_cem.diagrams.TopologyDiagram.to_lines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_lines</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_lines.html#compas_cem.diagrams.TopologyDiagram.to_lines" title="compas_cem.diagrams.TopologyDiagram.to_lines"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_lines</span></code></a></p></td>
 <td><p>Return the lines of the network as pairs of start and end point coordinates.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_networkx.html#compas_cem.diagrams.TopologyDiagram.to_networkx" title="compas_cem.diagrams.TopologyDiagram.to_networkx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_networkx</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_networkx.html#compas_cem.diagrams.TopologyDiagram.to_networkx" title="compas_cem.diagrams.TopologyDiagram.to_networkx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_networkx</span></code></a></p></td>
 <td><p>Create a new NetworkX graph instance from a graph.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_nodes_and_edges.html#compas_cem.diagrams.TopologyDiagram.to_nodes_and_edges" title="compas_cem.diagrams.TopologyDiagram.to_nodes_and_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_nodes_and_edges</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_nodes_and_edges.html#compas_cem.diagrams.TopologyDiagram.to_nodes_and_edges" title="compas_cem.diagrams.TopologyDiagram.to_nodes_and_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_nodes_and_edges</span></code></a></p></td>
 <td><p>Return the nodes and edges of a network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_obj.html#compas_cem.diagrams.TopologyDiagram.to_obj" title="compas_cem.diagrams.TopologyDiagram.to_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_obj</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_obj.html#compas_cem.diagrams.TopologyDiagram.to_obj" title="compas_cem.diagrams.TopologyDiagram.to_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_obj</span></code></a></p></td>
 <td><p>Write the network to an OBJ file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_points.html#compas_cem.diagrams.TopologyDiagram.to_points" title="compas_cem.diagrams.TopologyDiagram.to_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_points</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.to_points.html#compas_cem.diagrams.TopologyDiagram.to_points" title="compas_cem.diagrams.TopologyDiagram.to_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_points</span></code></a></p></td>
 <td><p>Return the coordinates of the network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.transform.html#compas_cem.diagrams.TopologyDiagram.transform" title="compas_cem.diagrams.TopologyDiagram.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.transform.html#compas_cem.diagrams.TopologyDiagram.transform" title="compas_cem.diagrams.TopologyDiagram.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a></p></td>
 <td><p>Transform a network.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.transformed.html#compas_cem.diagrams.TopologyDiagram.transformed" title="compas_cem.diagrams.TopologyDiagram.transformed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transformed</span></code></a></p></td>
-<td><p>Transform a copy of <code class="docutils literal notranslate"><span class="pre">network</span></code>.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.transformed.html#compas_cem.diagrams.TopologyDiagram.transformed" title="compas_cem.diagrams.TopologyDiagram.transformed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transformed</span></code></a></p></td>
+<td><p>Return a transformed copy of the network.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.unset_edge_attribute.html#compas_cem.diagrams.TopologyDiagram.unset_edge_attribute" title="compas_cem.diagrams.TopologyDiagram.unset_edge_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unset_edge_attribute</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.unset_edge_attribute.html#compas_cem.diagrams.TopologyDiagram.unset_edge_attribute" title="compas_cem.diagrams.TopologyDiagram.unset_edge_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unset_edge_attribute</span></code></a></p></td>
 <td><p>Unset the attribute of an edge.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.unset_node_attribute.html#compas_cem.diagrams.TopologyDiagram.unset_node_attribute" title="compas_cem.diagrams.TopologyDiagram.unset_node_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unset_node_attribute</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.unset_node_attribute.html#compas_cem.diagrams.TopologyDiagram.unset_node_attribute" title="compas_cem.diagrams.TopologyDiagram.unset_node_attribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unset_node_attribute</span></code></a></p></td>
 <td><p>Unset the attribute of a node.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_dea.html#compas_cem.diagrams.TopologyDiagram.update_dea" title="compas_cem.diagrams.TopologyDiagram.update_dea"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dea</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_dea.html#compas_cem.diagrams.TopologyDiagram.update_dea" title="compas_cem.diagrams.TopologyDiagram.update_dea"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dea</span></code></a></p></td>
 <td><p>Update the default edge attributes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_default_edge_attributes.html#compas_cem.diagrams.TopologyDiagram.update_default_edge_attributes" title="compas_cem.diagrams.TopologyDiagram.update_default_edge_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_default_edge_attributes</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_default_edge_attributes.html#compas_cem.diagrams.TopologyDiagram.update_default_edge_attributes" title="compas_cem.diagrams.TopologyDiagram.update_default_edge_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_default_edge_attributes</span></code></a></p></td>
 <td><p>Update the default edge attributes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_default_node_attributes.html#compas_cem.diagrams.TopologyDiagram.update_default_node_attributes" title="compas_cem.diagrams.TopologyDiagram.update_default_node_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_default_node_attributes</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_default_node_attributes.html#compas_cem.diagrams.TopologyDiagram.update_default_node_attributes" title="compas_cem.diagrams.TopologyDiagram.update_default_node_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_default_node_attributes</span></code></a></p></td>
 <td><p>Update the default node attributes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_dna.html#compas_cem.diagrams.TopologyDiagram.update_dna" title="compas_cem.diagrams.TopologyDiagram.update_dna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dna</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_dna.html#compas_cem.diagrams.TopologyDiagram.update_dna" title="compas_cem.diagrams.TopologyDiagram.update_dna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dna</span></code></a></p></td>
 <td><p>Update the default node attributes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_node_xyz.html#compas_cem.diagrams.TopologyDiagram.update_node_xyz" title="compas_cem.diagrams.TopologyDiagram.update_node_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_node_xyz</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.update_node_xyz.html#compas_cem.diagrams.TopologyDiagram.update_node_xyz" title="compas_cem.diagrams.TopologyDiagram.update_node_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_node_xyz</span></code></a></p></td>
 <td><p>Modifies</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.uv_index.html#compas_cem.diagrams.TopologyDiagram.uv_index" title="compas_cem.diagrams.TopologyDiagram.uv_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uv_index</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.uv_index.html#compas_cem.diagrams.TopologyDiagram.uv_index" title="compas_cem.diagrams.TopologyDiagram.uv_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uv_index</span></code></a></p></td>
 <td><p>Returns a dictionary that maps edge keys (i.e.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.validate_data.html#compas_cem.diagrams.TopologyDiagram.validate_data" title="compas_cem.diagrams.TopologyDiagram.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
-<td><p>Validate the object's data against its data schema (<cite>self.DATASCHEMA</cite>).</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.validate_data.html#compas_cem.diagrams.TopologyDiagram.validate_data" title="compas_cem.diagrams.TopologyDiagram.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
+<td><p>Validate the object's data against its data schema.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.validate_json.html#compas_cem.diagrams.TopologyDiagram.validate_json" title="compas_cem.diagrams.TopologyDiagram.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
-<td><p>Validate the object's data against its json schema (<cite>self.JSONSCHEMA</cite>).</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.diagrams.TopologyDiagram.validate_json.html#compas_cem.diagrams.TopologyDiagram.validate_json" title="compas_cem.diagrams.TopologyDiagram.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
+<td><p>Validate the object's data against its json schema.</p></td>
 </tr>
 </tbody>
 </table>

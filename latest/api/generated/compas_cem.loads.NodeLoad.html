@@ -99,11 +99,11 @@
 <h1>NodeLoad</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.loads.NodeLoad">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.loads.</span></span><span class="sig-name descname"><span class="pre">NodeLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">-</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/loads/node_load.py#L16"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.Data</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.loads.</span></span><span class="sig-name descname"><span class="pre">NodeLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">-</span> <span class="pre">1]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/loads/node_load.py#L17"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></p>
 <p>A load defined by a position and a vector.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>node</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code>) – A node key</p></li>
 <li><p><strong>vector</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">float</span></code>) – The load magnitude of the point load in xyz directions.</p></li>
@@ -111,11 +111,7 @@
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.from_point_and_vector.html#compas_cem.loads.NodeLoad.from_point_and_vector" title="compas_cem.loads.NodeLoad.from_point_and_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_point_and_vector</span></code></a></p></td>
 <td><p>Create a NodeLoad from a point and a vector.</p></td>
@@ -126,14 +122,37 @@
 </tbody>
 </table>
 <p class="rubric">Inherited Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.ToString.html#compas_cem.loads.NodeLoad.ToString" title="compas_cem.loads.NodeLoad.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
 <td><p>Show object representation as string in Rhino/Grasshopper.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.copy.html#compas_cem.loads.NodeLoad.copy" title="compas_cem.loads.NodeLoad.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
+<td><p>Make an independent copy of the data object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.from_data.html#compas_cem.loads.NodeLoad.from_data" title="compas_cem.loads.NodeLoad.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<td><p>Construct an object of this type from the provided data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.from_json.html#compas_cem.loads.NodeLoad.from_json" title="compas_cem.loads.NodeLoad.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.from_jsonstring.html#compas_cem.loads.NodeLoad.from_jsonstring" title="compas_cem.loads.NodeLoad.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.to_data.html#compas_cem.loads.NodeLoad.to_data" title="compas_cem.loads.NodeLoad.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
+<td><p>Convert an object to its native data representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.to_json.html#compas_cem.loads.NodeLoad.to_json" title="compas_cem.loads.NodeLoad.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.to_jsonstring.html#compas_cem.loads.NodeLoad.to_jsonstring" title="compas_cem.loads.NodeLoad.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.validate_data.html#compas_cem.loads.NodeLoad.validate_data" title="compas_cem.loads.NodeLoad.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
+<td><p>Validate the object's data against its data schema.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.loads.NodeLoad.validate_json.html#compas_cem.loads.NodeLoad.validate_json" title="compas_cem.loads.NodeLoad.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
+<td><p>Validate the object's data against its json schema.</p></td>
 </tr>
 </tbody>
 </table>

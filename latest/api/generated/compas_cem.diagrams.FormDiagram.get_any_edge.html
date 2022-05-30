@@ -24,7 +24,7 @@
   
 
   
-  <link rel="prev" title="FormDiagram.from_obj" href="compas_cem.diagrams.FormDiagram.from_obj.html" />
+  <link rel="prev" title="FormDiagram.from_pointcloud" href="compas_cem.diagrams.FormDiagram.from_pointcloud.html" />
   
 
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -101,11 +101,14 @@
 <h1>FormDiagram.get_any_edge</h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="compas_cem.diagrams.FormDiagram.get_any_edge">
-<span class="sig-prename descclassname"><span class="pre">FormDiagram.</span></span><span class="sig-name descname"><span class="pre">get_any_edge</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/form.py#L292"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">FormDiagram.</span></span><span class="sig-name descname"><span class="pre">get_any_edge</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/form.py#L297"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Get the identifier of a random edge.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.13.3: </span>Use <a class="reference internal" href="compas_cem.diagrams.FormDiagram.edge_sample.html#compas_cem.diagrams.FormDiagram.edge_sample" title="compas_cem.diagrams.FormDiagram.edge_sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">edge_sample()</span></code></a> instead.</p>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>tuple</em> – The identifier of the edge in the form of a pair of vertex identifiers.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>tuple[hashable, hashable]</em> – The identifier of the edge in the form of a pair of vertex identifiers.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -188,11 +191,11 @@
   <footer class="compas-footer">
     <nav class="nav p-2">
       
-      <a href="compas_cem.diagrams.FormDiagram.from_obj.html" title="FormDiagram.from_obj" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
+      <a href="compas_cem.diagrams.FormDiagram.from_pointcloud.html" title="FormDiagram.from_pointcloud" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
         <div class="nav-button p-2 m-2"><i class="fas fa-arrow-left"></i></div>
         <div class="nav-title flex-grow-1 align-self-center">
           <div class="nav-direction small font-weight-light">Previous</div>
-          FormDiagram.from_obj
+          FormDiagram.from_pointcloud
         </div>
       </a>
       

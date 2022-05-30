@@ -99,15 +99,11 @@
 <h1>TrailEdgeParameter</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.optimization.TrailEdgeParameter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">TrailEdgeParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/parameters/edge.py#L127"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.optimization.parameters.edge.EdgeParameter</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">TrailEdgeParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/parameters/edge.py#L123"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">EdgeParameter</span></code></p>
 <p>Sets the length of a trail edge as an optimization parameter.</p>
 <p class="rubric">Inherited Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.ToString.html#compas_cem.optimization.TrailEdgeParameter.ToString" title="compas_cem.optimization.TrailEdgeParameter.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
 <td><p>Show object representation as string in Rhino/Grasshopper.</p></td>
@@ -124,44 +120,35 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.copy.html#compas_cem.optimization.TrailEdgeParameter.copy" title="compas_cem.optimization.TrailEdgeParameter.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
 <td><p>Make an independent copy of the data object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.datatype.html#compas_cem.optimization.TrailEdgeParameter.datatype" title="compas_cem.optimization.TrailEdgeParameter.datatype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datatype</span></code></a></p></td>
-<td><p>Get the data type of this COMPAS object.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_data.html#compas_cem.optimization.TrailEdgeParameter.from_data" title="compas_cem.optimization.TrailEdgeParameter.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<td><p>Construct an object of this type from the provided data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_data.html#compas_cem.optimization.TrailEdgeParameter.from_data" title="compas_cem.optimization.TrailEdgeParameter.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
-<td><p>Creates a serializable object from structured data.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_json.html#compas_cem.optimization.TrailEdgeParameter.from_json" title="compas_cem.optimization.TrailEdgeParameter.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_json.html#compas_cem.optimization.TrailEdgeParameter.from_json" title="compas_cem.optimization.TrailEdgeParameter.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
-<td><p>Construct a serializable object from structured data contained in a json file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_jsonstring.html#compas_cem.optimization.TrailEdgeParameter.from_jsonstring" title="compas_cem.optimization.TrailEdgeParameter.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_jsonstring.html#compas_cem.optimization.TrailEdgeParameter.from_jsonstring" title="compas_cem.optimization.TrailEdgeParameter.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.key.html#compas_cem.optimization.TrailEdgeParameter.key" title="compas_cem.optimization.TrailEdgeParameter.key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.key.html#compas_cem.optimization.TrailEdgeParameter.key" title="compas_cem.optimization.TrailEdgeParameter.key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key</span></code></a></p></td>
 <td><p>The edge key.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.object_cls_from_dtype.html#compas_cem.optimization.TrailEdgeParameter.object_cls_from_dtype" title="compas_cem.optimization.TrailEdgeParameter.object_cls_from_dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object_cls_from_dtype</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.object_datatype.html#compas_cem.optimization.TrailEdgeParameter.object_datatype" title="compas_cem.optimization.TrailEdgeParameter.object_datatype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object_datatype</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.start_value.html#compas_cem.optimization.TrailEdgeParameter.start_value" title="compas_cem.optimization.TrailEdgeParameter.start_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_value</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.start_value.html#compas_cem.optimization.TrailEdgeParameter.start_value" title="compas_cem.optimization.TrailEdgeParameter.start_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_value</span></code></a></p></td>
 <td><p>The initial value of the edge optimization parameter.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.to_data.html#compas_cem.optimization.TrailEdgeParameter.to_data" title="compas_cem.optimization.TrailEdgeParameter.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
-<td><p>Returns a dictionary of structured data representing a serializable object.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.to_data.html#compas_cem.optimization.TrailEdgeParameter.to_data" title="compas_cem.optimization.TrailEdgeParameter.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
+<td><p>Convert an object to its native data representation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.to_json.html#compas_cem.optimization.TrailEdgeParameter.to_json" title="compas_cem.optimization.TrailEdgeParameter.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
-<td><p>Serialize this object to a structured json.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.to_json.html#compas_cem.optimization.TrailEdgeParameter.to_json" title="compas_cem.optimization.TrailEdgeParameter.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.to_jsonstring.html#compas_cem.optimization.TrailEdgeParameter.to_jsonstring" title="compas_cem.optimization.TrailEdgeParameter.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.to_jsonstring.html#compas_cem.optimization.TrailEdgeParameter.to_jsonstring" title="compas_cem.optimization.TrailEdgeParameter.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
 <td><p>Serialize the data representation of an object to a JSON string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.validate_data.html#compas_cem.optimization.TrailEdgeParameter.validate_data" title="compas_cem.optimization.TrailEdgeParameter.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
-<td><p>Validate the object's data against its data schema (<cite>self.DATASCHEMA</cite>).</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.validate_data.html#compas_cem.optimization.TrailEdgeParameter.validate_data" title="compas_cem.optimization.TrailEdgeParameter.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
+<td><p>Validate the object's data against its data schema.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.validate_json.html#compas_cem.optimization.TrailEdgeParameter.validate_json" title="compas_cem.optimization.TrailEdgeParameter.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
-<td><p>Validate the object's data against its json schema (<cite>self.JSONSCHEMA</cite>).</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.validate_json.html#compas_cem.optimization.TrailEdgeParameter.validate_json" title="compas_cem.optimization.TrailEdgeParameter.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
+<td><p>Validate the object's data against its json schema.</p></td>
 </tr>
 </tbody>
 </table>

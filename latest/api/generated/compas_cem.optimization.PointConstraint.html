@@ -100,14 +100,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.optimization.PointConstraint">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">PointConstraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/constraints/point.py#L7"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.optimization.constraints.constraint.VectorConstraint</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">VectorConstraint</span></code></p>
 <p>Pulls the xyz position of a node to a target point.</p>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.reference.html#compas_cem.optimization.PointConstraint.reference" title="compas_cem.optimization.PointConstraint.reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reference</span></code></a></p></td>
 <td><p>Gets the reference to compare the target against.</p></td>
@@ -115,11 +111,7 @@
 </tbody>
 </table>
 <p class="rubric">Inherited Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.ToString.html#compas_cem.optimization.PointConstraint.ToString" title="compas_cem.optimization.PointConstraint.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
 <td><p>Show object representation as string in Rhino/Grasshopper.</p></td>
@@ -127,47 +119,38 @@
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.copy.html#compas_cem.optimization.PointConstraint.copy" title="compas_cem.optimization.PointConstraint.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
 <td><p>Make an independent copy of the data object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.datatype.html#compas_cem.optimization.PointConstraint.datatype" title="compas_cem.optimization.PointConstraint.datatype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datatype</span></code></a></p></td>
-<td><p>Get the data type of this COMPAS object.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.from_data.html#compas_cem.optimization.PointConstraint.from_data" title="compas_cem.optimization.PointConstraint.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<td><p>Construct an object of this type from the provided data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.from_data.html#compas_cem.optimization.PointConstraint.from_data" title="compas_cem.optimization.PointConstraint.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
-<td><p>Creates a serializable object from structured data.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.from_json.html#compas_cem.optimization.PointConstraint.from_json" title="compas_cem.optimization.PointConstraint.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.from_json.html#compas_cem.optimization.PointConstraint.from_json" title="compas_cem.optimization.PointConstraint.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
-<td><p>Construct a serializable object from structured data contained in a json file.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.from_jsonstring.html#compas_cem.optimization.PointConstraint.from_jsonstring" title="compas_cem.optimization.PointConstraint.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.from_jsonstring.html#compas_cem.optimization.PointConstraint.from_jsonstring" title="compas_cem.optimization.PointConstraint.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.key.html#compas_cem.optimization.PointConstraint.key" title="compas_cem.optimization.PointConstraint.key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.key.html#compas_cem.optimization.PointConstraint.key" title="compas_cem.optimization.PointConstraint.key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key</span></code></a></p></td>
 <td><p>The key to an edge or a node in a form diagram.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.object_cls_from_dtype.html#compas_cem.optimization.PointConstraint.object_cls_from_dtype" title="compas_cem.optimization.PointConstraint.object_cls_from_dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object_cls_from_dtype</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.object_datatype.html#compas_cem.optimization.PointConstraint.object_datatype" title="compas_cem.optimization.PointConstraint.object_datatype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object_datatype</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.penalty.html#compas_cem.optimization.PointConstraint.penalty" title="compas_cem.optimization.PointConstraint.penalty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">penalty</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.penalty.html#compas_cem.optimization.PointConstraint.penalty" title="compas_cem.optimization.PointConstraint.penalty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">penalty</span></code></a></p></td>
 <td><p>The distance between the current and the target vector.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.target.html#compas_cem.optimization.PointConstraint.target" title="compas_cem.optimization.PointConstraint.target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.target.html#compas_cem.optimization.PointConstraint.target" title="compas_cem.optimization.PointConstraint.target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target</span></code></a></p></td>
 <td><p>The target to reach.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.to_data.html#compas_cem.optimization.PointConstraint.to_data" title="compas_cem.optimization.PointConstraint.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
-<td><p>Returns a dictionary of structured data representing a serializable object.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.to_data.html#compas_cem.optimization.PointConstraint.to_data" title="compas_cem.optimization.PointConstraint.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
+<td><p>Convert an object to its native data representation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.to_json.html#compas_cem.optimization.PointConstraint.to_json" title="compas_cem.optimization.PointConstraint.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
-<td><p>Serialize this object to a structured json.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.to_json.html#compas_cem.optimization.PointConstraint.to_json" title="compas_cem.optimization.PointConstraint.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.to_jsonstring.html#compas_cem.optimization.PointConstraint.to_jsonstring" title="compas_cem.optimization.PointConstraint.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.to_jsonstring.html#compas_cem.optimization.PointConstraint.to_jsonstring" title="compas_cem.optimization.PointConstraint.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
 <td><p>Serialize the data representation of an object to a JSON string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.validate_data.html#compas_cem.optimization.PointConstraint.validate_data" title="compas_cem.optimization.PointConstraint.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
-<td><p>Validate the object's data against its data schema (<cite>self.DATASCHEMA</cite>).</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.validate_data.html#compas_cem.optimization.PointConstraint.validate_data" title="compas_cem.optimization.PointConstraint.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
+<td><p>Validate the object's data against its data schema.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.validate_json.html#compas_cem.optimization.PointConstraint.validate_json" title="compas_cem.optimization.PointConstraint.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
-<td><p>Validate the object's data against its json schema (<cite>self.JSONSCHEMA</cite>).</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.PointConstraint.validate_json.html#compas_cem.optimization.PointConstraint.validate_json" title="compas_cem.optimization.PointConstraint.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
+<td><p>Validate the object's data against its json schema.</p></td>
 </tr>
 </tbody>
 </table>

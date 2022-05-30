@@ -99,28 +99,51 @@
 <h1>TrailEdge</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.elements.TrailEdge">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.elements.</span></span><span class="sig-name descname"><span class="pre">TrailEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/elements/trail.py#L4"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.elements.edge.Edge</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.elements.</span></span><span class="sig-name descname"><span class="pre">TrailEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/elements/trail.py#L4"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Edge</span></code></p>
 <p>A trail edge.</p>
 <p class="rubric">Notes</p>
 <p>If a plane is defined, it will override the absolute length of the trail edge.
 However, the sign of the length (e.g. the combinatorial state) is preserved.</p>
 <p>TODO: addexplicit combinatorial state to the signature of the constructor.</p>
 <p class="rubric">Inherited Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.ToString.html#compas_cem.elements.TrailEdge.ToString" title="compas_cem.elements.TrailEdge.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
 <td><p>Show object representation as string in Rhino/Grasshopper.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.copy.html#compas_cem.elements.TrailEdge.copy" title="compas_cem.elements.TrailEdge.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
+<td><p>Make an independent copy of the data object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_data.html#compas_cem.elements.TrailEdge.from_data" title="compas_cem.elements.TrailEdge.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<td><p>Construct an object of this type from the provided data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_json.html#compas_cem.elements.TrailEdge.from_json" title="compas_cem.elements.TrailEdge.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_jsonstring.html#compas_cem.elements.TrailEdge.from_jsonstring" title="compas_cem.elements.TrailEdge.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON string.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_line.html#compas_cem.elements.TrailEdge.from_line" title="compas_cem.elements.TrailEdge.from_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_line</span></code></a></p></td>
 <td><p>Create an edge from a line described by two xyz coordinates.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.from_rhino_line.html#compas_cem.elements.TrailEdge.from_rhino_line" title="compas_cem.elements.TrailEdge.from_rhino_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_rhino_line</span></code></a></p></td>
 <td><p>Create an edge from a rhino line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.to_data.html#compas_cem.elements.TrailEdge.to_data" title="compas_cem.elements.TrailEdge.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
+<td><p>Convert an object to its native data representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.to_json.html#compas_cem.elements.TrailEdge.to_json" title="compas_cem.elements.TrailEdge.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.to_jsonstring.html#compas_cem.elements.TrailEdge.to_jsonstring" title="compas_cem.elements.TrailEdge.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.validate_data.html#compas_cem.elements.TrailEdge.validate_data" title="compas_cem.elements.TrailEdge.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
+<td><p>Validate the object's data against its data schema.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.TrailEdge.validate_json.html#compas_cem.elements.TrailEdge.validate_json" title="compas_cem.elements.TrailEdge.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
+<td><p>Validate the object's data against its json schema.</p></td>
 </tr>
 </tbody>
 </table>

@@ -102,9 +102,12 @@
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">fabs</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Translation</span>
+
+<span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">Plotter</span>
 
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
 
@@ -113,8 +116,6 @@
 <span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">DeviationEdge</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.supports</span> <span class="kn">import</span> <span class="n">NodeSupport</span>
-
 <span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">static_equilibrium</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">Optimizer</span>
@@ -122,32 +123,27 @@
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">TrailEdgeForceConstraint</span>
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">DeviationEdgeParameter</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">FormPlotter</span>
-<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">TopologyPlotter</span>
 
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Create a topology diagram</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
 
+<span class="c1"># geometry parameters</span>
 <span class="n">diameter</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">num_steps</span> <span class="o">=</span> <span class="mi">24</span>  <span class="c1"># only even numbers</span>
+<span class="n">num_sides</span> <span class="o">=</span> <span class="mi">16</span>  <span class="c1"># only even numbers</span>
 <span class="n">appendix_length</span> <span class="o">=</span> <span class="mf">0.10</span>
-<span class="n">force</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">tension_force</span> <span class="o">=</span> <span class="o">+</span><span class="n">force</span>
-<span class="n">compression_force</span> <span class="o">=</span> <span class="o">-</span><span class="n">force</span>
+<span class="n">tension_force</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">compression_force</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span>
 <span class="n">bound</span> <span class="o">=</span> <span class="mf">2.0</span>
 
-<span class="n">plot_text_nodes</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">plot_text_edges</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Topology Diagram</span>
-<span class="c1"># ------------------------------------------------------------------------------</span>
-
-<span class="k">assert</span> <span class="n">num_steps</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="c1"># test number of subdivisions is even</span>
+<span class="k">assert</span> <span class="n">num_sides</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
 
 <span class="c1"># create a topology diagram</span>
 <span class="n">topology</span> <span class="o">=</span> <span class="n">TopologyDiagram</span><span class="p">()</span>
 
 <span class="c1"># create nodes, removing last</span>
-<span class="n">thetas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span> <span class="n">num_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">thetas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span> <span class="n">num_sides</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">radius</span> <span class="o">=</span> <span class="n">diameter</span> <span class="o">/</span> <span class="mf">2.0</span>
 
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">theta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">thetas</span><span class="p">):</span>
@@ -159,25 +155,25 @@
     <span class="n">topology</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
 
 <span class="c1"># deviation edges in the perimeter of the wheel tension</span>
-<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_sides</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
     <span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">DeviationEdge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">tension_force</span><span class="p">))</span>
 
 <span class="c1"># internal deviation edges are in compression</span>
-<span class="n">half_num_steps</span> <span class="o">=</span> <span class="n">num_steps</span> <span class="o">/</span> <span class="mf">2.0</span>
+<span class="n">half_num_sides</span> <span class="o">=</span> <span class="n">num_sides</span> <span class="o">/</span> <span class="mf">2.0</span>
 
-<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">half_num_steps</span><span class="p">)):</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">half_num_steps</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">half_num_sides</span><span class="p">)):</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">half_num_sides</span><span class="p">)</span>
     <span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">DeviationEdge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">compression_force</span><span class="p">))</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Generate trails and auxiliary trails</span>
+<span class="c1"># Generate trails and auto generate auxiliary trails</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<span class="n">topology</span><span class="o">.</span><span class="n">auxiliary_trail_length</span> <span class="o">=</span> <span class="n">appendix_length</span>
+<span class="n">topology</span><span class="o">.</span><span class="n">auxiliary_trail_length</span> <span class="o">=</span> <span class="n">appendix_length</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.0</span>
 <span class="n">topology</span><span class="o">.</span><span class="n">build_trails</span><span class="p">(</span><span class="n">auxiliary_trails</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Equilibrate internal forces</span>
+<span class="c1"># Compute a state of static equilibrium</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <span class="n">form</span> <span class="o">=</span> <span class="n">static_equilibrium</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
@@ -187,66 +183,55 @@
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
 <span class="c1"># create optimizer</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">()</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="p">()</span>
 
-<span class="c1"># add constraints</span>
+<span class="c1"># add constraint: force in axiliary trail edges should be zero</span>
 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">topology</span><span class="o">.</span><span class="n">auxiliary_trail_edges</span><span class="p">():</span>
-    <span class="n">optimizer</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">TrailEdgeForceConstraint</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="mf">0.0</span><span class="p">))</span>
+    <span class="n">opt</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">TrailEdgeForceConstraint</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="mf">0.0</span><span class="p">))</span>
 
 <span class="c1"># add optimization parameters</span>
-<span class="c1"># the forces in all the deviation edges are allowed to fluctuate</span>
+<span class="c1"># the forces in all the deviation edges are allowed to change</span>
 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">topology</span><span class="o">.</span><span class="n">deviation_edges</span><span class="p">():</span>
     <span class="c1"># compression bounds</span>
-    <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span> <span class="o">=</span> <span class="p">(</span><span class="n">bound</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
+    <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span> <span class="o">=</span> <span class="p">(</span><span class="n">bound</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
     <span class="c1"># tension bounds</span>
     <span class="k">if</span> <span class="n">topology</span><span class="o">.</span><span class="n">edge_force</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span> <span class="o">=</span> <span class="p">(</span><span class="n">force</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
+        <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span> <span class="o">=</span> <span class="p">(</span><span class="n">bound</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
 
-    <span class="n">optimizer</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="n">DeviationEdgeParameter</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span><span class="p">))</span>
+    <span class="n">opt</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="n">DeviationEdgeParameter</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span><span class="p">))</span>
 
 <span class="c1"># optimize</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-<span class="n">form</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">solve_nlopt</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;LBFGS&quot;</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="n">form_opt</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">solve_nlopt</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;LBFGS&quot;</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
 
 <span class="c1"># print out results</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Topology. # Nodes: </span><span class="si">{}</span><span class="s2">, # Edges: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span>
-                                                  <span class="n">topology</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimizer. # Parameters </span><span class="si">{}</span><span class="s2">, # Constraints </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">number_of_parameters</span><span class="p">(),</span>
-                                                            <span class="n">optimizer</span><span class="o">.</span><span class="n">number_of_constraints</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">))</span>
-
-<span class="c1"># the following values should be lower or equal to eps</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Value of the objective function: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">penalty</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Norm of the gradient of the objective function: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">gradient_norm</span><span class="p">))</span>
-
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimizer. # Parameters </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">number_of_parameters</span><span class="p">()</span><span class="si">}</span><span class="s2">, # Constraints </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">number_of_constraints</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimization elapsed time: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final value of the objective function: </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">penalty</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Norm of the gradient of the objective function: </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">gradient_norm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Plot topology</span>
+<span class="c1"># Plot results</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">TopologyPlotter</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">ns</span> <span class="o">=</span> <span class="mf">0.45</span>
+<span class="n">shift</span> <span class="o">=</span> <span class="n">diameter</span> <span class="o">*</span> <span class="mf">1.4</span>
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">9.0</span><span class="p">))</span>
 
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_loads</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">()</span>
+<span class="c1"># plot topology diagram</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">nodesize</span><span class="o">=</span><span class="n">ns</span><span class="p">)</span>
 
-<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># plot translated form diagram</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">Translation</span><span class="o">.</span><span class="n">from_vector</span><span class="p">([</span><span class="n">shift</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="n">nodesize</span><span class="o">=</span><span class="n">ns</span><span class="p">)</span>
 
-<span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Plot Form</span>
-<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># plot translated optimized form diagram</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">Translation</span><span class="o">.</span><span class="n">from_vector</span><span class="p">([</span><span class="n">shift</span> <span class="o">*</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">form_opt</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">T</span><span class="p">),</span> <span class="n">nodesize</span><span class="o">=</span><span class="n">ns</span><span class="p">)</span>
 
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">FormPlotter</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
-
-<span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">origin_nodes</span><span class="p">())</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_nodes</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">)</span>
-
-<span class="c1"># plot only edges with a force larger than 0.001</span>
-<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">edge</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span> <span class="k">if</span> <span class="n">fabs</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">edge_force</span><span class="p">(</span><span class="n">edge</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">]</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_edges</span><span class="p">(</span><span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_loads</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">draw_reactions</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.10</span><span class="p">)</span>
-
+<span class="c1"># show scene</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">zoom_extents</span><span class="p">(</span><span class="n">padding</span><span class="o">=-</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>

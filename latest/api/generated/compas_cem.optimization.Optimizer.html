@@ -99,15 +99,11 @@
 <h1>Optimizer</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.optimization.Optimizer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L26"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.Data</span></code></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L26"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></p>
 <p>An object that modifies a form diagram to meet multiple constraints.</p>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.add_constraint.html#compas_cem.optimization.Optimizer.add_constraint" title="compas_cem.optimization.Optimizer.add_constraint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_constraint</span></code></a></p></td>
 <td><p>Adds a goal constraint.</p></td>
@@ -154,14 +150,37 @@
 </tbody>
 </table>
 <p class="rubric">Inherited Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.ToString.html#compas_cem.optimization.Optimizer.ToString" title="compas_cem.optimization.Optimizer.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
 <td><p>Show object representation as string in Rhino/Grasshopper.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.copy.html#compas_cem.optimization.Optimizer.copy" title="compas_cem.optimization.Optimizer.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
+<td><p>Make an independent copy of the data object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_data.html#compas_cem.optimization.Optimizer.from_data" title="compas_cem.optimization.Optimizer.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<td><p>Construct an object of this type from the provided data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_json.html#compas_cem.optimization.Optimizer.from_json" title="compas_cem.optimization.Optimizer.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_jsonstring.html#compas_cem.optimization.Optimizer.from_jsonstring" title="compas_cem.optimization.Optimizer.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<td><p>Construct an object from serialized data contained in a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.to_data.html#compas_cem.optimization.Optimizer.to_data" title="compas_cem.optimization.Optimizer.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
+<td><p>Convert an object to its native data representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.to_json.html#compas_cem.optimization.Optimizer.to_json" title="compas_cem.optimization.Optimizer.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.to_jsonstring.html#compas_cem.optimization.Optimizer.to_jsonstring" title="compas_cem.optimization.Optimizer.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
+<td><p>Serialize the data representation of an object to a JSON string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.validate_data.html#compas_cem.optimization.Optimizer.validate_data" title="compas_cem.optimization.Optimizer.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
+<td><p>Validate the object's data against its data schema.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.validate_json.html#compas_cem.optimization.Optimizer.validate_json" title="compas_cem.optimization.Optimizer.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
+<td><p>Validate the object's data against its json schema.</p></td>
 </tr>
 </tbody>
 </table>
