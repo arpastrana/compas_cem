@@ -11,6 +11,8 @@ Unreleased
 
 **Added**
 
+- Added `compas_cem.diagrams.Diagram.__str__()`.
+
 **Changed**
 
 **Fixed**
@@ -18,6 +20,8 @@ Unreleased
 **Deprecated**
 
 **Removed**
+
+- Removed `compas_cem.data.GHData`.
 
 0.3.0
 ----------
