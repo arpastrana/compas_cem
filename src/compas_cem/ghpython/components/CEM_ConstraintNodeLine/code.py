@@ -10,6 +10,7 @@ from compas_rhino.geometry import RhinoLine
 class LineConstraintComponent(component):
     def RunScript(self, node_key, line, weight):
         weight = weight or 1.0
-        if node_key is not None and line:
-            line = RhinoLine.from_geometry(line).to_compas()
-            return LineConstraint(node_key, line, weight)
+        if node_key is None or not line:
+            return
+        line = RhinoLine.from_geometry(line).to_compas()
+        return LineConstraint(node_key, line, weight)

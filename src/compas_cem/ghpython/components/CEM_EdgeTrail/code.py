@@ -14,9 +14,12 @@ from compas_cem.elements import TrailEdge
 
 class TrailEdgeComponent(component):
     def RunScript(self, line, length, plane):
+        if not line or length is None:
+            return
+
         if plane is not None:
             plane = RhinoPlane.from_geometry(plane).to_compas()
             plane = Plane(plane.point, cross_vectors(plane.xaxis, plane.yaxis))
-        if line and length is not None:
-            line = RhinoLine.from_geometry(line).to_compas()
-            return TrailEdge.from_line(line, length=length, plane=plane)
+
+        line = RhinoLine.from_geometry(line).to_compas()
+        return TrailEdge.from_line(line, length=length, plane=plane)

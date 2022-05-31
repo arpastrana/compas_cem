@@ -9,29 +9,31 @@ from compas.rpc import Proxy
 
 
 class ConstrainedFormFindingComponent(component):
-    def RunScript(self, topology, constraints, parameters, algorithm, iters_max, eps, tmax, eta):
+    def RunScript(self, solve, topology, constraints, parameters, algorithm, iters_max, eps, tmax, eta):
         algorithm = algorithm or "SLSQP"
         iters_max = iters_max or 100
         eps = eps or 1e-6
         tmax = tmax or 100
         eta = eta or 1e-6
 
-        if topology and constraints and parameters:
-            topology = topology.copy()
+        if not (solve and topology and constraints and parameters):
+            return
 
-            # clean constraints and parameters from None
-            constraints = [c for c in constraints if c is not None]
-            parameters = [p for p in parameters if p is not None]
+        topology = topology.copy()
 
-            with Proxy("compas_cem.optimization", port=PROXY_PORT) as opt:
-                solution = opt.solve_nlopt_proxy(topology,
-                                                 constraints,
-                                                 parameters,
-                                                 algorithm,
-                                                 iters_max,
-                                                 eps,
-                                                 tmax,
-                                                 eta)
+        # clean constraints and parameters from None
+        constraints = [c for c in constraints if c is not None]
+        parameters = [p for p in parameters if p is not None]
 
-            form, objective, grad_norm, iters, time, status = solution
-            return form, objective, grad_norm, iters, time, status
+        with Proxy("compas_cem.optimization", port=PROXY_PORT) as opt:
+            solution = opt.solve_nlopt_proxy(topology=topology,
+                                             constraints=constraints,
+                                             parameters=parameters,
+                                             algorithm=algorithm,
+                                             iters=iters_max,
+                                             eps=eps,
+                                             tmax=tmax,
+                                             eta=eta)
+
+        form, objective, grad_norm, iters, time, status = solution
+        return form, objective, grad_norm, iters, time, status

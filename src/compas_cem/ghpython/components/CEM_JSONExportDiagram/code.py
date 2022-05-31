@@ -8,7 +8,9 @@ from ghpythonlib.componentbase import executingcomponent as component
 
 class DiagramToJSON(component):
     def RunScript(self, diagram, filepath):
-        if diagram and filepath:
-            filepath = os.path.abspath(filepath)
-            diagram.to_json(filepath, pretty=True)
-            return diagram.data
+        if not (diagram and filepath):
+            return
+
+        filepath = os.path.abspath(filepath)
+        diagram.to_json(filepath, pretty=True)
+        return diagram.data

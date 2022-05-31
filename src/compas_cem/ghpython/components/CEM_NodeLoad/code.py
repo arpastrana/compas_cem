@@ -11,8 +11,10 @@ from compas_cem.loads import NodeLoad
 
 class NodeLoadComponent(component):
     def RunScript(self, point, vector):
-        if point and vector:
-            point = RhinoPoint.from_geometry(point).to_compas()
-            vector = RhinoVector.from_geometry(vector).to_compas()
+        if not (point and vector):
+            return
 
-            return NodeLoad.from_point_and_vector(point, vector)
+        point = RhinoPoint.from_geometry(point).to_compas()
+        vector = RhinoVector.from_geometry(vector).to_compas()
+
+        return NodeLoad.from_point_and_vector(point, vector)

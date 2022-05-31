@@ -9,6 +9,8 @@ from compas_cem.supports import NodeSupport
 
 class NodeSupportComponent(component):
     def RunScript(self, point):
-        if point:
-            xyz = RhinoPoint.from_geometry(point).to_compas()
-            return NodeSupport.from_point(xyz)
+        if not point:
+            return
+
+        xyz = RhinoPoint.from_geometry(point).to_compas()
+        return NodeSupport.from_point(xyz)

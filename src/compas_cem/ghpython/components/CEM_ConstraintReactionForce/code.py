@@ -10,6 +10,7 @@ from compas_cem.optimization import ReactionForceConstraint
 class ReactionForceConstraintComponent(component):
     def RunScript(self, node_key, vector, weight):
         weight = weight or 1.0
-        if node_key is not None and vector:
-            vector = RhinoVector.from_geometry(vector).to_compas()
-            return ReactionForceConstraint(node_key, vector, weight)
+        if node_key is None or not vector:
+            return
+        vector = RhinoVector.from_geometry(vector).to_compas()
+        return ReactionForceConstraint(node_key, vector, weight)

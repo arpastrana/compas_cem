@@ -13,14 +13,16 @@ class FormArtistComponent(component):
         force_min = force_min or 1e-3
         force_scale = force_scale or 1
 
-        if form:
-            artist = Artist(form)
+        if not form:
+            return
 
-            nodes = artist.draw_nodes(node_keys)
-            edges = artist.draw_edges(edge_keys)
-            support_nodes = artist.draw_nodes_support(node_keys)
+        artist = Artist(form)
 
-            loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
-            reactions = artist.draw_reactions(node_keys, min_force=force_min, scale=force_scale)
+        nodes = artist.draw_nodes(node_keys)
+        edges = artist.draw_edges(edge_keys)
+        support_nodes = artist.draw_nodes_support(node_keys)
 
-            return nodes, support_nodes, edges, loads, reactions
+        loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
+        reactions = artist.draw_reactions(node_keys, min_force=force_min, scale=force_scale)
+
+        return nodes, support_nodes, edges, loads, reactions

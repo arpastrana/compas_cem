@@ -3,13 +3,18 @@
     "nickname": "ConstrainedFormFinding",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Optimize for a form in equilibrium that meets geometric and force constraints.",
+    "description": "Generate a form in equilibrium such that it meets user-defined constraints.",
     "exposure": 2,
 
     "ghpython": {
         "hideOutput": false,
         "isAdvancedMode": true,
         "inputParameters": [
+            {
+                "name": "solve",
+                "description": "Kickstarts the solution of the constrained form-finding problem.",
+                "typeHintID": "bool"
+            },
             {
                 "name": "topology",
                 "description": "A COMPAS CEM topology diagram."
@@ -36,7 +41,7 @@
             },
             {
                 "name": "eps",
-                "description": "The minimum objective or norm of the gradient value to declare convergence. Defaults to 1e-6.",
+                "description": "The minimum objective or norm of the gradient to declare convergence. Defaults to 1e-6.",
                 "typeHintID": "float"
 
             },

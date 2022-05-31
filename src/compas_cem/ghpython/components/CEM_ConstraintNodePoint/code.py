@@ -10,6 +10,7 @@ from compas_rhino.geometry import RhinoPoint
 class PointConstraintComponent(component):
     def RunScript(self, node_key, point, weight):
         weight = weight or 1.0
-        if node_key is not None and point:
-            point = RhinoPoint.from_geometry(point).to_compas()
-            return PointConstraint(node_key, point, weight)
+        if node_key is None or not point:
+            return
+        point = RhinoPoint.from_geometry(point).to_compas()
+        return PointConstraint(node_key, point, weight)
