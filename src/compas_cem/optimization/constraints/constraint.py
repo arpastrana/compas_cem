@@ -174,6 +174,7 @@ class FloatConstraint(Constraint):
 
         data["key"] = repr(self.key())
         data["target"] = repr(self.target())
+        data["weight"] = self._weight
 
         return data
 
@@ -192,6 +193,7 @@ class FloatConstraint(Constraint):
         """
         self._key = literal_eval(data["key"])
         self._target = literal_eval(data["target"])
+        self._weight = float(data["weight"])
 
 # ==============================================================================
 # Main
