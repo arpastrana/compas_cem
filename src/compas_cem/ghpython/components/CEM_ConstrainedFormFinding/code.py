@@ -2,8 +2,7 @@
 Generate a form diagram in static equilibrium.
 """
 from ghpythonlib.componentbase import executingcomponent as component
-
-from compas_cem import PROXY_PORT
+from scriptcontext import sticky
 
 from compas.rpc import Proxy
 
@@ -25,15 +24,30 @@ class ConstrainedFormFindingComponent(component):
         constraints = [c for c in constraints if c is not None]
         parameters = [p for p in parameters if p is not None]
 
-        with Proxy("compas_cem.optimization", port=PROXY_PORT) as opt:
-            solution = opt.solve_nlopt_proxy(topology=topology,
-                                             constraints=constraints,
-                                             parameters=parameters,
-                                             algorithm=algorithm,
-                                             iters=iters_max,
-                                             eps=eps,
-                                             tmax=tmax,
-                                             eta=eta)
+        # fetch optimization proxy from scriptcontext
+        opt = sticky.get("proxy_cem")
+        proxy_temp_exists = False
 
+        # create temporary proxy server if unavailable from scriptcontext
+        if not opt:
+            opt = Proxy("compas_cem.optimization")
+            proxy_temp_exists = False
+
+        # solve constrained form-finding problem
+        solution = opt.solve_nlopt_proxy(topology=topology,
+                                         constraints=constraints,
+                                         parameters=parameters,
+                                         algorithm=algorithm,
+                                         iters=iters_max,
+                                         eps=eps,
+                                         tmax=tmax,
+                                         eta=eta)
+
+        # shut down temporary proxy
+        if proxy_temp_exists:
+            opt.stop_server()
+
+        # unpack solution
         form, objective, grad_norm, iters, time, status = solution
+
         return form, objective, grad_norm, iters, time, status
