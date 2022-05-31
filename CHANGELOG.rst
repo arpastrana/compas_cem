@@ -17,6 +17,8 @@ Unreleased
 
 **Fixed**
 
+- Fixed bug in serialization and target computation in `optimization.constraints.VectorConstraint`.
+
 **Deprecated**
 
 **Removed**
