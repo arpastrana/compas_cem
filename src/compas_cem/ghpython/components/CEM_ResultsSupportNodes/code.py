@@ -6,7 +6,7 @@ from ghpythonlib.componentbase import executingcomponent as component
 import rhinoscriptsyntax as rs
 
 
-class SupportNodeResultsComponent(component):
+class ReactionForcesComponent(component):
     def RunScript(self, form, support_node_keys):
         if not form:
             return

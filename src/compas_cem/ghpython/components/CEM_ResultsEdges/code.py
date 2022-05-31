@@ -1,5 +1,5 @@
 """
-Extract the post form-finding results of the edges in a form diagram.
+Get the lengths and forces of the edges in a form diagram.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 

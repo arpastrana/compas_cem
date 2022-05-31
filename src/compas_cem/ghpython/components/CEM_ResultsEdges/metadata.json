@@ -1,10 +1,10 @@
 {
-    "name": "Edge Results",
-    "nickname": "EdgeResults",
+    "name": "Edge Forces and Lengths",
+    "nickname": "EdgeForcesLengths",
     "category": "COMPAS CEM",
     "subcategory": "07_Results",
     "description": "Get the lengths and the forces of the edges in a form diagram.",
-    "exposure": 2,
+    "exposure": 4,
 
     "ghpython": {
         "isAdvancedMode": true,
