@@ -4,7 +4,6 @@ from ast import literal_eval
 from compas.data.encoders import cls_from_dtype
 
 from compas.geometry import distance_point_point_sqrd
-from compas.geometry import Vector
 
 from compas_cem.data import Data
 
