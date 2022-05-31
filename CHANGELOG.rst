@@ -21,6 +21,10 @@ Unreleased
 
 **Removed**
 
+- Removed `compas_cem.loads.NodeLoad.from_rhino_point_and_vector`
+- Removed `compas_cem.supports.NodeSupport.from_rhino_point`
+- Removed `compas_cem.elements.Edge.from_rhino_line`
+- Removed `compas_cem.elements.Node.from_rhino_point`
 - Removed `compas_cem.data.GHData`.
 
 0.3.0

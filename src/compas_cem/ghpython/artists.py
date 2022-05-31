@@ -1,3 +1,5 @@
+import compas
+
 from math import fabs
 
 from compas.geometry import add_vectors
@@ -6,9 +8,10 @@ from compas.geometry import scale_vector
 from compas.geometry import normalize_vector
 from compas.geometry import translate_points
 
-from compas_ghpython import draw_points
-from compas_ghpython import draw_lines
-from compas_ghpython import draw_polylines
+if compas.is_grasshopper():
+    from compas_ghpython import draw_points
+    from compas_ghpython import draw_lines
+    from compas_ghpython import draw_polylines
 
 from compas_ghpython.artists import NetworkArtist
 
