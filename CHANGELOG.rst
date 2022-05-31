@@ -18,6 +18,7 @@ Unreleased
 **Fixed**
 
 - Fixed bug in serialization and target computation in `optimization.constraints.VectorConstraint`.
+- Fixed bug in `Plane` creation caused by old version of `compas_rhino.RhinoPlane.from_geometry`.
 
 **Deprecated**
 
