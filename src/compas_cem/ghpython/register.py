@@ -5,8 +5,8 @@ from compas.plugins import plugin
 from compas_cem.diagrams import TopologyDiagram
 from compas_cem.diagrams import FormDiagram
 
-from compas_cem.ghpython import TopologyArtist
-from compas_cem.ghpython import FormArtist
+from compas_cem.ghpython.artists import TopologyArtist
+from compas_cem.ghpython.artists import FormArtist
 
 
 @plugin(category="factories", requires=["Rhino"])
