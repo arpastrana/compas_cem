@@ -20,7 +20,7 @@
   <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
   
-  <link rel="next" title="DeviationEdge.ToString" href="compas_cem.elements.DeviationEdge.ToString.html" />
+  <link rel="next" title="DeviationEdge.copy" href="compas_cem.elements.DeviationEdge.copy.html" />
   
 
   
@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.3.0
+            0.4.0
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -105,40 +105,37 @@
 <p class="rubric">Inherited Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.ToString.html#compas_cem.elements.DeviationEdge.ToString" title="compas_cem.elements.DeviationEdge.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
-<td><p>Show object representation as string in Rhino/Grasshopper.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.copy.html#compas_cem.elements.DeviationEdge.copy" title="compas_cem.elements.DeviationEdge.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.copy.html#compas_cem.elements.DeviationEdge.copy" title="compas_cem.elements.DeviationEdge.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
 <td><p>Make an independent copy of the data object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_data.html#compas_cem.elements.DeviationEdge.from_data" title="compas_cem.elements.DeviationEdge.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_data.html#compas_cem.elements.DeviationEdge.from_data" title="compas_cem.elements.DeviationEdge.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
 <td><p>Construct an object of this type from the provided data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_json.html#compas_cem.elements.DeviationEdge.from_json" title="compas_cem.elements.DeviationEdge.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_json.html#compas_cem.elements.DeviationEdge.from_json" title="compas_cem.elements.DeviationEdge.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_jsonstring.html#compas_cem.elements.DeviationEdge.from_jsonstring" title="compas_cem.elements.DeviationEdge.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_jsonstring.html#compas_cem.elements.DeviationEdge.from_jsonstring" title="compas_cem.elements.DeviationEdge.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_line.html#compas_cem.elements.DeviationEdge.from_line" title="compas_cem.elements.DeviationEdge.from_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_line</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_line.html#compas_cem.elements.DeviationEdge.from_line" title="compas_cem.elements.DeviationEdge.from_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_line</span></code></a></p></td>
 <td><p>Create an edge from a line described by two xyz coordinates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_rhino_line.html#compas_cem.elements.DeviationEdge.from_rhino_line" title="compas_cem.elements.DeviationEdge.from_rhino_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_rhino_line</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.from_rhino_line.html#compas_cem.elements.DeviationEdge.from_rhino_line" title="compas_cem.elements.DeviationEdge.from_rhino_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_rhino_line</span></code></a></p></td>
 <td><p>Create an edge from a rhino line.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.to_data.html#compas_cem.elements.DeviationEdge.to_data" title="compas_cem.elements.DeviationEdge.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.to_data.html#compas_cem.elements.DeviationEdge.to_data" title="compas_cem.elements.DeviationEdge.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
 <td><p>Convert an object to its native data representation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.to_json.html#compas_cem.elements.DeviationEdge.to_json" title="compas_cem.elements.DeviationEdge.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.to_json.html#compas_cem.elements.DeviationEdge.to_json" title="compas_cem.elements.DeviationEdge.to_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_json</span></code></a></p></td>
 <td><p>Serialize the data representation of an object to a JSON file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.to_jsonstring.html#compas_cem.elements.DeviationEdge.to_jsonstring" title="compas_cem.elements.DeviationEdge.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.to_jsonstring.html#compas_cem.elements.DeviationEdge.to_jsonstring" title="compas_cem.elements.DeviationEdge.to_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_jsonstring</span></code></a></p></td>
 <td><p>Serialize the data representation of an object to a JSON string.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.validate_data.html#compas_cem.elements.DeviationEdge.validate_data" title="compas_cem.elements.DeviationEdge.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.validate_data.html#compas_cem.elements.DeviationEdge.validate_data" title="compas_cem.elements.DeviationEdge.validate_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_data</span></code></a></p></td>
 <td><p>Validate the object's data against its data schema.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.validate_json.html#compas_cem.elements.DeviationEdge.validate_json" title="compas_cem.elements.DeviationEdge.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.elements.DeviationEdge.validate_json.html#compas_cem.elements.DeviationEdge.validate_json" title="compas_cem.elements.DeviationEdge.validate_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_json</span></code></a></p></td>
 <td><p>Validate the object's data against its json schema.</p></td>
 </tr>
 </tbody>
@@ -233,10 +230,10 @@
       
 
       
-      <a href="compas_cem.elements.DeviationEdge.ToString.html" title="DeviationEdge.ToString" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
+      <a href="compas_cem.elements.DeviationEdge.copy.html" title="DeviationEdge.copy" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
         <div class="nav-title footer-link flex-grow-1 align-self-center">
           <div class="nav-direction small font-weight-light">Next</div>
-          DeviationEdge.ToString
+          DeviationEdge.copy
         </div>
         <div class="nav-button p-2 m-2"><i class="fas fa-arrow-right"></i></div>
       </a>
