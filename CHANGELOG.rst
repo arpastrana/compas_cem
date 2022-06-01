@@ -11,9 +11,12 @@ Unreleased
 
 **Added**
 
+- Implemented `ProxyServer` GH component to accelerate optimization time in Rhino.
 - Added `compas_cem.diagrams.Diagram.__str__()`.
 
 **Changed**
+
+- Changed `ConstrainedFormFinding` GH component to check for existing `ProxyServer`.
 
 **Fixed**
 

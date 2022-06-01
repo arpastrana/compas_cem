@@ -79,7 +79,7 @@
             },
             {
                 "name": "time",
-                "description": "The optimization elapsed time in seconds.",
+                "description": "The optimization elapsed time in milliseconds.",
                 "optional": false
             },
             {
