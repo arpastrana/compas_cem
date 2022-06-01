@@ -3,7 +3,7 @@
     "nickname": "ConstrainedFormFinding",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Generate a form in equilibrium such that it meets user-defined constraints.",
+    "description": "Generate a form in equilibrium such that it meets user-defined constraints.\nStart a proxy server before running this component to accelerate the optimization time.",
     "exposure": 2,
 
     "ghpython": {
@@ -79,7 +79,7 @@
             },
             {
                 "name": "time",
-                "description": "The optimization elapsed time in milliseconds.",
+                "description": "The optimization elapsed time in seconds.",
                 "optional": false
             },
             {

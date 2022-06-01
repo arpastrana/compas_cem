@@ -1,5 +1,5 @@
 """
-Generate a form diagram in static equilibrium.
+Generate a form diagram in static equilibrium such that it meets user-defined constraints.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 from scriptcontext import sticky

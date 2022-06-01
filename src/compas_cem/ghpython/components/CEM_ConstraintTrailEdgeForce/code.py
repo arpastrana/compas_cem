@@ -1,5 +1,5 @@
 """
-Make the force on a trail edge to reach a goal force value.
+Make the force on a trail edge to reach a prescribed value.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 

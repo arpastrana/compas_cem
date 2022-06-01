@@ -78,7 +78,7 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps=N
     start = time()
     form = optimizer.solve_nlopt(topology, algorithm, iters, eps, tmax, eta)
 
-    duration = int((time() - start) * 1000)
+    duration = round(time() - start, 2)
     objective = optimizer.penalty
     evals = optimizer.evals
     grad_norm = optimizer.gradient_norm

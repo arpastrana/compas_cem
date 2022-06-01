@@ -3,7 +3,7 @@
     "nickname": "TrailEdgeForceConstraint",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Make the force on a trail edge to reach a goal force value.",
+    "description": "Make the force on a trail edge to reach a prescribed value.",
     "exposure": 4,
 
     "ghpython": {

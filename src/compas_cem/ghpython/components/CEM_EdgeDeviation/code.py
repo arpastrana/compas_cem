@@ -1,5 +1,5 @@
 """
-Create a deviation edge from a rhino line.
+Create a deviation edge from a line.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 

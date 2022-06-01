@@ -1,5 +1,5 @@
 """
-Create an RPC proxy server to solve a constrained form-finding problem via CPython"
+Create an RPC proxy server to solve a constrained form-finding problem via CPython
 """
 from ghpythonlib.componentbase import executingcomponent as component
 
