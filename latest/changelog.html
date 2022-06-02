@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.4.0
+            0.4.1
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -103,21 +103,35 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <p><strong>Removed</strong></p>
 </section>
 <section id="id1">
-<h2>0.4.0</h2>
+<h2>0.4.1</h2>
 <p><strong>Added</strong></p>
 <ul class="simple">
+<li><p>Implemented <cite>ProxyServer</cite> GH component to accelerate optimization time in Rhino.</p></li>
 <li><p>Added <cite>compas_cem.diagrams.Diagram.__str__()</cite>.</p></li>
 </ul>
 <p><strong>Changed</strong></p>
+<ul class="simple">
+<li><p>Changed <cite>ConstrainedFormFinding</cite> GH component to check for existing <cite>ProxyServer</cite>.</p></li>
+<li><p>Changed <cite>nlopt_status</cite> flags for better interpretability in ghpython.</p></li>
+</ul>
 <p><strong>Fixed</strong></p>
+<ul class="simple">
+<li><p>Fixed bug in <cite>compas_cem.ghpython.artists</cite> registration.</p></li>
+<li><p>Fixed bug in serialization and target computation in <cite>optimization.constraints.VectorConstraint</cite>.</p></li>
+<li><p>Fixed bug in <cite>Plane</cite> creation caused by old version of <cite>compas_rhino.RhinoPlane.from_geometry</cite>.</p></li>
+</ul>
 <p><strong>Deprecated</strong></p>
 <p><strong>Removed</strong></p>
 <ul class="simple">
+<li><p>Removed <cite>compas_cem.loads.NodeLoad.from_rhino_point_and_vector</cite></p></li>
+<li><p>Removed <cite>compas_cem.supports.NodeSupport.from_rhino_point</cite></p></li>
+<li><p>Removed <cite>compas_cem.elements.Edge.from_rhino_line</cite></p></li>
+<li><p>Removed <cite>compas_cem.elements.Node.from_rhino_point</cite></p></li>
 <li><p>Removed <cite>compas_cem.data.GHData</cite>.</p></li>
 </ul>
 </section>
 <section id="id2">
-<h2>0.3.0</h2>
+<h2>0.4.0</h2>
 <p><strong>Added</strong></p>
 <ul class="simple">
 <li><p>Added spiral staircase ghpython example.</p></li>
@@ -421,8 +435,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
         <ul class="nav flex-column" id="compas-toc">
 <li class="nav-item"><a class="nav-link reference internal" href="#">Changelog</a><ul class="nav flex-column">
 <li class="nav-item"><a class="nav-link reference internal" href="#unreleased">Unreleased</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#id1">0.4.0</a></li>
-<li class="nav-item"><a class="nav-link reference internal" href="#id2">0.3.0</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#id1">0.4.1</a></li>
+<li class="nav-item"><a class="nav-link reference internal" href="#id2">0.4.0</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#id3">0.2.2</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#id4">0.2.1</a></li>
 <li class="nav-item"><a class="nav-link reference internal" href="#id5">0.1.15</a></li>

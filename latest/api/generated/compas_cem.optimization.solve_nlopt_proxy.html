@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.4.0
+            0.4.1
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -132,7 +132,15 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">1e-6</s
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>form</strong> (<a class="reference internal" href="compas_cem.diagrams.FormDiagram.html#compas_cem.diagrams.FormDiagram" title="compas_cem.diagrams.FormDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.FormDiagram</span></code></a>) – A form diagram.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>form</strong> (<a class="reference internal" href="compas_cem.diagrams.FormDiagram.html#compas_cem.diagrams.FormDiagram" title="compas_cem.diagrams.FormDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">compas_cem.diagrams.FormDiagram</span></code></a>) – A form diagram.</p></li>
+<li><p><strong>objective</strong> (<cite>float</cite>) – The final value of the objective function.</p></li>
+<li><p><strong>grad_norm</strong> (<cite>float</cite>) – The cummulative norm of the gradients.</p></li>
+<li><p><strong>iters</strong> (<cite>int</cite>) – The elapsed number of iterations.</p></li>
+<li><p><strong>duration</strong> (<cite>float</cite>) – The total optimization time in milliseconds.</p></li>
+<li><p><strong>status</strong> (<cite>str</cite>) – The final status of the optimization problem as per NLOpt.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
