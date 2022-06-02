@@ -1,8 +1,3 @@
-import compas
-
-if compas.RHINO:
-    from compas_rhino.geometry import RhinoLine
-
 from compas_cem.data import Data
 
 
@@ -46,26 +41,6 @@ class Edge(Data):
         """
         edge = cls(line[0], line[1], **kwargs)
         return edge
-
-    @classmethod
-    def from_rhino_line(cls, rhino_line, **kwargs):
-        """
-        Create an edge from a rhino line.
-
-        Parameters
-        ----------
-        rhino_line : ``Rhino.Geometry.Line``
-            A rhino line.
-        **kwargs : ``dict``
-            Extra keyword arguments.
-
-        Returns
-        -------
-        edge : ``Edge``
-            An edge object.
-        """
-        line = RhinoLine.from_geometry(rhino_line).to_compas()
-        return cls.from_line(line, **kwargs)
 
     def __iter__(self):
         """

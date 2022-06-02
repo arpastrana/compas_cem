@@ -8,5 +8,7 @@ from compas_cem.optimization import TrailEdgeParameter
 
 class TrailEdgeParameterComponent(component):
     def RunScript(self, edge_key, bound_low, bound_up):
-        if edge_key and bound_low is not None and bound_up is not None:
-            return TrailEdgeParameter(edge_key, bound_low, bound_up)
+        if not edge_key or bound_low is None or bound_up is None:
+            return
+
+        return TrailEdgeParameter(edge_key, bound_low, bound_up)

@@ -1,3 +1,6 @@
+from math import fabs
+from math import copysign
+
 from compas_cem.elements import Edge
 
 
@@ -21,8 +24,15 @@ class TrailEdge(Edge):
     def __repr__(self):
         """
         """
-        st = "{0}(length={1!r}, plane={2!r})"
-        return st.format(self.__class__.__name__, self.attributes["length"], self.attributes["plane"])
+        length = self.attributes["length"]
+        msg = "{name}(length={length!r}, state={state!r}, plane={plane!r})"
+        info = {"name": self.__class__.__name__,
+                "length": fabs(length),
+                "state": int(copysign(1, length)),
+                "plane": self.attributes["plane"]}
+
+        return msg.format(**info)
+
 
 # ==============================================================================
 # Main

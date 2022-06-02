@@ -8,7 +8,10 @@ from compas_cem.equilibrium import static_equilibrium
 
 class FormFindingComponent(component):
     def RunScript(self, topology, tmax, eta):
-        tmax = tmax or 100
         eta = eta or 1e-6
-        if topology:
-            return static_equilibrium(topology, tmax=tmax, eta=eta)
+        tmax = tmax or 100
+
+        if not topology:
+            return
+
+        return static_equilibrium(topology, tmax=tmax, eta=eta)

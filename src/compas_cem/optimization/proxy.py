@@ -51,6 +51,16 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps=N
     -------
     form : :class:`compas_cem.diagrams.FormDiagram`
         A form diagram.
+    objective : `float`
+        The final value of the objective function.
+    grad_norm : `float`
+        The cummulative norm of the gradients.
+    iters : `int`
+        The elapsed number of iterations.
+    duration : `float`
+        The total optimization time in milliseconds.
+    status : `str`
+        The final status of the optimization problem as per NLOpt.
     """
     # TODO: the optimizer import statement should be handled more elegantly
     from compas_cem.optimization import Optimizer
@@ -68,7 +78,7 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps=N
     start = time()
     form = optimizer.solve_nlopt(topology, algorithm, iters, eps, tmax, eta)
 
-    duration = time() - start
+    duration = round(time() - start, 2)
     objective = optimizer.penalty
     evals = optimizer.evals
     grad_norm = optimizer.gradient_norm

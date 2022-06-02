@@ -13,19 +13,21 @@ class TopologyArtistComponent(component):
         force_min = force_min or 1e-3
         force_scale = force_scale or 1.0
 
-        if topology:
-            artist = Artist(topology)
+        if not topology:
+            return
 
-            nodes = artist.draw_nodes(node_keys)
-            origin_nodes = artist.draw_nodes_origin(node_keys)
-            support_nodes = artist.draw_nodes_support(node_keys)
+        artist = Artist(topology)
 
-            edges = artist.draw_edges(edge_keys)
-            trail_edges = artist.draw_edges_trail(edge_keys)
-            deviation_edges = artist.draw_edges_deviation(edge_keys)
+        nodes = artist.draw_nodes(node_keys)
+        origin_nodes = artist.draw_nodes_origin(node_keys)
+        support_nodes = artist.draw_nodes_support(node_keys)
 
-            trails = artist.draw_trails()
+        edges = artist.draw_edges(edge_keys)
+        trail_edges = artist.draw_edges_trail(edge_keys)
+        deviation_edges = artist.draw_edges_deviation(edge_keys)
 
-            loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
+        trails = artist.draw_trails()
 
-            return nodes, origin_nodes, support_nodes, edges, trail_edges, deviation_edges, trails, loads
+        loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
+
+        return nodes, origin_nodes, support_nodes, edges, trail_edges, deviation_edges, trails, loads

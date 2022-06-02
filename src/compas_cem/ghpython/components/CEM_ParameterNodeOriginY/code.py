@@ -8,5 +8,7 @@ from compas_cem.optimization import OriginNodeYParameter
 
 class OriginNodeYParameterComponent(component):
     def RunScript(self, node_key, bound_low, bound_up):
-        if node_key is not None and bound_low is not None and bound_up is not None:
-            return OriginNodeYParameter(node_key, bound_low, bound_up)
+        if node_key is None or bound_low is None or bound_up is None:
+            return
+
+        return OriginNodeYParameter(node_key, bound_low, bound_up)

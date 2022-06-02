@@ -1,9 +1,7 @@
 from compas_cem.elements import Node
 
 
-__all__ = [
-    "EdgeMixins"
-]
+__all__ = ["EdgeMixins"]
 
 # ==============================================================================
 # Edge Mixins

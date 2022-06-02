@@ -1,9 +1,3 @@
-import compas
-
-if compas.RHINO:
-    from compas_rhino.geometry import RhinoPoint
-    from compas_rhino.geometry import RhinoVector
-
 from compas_cem.data import Data
 
 
@@ -51,27 +45,6 @@ class NodeLoad(Data):
         load = cls(node=None, vector=vector)
         load.xyz = point
         return load
-
-    @classmethod
-    def from_rhino_point_and_vector(cls, rhino_point, rhino_vector):
-        """
-        Create a NodeLoad from a rhino point and a rhino vector.
-
-        Parameters
-        ----------
-        rhino_point : ``Rhino.Geometry.Point``
-            The load application point.
-        rhino_vector : ``Rhino.Geometry.Vector3d``
-            A vector that encodes the magnitude and direction of the load.
-
-        Returns
-        -------
-        load : ``NodeLoad``
-            A load object.
-        """
-        point = RhinoPoint.from_geometry(rhino_point).to_compas()
-        vector = RhinoVector.from_geometry(rhino_vector).to_compas()
-        return cls.from_point_and_vector(point, vector)
 
     def __repr__(self):
         """
