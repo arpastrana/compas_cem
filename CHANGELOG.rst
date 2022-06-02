@@ -35,7 +35,7 @@ Unreleased
 - Removed `compas_cem.elements.Node.from_rhino_point`
 - Removed `compas_cem.data.GHData`.
 
-0.3.0
+0.4.0
 ----------
 
 **Added**
