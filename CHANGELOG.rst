@@ -17,9 +17,11 @@ Unreleased
 **Changed**
 
 - Changed `ConstrainedFormFinding` GH component to check for existing `ProxyServer`.
+- Changed `nlopt_status` flags for better interpretability in ghpython.
 
 **Fixed**
 
+- Fixed bug in `compas_cem.ghpython.artists` registration.
 - Fixed bug in serialization and target computation in `optimization.constraints.VectorConstraint`.
 - Fixed bug in `Plane` creation caused by old version of `compas_rhino.RhinoPlane.from_geometry`.
 
