@@ -9,14 +9,15 @@ from compas.utilities import geometric_key
 
 class SearchEdgeKeyComponent(component):
     def RunScript(self, diagram, line):
-        if diagram and line:
+        if not (diagram and line):
+            return
 
-            line = RhinoLine.from_geometry(line).to_compas()
+        line = RhinoLine.from_geometry(line).to_compas()
 
-            eg = []
-            for point in (line.start, line.end):
-                gkey = geometric_key(point, diagram.tol)
-                node = diagram.gkey_node[gkey]
-                eg.append(node)
+        eg = []
+        for point in (line.start, line.end):
+            gkey = geometric_key(point, diagram.tol)
+            node = diagram.gkey_node[gkey]
+            eg.append(node)
 
-            return [tuple(eg)]
+        return [tuple(eg)]

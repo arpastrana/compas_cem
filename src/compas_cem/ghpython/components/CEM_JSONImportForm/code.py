@@ -10,7 +10,9 @@ from compas_cem.diagrams import FormDiagram
 
 class FormDiagramFromJSON(component):
     def RunScript(self, filepath):
-        if filepath:
-            filepath = os.path.abspath(filepath)
-            form = FormDiagram.from_json(filepath)
-            return form
+        if not filepath:
+            return
+
+        filepath = os.path.abspath(filepath)
+        form = FormDiagram.from_json(filepath)
+        return form

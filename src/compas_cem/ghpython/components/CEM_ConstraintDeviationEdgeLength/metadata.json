@@ -3,7 +3,7 @@
     "nickname": "DeviationEdgeLengthConstraint",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Make the length of a deviation edge to reach a target length.",
+    "description": "Make the length of a deviation edge reach a target value.",
     "exposure": 4,
 
     "ghpython": {

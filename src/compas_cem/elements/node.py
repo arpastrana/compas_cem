@@ -1,8 +1,3 @@
-import compas
-
-if compas.RHINO:
-    from compas_rhino.geometry import RhinoPoint
-
 from compas_cem.data import Data
 
 
@@ -43,28 +38,6 @@ class Node(Data):
             A node object.
         """
         return cls(xyz=point)
-
-    @classmethod
-    def from_rhino_point(cls, rhino_point, *args, **kwargs):
-        """
-        Create a node from a rhino point.
-
-        Parameters
-        ----------
-        rhino_point : ``Rhino.Geometry.Point3d``
-            A rhino point.
-        *args : ``tuple``
-            Additional arguments.
-        **kwargs : ``dict``
-            Extra keyword arguments.
-
-        Returns
-        -------
-        node : ``Node``
-            A node object.
-        """
-        point = RhinoPoint.from_geometry(rhino_point).to_compas()
-        return cls.from_point(point)
 
     def __repr__(self):
         """

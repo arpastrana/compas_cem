@@ -1,0 +1,24 @@
+{
+    "name": "Proxy Server",
+    "nickname": "ProxyServer",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Create an RPC proxy server to solve a constrained form-finding problem outside of Rhino using CPython.",
+    "exposure": 2,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "start",
+                "description": "Launch the COMPAS CEM proxy server. The proxy is kept open to be re-used and thus save start up time.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "stop",
+                "description": "Shut down the proxy server.",
+                "typeHintID": "bool"
+            }
+        ]
+    }
+}

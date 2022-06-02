@@ -3,7 +3,7 @@
     "nickname": "DeviationEdge",
     "category": "COMPAS CEM",
     "subcategory": "02_Elements",
-    "description": "Create a deviation edge from a Rhino line.",
+    "description": "Create a deviation edge from a line.",
     "exposure": 2,
 
     "ghpython": {

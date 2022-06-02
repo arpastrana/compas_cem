@@ -1,6 +1,6 @@
 {
-    "name": "Support Node Results",
-    "nickname": "SupportNodeResults",
+    "name": "Reaction Forces",
+    "nickname": "ReactionForces",
     "category": "COMPAS CEM",
     "subcategory": "07_Results",
     "description": "Get reaction forces at the support nodes of a form diagram.",

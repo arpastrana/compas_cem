@@ -3,13 +3,18 @@
     "nickname": "ConstrainedFormFinding",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Optimize for a form in equilibrium that meets geometric and force constraints.",
+    "description": "Generate a form in equilibrium such that it meets user-defined constraints.\nStart a proxy server before running this component to accelerate the optimization time.",
     "exposure": 2,
 
     "ghpython": {
         "hideOutput": false,
         "isAdvancedMode": true,
         "inputParameters": [
+            {
+                "name": "solve",
+                "description": "Kickstarts the solution of the constrained form-finding problem.",
+                "typeHintID": "bool"
+            },
             {
                 "name": "topology",
                 "description": "A COMPAS CEM topology diagram."
@@ -31,12 +36,12 @@
             },
             {
                 "name": "iters_max",
-                "description": "The maximum number of iterations to run the optimization algorithm for. Defaults to 100.",
+                "description": "The maximum number of iterations to run the optimization algorithm for.\nIf it is equal to -1, then there is no iteration limit.\nDefaults to 100.",
                 "typeHintID": "int"
             },
             {
                 "name": "eps",
-                "description": "The minimum objective or norm of the gradient value to declare convergence. Defaults to 1e-6.",
+                "description": "The minimum objective or norm of the gradient to declare convergence. Defaults to 1e-6.",
                 "typeHintID": "float"
 
             },
@@ -74,7 +79,7 @@
             },
             {
                 "name": "time",
-                "description": "The optimization elapsed time.",
+                "description": "The optimization elapsed time in seconds.",
                 "optional": false
             },
             {

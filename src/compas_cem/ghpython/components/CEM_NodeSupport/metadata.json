@@ -3,8 +3,8 @@
     "nickname": "NodeSupport",
     "category": "COMPAS CEM",
     "subcategory": "03_BoundaryConditions",
-    "description": "Create a node support from a Rhino point.",
-    "exposure": 4,
+    "description": "Create a node support from a point.",
+    "exposure": 8,
 
     "ghpython": {
         "isAdvancedMode": true,

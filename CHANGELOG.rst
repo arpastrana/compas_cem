@@ -11,32 +11,31 @@ Unreleased
 
 **Added**
 
-**Changed**
-
-**Fixed**
-
-**Deprecated**
-
-**Removed**
-
-0.4.0
-----------
-
-**Added**
-
+- Implemented `ProxyServer` GH component to accelerate optimization time in Rhino.
 - Added `compas_cem.diagrams.Diagram.__str__()`.
 
 **Changed**
 
+- Changed `ConstrainedFormFinding` GH component to check for existing `ProxyServer`.
+- Changed `nlopt_status` flags for better interpretability in ghpython.
+
 **Fixed**
+
+- Fixed bug in `compas_cem.ghpython.artists` registration.
+- Fixed bug in serialization and target computation in `optimization.constraints.VectorConstraint`.
+- Fixed bug in `Plane` creation caused by old version of `compas_rhino.RhinoPlane.from_geometry`.
 
 **Deprecated**
 
 **Removed**
 
+- Removed `compas_cem.loads.NodeLoad.from_rhino_point_and_vector`
+- Removed `compas_cem.supports.NodeSupport.from_rhino_point`
+- Removed `compas_cem.elements.Edge.from_rhino_line`
+- Removed `compas_cem.elements.Node.from_rhino_point`
 - Removed `compas_cem.data.GHData`.
 
-0.3.0
+0.4.0
 ----------
 
 **Added**

@@ -94,10 +94,10 @@ def nlopt_status(constant):
     results = {}
 
     success = {1: "NLOPT_SUCCESS",
-               2: "NLOPT_STOPVAL_REACHED",
+               2: "NLOPT_EPSVAL_REACHED",
                3: "NLOPT_FTOL_REACHED",
                4: "NLOPT_XTOL_REACHED",
-               5: "NLOPT_MAXEVAL_REACHED",
+               5: "NLOPT_ITERSMAX_REACHED",
                6: "NLOPT_MAXTIME_REACHED"}
 
     failure = {-1: "NLOPT_GENERIC_FAILURE",
