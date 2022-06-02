@@ -21,7 +21,7 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .formobject import *  # noqa F403
+# from .formobject import *  # noqa F403
 # from .topologyartist import *  # noqa F403
 
 __all__ = [name for name in dir() if not name.startswith('_')]
