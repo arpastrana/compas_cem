@@ -42,8 +42,11 @@ COLORS = {"tension": (227, 6, 75),  # red
           "compression": (12, 119, 184),  # blue
           "edge": (50, 50, 50),  # dark gray
           "node": (255, 255, 255),  # white
+          "node_black": (0, 0, 0),  # black
           "node_support": (0, 150, 10),  # green
           "node_origin": (155, 100, 255),  # purple
+          "edge_trail": (127, 0, 127),  # purple
+          "edge_deviation": (127, 255, 0),  # lime
           "support_force": (75, 75, 75),  # dark gray / green (0, 150, 10)
           "load": (0, 150, 10),  # green / light green (50, 250, 100)
           "trail": (250, 80, 210),  # pink
