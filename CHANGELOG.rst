@@ -11,6 +11,13 @@ Unreleased
 
 **Added**
 
+- Implemented `compas_cem.plotters.Plotter`
+- Implemented `compas_cem.viewers.Viewer`
+- Implemented `compas_cem.viewers.DiagramObject`
+- Implemented `compas_cem.viewers.TopologyDiagramObject`
+- Implemented `compas_cem.viewers.FormDiagramObject`
+- Created `compas_cem.viewers`
+
 **Changed**
 
 **Fixed**
