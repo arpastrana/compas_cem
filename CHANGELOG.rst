@@ -11,6 +11,19 @@ Unreleased
 
 **Added**
 
+**Changed**
+
+**Fixed**
+
+**Deprecated**
+
+**Removed**
+
+0.4.1
+----------
+
+**Added**
+
 - Implemented `ProxyServer` GH component to accelerate optimization time in Rhino.
 - Added `compas_cem.diagrams.Diagram.__str__()`.
 
