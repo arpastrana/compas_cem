@@ -5,7 +5,7 @@ compas_cem.plotters
 .. currentmodule:: compas_cem.plotters
 
 
-Classes
+Artists
 =======
 
 .. autosummary::
@@ -14,6 +14,15 @@ Classes
 
     FormArtist
     TopologyArtist
+
+Plotters
+========
+
+.. autosummary::
+    :toctree: generated/
+    :nosignatures:
+
+    Plotter
 """
 
 from __future__ import absolute_import

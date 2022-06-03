@@ -5,8 +5,8 @@ compas_cem.viewers
 .. currentmodule:: compas_cem.viewers
 
 
-Classes
-=======
+Visualization objects
+=====================
 
 .. autosummary::
     :toctree: generated/
@@ -15,6 +15,15 @@ Classes
     DiagramObject
     FormDiagramObject
     TopologyDiagramObject
+
+Viewers
+=======
+
+.. autosummary::
+    :toctree: generated/
+    :nosignatures:
+
+    Viewer
 """
 
 from __future__ import absolute_import
@@ -25,7 +34,6 @@ from __future__ import print_function
 def is_compasviewers_installed():
     try:
         import compas_view2  # noqa F401
-
     except ImportError:
         return False
     return True

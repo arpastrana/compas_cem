@@ -12,7 +12,7 @@ class TopologyDiagramObject(DiagramObject):
     """
     An object to display a topology diagram.
 
-    Parameter
+    Parameters
     ----------
     form_diagram : :class:`~compas_cem.diagrams.TopologyDiagram`
         The form diagram to plot.

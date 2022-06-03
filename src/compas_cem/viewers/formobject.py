@@ -12,7 +12,7 @@ class FormDiagramObject(DiagramObject):
     """
     An object to display a form diagram.
 
-    Parameter
+    Parameters
     ----------
     form_diagram : :class:`~compas_cem.diagrams.FormDiagram`
         The form diagram to plot.

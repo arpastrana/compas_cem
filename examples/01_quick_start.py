@@ -74,7 +74,7 @@ plotter.add(topology, nodesize=0.2)
 
 # add shifted form diagram to the scene
 form = form.transformed(Translation.from_vector([0.0, -1.0, 0.0]))
-plotter.add(form, nodesize=0.2)
+plotter.add(form, nodesize=0.2, show_edgetext=True, edgetext="force")
 
 # show plotter contents
 plotter.zoom_extents()

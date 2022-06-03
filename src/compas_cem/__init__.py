@@ -16,6 +16,7 @@ compas_cem
     compas_cem.equilibrium
     compas_cem.optimization
     compas_cem.plotters
+    compas_cem.viewers
 """
 
 from __future__ import print_function
