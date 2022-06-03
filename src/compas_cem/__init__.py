@@ -27,7 +27,7 @@ __author__ = ["Rafael Pastrana"]
 __copyright__ = "Copyright 2020 - Princeton University"
 __license__ = "MIT License"
 __email__ = "arpj@princeton.edu"
-__version__ = "0.4.1"
+__version__ = "0.5.0"
 
 
 # Directories
