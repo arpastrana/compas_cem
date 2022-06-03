@@ -7,8 +7,6 @@ import numpy as np
 
 from compas.geometry import Translation
 
-from compas_plotters import Plotter
-
 from compas.utilities import pairwise
 
 from compas_cem.diagrams import TopologyDiagram
@@ -22,6 +20,8 @@ from compas_cem.optimization import Optimizer
 
 from compas_cem.optimization import TrailEdgeForceConstraint
 from compas_cem.optimization import DeviationEdgeParameter
+
+from compas_cem.plotters import Plotter
 
 
 # ------------------------------------------------------------------------------

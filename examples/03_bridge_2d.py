@@ -5,8 +5,6 @@ from time import time
 from compas.geometry import Point
 from compas.geometry import Translation
 
-from compas_plotters import Plotter
-
 from compas_cem.diagrams import TopologyDiagram
 
 from compas_cem.loads import NodeLoad
@@ -20,6 +18,8 @@ from compas_cem.optimization import PointConstraint
 
 from compas_cem.optimization import TrailEdgeParameter
 from compas_cem.optimization import DeviationEdgeParameter
+
+from compas_cem.plotters import Plotter
 
 
 # ------------------------------------------------------------------------------

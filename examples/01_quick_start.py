@@ -1,3 +1,5 @@
+from compas.geometry import Translation
+
 from compas_cem.diagrams import TopologyDiagram
 
 from compas_cem.elements import Node
@@ -9,8 +11,7 @@ from compas_cem.supports import NodeSupport
 
 from compas_cem.equilibrium import static_equilibrium
 
-from compas_plotters import Plotter
-from compas.geometry import Translation
+from compas_cem.plotters import Plotter
 
 
 # ------------------------------------------------------------------------------

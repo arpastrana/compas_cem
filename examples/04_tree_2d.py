@@ -2,8 +2,6 @@ from math import sqrt
 
 from compas.geometry import Translation
 
-from compas_plotters import Plotter
-
 from compas_cem.diagrams import TopologyDiagram
 
 from compas_cem.elements import Node
@@ -17,6 +15,8 @@ from compas_cem.equilibrium import static_equilibrium
 from compas_cem.optimization import Optimizer
 from compas_cem.optimization import TrailEdgeForceConstraint
 from compas_cem.optimization import DeviationEdgeParameter
+
+from compas_cem.plotters import Plotter
 
 
 # ------------------------------------------------------------------------------
