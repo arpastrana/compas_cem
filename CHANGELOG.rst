@@ -13,6 +13,8 @@ Unreleased
 
 **Changed**
 
+- Changed GH components folder prefix from CEM to CompasCem
+
 **Fixed**
 
 **Deprecated**
