@@ -144,10 +144,10 @@ Citing
 If you use **COMPAS CEM** for a project or research, please cite us using these `references <https://arpastrana.github.io/compas_cem/latest/citing.html>`_.
 
 
-Credits
+Funding
 =======
 
-COMPAS CEM is developed by `Rafael Pastrana`_ at `Princeton`_, with the endorsement and support of `Ole Ohlbrock`_, `Pierluigi D'Acunto`_ and `Stefana Parascho`_.
+The development of COMPAS CEM has been supported by the `NSF Institute for Data Driven Dynamical Design <https://www.mines.edu/id4>`_.
 
 
 License
