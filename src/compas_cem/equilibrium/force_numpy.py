@@ -241,8 +241,9 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
 
     # assign lengths to deviation edges
-    for u, v in form.edges():
+    for edge in form.edges():
         # length = form.edge_length(u, v)
+        u, v = edge
         length = length_vector(node_xyz[u] - node_xyz[v])
         force = form.edge_attribute(key=edge, name="force")
         length = np.copysign(length, force)
