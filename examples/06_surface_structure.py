@@ -4,6 +4,7 @@ from time import time
 from math import pi
 from math import cos
 from math import sin
+from statistics import mean
 
 import numpy as np
 
@@ -34,7 +35,7 @@ from compas_view2.app import App
 
 
 HERE = os.path.dirname(__file__)
-FILE = os.path.join(HERE, 'data/four_leg_shell_dual.json')
+FILE = os.path.join(HERE, 'data/shell_topology.json')
 
 mesh = QuadMesh.from_json(FILE)
 print(mesh)
@@ -42,22 +43,27 @@ print(mesh)
 supports = []
 for vkey in mesh.vertices():
     x, y, z = mesh.vertex_coordinates(vkey)
-    if z < 0.0:
+    if z < 1e-3:
         supports.append(vkey)
 
 print(len(supports), 'supports')
 
-topology = TopologyDiagram.from_dualquadmesh(mesh, supports)
+mean_length = mean([mesh.edge_length(*edge) for edge in mesh.edges()])
+
+topology = TopologyDiagram.from_dualquadmesh(mesh, supports, trail_length=mean_length, deviation_force=-1.0)
 topology.build_trails()
 
 for key in topology.nodes():
-    topology.add_load(NodeLoad(key, [0.0, 0.0, 0.1]))
+    topology.add_load(NodeLoad(key, [0.0, 0.0, -0.1]))
 
 # ------------------------------------------------------------------------------
 # Compute a state of static equilibrium
 # ------------------------------------------------------------------------------
 
 form = static_equilibrium(topology, eta=1e-6, tmax=100)
+
+FILE = os.path.join(HERE, 'data/shell_form_found.json')
+form.to_json(FILE)
 
 # ------------------------------------------------------------------------------
 # Optimization
@@ -66,20 +72,23 @@ form = static_equilibrium(topology, eta=1e-6, tmax=100)
 # create optimizer
 opt = Optimizer()
 
+# parameters
 for edge in topology.trail_edges():
-    opt.add_parameter(TrailEdgeParameter(edge, -10.0, 10.0))
+    opt.add_parameter(TrailEdgeParameter(edge, 0.1, 1.0))
+
+for edge in topology.deviation_edges():
+    opt.add_parameter(DeviationEdgeParameter(edge, -1.0, -0.1))
+
+# constraints
 for edge in topology.trail_edges():
     opt.add_constraint(TrailEdgeForceConstraint(edge, -1.0))
 
-# for edge in topology.deviation_edges():
-#     opt.add_parameter(DeviationEdgeParameter(edge,  -10.0, 10.0))
-
-# for vkey in supports:
-#     opt.add_constraint(PlaneConstraint(vkey, plane=((0.0, 0.0, -5.0), (0.0, 0.0, 1.0))))
+for vkey in supports:
+    opt.add_constraint(PlaneConstraint(vkey, plane=((0.0, 0.0, 0.0), (0.0, 0.0, 1.0))))
 
 # optimize
 start = time()
-form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=100, eps=1e-3)
+form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=500, eps=1e-3)
 
 # print out results
 print("----------")
@@ -88,12 +97,8 @@ print(f"Optimization elapsed time: {time() - start}")
 print(f"Final value of the objective function: {opt.penalty}")
 print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
 
-# ------------------------------------------------------------------------------
-# Output
-# ------------------------------------------------------------------------------
-
-FILE = os.path.join(HERE, 'data/four_leg_shell_result.json')
-form.to_json(FILE)
+FILE = os.path.join(HERE, 'data/shell_form_opt.json')
+form_opt.to_json(FILE)
 
 # ------------------------------------------------------------------------------
 # Plot results

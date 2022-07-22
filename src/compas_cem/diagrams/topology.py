@@ -48,7 +48,7 @@ class TopologyDiagram(Diagram):
 # ==============================================================================
 
     @classmethod
-    def from_dualquadmesh(cls, mesh, supports):
+    def from_dualquadmesh(cls, mesh, supports, trail_length=1.0, deviation_force=1.0):
         """
         Convert a dual quad mesh into a topology digram from CEM.
     
@@ -76,7 +76,7 @@ class TopologyDiagram(Diagram):
         for pkey, polyedge in mesh.polyedges(data=True):
             start, end = polyedge[0], polyedge[-1]
             
-            # closed polyedge
+            # closed polyedge (TO TEST/FIX)
             if start == end:
                 deviation += [edge for edge in pairwise(polyedge)]
             
@@ -92,7 +92,7 @@ class TopologyDiagram(Diagram):
                     if polyedge[1] in supports:
                         continue
 
-                    n = int(len(polyedge) / 2)
+                    n = int(len(polyedge) / 2) - 1
                     deviation.append(tuple(polyedge[n : n + 2])) # central edge becomes deviation
                     trail += [edge for edge in list(pairwise(polyedge[:n + 1])) + list(pairwise(polyedge[n + 1:]))] # rest splits into two trails
 
@@ -109,10 +109,10 @@ class TopologyDiagram(Diagram):
             topology.add_support(NodeSupport(vkey))
 
         for edge in deviation:
-            topology.add_edge(DeviationEdge(*edge, force=-0.5))
+            topology.add_edge(DeviationEdge(*edge, force=deviation_force))
 
         for edge in trail:
-            topology.add_edge(TrailEdge(*edge, length=mesh.edge_length(*edge))) # existing edge length
+            topology.add_edge(TrailEdge(*edge, length=trail_length))
 
         return topology
 
