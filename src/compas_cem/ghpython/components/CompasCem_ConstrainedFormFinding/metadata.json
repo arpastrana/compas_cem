@@ -58,6 +58,11 @@
         ],
         "outputParameters": [
             {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram with optimized parameters.",
+                "optional": false
+            },
+            {
                 "name": "form",
                 "description": "A COMPAS CEM form diagram in static equilibrium.",
                 "optional": false
@@ -79,7 +84,7 @@
             },
             {
                 "name": "time",
-                "description": "The optimization elapsed time in seconds.",
+                "description": "The total optimization runtime in seconds.",
                 "optional": false
             },
             {
@@ -87,7 +92,6 @@
                 "description": "The final status of the optimization process.",
                 "optional": false
             }
-
         ]
     }
 }

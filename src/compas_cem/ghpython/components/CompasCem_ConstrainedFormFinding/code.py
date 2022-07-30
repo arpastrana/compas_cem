@@ -48,6 +48,6 @@ class ConstrainedFormFindingComponent(component):
             opt.stop_server()
 
         # unpack solution
-        form, objective, grad_norm, iters, time, status = solution
+        topology, form, objective, grad_norm, iters, time, status = solution
 
-        return form, objective, grad_norm, iters, time, status
+        return topology, form, objective, grad_norm, iters, time, status

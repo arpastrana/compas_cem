@@ -49,8 +49,10 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps=N
 
     Returns
     -------
+    topology : :class:`compas_cem.diagrams.TopologyDiagram`
+        The topology diagram with optimal parameters as found by the optimization algorithm.
     form : :class:`compas_cem.diagrams.FormDiagram`
-        A form diagram.
+        The constrained form diagram.
     objective : `float`
         The final value of the objective function.
     grad_norm : `float`
@@ -84,7 +86,7 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps=N
     grad_norm = optimizer.gradient_norm
     status = optimizer.status
 
-    return form, objective, grad_norm, evals, duration, status
+    return topology, form, objective, grad_norm, evals, duration, status
 
 # ------------------------------------------------------------------------------
 # Main
