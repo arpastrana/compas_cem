@@ -11,6 +11,8 @@ Unreleased
 
 **Added**
 
+- `ConstrainedFormFinding` GH component outputs optimized `TopologyDiagram`.
+
 **Changed**
 
 - Changed GH components folder prefix from CEM to CompasCem
