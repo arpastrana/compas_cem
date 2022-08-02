@@ -2,6 +2,8 @@ from time import time
 
 import autograd.numpy as np
 
+from autograd import grad as agrad
+
 from functools import partial
 
 from compas_cem.data import Data
@@ -204,13 +206,15 @@ class Optimizer(Data):
         if grad == "AD":
             if verbose:
                 print("Computing gradients using automatic differentiation!")
-            grad_func = grad_autograd  # x, grad, x_func
+            x_func = partial(self._optimize_form, topology=topology.copy(), tmax=tmax, eta=eta)
+            grad_func = partial(grad_autograd, grad_func=agrad(x_func))  # x, grad, x_func
+
         elif grad == "FD":
             if verbose:
                 print("Warning: Calculating gradients using finite differences. This may take a while...")
-            grad_func = grad_finite_differences  # x, grad, x_func, step_size
+            grad_func = self.gradient_func(grad_finite_differences, topology.copy(), tmax, eta, step_size)
 
-        grad_func = self.gradient_func(grad_func, topology.copy(), tmax, eta, step_size)
+        # grad_func = self.gradient_func(grad_func, topology.copy(), tmax, eta, step_size)
         obj_func = self.objective_func(topology, grad_func, tmax, eta)
 
         # generate optimization variables
