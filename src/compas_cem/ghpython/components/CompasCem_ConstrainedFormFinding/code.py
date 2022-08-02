@@ -34,14 +34,14 @@ class ConstrainedFormFindingComponent(component):
             proxy_temp_exists = False
 
         # solve constrained form-finding problem
-        solution = opt.solve_nlopt_proxy(topology=topology,
-                                         constraints=constraints,
-                                         parameters=parameters,
-                                         algorithm=algorithm,
-                                         iters=iters_max,
-                                         eps=eps,
-                                         tmax=tmax,
-                                         eta=eta)
+        solution = opt.solve_proxy(topology=topology,
+                                   constraints=constraints,
+                                   parameters=parameters,
+                                   algorithm=algorithm,
+                                   iters=iters_max,
+                                   eps=eps,
+                                   tmax=tmax,
+                                   eta=eta)
 
         # shut down temporary proxy
         if proxy_temp_exists:

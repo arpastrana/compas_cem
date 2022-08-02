@@ -1,14 +1,14 @@
 from time import time
 
 
-__all__ = ["solve_nlopt_proxy"]
+__all__ = ["solve_proxy"]
 
 
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
 
-def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps=None, tmax=100, eta=1e-6):
+def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=None, tmax=100, eta=1e-6):
     """
     Solve a constrained form-finding task through a Proxy server hyperspace tunnel.
 
@@ -78,7 +78,12 @@ def solve_nlopt_proxy(topology, constraints, parameters, algorithm, iters, eps=N
         optimizer.add_parameter(parameter)
 
     start = time()
-    form = optimizer.solve_nlopt(topology, algorithm, iters, eps, tmax, eta)
+    form = optimizer.solve(topology=topology,
+                           algorithm=algorithm,
+                           iters=iters,
+                           eps=eps,
+                           tmax=tmax,
+                           eta=eta)
 
     duration = round(time() - start, 2)
     objective = optimizer.penalty
