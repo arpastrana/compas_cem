@@ -17,7 +17,7 @@ __all__ = ["TopologyArtist"]
 
 class TopologyArtist(NetworkArtist):
     """
-    An artists that draws a topology diagram.
+    An artist that draws a topology diagram.
 
     Parameters
     ----------
@@ -26,6 +26,8 @@ class TopologyArtist(NetworkArtist):
     """
     def __init__(self,
                  topology_diagram,
+                 nodesize=0.1,
+                 edgewidth=1.0,
                  nodetext=None,  # must be a dict, or 'key', or 'index'
                  edgetext=None,  # must be a dict, or 'key', or 'index'
                  nodes_load=None,
@@ -33,7 +35,10 @@ class TopologyArtist(NetworkArtist):
                  show_nodetext=False,
                  show_edgetext=False,
                  **kwargs):
-        super(TopologyArtist, self).__init__(topology_diagram, **kwargs)
+        super(TopologyArtist, self).__init__(topology_diagram,
+                                             nodesize=nodesize,
+                                             edgewidth=edgewidth,
+                                             **kwargs)
 
         self.node_colors = {"support": COLORS["node_support"],
                             "_origin": COLORS["node_origin"],
