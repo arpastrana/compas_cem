@@ -30,7 +30,7 @@ from compas_cem.plotters import Plotter
 
 # geometry parameters
 diameter = 1.0
-num_sides = 16  # only even numbers
+num_sides = 128  # only even numbers
 appendix_length = 0.10
 tension_force = 1.0
 compression_force = -0.5
@@ -102,7 +102,10 @@ for edge in topology.deviation_edges():
 
 # optimize
 start = time()
-form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=1000, eps=1e-6)
+form_opt = opt.solve(topology,
+                     algorithm="LBFGS",
+                     grad="FD"
+                     )
 
 # print out results
 print("----------")
