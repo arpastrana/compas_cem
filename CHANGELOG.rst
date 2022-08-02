@@ -12,12 +12,19 @@ Unreleased
 **Added**
 
 - `ConstrainedFormFinding` GH component outputs optimized `TopologyDiagram`.
+- `compas_cem.plotters.TopologyArtist` has node size and edge width default parameters.
+- `compas_cem.plotters.FormArtist` has node size and edge width default parameters.
+- Added support for gradient computation via finite differences.
 
 **Changed**
 
-- Changed GH components folder prefix from CEM to CompasCem
+- Changed GH components folder prefix from CEM to CompasCem.
+- Renamed `compas_cem.optimization.Optimizer.solve_nlopt` to `solve.
+- Refactored `compas_cem.optimization.Parameter`.
 
 **Fixed**
+
+- Fixed bug in `compas_cem.equilibrium.equilibrium_state` where `residual` calculation was undefined when `tmax=1`.
 
 **Deprecated**
 
@@ -28,12 +35,12 @@ Unreleased
 
 **Added**
 
-- Implemented `compas_cem.plotters.Plotter`
-- Implemented `compas_cem.viewers.Viewer`
-- Implemented `compas_cem.viewers.DiagramObject`
-- Implemented `compas_cem.viewers.TopologyDiagramObject`
-- Implemented `compas_cem.viewers.FormDiagramObject`
-- Created `compas_cem.viewers`
+- Implemented `compas_cem.plotters.Plotter`.
+- Implemented `compas_cem.viewers.Viewer`.
+- Implemented `compas_cem.viewers.DiagramObject`.
+- Implemented `compas_cem.viewers.TopologyDiagramObject`.
+- Implemented `compas_cem.viewers.FormDiagramObject`.
+- Created `compas_cem.viewers`.
 
 **Changed**
 
