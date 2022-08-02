@@ -77,7 +77,6 @@ def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=None, t
     for parameter in parameters:
         optimizer.add_parameter(parameter)
 
-    start = time()
     form = optimizer.solve(topology=topology,
                            algorithm=algorithm,
                            iters=iters,
@@ -85,7 +84,7 @@ def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=None, t
                            tmax=tmax,
                            eta=eta)
 
-    duration = round(time() - start, 2)
+    duration = optimizer.time_opt
     objective = optimizer.penalty
     evals = optimizer.evals
     grad_norm = optimizer.gradient_norm

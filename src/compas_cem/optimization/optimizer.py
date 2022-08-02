@@ -1,3 +1,5 @@
+from time import time
+
 import autograd.numpy as np
 
 from functools import partial
@@ -33,6 +35,7 @@ class Optimizer(Data):
         self.parameters = {}
         self.constraints = {}
         self.x_opt = None
+        self.time_opt = None
         self.penalty = None
         self.evals = None
         self.gradient_norm = None
@@ -135,7 +138,7 @@ class Optimizer(Data):
 # Solver
 # ------------------------------------------------------------------------------
 
-    def solve(self, topology, algorithm="SLSQP", grad="AD", step_size=1e-6, iters=100, eps=1e-6, tmax=100, eta=1e-6):
+    def solve(self, topology, algorithm="SLSQP", grad="AD", step_size=1e-6, iters=100, eps=1e-6, tmax=100, eta=1e-6, verbose=False):
         """
         Solve a constrained form-finding problem using gradient-based optimization.
 
@@ -185,6 +188,9 @@ class Optimizer(Data):
             The numerical converge threshold of the CEM form-finding algorithm.
             If ``tmax`` is hit first, the form-finding algorithm will stop early.
             Defaults to ``1e-6``.
+        verbose : ``bool``, optional
+            A flag to prints statistics of the optimization process.
+            Defaults to ``True``.
 
         Returns
         -------
@@ -196,10 +202,12 @@ class Optimizer(Data):
 
         # compose gradient and objective functions
         if grad == "AD":
-            print("Computing gradients using automatic differentiation!")
+            if verbose:
+                print("Computing gradients using automatic differentiation!")
             grad_func = grad_autograd  # x, grad, x_func
         elif grad == "FD":
-            print("Warning: Calculating gradients using finite differences. This may take a while...")
+            if verbose:
+                print("Warning: Calculating gradients using finite differences. This may take a while...")
             grad_func = grad_finite_differences  # x, grad, x_func, step_size
 
         grad_func = self.gradient_func(grad_func, topology.copy(), tmax, eta, step_size)
@@ -226,33 +234,43 @@ class Optimizer(Data):
 
         # solve optimization problem
         x_opt = None
+        start = time()
         try:
             x_opt = solver.optimize(x)
-            evals = solver.get_numevals()
-            print("Optimization ended correctly!")
-            print("Number of evaluations incurred: {}".format(evals))
+            if verbose:
+                print("Optimization ended correctly!")
         except RoundoffLimited:
             print("Optimization was halted because roundoff errors limited progress")
-            print("Returned results are generally still useful though!")
+            print("Results may still be useful though!")
             x_opt = self.optimization_parameters(topology)
 
         # fetch last optimum value of loss function
+        time_opt = time() - start
         loss_opt = solver.last_optimum_value()
         evals = solver.get_numevals()
         status = nlopt_status(solver.last_optimize_result())
 
         # set optimizer attributes
+        self.time_opt = time_opt
         self.x_opt = x_opt
         self.penalty = loss_opt
         self.evals = evals
         self.status = status
 
         # set norm of the gradient
-        # np.zeros is a dummy array (signature requirement set by nlopt)
+        # NOTE: np.zeros is a dummy array (signature requirement set by nlopt)
         self.gradient = grad_func(x_opt, np.zeros(x_opt.size))
         self.gradient_norm = np.linalg.norm(self.gradient)
 
-        print("Optimization status: {}".format(status))
+        if verbose:
+            print("----------")
+            print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
+            print(f"Optimization total runtime: {time_opt} seconds")
+            print("Number of evaluations incurred: {}".format(evals))
+            print(f"Final value of the objective function: {loss_opt}")
+            print(f"Norm of the gradient of the objective function: {self.gradient_norm}")
+            print(f"Optimization status: {status}".format(status))
+            print("----------")
 
         # exit like a champion
         return static_equilibrium(topology)
