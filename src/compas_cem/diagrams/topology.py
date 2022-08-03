@@ -51,7 +51,7 @@ class TopologyDiagram(Diagram):
     def from_dualquadmesh(cls, mesh, supports, trail_length=1.0, deviation_force=1.0):
         """
         Convert a dual quad mesh into a topology digram from CEM.
-    
+
 
         Inputs
         ------
@@ -75,17 +75,17 @@ class TopologyDiagram(Diagram):
 
         for pkey, polyedge in mesh.polyedges(data=True):
             start, end = polyedge[0], polyedge[-1]
-            
+
             # closed polyedge (TO TEST/FIX)
             if start == end:
                 deviation += [edge for edge in pairwise(polyedge)]
-            
+
             # open polyedge
             else:
                 # not supports at polyedge extremities
                 if start not in supports and end not in supports:
                     deviation += [edge for edge in pairwise(polyedge)]
-            
+
                 # supports at both polyedge extremities
                 elif start in supports and end in supports:
 
@@ -93,8 +93,10 @@ class TopologyDiagram(Diagram):
                         continue
 
                     n = int(len(polyedge) / 2) - 1
-                    deviation.append(tuple(polyedge[n : n + 2])) # central edge becomes deviation
-                    trail += [edge for edge in list(pairwise(polyedge[:n + 1])) + list(pairwise(polyedge[n + 1:]))] # rest splits into two trails
+                    # central edge becomes deviation
+                    deviation.append(tuple(polyedge[n: n + 2]))
+                    trail += [edge for edge in list(pairwise(polyedge[:n + 1])) + list(
+                        pairwise(polyedge[n + 1:]))]  # rest splits into two trails
 
                 # unique support at polyedge extremities
                 else:
@@ -374,12 +376,14 @@ class TopologyDiagram(Diagram):
                 aux_node = self.add_node(Node(xyz=aux_xyz))
 
                 self.add_support(NodeSupport(aux_node))
-                edge = self.add_edge(TrailEdge(node, aux_node, self.auxiliary_trail_length))
+                edge = self.add_edge(
+                    TrailEdge(node, aux_node, self.auxiliary_trail_length))
                 aux_trails[node] = edge
 
             self.attributes["_auxiliary_trails"] = aux_trails
 
-            print("Warning: {} auxiliary trails have been added to the diagram".format(len(aux_trails)))
+            print("Warning: {} auxiliary trails have been added to the diagram".format(
+                len(aux_trails)))
 
             return self.build_trails(auxiliary_trails=False)
 
@@ -389,7 +393,8 @@ class TopologyDiagram(Diagram):
         # there must be at least one support node for trails to run
         assert len(list(self.support_nodes())) > 0, "No supports assigned!"
         # no free nodes
-        msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(unassigned)
+        msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(
+            unassigned)
         assert len(unassigned) == 0, msg
 
         # store trails in topology diagram

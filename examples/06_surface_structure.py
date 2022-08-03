@@ -12,7 +12,7 @@ from compas.geometry import Translation
 
 from compas.datastructures import mesh_dual
 
-from compas_singular.datastructures import QuadMesh
+from compas_singular.datastructures import CoarseQuadMesh
 
 from compas_cem.diagrams import TopologyDiagram
 
@@ -35,22 +35,41 @@ from compas_view2.app import App
 
 
 HERE = os.path.dirname(__file__)
-FILE = os.path.join(HERE, 'data/shell_topology.json')
+FILE = os.path.join(HERE, 'data/coarse_quad_mesh_66.json')
+coarse = CoarseQuadMesh.from_json(FILE)
+print('coarse quad mesh:', coarse)
 
-mesh = QuadMesh.from_json(FILE)
-print(mesh)
+coarse.collect_strips()
+coarse.set_strips_density(4)
+coarse.densification()
+mesh = coarse.get_quad_mesh()
+print('dense quad mesh:', mesh)
+
+mesh = mesh_dual(mesh)
+print('dual quad mesh:', mesh)
+FILE = os.path.join(HERE, 'data/shell_topology.json')
+mesh.to_json(FILE)
 
 supports = []
-for vkey in mesh.vertices():
-    x, y, z = mesh.vertex_coordinates(vkey)
-    if z < 1e-3:
-        supports.append(vkey)
-
+boundary_vertices = mesh.vertices_on_boundary()[:-1]
+for i in range(len(boundary_vertices)):
+    u, v = boundary_vertices[0:2]
+    polyedge = mesh.collect_polyedge(u, v)
+    if i % 2 == 0:
+        supports += polyedge
+        for _ in range(len(polyedge)):
+            del boundary_vertices[0]
+    else:
+        for _ in range(len(polyedge) - 2):
+            del boundary_vertices[0]
+    if len(boundary_vertices) == 0:
+        break
 print(len(supports), 'supports')
 
 mean_length = mean([mesh.edge_length(*edge) for edge in mesh.edges()])
 
-topology = TopologyDiagram.from_dualquadmesh(mesh, supports, trail_length=mean_length, deviation_force=-1.0)
+topology = TopologyDiagram.from_dualquadmesh(
+    mesh, supports, trail_length=-mean_length, deviation_force=-1.0)
 topology.build_trails()
 
 for key in topology.nodes():
@@ -69,36 +88,36 @@ form.to_json(FILE)
 # Optimization
 # ------------------------------------------------------------------------------
 
-# create optimizer
-opt = Optimizer()
+# # create optimizer
+# opt = Optimizer()
 
-# parameters
-for edge in topology.trail_edges():
-    opt.add_parameter(TrailEdgeParameter(edge, 0.1, 1.0))
+# # parameters
+# for edge in topology.trail_edges():
+#     opt.add_parameter(TrailEdgeParameter(edge, -1.0, -1.0))
 
-for edge in topology.deviation_edges():
-    opt.add_parameter(DeviationEdgeParameter(edge, -1.0, -0.1))
+# for edge in topology.deviation_edges():
+#     opt.add_parameter(DeviationEdgeParameter(edge, -1.0, -0.1))
 
-# constraints
-for edge in topology.trail_edges():
-    opt.add_constraint(TrailEdgeForceConstraint(edge, -1.0))
+# # constraints
+# for edge in topology.trail_edges():
+#     opt.add_constraint(TrailEdgeForceConstraint(edge, -1.0))
 
-for vkey in supports:
-    opt.add_constraint(PlaneConstraint(vkey, plane=((0.0, 0.0, 0.0), (0.0, 0.0, 1.0))))
+# for vkey in supports:
+#     opt.add_constraint(PlaneConstraint(vkey, plane=((0.0, 0.0, 0.0), (0.0, 0.0, 1.0))))
 
-# optimize
-start = time()
-form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=500, eps=1e-3)
+# # optimize
+# start = time()
+# form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=500, eps=1e-3)
 
-# print out results
-print("----------")
-print(f"Optimizer. # Parameters {opt.number_of_parameters()}, # Constraints {opt.number_of_constraints()}")
-print(f"Optimization elapsed time: {time() - start}")
-print(f"Final value of the objective function: {opt.penalty}")
-print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
+# # print out results
+# print("----------")
+# print(f"Optimizer. # Parameters {opt.number_of_parameters()}, # Constraints {opt.number_of_constraints()}")
+# print(f"Optimization elapsed time: {time() - start}")
+# print(f"Final value of the objective function: {opt.penalty}")
+# print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
 
-FILE = os.path.join(HERE, 'data/shell_form_opt.json')
-form_opt.to_json(FILE)
+# FILE = os.path.join(HERE, 'data/shell_form_opt.json')
+# form_opt.to_json(FILE)
 
 # ------------------------------------------------------------------------------
 # Plot results
