@@ -31,6 +31,8 @@ class FormArtist(NetworkArtist):
     """
     def __init__(self,
                  form_diagram,
+                 nodesize=0.1,
+                 edgewidth=1.0,
                  nodetext=None,
                  edgetext=None,
                  loadtol=1e-3,
@@ -42,7 +44,10 @@ class FormArtist(NetworkArtist):
                  show_nodetext=False,
                  show_edgetext=False,
                  **kwargs):
-        super(FormArtist, self).__init__(form_diagram, **kwargs)
+        super(FormArtist, self).__init__(form_diagram,
+                                         edgewidth=edgewidth,
+                                         nodesize=nodesize,
+                                         **kwargs)
 
         self.edge_statecolors = {-1: COLORS["compression"],
                                  1: COLORS["tension"],

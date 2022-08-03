@@ -30,11 +30,12 @@ from compas_cem.plotters import Plotter
 
 # geometry parameters
 diameter = 1.0
-num_sides = 16  # only even numbers
+num_sides = 128  # only even numbers
 appendix_length = 0.10
 tension_force = 1.0
 compression_force = -0.5
 bound = 2.0
+grad_method = "AD"
 
 # test number of subdivisions is even
 assert num_sides % 2 == 0
@@ -92,24 +93,14 @@ for edge in topology.auxiliary_trail_edges():
 # add optimization parameters
 # the forces in all the deviation edges are allowed to change
 for edge in topology.deviation_edges():
-    # compression bounds
-    low_bound, up_bound = (bound, bound)
-    # tension bounds
-    if topology.edge_force(edge) > 0.0:
-        low_bound, up_bound = (bound, bound)
-
-    opt.add_parameter(DeviationEdgeParameter(edge, low_bound, up_bound))
+    opt.add_parameter(DeviationEdgeParameter(edge, bound, bound))
 
 # optimize
-start = time()
-form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=1000, eps=1e-6)
-
-# print out results
-print("----------")
-print(f"Optimizer. # Parameters {opt.number_of_parameters()}, # Constraints {opt.number_of_constraints()}")
-print(f"Optimization elapsed time: {time() - start}")
-print(f"Final value of the objective function: {opt.penalty}")
-print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
+form_opt = opt.solve(topology,
+                     algorithm="LBFGS",
+                     grad=grad_method,
+                     verbose=True
+                     )
 
 # ------------------------------------------------------------------------------
 # Plot results

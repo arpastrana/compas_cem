@@ -205,8 +205,9 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
             break
 
     # if residual larger than threshold after kmax iterations, raise error
-    if residual > eta:
-        raise ValueError("Over {} iters. residual: {} > eta: {}".format(tmax, residual, eta))
+    if t > 0:
+        if residual > eta:
+            raise ValueError("Over {} iters. residual: {} > eta: {}".format(tmax, residual, eta))
 
     # print log
     if verbose:

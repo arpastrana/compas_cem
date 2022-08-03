@@ -1,4 +1,8 @@
+from time import time
+
 import autograd.numpy as np
+
+from autograd import grad as agrad
 
 from functools import partial
 
@@ -8,6 +12,7 @@ from compas_cem.equilibrium import static_equilibrium
 from compas_cem.equilibrium.force_numpy import equilibrium_state_numpy
 
 from compas_cem.optimization import grad_autograd
+from compas_cem.optimization import grad_finite_differences
 from compas_cem.optimization import objective_function_numpy
 from compas_cem.optimization import nlopt_solver
 from compas_cem.optimization import nlopt_status
@@ -32,6 +37,7 @@ class Optimizer(Data):
         self.parameters = {}
         self.constraints = {}
         self.x_opt = None
+        self.time_opt = None
         self.penalty = None
         self.evals = None
         self.gradient_norm = None
@@ -115,34 +121,36 @@ class Optimizer(Data):
         """
         The objective function to minimize.
         """
-        obj_func = objective_function_numpy
-        func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
-        return partial(obj_func, x_func=func, grad_func=grad_func)
+        f = objective_function_numpy
+        x_func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
+        return partial(f, x_func=x_func, grad_func=grad_func)
 
 # ------------------------------------------------------------------------------
 # Gradient Function
 # ------------------------------------------------------------------------------
 
-    def gradient_func(self, topology, tmax, eta):
+    def gradient_func(self, grad_f, topology, tmax, eta, step_size):
         """
         The objective function to calculate gradients from.
         """
         x_func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
-        return partial(grad_autograd, grad_func=x_func)
+        return partial(grad_f, x_func=x_func, step_size=step_size)
 
 # ------------------------------------------------------------------------------
 # Solver
 # ------------------------------------------------------------------------------
 
-    def solve_nlopt(self, topology, algorithm, iters, eps=None, tmax=100, eta=1e-6):
+    def solve(self, topology, algorithm="SLSQP", grad="AD", step_size=1e-6, iters=100, eps=1e-6, tmax=100, eta=1e-6, verbose=False):
         """
-        Solve an optimization problem with NLOpt.
+        Solve a constrained form-finding problem using gradient-based optimization.
+
+        The gradient of the objective function computed using automatic differentiation.
 
         Parameters
         ----------
         topology : :class:`compas_cem.diagrams.TopologyDiagram`
             A topology diagram.
-        algorithm : ``str``
+        algorithm : ``str``, optional
             The name of the gradient-based local optimization algorithm to use.
             Only the following local gradient-based optimization algorithms are supported:
 
@@ -152,14 +160,28 @@ class Optimizer(Data):
             - MMA: Method of Moving Asymptotes
             - TNEWTON: Preconditioned Truncated Newton
 
+            Defaults to "SLSQP".
             Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
-        iters : ``int``
+        grad : ``str``, optional
+            The method to compute the gradient of the objective function.
+            The currently available methods are:
+
+            - AD: Automatic differentiation.
+            - FD: Finite differences.
+
+            Defaults to "AD".
+        iters : ``int``, optional
             The maximum number of iterations to run the optimization algorithm for.
+            Defaults to ``100``.
         eps : ``float``, optional
             The numerical convergence threshold for the optimization algorithm.
             If value is set to ``None``, this parameter is ignored and the
             optimization algorithm will run until ``iters`` is exhausted.
             Defaults to ``None``.
+        step_size : ``float``, optional
+            The step size to calculate the gradient of the objective function via finite differences.
+            It becomes active only if ``grad="FD"``. It is otherwise ignored by this function.
+            Defaults to ``1e-3``.
         tmax : ``int``, optional
             The maximum number of iterations the CEM form-finding algorithm will run for.
             If ``eta`` is hit first, the form-finding algorithm will stop early.
@@ -168,6 +190,9 @@ class Optimizer(Data):
             The numerical converge threshold of the CEM form-finding algorithm.
             If ``tmax`` is hit first, the form-finding algorithm will stop early.
             Defaults to ``1e-6``.
+        verbose : ``bool``, optional
+            A flag to prints statistics of the optimization process.
+            Defaults to ``True``.
 
         Returns
         -------
@@ -178,9 +203,19 @@ class Optimizer(Data):
         self.check_optimization_sanity()
 
         # compose gradient and objective functions
-        topology_b = topology.copy()
-        grad_func = self.gradient_func(topology_b, tmax, eta)
-        penalty_func = self.objective_func(topology, grad_func, tmax, eta)
+        if grad == "AD":
+            if verbose:
+                print("Computing gradients using automatic differentiation!")
+            x_func = partial(self._optimize_form, topology=topology.copy(), tmax=tmax, eta=eta)
+            grad_func = partial(grad_autograd, grad_func=agrad(x_func))  # x, grad, x_func
+
+        elif grad == "FD":
+            if verbose:
+                print("Warning: Calculating gradients using finite differences. This may take a while...")
+            grad_func = self.gradient_func(grad_finite_differences, topology.copy(), tmax, eta, step_size)
+
+        # grad_func = self.gradient_func(grad_func, topology.copy(), tmax, eta, step_size)
+        obj_func = self.objective_func(topology, grad_func, tmax, eta)
 
         # generate optimization variables
         x = self.optimization_parameters(topology)
@@ -189,7 +224,7 @@ class Optimizer(Data):
         bounds_low, bounds_up = self.optimization_bounds(topology)
 
         # stack keyword arguments
-        hyper_parameters = {"f": penalty_func,
+        hyper_parameters = {"f": obj_func,
                             "algorithm": algorithm,
                             "dims": self.number_of_parameters(),
                             "bounds_low": bounds_low,
@@ -203,33 +238,43 @@ class Optimizer(Data):
 
         # solve optimization problem
         x_opt = None
+        start = time()
         try:
             x_opt = solver.optimize(x)
-            evals = solver.get_numevals()
-            print("Optimization ended correctly!")
-            print("Number of evaluations incurred: {}".format(evals))
+            if verbose:
+                print("Optimization ended correctly!")
         except RoundoffLimited:
             print("Optimization was halted because roundoff errors limited progress")
-            print("Returned results are generally still useful though!")
+            print("Results may still be useful though!")
             x_opt = self.optimization_parameters(topology)
 
         # fetch last optimum value of loss function
+        time_opt = time() - start
         loss_opt = solver.last_optimum_value()
         evals = solver.get_numevals()
         status = nlopt_status(solver.last_optimize_result())
 
         # set optimizer attributes
+        self.time_opt = time_opt
         self.x_opt = x_opt
         self.penalty = loss_opt
         self.evals = evals
         self.status = status
 
         # set norm of the gradient
-        # np.zeros is a dummy array (signature requirement set by nlopt)
+        # NOTE: np.zeros is a dummy array (signature requirement set by nlopt)
         self.gradient = grad_func(x_opt, np.zeros(x_opt.size))
         self.gradient_norm = np.linalg.norm(self.gradient)
 
-        print("Optimization status: {}".format(status))
+        if verbose:
+            print("----------")
+            print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
+            print(f"Optimization total runtime: {time_opt} seconds")
+            print("Number of evaluations incurred: {}".format(evals))
+            print(f"Final value of the objective function: {loss_opt}")
+            print(f"Norm of the gradient of the objective function: {self.gradient_norm}")
+            print(f"Optimization status: {status}".format(status))
+            print("----------")
 
         # exit like a champion
         return static_equilibrium(topology)

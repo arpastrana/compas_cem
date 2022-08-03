@@ -382,8 +382,7 @@ class TopologyDiagram(Diagram):
 
             self.attributes["_auxiliary_trails"] = aux_trails
 
-            print("Warning: {} auxiliary trails have been added to the diagram".format(
-                len(aux_trails)))
+            print("Warning: {} auxiliary trails have been added to the topology diagram!".format(len(aux_trails)))
 
             return self.build_trails(auxiliary_trails=False)
 

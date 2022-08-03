@@ -19,7 +19,7 @@ class NodeLoad(Data):
     vector : ``list`` of ``float``
         The load magnitude of the point load in xyz directions.
     """
-    def __init__(self, node, vector=[0, 0, -1], **kwargs):
+    def __init__(self, node, vector=[0.0, 0.0, -1.0], **kwargs):
         super(NodeLoad, self).__init__(**kwargs)
         self.node = node
         self.vector = vector

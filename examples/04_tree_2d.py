@@ -88,7 +88,7 @@ optimizer.add_parameter(DeviationEdgeParameter((1, 3), 1.0, 10.0))
 optimizer.add_parameter(DeviationEdgeParameter((2, 3), 10.0, 1.0))
 
 # optimize
-form_opt = optimizer.solve_nlopt(topology, "SLSQP", 100, 1e-6)
+form_opt = optimizer.solve(topology, "SLSQP", 100, 1e-6)
 
 # print out value of the objective function, should be a small number
 print("Total value of the objective function: {}".format(optimizer.penalty))

@@ -94,7 +94,7 @@ for edge in topology.deviation_edges():
 start = time()
 
 # optimize
-form_opt = opt.solve_nlopt(topology=topology, algorithm="SLSQP", iters=100, eps=1e-6)
+form_opt = opt.solve(topology=topology, algorithm="SLSQP", iters=100, eps=1e-6)
 
 # print out results
 print("----------")
