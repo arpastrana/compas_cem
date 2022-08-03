@@ -202,6 +202,11 @@ class Optimizer(Data):
         # test for bad stuff before going any further
         self.check_optimization_sanity()
 
+        if verbose:
+            print("----------")
+            print("Gradient-based optimization started!")
+            print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
+
         # compose gradient and objective functions
         if grad == "AD":
             if verbose:

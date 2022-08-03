@@ -1,16 +1,11 @@
 import os
 
-from time import time
-from math import pi
-from math import cos
-from math import sin
 from statistics import mean
 
-import numpy as np
-
-from compas.geometry import Translation
-
 from compas.datastructures import mesh_dual
+
+from compas.geometry import add_vectors
+from compas.geometry import Translation
 
 from compas_singular.datastructures import CoarseQuadMesh
 
@@ -22,17 +17,34 @@ from compas_cem.equilibrium import static_equilibrium
 
 from compas_cem.optimization import Optimizer
 
-from compas_cem.optimization import TrailEdgeParameter, DeviationEdgeParameter
-from compas_cem.optimization import TrailEdgeForceConstraint, PlaneConstraint
+from compas_cem.optimization import TrailEdgeParameter
+from compas_cem.optimization import DeviationEdgeParameter
+from compas_cem.optimization import OriginNodeXParameter
+from compas_cem.optimization import OriginNodeYParameter
+from compas_cem.optimization import OriginNodeZParameter
+from compas_cem.optimization import PlaneConstraint
+from compas_cem.optimization import LineConstraint
+from compas_cem.optimization import PointConstraint
 
-from compas_plotters.plotter import Plotter
-from compas_view2.app import App
+from compas_cem.viewers import Viewer
 
+
+# ------------------------------------------------------------------------------
+# Globals
+# ------------------------------------------------------------------------------
+
+OPTIMIZE = True
+
+EXPORT_JSON = False
+
+VIEW = True
+SHOW_EDGETEXT = False
+
+STRIPS_DENSITY = 2  # only even numbers (2, 4, 6, ...) for best results
 
 # ------------------------------------------------------------------------------
 # Create a topology diagram
 # ------------------------------------------------------------------------------
-
 
 HERE = os.path.dirname(__file__)
 FILE = os.path.join(HERE, 'data/coarse_quad_mesh_66.json')
@@ -40,15 +52,13 @@ coarse = CoarseQuadMesh.from_json(FILE)
 print('coarse quad mesh:', coarse)
 
 coarse.collect_strips()
-coarse.set_strips_density(4)
+coarse.set_strips_density(STRIPS_DENSITY)
 coarse.densification()
 mesh = coarse.get_quad_mesh()
 print('dense quad mesh:', mesh)
 
 mesh = mesh_dual(mesh)
 print('dual quad mesh:', mesh)
-FILE = os.path.join(HERE, 'data/shell_topology.json')
-mesh.to_json(FILE)
 
 supports = []
 boundary_vertices = mesh.vertices_on_boundary()[:-1]
@@ -68,12 +78,18 @@ print(len(supports), 'supports')
 
 mean_length = mean([mesh.edge_length(*edge) for edge in mesh.edges()])
 
-topology = TopologyDiagram.from_dualquadmesh(
-    mesh, supports, trail_length=-mean_length, deviation_force=-1.0)
+topology = TopologyDiagram.from_dualquadmesh(mesh,
+                                             supports,
+                                             trail_length=-mean_length,
+                                             deviation_force=-1.0)
 topology.build_trails()
+print('topology:', topology)
+topology_viz = topology.copy()
 
-for key in topology.nodes():
-    topology.add_load(NodeLoad(key, [0.0, 0.0, -0.1]))
+# for key in topology.nodes():
+#     if topology.is_node_support(key):
+#         continue
+#     topology.add_load(NodeLoad(key, [0.0, 0.0, -0.5]))
 
 # ------------------------------------------------------------------------------
 # Compute a state of static equilibrium
@@ -81,72 +97,149 @@ for key in topology.nodes():
 
 form = static_equilibrium(topology, eta=1e-6, tmax=100)
 
-FILE = os.path.join(HERE, 'data/shell_form_found.json')
-form.to_json(FILE)
-
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
 
-# # create optimizer
-# opt = Optimizer()
+if OPTIMIZE:
+    # create optimizer
+    opt = Optimizer()
 
-# # parameters
-# for edge in topology.trail_edges():
-#     opt.add_parameter(TrailEdgeParameter(edge, -1.0, -1.0))
+    # parameters
+    for edge in topology.trail_edges():
+        opt.add_parameter(TrailEdgeParameter(edge, bound_low=10, bound_up=mean_length))
 
-# for edge in topology.deviation_edges():
-#     opt.add_parameter(DeviationEdgeParameter(edge, -1.0, -0.1))
+    for edge in topology.deviation_edges():
+        opt.add_parameter(DeviationEdgeParameter(edge, bound_low=10, bound_up=1.0))
 
-# # constraints
-# for edge in topology.trail_edges():
-#     opt.add_constraint(TrailEdgeForceConstraint(edge, -1.0))
+    for node in topology.origin_nodes():
+        opt.add_parameter(OriginNodeXParameter(node, bound_low=1.0, bound_up=1.0))
+        opt.add_parameter(OriginNodeYParameter(node, bound_low=1.0, bound_up=1.0))
+        # opt.add_parameter(OriginNodeZParameter(node, bound_low=None, bound_up=0.0))
 
-# for vkey in supports:
-#     opt.add_constraint(PlaneConstraint(vkey, plane=((0.0, 0.0, 0.0), (0.0, 0.0, 1.0))))
+    # # constraints
+    # for edge in topology.trail_edges():
+    #     opt.add_constraint(TrailEdgeForceConstraint(edge, -1.0))
 
-# # optimize
-# start = time()
-# form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=500, eps=1e-3)
+    # plane = ([0.0, 0.0, -1.0], [0.0, 0.0, 1.0])
+    # for node in supports:
+    #     opt.add_constraint(PlaneConstraint(node, plane=plane))
 
-# # print out results
-# print("----------")
-# print(f"Optimizer. # Parameters {opt.number_of_parameters()}, # Constraints {opt.number_of_constraints()}")
-# print(f"Optimization elapsed time: {time() - start}")
-# print(f"Final value of the objective function: {opt.penalty}")
-# print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
+    for node in topology.nodes():
+        point = topology.node_coordinates(node)
+        # line = [add_vectors(point, (0.0, 0.0, zcoord)) for zcoord in (1.0, -1.0)]
+        # opt.add_constraint(LineConstraint(node, line=line))
+        opt.add_constraint(PointConstraint(node, point=point))
 
-# FILE = os.path.join(HERE, 'data/shell_form_opt.json')
-# form_opt.to_json(FILE)
+    # optimize
+    form_opt = opt.solve(topology,
+                         algorithm="LBFGS",
+                         iters=200,
+                         eps=1e-1,
+                         verbose=True)
 
 # ------------------------------------------------------------------------------
-# Plot results
+# Launch viewer
 # ------------------------------------------------------------------------------
 
-# ns = 0.45
-# shift = 1.0
-# plotter = Plotter(figsize=(16.0, 9.0))
+if EXPORT_JSON:
+    datastructures = [mesh, form]
+    names = ["shell_topology", "shell_form_found"]
 
-# # plot topology diagram
-# plotter.add(topology, nodesize=ns)
+    if OPTIMIZE:
+        datastructures.append(form_opt)
+        names.append("shell_form_opt")
 
-# # plot translated form diagram
-# T = Translation.from_vector([shift, 0.0, 0.0])
-# plotter.add(form.transformed(T), nodesize=ns)
+    for ds, name in zip(datastructures, names):
+        path = os.path.join(HERE, f"data/{name}.json")
+        ds.to_json(path)
+        print(f"Exported datastructure to {path}")
 
-# # plot translated optimized form diagram
-# T = Translation.from_vector([shift * 2.0, 0.0, 0.0])
-# plotter.add(form_opt.transformed(T), nodesize=ns)
+# ------------------------------------------------------------------------------
+# Launch viewer
+# ------------------------------------------------------------------------------
 
-# # show scene
-# plotter.zoom_extents(padding=-0.3)
-# plotter.show()
+if VIEW:
 
-# viewer = App(width=1600, height=900)
-# viewer.view.camera.rx = -60
-# viewer.view.camera.rz = 0
-# viewer.view.camera.ty = -2
-# viewer.view.camera.distance = 10
+    viewer = Viewer(width=1600, height=900, show_grid=False)
 
-# viewer.add(form)
-# viewer.show()
+# ------------------------------------------------------------------------------
+# Visualize starting mesh
+# ------------------------------------------------------------------------------
+
+    viewer.add(mesh)
+
+# ------------------------------------------------------------------------------
+# Visualize topology diagram
+# ------------------------------------------------------------------------------
+
+    topology_viz = topology_viz.transformed(Translation.from_vector([9.0, 0.0, 0.0]))
+    viewer.add(topology_viz,
+               show_nodes=True,
+               nodes=None,
+               nodesize=15.0,
+               show_edges=True,
+               edges=None,
+               edgewidth=2.0,
+               show_loads=False,
+               loadscale=2.5,
+               show_edgetext=False,
+               edgetext="key",
+               show_nodetext=False,
+               nodetext="key"
+               )
+
+# ------------------------------------------------------------------------------
+# Visualize translated form diagram
+# ------------------------------------------------------------------------------
+
+    form = form.transformed(Translation.from_vector([18.0, 0.0, 0.0]))
+    viewer.add(form,
+               show_nodes=True,
+               nodes=None,
+               nodesize=15.0,
+               show_edges=True,
+               edges=None,
+               edgewidth=2.0,
+               show_loads=True,
+               loadscale=1.0,
+               loadtol=1e-1,
+               show_residuals=False,
+               residualscale=1.0,
+               residualtol=1.5,
+               show_edgetext=SHOW_EDGETEXT,
+               edgetext="force",
+               show_nodetext=False,
+               nodetext="xyz"
+               )
+
+# ------------------------------------------------------------------------------
+# Visualize translated constrained form diagram
+# ------------------------------------------------------------------------------
+
+    if OPTIMIZE:
+        form_opt = form_opt.transformed(Translation.from_vector([18.0, -6.0, 0.0]))
+        viewer.add(form_opt,
+                   show_nodes=True,
+                   nodes=None,
+                   nodesize=15.0,
+                   show_edges=True,
+                   edges=None,
+                   edgewidth=2.0,
+                   show_loads=True,
+                   loadscale=1.0,
+                   loadtol=1e-1,
+                   show_residuals=False,
+                   residualscale=1.0,
+                   residualtol=1.5,
+                   show_edgetext=SHOW_EDGETEXT,
+                   edgetext="force",
+                   show_nodetext=False,
+                   nodetext="xyz"
+                   )
+
+# ------------------------------------------------------------------------------
+# Show scene
+# -------------------------------------------------------------------------------
+
+    viewer.show()
