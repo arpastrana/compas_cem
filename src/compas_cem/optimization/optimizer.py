@@ -157,7 +157,6 @@ class Optimizer(Data):
 
             - SLSQP: Sequential Least Squares Programming
             - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
-            - AUGLAG: Augmented Lagrangian
             - MMA: Method of Moving Asymptotes
             - TNEWTON: Preconditioned Truncated Newton
 
@@ -202,7 +201,7 @@ class Optimizer(Data):
         """
         if verbose:
             print("----------")
-            print("Optimization started!")
+            print("Optimization with {} started!".format(algorithm))
             print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
 
         # test for bad stuff before going any further
@@ -253,6 +252,10 @@ class Optimizer(Data):
             print("Optimization was halted because roundoff errors limited progress")
             print("Results may still be useful though!")
             x_opt = self.optimization_parameters(topology)
+        except RuntimeError:
+             print("Optimization failed for reasons I do not grasp yet...")
+             print(f"Optimization total runtime: {round(time() - start, 4)} seconds")
+             return static_equilibrium(topology)
 
         # fetch last optimum value of loss function
         time_opt = time() - start

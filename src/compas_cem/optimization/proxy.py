@@ -1,6 +1,3 @@
-from time import time
-
-
 __all__ = ["solve_proxy"]
 
 
