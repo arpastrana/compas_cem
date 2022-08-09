@@ -37,11 +37,9 @@ class NodeMixins(object):
         """
         Gets
         """
-        if value in self.node:
-            key = value
-        else:
-            key = self.gkey_node.get(self.gkey(value))
-        return key
+        if isinstance(value, int):
+            return value
+        return self.gkey_node.get(self.gkey(value))
 
     def update_node_xyz(self, key, xyz):
         """
