@@ -19,7 +19,7 @@ Unreleased
 **Changed**
 
 - Changed GH components folder prefix from CEM to CompasCem.
-- Renamed `compas_cem.optimization.Optimizer.solve_nlopt` to `solve.
+- Renamed `compas_cem.optimization.Optimizer.solve_nlopt` to `solve`.
 - Refactored `compas_cem.optimization.Parameter`.
 
 **Fixed**
@@ -29,6 +29,8 @@ Unreleased
 **Deprecated**
 
 **Removed**
+
+- Removed support for the `AUGLAG` optimization algorithm due to NLOpt upgrade.
 
 0.5.0
 ----------
