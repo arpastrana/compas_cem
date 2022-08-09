@@ -1,10 +1,12 @@
 from nlopt import opt
 
-from nlopt import LD_AUGLAG
 from nlopt import LD_LBFGS
 from nlopt import LD_MMA
 from nlopt import LD_SLSQP
 from nlopt import LD_TNEWTON
+from nlopt import LD_AUGLAG
+from nlopt import LD_VAR2
+from nlopt import LD_CCSAQ
 
 
 __all__ = ["nlopt_algorithm",
@@ -33,7 +35,6 @@ def nlopt_algorithm(name):
 
     - SLSQP: Sequential Least Squares Programming
     - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
-    - AUGLAG: Augmented Lagrangian
     - MMA: Method of Moving Asymptotes
     - TNEWTON: Preconditioned Truncated Newton
 
@@ -58,7 +59,6 @@ def nlopt_algorithms():
 
     - SLSQP: Sequential Least Squares Programming
     - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
-    - AUGLAG: Augmented Lagrangian
     - MMA: Method of Moving Asymptotes
     - TNEWTON: Preconditioned Truncated Newton
 
@@ -68,8 +68,10 @@ def nlopt_algorithms():
     gradient_based = {"SLSQP": LD_SLSQP,
                       "MMA": LD_MMA,
                       "LBFGS": LD_LBFGS,
-                      "AUGLAG": LD_AUGLAG,
-                      "TNEWTON": LD_TNEWTON
+                      "TNEWTON": LD_TNEWTON,
+                      "VAR": LD_VAR2,
+                      "CCSA": LD_CCSAQ,
+                      "AUGLAG": LD_AUGLAG
                       }
 
     algorithms.update(gradient_based)
@@ -117,6 +119,15 @@ def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, eps, ftol):
     Wrapper around a typical nlopt solver routine.
     """
     solver = opt(nlopt_algorithm(algorithm), dims)
+
+    if algorithm == "AUGLAG":
+        solver.set_local_optimizer(opt(nlopt_algorithm("SLSQP"), dims))
+
+    if algorithm in ("VAR", "TNEWTON"):
+        solver.set_vector_storage(100)  # Defaults to 10 or to 10 MiB of data
+
+    if algorithm == "MMA":
+        solver.set_param("inner_maxeval", 5)
 
     solver.set_lower_bounds(bounds_low)
     solver.set_upper_bounds(bounds_up)
