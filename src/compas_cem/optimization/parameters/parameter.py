@@ -1,7 +1,5 @@
 from math import fabs
 
-import autograd.numpy as np
-
 from compas_cem.data import Data
 
 
@@ -43,11 +41,11 @@ class Parameter(Data):
         -----
         If not set to ``None`` at instantiation, the bound is calculated as the
         starting value of this parameter minus this absolute value of the lower bound.
-        Otherwise, it will return ``-np.inf``.
+        Otherwise, it will return ``float("-inf")``.
         """
         if self._bound_low is not None:
             return self.start_value(topology) - fabs(self._bound_low)
-        return -np.inf
+        return float("-inf")
 
     def bound_up(self, topology):
         """
@@ -57,11 +55,11 @@ class Parameter(Data):
         -----
         If not set to ``None`` at instantiation, the bound is calculated as the
         starting value of this parameter plus this absolute value of the upper bound.
-        Otherwise, it will return ``np.inf``.
+        Otherwise, it will return ``float("inf")``.
         """
         if self._bound_up is not None:
             return self.start_value(topology) + fabs(self._bound_up)
-        return np.inf
+        return float("inf")
 
     def attr_name(self):
         """
