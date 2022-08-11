@@ -31,7 +31,7 @@
             },
             {
                 "name": "algorithm",
-                "description": "The name of the gradient-based local optimization algorithm to use. Defaults to SLSQP.\nCurrently supported algorithms are:\n\n- SLSQP: Sequential Least Squares Programming\n- LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno\n- MMA: Method of Moving Asymptotes\n- TNEWTON: Preconditioned Truncated Newton",
+                "description": "The name of the gradient-based local optimization algorithm to use. Defaults to SLSQP.\nCurrently supported algorithms are:\n\n- SLSQP: Sequential Least Squares Programming\n- LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno\n- MMA: Method of Moving Asymptotes\n- TNEWTON: Preconditioned Truncated Newton\n- AUGLAG: Augmented Lagrangian\n -VAR: Limited-Memory Variable-Metric Algorithm\n",
                 "typeHintID": "str"
             },
             {

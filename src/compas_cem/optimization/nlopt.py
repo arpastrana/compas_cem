@@ -6,7 +6,6 @@ from nlopt import LD_SLSQP
 from nlopt import LD_TNEWTON
 from nlopt import LD_AUGLAG
 from nlopt import LD_VAR2
-from nlopt import LD_CCSAQ
 
 
 __all__ = ["nlopt_algorithm",
@@ -37,6 +36,8 @@ def nlopt_algorithm(name):
     - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
     - MMA: Method of Moving Asymptotes
     - TNEWTON: Preconditioned Truncated Newton
+    - AUGLAG: Augmented Lagrangian
+    - VAR: Limited-Memory Variable-Metric Algorithm
 
     Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
     """
@@ -61,6 +62,8 @@ def nlopt_algorithms():
     - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
     - MMA: Method of Moving Asymptotes
     - TNEWTON: Preconditioned Truncated Newton
+    - AUGLAG: Augmented Lagrangian
+    - VAR: Limited-Memory Variable-Metric Algorithm
 
     Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
     """
@@ -70,7 +73,6 @@ def nlopt_algorithms():
                       "LBFGS": LD_LBFGS,
                       "TNEWTON": LD_TNEWTON,
                       "VAR": LD_VAR2,
-                      "CCSA": LD_CCSAQ,
                       "AUGLAG": LD_AUGLAG
                       }
 
@@ -121,7 +123,7 @@ def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, eps, ftol):
     solver = opt(nlopt_algorithm(algorithm), dims)
 
     if algorithm == "AUGLAG":
-        solver.set_local_optimizer(opt(nlopt_algorithm("SLSQP"), dims))
+        solver.set_local_optimizer(opt(nlopt_algorithm("VAR"), dims))
 
     if algorithm in ("VAR", "TNEWTON"):
         solver.set_vector_storage(100)  # Defaults to 10 or to 10 MiB of data
@@ -136,6 +138,7 @@ def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, eps, ftol):
 
     if ftol is not None:
         solver.set_ftol_abs(ftol)  # abs per recommendation in the NLOpt docs
+        solver.set_ftot_rel(ftol)  # measure the relative change between two iterations
 
     if eps is not None:
         solver.set_stopval(eps)

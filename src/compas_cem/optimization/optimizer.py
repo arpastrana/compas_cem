@@ -159,6 +159,8 @@ class Optimizer(Data):
             - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
             - MMA: Method of Moving Asymptotes
             - TNEWTON: Preconditioned Truncated Newton
+            - AUGLAG: Augmented Lagrangian
+            - VAR: Limited-Memory Variable-Metric Algorithm
 
             Defaults to "SLSQP".
             Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
@@ -253,9 +255,10 @@ class Optimizer(Data):
             print("Results may still be useful though!")
             x_opt = self.optimization_parameters(topology)
         except RuntimeError:
-             print("Optimization failed for reasons I do not grasp yet...")
+             print("Optimization failed for reasons I do not understand yet...")
              print(f"Optimization total runtime: {round(time() - start, 4)} seconds")
              return static_equilibrium(topology)
+
 
         # fetch last optimum value of loss function
         time_opt = time() - start

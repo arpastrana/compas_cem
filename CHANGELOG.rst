@@ -15,6 +15,7 @@ Unreleased
 - `compas_cem.plotters.TopologyArtist` has node size and edge width default parameters.
 - `compas_cem.plotters.FormArtist` has node size and edge width default parameters.
 - Added support for gradient computation via finite differences.
+- Added support for the `VAR` optimization algorithm from NLOpt.
 
 **Changed**
 
@@ -30,7 +31,6 @@ Unreleased
 
 **Removed**
 
-- Removed support for the `AUGLAG` optimization algorithm due to NLOpt upgrade.
 
 0.5.0
 ----------
