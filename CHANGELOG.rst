@@ -15,11 +15,12 @@ Unreleased
 - `compas_cem.plotters.TopologyArtist` has node size and edge width default parameters.
 - `compas_cem.plotters.FormArtist` has node size and edge width default parameters.
 - Added support for gradient computation via finite differences.
+- Added support for the `VAR` optimization algorithm from NLOpt.
 
 **Changed**
 
 - Changed GH components folder prefix from CEM to CompasCem.
-- Renamed `compas_cem.optimization.Optimizer.solve_nlopt` to `solve.
+- Renamed `compas_cem.optimization.Optimizer.solve_nlopt` to `solve`.
 - Refactored `compas_cem.optimization.Parameter`.
 
 **Fixed**
@@ -29,6 +30,7 @@ Unreleased
 **Deprecated**
 
 **Removed**
+
 
 0.5.0
 ----------

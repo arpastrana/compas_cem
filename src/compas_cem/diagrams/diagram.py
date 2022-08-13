@@ -164,6 +164,26 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         return length_vector(self.node_load(node)) > min_force
 
 # ==============================================================================
+# Edge Filters
+# ==============================================================================
+
+    def is_edge_supported(self, edge):
+        """
+        Checks if any of the nodes of an edge is a support.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            An edge key.
+
+        Returns
+        -------
+        flag : ``bool``
+            ``True``if any of the edge nodes is a support. ``False`` otherwise.
+        """
+        return any([self.is_node_support(node) for node in edge])
+
+# ==============================================================================
 # Node Attributes
 # ==============================================================================
 

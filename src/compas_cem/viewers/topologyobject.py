@@ -37,7 +37,7 @@ class TopologyDiagramObject(DiagramObject):
             for edge in self.edges:
                 # draw auxiliary trail edges
                 if self.diagram.is_auxiliary_trail_edge(edge):
-                    color = self.edgecolor_trail
+                    color = self.edgecolor_auxiliary
                 else:
                     # draw trail edges
                     if self.diagram.is_trail_edge(edge):

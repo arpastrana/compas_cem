@@ -36,6 +36,7 @@ class Optimizer(Data):
 
         self.parameters = {}
         self.constraints = {}
+
         self.x_opt = None
         self.time_opt = None
         self.penalty = None
@@ -156,9 +157,10 @@ class Optimizer(Data):
 
             - SLSQP: Sequential Least Squares Programming
             - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
-            - AUGLAG: Augmented Lagrangian
             - MMA: Method of Moving Asymptotes
             - TNEWTON: Preconditioned Truncated Newton
+            - AUGLAG: Augmented Lagrangian
+            - VAR: Limited-Memory Variable-Metric Algorithm
 
             Defaults to "SLSQP".
             Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
@@ -199,6 +201,11 @@ class Optimizer(Data):
         form : :class:`compas_cem.diagrams.FormDiagram`
             A form diagram.
         """
+        if verbose:
+            print("----------")
+            print("Optimization with {} started!".format(algorithm))
+            print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
+
         # test for bad stuff before going any further
         self.check_optimization_sanity()
 
@@ -208,6 +215,8 @@ class Optimizer(Data):
             print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
 
         # compose gradient and objective functions
+        if grad not in ("AD", "FD"):
+            raise ValueError(f"Gradient method {grad} is not supported!")
         if grad == "AD":
             if verbose:
                 print("Computing gradients using automatic differentiation!")
@@ -216,7 +225,7 @@ class Optimizer(Data):
 
         elif grad == "FD":
             if verbose:
-                print("Warning: Calculating gradients using finite differences. This may take a while...")
+                print(f"Warning: Calculating gradients using finite differences with step size {step_size}. This may take a while...")
             grad_func = self.gradient_func(grad_finite_differences, topology.copy(), tmax, eta, step_size)
 
         # grad_func = self.gradient_func(grad_func, topology.copy(), tmax, eta, step_size)
@@ -252,6 +261,11 @@ class Optimizer(Data):
             print("Optimization was halted because roundoff errors limited progress")
             print("Results may still be useful though!")
             x_opt = self.optimization_parameters(topology)
+        except RuntimeError:
+             print("Optimization failed for reasons I do not understand yet...")
+             print(f"Optimization total runtime: {round(time() - start, 4)} seconds")
+             return static_equilibrium(topology)
+
 
         # fetch last optimum value of loss function
         time_opt = time() - start
@@ -272,12 +286,10 @@ class Optimizer(Data):
         self.gradient_norm = np.linalg.norm(self.gradient)
 
         if verbose:
-            print("----------")
-            print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
-            print(f"Optimization total runtime: {time_opt} seconds")
+            print(f"Optimization total runtime: {round(time_opt, 6)} seconds")
             print("Number of evaluations incurred: {}".format(evals))
-            print(f"Final value of the objective function: {loss_opt}")
-            print(f"Norm of the gradient of the objective function: {self.gradient_norm}")
+            print(f"Final value of the objective function: {round(loss_opt, 6)}")
+            print(f"Norm of the gradient of the objective function: {round(self.gradient_norm, 6)}")
             print(f"Optimization status: {status}".format(status))
             print("----------")
 

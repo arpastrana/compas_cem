@@ -12,7 +12,8 @@ __all__ = ["grad_finite_differences",
 
 def grad_autograd(x, grad, grad_func, **kwargs):
     """
-    Calculates the gradient with automatic differentiation. And updates grad in-place.
+    Calculate the gradient with automatic differentiation.
+    This function updates grad in place.
     """
     grad[:] = grad_func(x)
 
@@ -25,7 +26,8 @@ def grad_autograd(x, grad, grad_func, **kwargs):
 
 def grad_finite_differences(x, grad, x_func, step_size, **kwargs):
     """
-    Approximates the gradient of a blackbox function using finite differences.
+    Approximate the gradient of a blackbox function using forward finite differences.
+    This function updates grad in place.
     """
     fx0 = x_func(x)
     # NOTE: We make an editable copy of x because NLOpt makes x a read-only vector

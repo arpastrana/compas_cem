@@ -26,12 +26,11 @@ class ConstrainedFormFindingComponent(component):
 
         # fetch optimization proxy from scriptcontext
         opt = sticky.get("proxy_cem")
-        proxy_temp_exists = False
+        proxy_temp_exists = opt is not None
 
         # create temporary proxy server if unavailable from scriptcontext
-        if not opt:
+        if not proxy_temp_exists:
             opt = Proxy("compas_cem.optimization")
-            proxy_temp_exists = False
 
         # solve constrained form-finding problem
         solution = opt.solve_proxy(topology=topology,
@@ -44,7 +43,7 @@ class ConstrainedFormFindingComponent(component):
                                    eta=eta)
 
         # shut down temporary proxy
-        if proxy_temp_exists:
+        if not proxy_temp_exists:
             opt.stop_server()
 
         # unpack solution

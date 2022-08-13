@@ -1,10 +1,11 @@
 from nlopt import opt
 
-from nlopt import LD_AUGLAG
 from nlopt import LD_LBFGS
 from nlopt import LD_MMA
 from nlopt import LD_SLSQP
 from nlopt import LD_TNEWTON
+from nlopt import LD_AUGLAG
+from nlopt import LD_VAR2
 
 
 __all__ = ["nlopt_algorithm",
@@ -33,9 +34,10 @@ def nlopt_algorithm(name):
 
     - SLSQP: Sequential Least Squares Programming
     - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
-    - AUGLAG: Augmented Lagrangian
     - MMA: Method of Moving Asymptotes
     - TNEWTON: Preconditioned Truncated Newton
+    - AUGLAG: Augmented Lagrangian
+    - VAR: Limited-Memory Variable-Metric Algorithm
 
     Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
     """
@@ -58,9 +60,10 @@ def nlopt_algorithms():
 
     - SLSQP: Sequential Least Squares Programming
     - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
-    - AUGLAG: Augmented Lagrangian
     - MMA: Method of Moving Asymptotes
     - TNEWTON: Preconditioned Truncated Newton
+    - AUGLAG: Augmented Lagrangian
+    - VAR: Limited-Memory Variable-Metric Algorithm
 
     Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
     """
@@ -68,8 +71,9 @@ def nlopt_algorithms():
     gradient_based = {"SLSQP": LD_SLSQP,
                       "MMA": LD_MMA,
                       "LBFGS": LD_LBFGS,
-                      "AUGLAG": LD_AUGLAG,
-                      "TNEWTON": LD_TNEWTON
+                      "TNEWTON": LD_TNEWTON,
+                      "VAR": LD_VAR2,
+                      "AUGLAG": LD_AUGLAG
                       }
 
     algorithms.update(gradient_based)
@@ -118,13 +122,24 @@ def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, eps, ftol):
     """
     solver = opt(nlopt_algorithm(algorithm), dims)
 
+    if algorithm == "AUGLAG":
+        solver.set_local_optimizer(opt(nlopt_algorithm("VAR"), dims))
+
+    if algorithm in ("VAR", "TNEWTON"):
+        solver.set_vector_storage(100)  # Defaults to 10 or to 10 MiB of data
+
+    if algorithm == "MMA":
+        solver.set_param("inner_maxeval", 5)
+
     solver.set_lower_bounds(bounds_low)
     solver.set_upper_bounds(bounds_up)
 
     solver.set_maxeval(iters)
 
     if ftol is not None:
-        solver.set_ftol_abs(ftol)  # abs per recommendation in the NLOpt docs
+        # relative difference between two consecutive iterations
+        # ftol_abs as per recommendation in the NLOpt docs
+        solver.set_ftol_abs(ftol)
 
     if eps is not None:
         solver.set_stopval(eps)
