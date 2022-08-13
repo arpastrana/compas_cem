@@ -210,6 +210,8 @@ class Optimizer(Data):
         self.check_optimization_sanity()
 
         # compose gradient and objective functions
+        if grad not in ("AD", "FD"):
+            raise ValueError(f"Gradient method {grad} is not supported!")
         if grad == "AD":
             if verbose:
                 print("Computing gradients using automatic differentiation!")
@@ -279,10 +281,10 @@ class Optimizer(Data):
         self.gradient_norm = np.linalg.norm(self.gradient)
 
         if verbose:
-            print(f"Optimization total runtime: {round(time_opt, 4)} seconds")
+            print(f"Optimization total runtime: {round(time_opt, 6)} seconds")
             print("Number of evaluations incurred: {}".format(evals))
-            print(f"Final value of the objective function: {round(loss_opt, 4)}")
-            print(f"Norm of the gradient of the objective function: {round(self.gradient_norm, 4)}")
+            print(f"Final value of the objective function: {round(loss_opt, 6)}")
+            print(f"Norm of the gradient of the objective function: {round(self.gradient_norm, 6)}")
             print(f"Optimization status: {status}".format(status))
             print("----------")
 

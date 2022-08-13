@@ -137,8 +137,9 @@ def nlopt_solver(f, algorithm, dims, bounds_up, bounds_low, iters, eps, ftol):
     solver.set_maxeval(iters)
 
     if ftol is not None:
-        solver.set_ftol_abs(ftol)  # abs per recommendation in the NLOpt docs
-        solver.set_ftot_rel(ftol)  # measure the relative change between two iterations
+        # relative difference between two consecutive iterations
+        # ftol_abs as per recommendation in the NLOpt docs
+        solver.set_ftol_abs(ftol)
 
     if eps is not None:
         solver.set_stopval(eps)
