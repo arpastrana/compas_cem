@@ -83,8 +83,6 @@ topology = TopologyDiagram.from_dualquadmesh(mesh,
                                              trail_length=-mean_length,
                                              deviation_force=-1.0)
 topology.build_trails()
-print('topology:', topology)
-topology_viz = topology.copy()
 
 # for key in topology.nodes():
 #     if topology.is_node_support(key):
@@ -132,14 +130,14 @@ if OPTIMIZE:
         opt.add_constraint(PointConstraint(node, point=point))
 
     # optimize
-    form_opt = opt.solve(topology,
+    form_opt = opt.solve(topology.copy(),
                          algorithm="LBFGS",
                          iters=200,
                          eps=1e-1,
                          verbose=True)
 
 # ------------------------------------------------------------------------------
-# Launch viewer
+# Export to JSON
 # ------------------------------------------------------------------------------
 
 if EXPORT_JSON:
@@ -173,8 +171,8 @@ if VIEW:
 # Visualize topology diagram
 # ------------------------------------------------------------------------------
 
-    topology_viz = topology_viz.transformed(Translation.from_vector([9.0, 0.0, 0.0]))
-    viewer.add(topology_viz,
+    topology = topology.transformed(Translation.from_vector([9.0, 0.0, 0.0]))
+    viewer.add(topology,
                show_nodes=True,
                nodes=None,
                nodesize=15.0,
