@@ -141,7 +141,7 @@ class Optimizer(Data):
 # Solver
 # ------------------------------------------------------------------------------
 
-    def solve(self, topology, algorithm="SLSQP", grad="AD", step_size=1e-6, iters=100, eps=1e-6, tmax=100, eta=1e-6, verbose=False):
+    def solve(self, topology, algorithm="SLSQP", grad="AD", step_size=1e-6, iters=100, eps=1e-6, kappa=1e-8, tmax=100, eta=1e-6, verbose=False):
         """
         Solve a constrained form-finding problem using gradient-based optimization.
 
@@ -176,10 +176,13 @@ class Optimizer(Data):
             The maximum number of iterations to run the optimization algorithm for.
             Defaults to ``100``.
         eps : ``float``, optional
-            The numerical convergence threshold for the optimization algorithm.
+            The convergence threshold for the value of the objective function.
             If value is set to ``None``, this parameter is ignored and the
             optimization algorithm will run until ``iters`` is exhausted.
-            Defaults to ``None``.
+            Defaults to ``1e-6``.
+        kappa : ``float``, optional
+            The gradient convergence threshold for the optimization algorithm.
+            Defaults to ``1e-8``.
         step_size : ``float``, optional
             The step size to calculate the gradient of the objective function via finite differences.
             It becomes active only if ``grad="FD"``. It is otherwise ignored by this function.
@@ -240,7 +243,7 @@ class Optimizer(Data):
                             "bounds_up": bounds_up,
                             "iters": iters,
                             "eps": eps,
-                            "ftol": None}
+                            "ftol": kappa}
 
         # assemble optimization solver
         solver = nlopt_solver(**hyper_parameters)

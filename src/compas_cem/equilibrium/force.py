@@ -128,7 +128,6 @@ def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None
                         print("Warning! No intersection found between edge {} and plane {}".format(edge, plane))
                         print("Falling back to input length: {}".format(length))
                         p_length = length
-                        # raise ValueError("No intersection found between edge {} and plane {}".format(edge, plane))
                     # print out warning if zero length
                     elif p_length < SMALL_VALUE:
                         msg = "Warning! Length for edge after {} intersection is {}."
