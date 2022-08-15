@@ -69,7 +69,8 @@ mesh.to_json(FILE)
 polyedge2height = {}
 for pkey, polyedge in mesh.polyedges(data=True):
     if mesh.is_edge_on_boundary(polyedge[0], polyedge[1]):
-        polyedge2height[pkey] = centroid_points(mesh.polyline(pkey))[2]
+        polyedge2height[pkey] = centroid_points([mesh.vertex_coordinates(vkey) for vkey in polyedge]
+            )[2]
 polyedge2height = sorted(polyedge2height.items(), key=lambda item: item[1])
 supports = mesh.polyedge_vertices(polyedge2height[0][0]) + mesh.polyedge_vertices(polyedge2height[1][0])
 loads = mesh.polyedge_vertices(polyedge2height[-1][0])
