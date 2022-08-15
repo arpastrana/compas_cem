@@ -1,4 +1,5 @@
 from compas.utilities import iterable_like
+from ast import literal_eval
 
 
 __all__ = ["form_plotter_proxy",
@@ -56,6 +57,10 @@ def form_plotter_proxy(**kwargs):
     for seg, ls, color, width in zip(segment, segment_ls, segment_color, segment_width):
         if sum(color) == 255 * 3:
             continue
+        try:
+            ls = literal_eval(ls)
+        except ValueError:
+            ls = ls
         plotter.draw_segments([seg], color, width, ls)
 
     plotter.save(filepath)
