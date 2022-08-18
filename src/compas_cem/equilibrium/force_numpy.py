@@ -149,7 +149,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 # override length if a plane exists
                 if plane is not None:
                     # get length from line plane intersection
-                    plength = length_from_intersection_vector_plane_numpy(pos, rvec, plane)
+                    plength = trail_length_from_plane_intersection_numpy(pos, rvec, plane)
 
                     # check that returned length is not null
                     if plength:
@@ -427,7 +427,7 @@ def length_vector_numpy(vector):
     return np.linalg.norm(vector)
 
 
-def length_from_intersection_vector_plane_numpy(point, vector, plane, tol=1e-6):
+def trail_length_from_plane_intersection_numpy(point, vector, plane, tol=1e-6):
     """
     Calculates the signed length of a trail edge from a vector-plane intersection.
 

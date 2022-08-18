@@ -123,7 +123,7 @@ def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None
                 # override signed length if a plane has been supplied for trail edge
                 if plane:
                     # compute length from line plane intersection
-                    plength = length_from_intersection_vector_plane(pos, rvec, plane)
+                    plength = trail_length_from_plane_intersection(pos, rvec, plane)
                     # The intersection length is None or zero
                     if not plength:
                         msg = "Warning! No intersection found between vector {} of edge {} and plane {}"
@@ -398,7 +398,7 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     return scale_vector(tvec, -1.0)
 
 
-def length_from_intersection_vector_plane(point, vector, plane, tol=1e-6):
+def trail_length_from_plane_intersection(point, vector, plane, tol=1e-6):
     """
     Calculates the signed length of a trail edge from a vector-plane intersection.
 
