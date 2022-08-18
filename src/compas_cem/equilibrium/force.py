@@ -8,7 +8,6 @@ from compas.geometry import subtract_vectors
 from compas.geometry import normalize_vector
 from compas.geometry import length_vector
 from compas.geometry import distance_point_point
-from compas.geometry import intersection_line_plane
 
 from compas_cem.diagrams import FormDiagram
 

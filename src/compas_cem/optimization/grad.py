@@ -1,7 +1,5 @@
 import numpy as np
 
-from autograd import grad as agrad
-
 
 __all__ = ["grad_finite_differences",
            "grad_autograd"]
@@ -9,6 +7,7 @@ __all__ = ["grad_finite_differences",
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
 # ------------------------------------------------------------------------------
+
 
 def grad_autograd(x, grad, grad_func, **kwargs):
     """
