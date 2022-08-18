@@ -18,6 +18,7 @@ Unreleased
 - Added support for the `VAR` optimization algorithm from NLOpt.
 - Added gradient convergence treshold `kappa` to the signature of `Optimizer.solve`.
 - Added `kappa` as input to the `ConstrainedFormFinding` GH component.
+- Implemented `Diagram.is_edge_supported`
 
 **Changed**
 
@@ -32,6 +33,9 @@ Unreleased
 - Fixed bug in `compas_cem.equilibrium.equilibrium_state` where `residual` calculation was undefined when `tmax=1`.
 
 **Deprecated**
+
+- Deprecated `Optimizer.solve_nlopt` and `.solve_nlopt_proxy`.
+
 
 **Removed**
 
