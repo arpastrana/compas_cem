@@ -12,7 +12,7 @@ Optimizers
     :nosignatures:
 
     Optimizer
-    solve_nlopt_proxy
+    solve_proxy
 
 Optimization Constraints
 ========================
