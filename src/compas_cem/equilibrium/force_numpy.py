@@ -149,27 +149,14 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 # override length if a plane exists
                 if plane is not None:
                     # get length from line plane intersection
-                    p_length = trail_edge_length_from_plane_numpy(pos, rvec, plane)
+                    plength = length_from_intersection_vector_plane_numpy(pos, rvec, plane)
 
                     # check that returned length is not null
-                    if p_length is None:
-                        # print("Warning! No intersection found between edge {} and plane {}".format(edge, plane))
-                        # print("Falling back to input length: {}".format(length))
-                        p_length = length
-                    # print out warning if zero length.
-                    # elif p_length < SMALL_VALUE:
-                    #     msg = "Warning! Length for edge after {} intersection is {}. Check the plane."
-                    #     print(msg.format(edge, p_length))
-
-                    # correct length sign based on internal force state
-                    dot = p_length * length
-                    if dot < 0:
-                        length = p_length * -1.0
-                    else:
-                        length = p_length
+                    if plength:
+                        length = plength
 
                 # compute trail force
-                trail_force = length_vector(rvec)  # always positive
+                trail_force = length_vector_numpy(rvec)  # always positive
 
                 # store next node position
                 next_pos = pos + length * rvec / trail_force
@@ -245,7 +232,7 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
     for edge in form.edges():
         # length = form.edge_length(u, v)
         u, v = edge
-        length = length_vector(node_xyz[u] - node_xyz[v])
+        length = length_vector_numpy(node_xyz[u] - node_xyz[v])
         force = form.edge_attribute(key=edge, name="force")
         length = np.copysign(length, force)
         form.edge_attribute(key=(u, v), name="length", value=length)
@@ -423,66 +410,55 @@ def vector_two_nodes(a, b, normalize=False):
     vector = a - b
     if not normalize:
         return vector
-    return normalize_vector(vector)
+    return normalize_vector_numpy(vector)
 
 
-def normalize_vector(vector):
+def normalize_vector_numpy(vector):
     """
     Hand-made vector normalization.
     """
-    return vector / length_vector(vector)
+    return vector / length_vector_numpy(vector)
 
 
-def length_vector(vector):
+def length_vector_numpy(vector):
     """
     Calculates the norm of a vector.
     """
     return np.linalg.norm(vector)
 
 
-def trail_edge_length_from_plane_numpy(pos, direction, plane):
+def length_from_intersection_vector_plane_numpy(point, vector, plane, tol=1e-6):
     """
-    Calculates the length of a trail edge from a line-plane intersection.
+    Calculates the signed length of a trail edge from a vector-plane intersection.
 
     Parameters
     ----------
-    pos : ``np.array``
-        The XYZ coordinates of the starting node of an edge.
-    direction : ``np.array``
-        The XYZ coordinates of the direction the edge points to.
-    plane : ``tuple`` of ``np.array``
-        The origin node and the normal vector of a plane.
+    point : ``list`` of ``float``
+        The XYZ coordinates of the base position of the vector.
+    direction : ``list`` of ``float``
+        The XYZ coordinates of the vector.
+    plane : ``Plane``
+        A COMPAS plane defined by a base point and a normal vector.
+    tol : ``float``, optional
+        A tolerance to check if vector and the plane normal are parallel
+        Defaults to ``1e-6``.
 
     Returns
     -------
-    length : ``float``
+    length : ``float``, ``None``
         The distance between ``pos`` and the resulting line-plane intersection.
         If not intersection is found, it returns ``None``.
-
-    Notes
-    -----
-    A line will be created by adding ``pos`` and ``direction``.
-    The line functions as a line ray, not as finite-length segment.
     """
-    a = pos
-    b = a + direction
+    origin, normal = plane
+    cos_nv = np.dot(normal, normalize_vector_numpy(vector))
 
-    # intersection line plane
-    o, n = plane
+    if np.abs(cos_nv) < tol:
+        return
 
-    ab = b - a
-    cosa = np.dot(n, ab)
+    oa = origin - point
+    cos_noa = np.dot(normal, oa)
 
-    if np.abs(cosa) <= SMALL_VALUE:
-        # raise ValueError("np abs cosa {} <= {}, pos:{}, vec:{}, normal:{}".format(np.abs(cosa), SMALL_VALUE, pos, ab, n))
-        return None
-
-    oa = a - o
-    ratio = - np.dot(n, oa) / cosa
-    ab = ab * ratio
-    pos_plane = a + ab
-
-    return length_vector(pos - pos_plane)
+    return cos_noa / cos_nv
 
 
 if __name__ == "__main__":

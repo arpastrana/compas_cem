@@ -1,5 +1,7 @@
 from math import copysign
+from math import fabs
 
+from compas.geometry import dot_vectors
 from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import subtract_vectors
@@ -118,27 +120,26 @@ def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None
                 # query trail edge plane, it takes precedence over length
                 plane = topology.edge_attribute(key=edge, name="plane")
 
-                # override length if a plane exists
-                if plane is not None:
+                # override signed length if a plane has been supplied for trail edge
+                if plane:
                     # compute length from line plane intersection
-                    p_length = trail_edge_length_from_plane(pos, rvec, plane)
-
-                    # check that returned length is not null
-                    if p_length is None:
-                        print("Warning! No intersection found between edge {} and plane {}".format(edge, plane))
+                    plength = length_from_intersection_vector_plane(pos, rvec, plane)
+                    # The intersection length is None or zero
+                    if not plength:
+                        msg = "Warning! No intersection found between vector {} of edge {} and plane {}"
+                        print(msg.format(rvec, edge, plane))
                         print("Falling back to input length: {}".format(length))
-                        p_length = length
-                    # print out warning if zero length
-                    elif p_length < SMALL_VALUE:
-                        msg = "Warning! Length for edge after {} intersection is {}."
-                        print(msg.format(edge, length), "Check the plane.")
-
-                    # correct length sign based on internal force state
-                    dot = p_length * length
-                    if dot < 0:
-                        length = p_length * -1.0
+                    #  valid intersection length exists
                     else:
-                        length = p_length
+                        # print out warning if there is a swipe in the force state of the edge
+                        if plength * length < 0.:
+                            print("Warning! Force state has flipped for edge {} due to plane intersection".format(edge))
+                        # print out warning if zero length
+                        if fabs(plength) < SMALL_VALUE:
+                            msg = "Warning! Length for edge {} after intersection is {}."
+                            print(msg.format(edge, length), "Check the plane.")
+                        # override signed length
+                        length = plength
 
                 # store next node position
                 next_pos = add_vectors(pos, scale_vector(normalize_vector(rvec), length))
@@ -397,35 +398,38 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
     return scale_vector(tvec, -1.0)
 
 
-def trail_edge_length_from_plane(pos, direction, plane):
+def length_from_intersection_vector_plane(point, vector, plane, tol=1e-6):
     """
-    Calculates the length of a trail edge from a line-plane intersection.
+    Calculates the signed length of a trail edge from a vector-plane intersection.
 
     Parameters
     ----------
-    pos : ``list`` of ``float``
-        The XYZ coordinates of the starting node of an edge.
+    point : ``list`` of ``float``
+        The XYZ coordinates of the base position of the vector.
     direction : ``list`` of ``float``
-        The XYZ coordinates of the direction the edge points to.
+        The XYZ coordinates of the vector.
     plane : ``Plane``
-        A COMPAS plane.
+        A COMPAS plane defined by a base point and a normal vector.
+    tol : ``float``, optional
+        A tolerance to check if vector and the plane normal are parallel
+        Defaults to ``1e-6``.
 
     Returns
     -------
-    length : ``float``
+    length : ``float``, ``None``
         The distance between ``pos`` and the resulting line-plane intersection.
         If not intersection is found, it returns ``None``.
-
-    Notes
-    -----
-    A line will be created by adding ``pos`` and ``direction``.
-    The line functions as a line ray, not as finite-length segment.
     """
-    # compute length from line plane intersection
-    line = (pos, add_vectors(pos, direction))
-    pos_plane = intersection_line_plane(line, plane)
-    if pos_plane:
-        return distance_point_point(pos, pos_plane)
+    origin, normal = plane
+    cos_nv = dot_vectors(normal, normalize_vector(vector))
+
+    if fabs(cos_nv) < tol:
+        return
+
+    oa = subtract_vectors(origin, point)
+    cos_noa = dot_vectors(normal, oa)
+
+    return cos_noa / cos_nv
 
 
 if __name__ == "__main__":
