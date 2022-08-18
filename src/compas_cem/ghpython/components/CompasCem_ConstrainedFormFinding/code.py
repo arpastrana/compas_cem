@@ -12,6 +12,7 @@ class ConstrainedFormFindingComponent(component):
         algorithm = algorithm or "SLSQP"
         iters_max = iters_max or 100
         eps = eps or 1e-6
+        kappa = kappa or 1e-8
         tmax = tmax or 100
         eta = eta or 1e-6
 
