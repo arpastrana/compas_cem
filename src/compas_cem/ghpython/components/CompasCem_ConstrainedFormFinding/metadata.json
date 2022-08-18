@@ -41,7 +41,13 @@
             },
             {
                 "name": "eps",
-                "description": "The minimum objective or norm of the gradient to declare convergence. Defaults to 1e-6.",
+                "description": "The convergence threshold for the output value of the objective function. Defaults to 1e-6.",
+                "typeHintID": "float"
+
+            },
+            {
+                "name": "kappa",
+                "description": " The convergence threshold for the norm of the gradient of the objective function. Defaults to 1e-8.",
                 "typeHintID": "float"
 
             },

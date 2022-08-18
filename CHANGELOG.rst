@@ -16,12 +16,16 @@ Unreleased
 - `compas_cem.plotters.FormArtist` has node size and edge width default parameters.
 - Added support for gradient computation via finite differences.
 - Added support for the `VAR` optimization algorithm from NLOpt.
+- Added gradient convergence treshold `kappa` to the signature of `Optimizer.solve`.
+- Added `kappa` as input to the `ConstrainedFormFinding` GH component.
 
 **Changed**
 
 - Changed GH components folder prefix from CEM to CompasCem.
 - Renamed `compas_cem.optimization.Optimizer.solve_nlopt` to `solve`.
 - Refactored `compas_cem.optimization.Parameter`.
+- Refactored calculation of trail edge length via plane intersection in `static_equilibrium`.
+- Refactored calculation of trail edge length via plane intersection in `static_equilibrium_numpy`.
 
 **Fixed**
 

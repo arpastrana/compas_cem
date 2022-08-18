@@ -176,12 +176,10 @@ class Optimizer(Data):
             The maximum number of iterations to run the optimization algorithm for.
             Defaults to ``100``.
         eps : ``float``, optional
-            The convergence threshold for the value of the objective function.
-            If value is set to ``None``, this parameter is ignored and the
-            optimization algorithm will run until ``iters`` is exhausted.
+            The convergence threshold for the output value of the objective function.
             Defaults to ``1e-6``.
         kappa : ``float``, optional
-            The gradient convergence threshold for the optimization algorithm.
+            The convergence threshold for the norm of the gradient of the objective function.
             Defaults to ``1e-8``.
         step_size : ``float``, optional
             The step size to calculate the gradient of the objective function via finite differences.
@@ -260,10 +258,9 @@ class Optimizer(Data):
             print("Results may still be useful though!")
             x_opt = self.optimization_parameters(topology)
         except RuntimeError:
-             print("Optimization failed for reasons I do not understand yet...")
-             print(f"Optimization total runtime: {round(time() - start, 4)} seconds")
-             return static_equilibrium(topology)
-
+            print("Optimization failed for reasons I do not understand yet...")
+            print(f"Optimization total runtime: {round(time() - start, 4)} seconds")
+            return static_equilibrium(topology)
 
         # fetch last optimum value of loss function
         time_opt = time() - start
