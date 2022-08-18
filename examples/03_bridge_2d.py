@@ -90,18 +90,12 @@ for edge in topology.deviation_edges():
 # Optimization
 # ------------------------------------------------------------------------------
 
-# record starting time
-start = time()
-
 # optimize
-form_opt = opt.solve(topology=topology, algorithm="SLSQP", iters=100, eps=1e-6)
-
-# print out results
-print("----------")
-print(f"Optimizer. # Parameters {opt.number_of_parameters()}, # Constraints {opt.number_of_constraints()}")
-print(f"Optimization elapsed time: {time() - start}")
-print(f"Final value of the objective function: {opt.penalty}")
-print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
+form_opt = opt.solve(topology=topology,
+                     algorithm="SLSQP",
+                     iters=100,
+                     eps=1e-6,
+                     verbose=True)
 
 # ------------------------------------------------------------------------------
 # Plotter

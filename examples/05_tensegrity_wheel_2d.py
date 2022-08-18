@@ -99,8 +99,7 @@ for edge in topology.deviation_edges():
 form_opt = opt.solve(topology,
                      algorithm="LBFGS",
                      grad=grad_method,
-                     verbose=True
-                     )
+                     verbose=True)
 
 # ------------------------------------------------------------------------------
 # Plot results

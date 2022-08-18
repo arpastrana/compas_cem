@@ -88,11 +88,7 @@ optimizer.add_parameter(DeviationEdgeParameter((1, 3), 1.0, 10.0))
 optimizer.add_parameter(DeviationEdgeParameter((2, 3), 10.0, 1.0))
 
 # optimize
-form_opt = optimizer.solve(topology, "SLSQP", 100, 1e-6)
-
-# print out value of the objective function, should be a small number
-print("Total value of the objective function: {}".format(optimizer.penalty))
-print("Norm of the gradient of the objective function: {}".format(optimizer.gradient_norm))
+form_opt = optimizer.solve(topology, "SLSQP", iters=100, eps=1e-6, verbose=True)
 
 # ------------------------------------------------------------------------------
 # Plot results
