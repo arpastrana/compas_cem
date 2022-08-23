@@ -156,9 +156,8 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 trail_force = length_vector_numpy(rvec)  # always positive
 
                 # NOTE: to avoid NaNs, do not normalize residual vector if it is zero length
-                if trail_force:
-                    nrvec = rvec / trail_force
-                else:
+                nrvec = rvec / trail_force
+                if np.isnan(length_vector_numpy(nrvec)):
                     nrvec = rvec
 
                 # store next node position
