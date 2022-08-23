@@ -332,7 +332,7 @@ class Optimizer(Data):
     def _update_topology_origin_nodes(self, x, topology):
         """
         """
-        map_xyz_index = {"x": 0, "y": 1, "z": 2}
+        # map_xyz_index = {"x": 0, "y": 1, "z": 2}
 
         for index, ckey in self.index_parameter().items():
 
@@ -348,13 +348,10 @@ class Optimizer(Data):
                 raise ValueError(msg.format(node))
 
             # TODO: refactor to handle xyz more transparently
-            xyz = topology.node_xyz(key=node)
             parameter = self.parameters[ckey]
-            j = map_xyz_index[parameter.attr_name()]
-            xyz[j] = x[index]
-
-            # self.form.node_xyz(key=node, xyz=xyz)  # form.node_xyz(node, y=x[])?
-            topology.node_attributes(key=node, names="xyz", values=xyz)
+            name = parameter.attr_name()
+            value = x[index]
+            topology.node_attribute(key=node, name=name, value=value)
 
     def _update_topology_edges(self, x, topology):
         """
@@ -373,7 +370,6 @@ class Optimizer(Data):
                 name = "force"
 
             value = x[index]
-
             topology.edge_attribute(key=edge, name=name, value=value)
 
 # ------------------------------------------------------------------------------

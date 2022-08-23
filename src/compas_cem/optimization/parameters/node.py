@@ -132,15 +132,16 @@ if __name__ == "__main__":
 
     from compas_cem.supports import NodeSupport
 
+    from compas_cem.equilibrium import static_equilibrium
+
     from compas_cem.optimization import Optimizer
     from compas_cem.optimization import DeviationEdgeParameter
     from compas_cem.optimization import TrailEdgeParameter
 
     from compas_cem.optimization import PointConstraint
 
-    from compas_cem.equilibrium import static_equilibrium
+    from compas_cem.plotters import Plotter
 
-    from compas_cem.plotters import FormPlotter
 
     # create a topology diagram
     topology = TopologyDiagram()
