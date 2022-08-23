@@ -40,6 +40,9 @@ Optimization Parameters
     OriginNodeXParameter
     OriginNodeYParameter
     OriginNodeZParameter
+    NodeLoadXParameter
+    NodeLoadYParameter
+    NodeLoadZParameter
 """
 
 from __future__ import absolute_import

@@ -744,7 +744,7 @@ class TopologyDiagram(Diagram):
     def __repr__(self):
         """
         """
-        tpl = "{}(\n\tEdges: {}\n\tTrail edges: {}\n\tDeviation edges: {}\n\tNodes: {}\n\tSupport Nodes: {}\n\tLoaded nodes: {}\n\tTrails: {}\n\tAuxiliary trails: {}\n\t)"
+        tpl = "{}(\n\tEdges: {}\n\tTrail edges: {}\n\tDeviation edges: {}\n\tNodes: {}\n\tSupport nodes: {}\n\tLoaded nodes: {}\n\tTrails: {}\n\tAuxiliary trails: {}\n\t)"
         data = [self.__class__.__name__,
                 self.number_of_edges(),
                 self.number_of_trail_edges(),

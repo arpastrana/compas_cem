@@ -77,7 +77,7 @@ class NodeParameter(Parameter):
         self._attr_name = str(data["attr_name"])
 
 # ------------------------------------------------------------------------------
-# Origin Node Constraint on X
+# Origin Node Parameter on X
 # ------------------------------------------------------------------------------
 
 
@@ -90,7 +90,7 @@ class OriginNodeXParameter(NodeParameter):
         self._attr_name = "x"
 
 # ------------------------------------------------------------------------------
-# Origin Node Constraint on Y
+# Origin Node Parameter on Y
 # ------------------------------------------------------------------------------
 
 
@@ -103,7 +103,7 @@ class OriginNodeYParameter(NodeParameter):
         self._attr_name = "y"
 
 # ------------------------------------------------------------------------------
-# Origin Node Constraint on Z
+# Origin Node Parameter on Z
 # ------------------------------------------------------------------------------
 
 
@@ -117,8 +117,6 @@ class OriginNodeZParameter(NodeParameter):
 
 
 if __name__ == "__main__":
-
-    from time import time
 
     from compas.geometry import Point
 
@@ -141,7 +139,6 @@ if __name__ == "__main__":
     from compas_cem.optimization import PointConstraint
 
     from compas_cem.plotters import Plotter
-
 
     # create a topology diagram
     topology = TopologyDiagram()

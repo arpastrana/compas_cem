@@ -332,14 +332,15 @@ class Optimizer(Data):
     def _update_topology_origin_nodes(self, x, topology):
         """
         """
-        # map_xyz_index = {"x": 0, "y": 1, "z": 2}
-
+        names = {"x", "y", "z"}
         for index, ckey in self.index_parameter().items():
 
-            node = self.parameters[ckey].key()
+            parameter = self.parameters[ckey]
+            name = parameter.attr_name()
+            node = parameter.key()
 
             # TODO: weak check, needs to be handled differently
-            if not isinstance(node, int):
+            if not isinstance(node, int) or name not in names:
                 continue
 
             # TODO: this check should happen upon assembly, not during calculation?
@@ -347,11 +348,26 @@ class Optimizer(Data):
                 msg = "{} is not a root node. Assigned constraint is invalid!"
                 raise ValueError(msg.format(node))
 
-            # TODO: refactor to handle xyz more transparently
-            parameter = self.parameters[ckey]
-            name = parameter.attr_name()
             value = x[index]
             topology.node_attribute(key=node, name=name, value=value)
+
+    def _update_topology_node_loads(self, x, topology):
+        """
+        """
+        names = {"qx", "qy", "qz"}
+        for index, ckey in self.index_parameter().items():
+
+            parameter = self.parameters[ckey]
+            name = parameter.attr_name()
+            node = parameter.key()
+
+            # TODO: weak check, needs to be handled differently
+            if not isinstance(node, int) or name not in names:
+                continue
+
+            value = x[index]
+            topology.node_attribute(key=node, name=name, value=value)
+
 
     def _update_topology_edges(self, x, topology):
         """
@@ -389,6 +405,7 @@ class Optimizer(Data):
         """
         """
         self._update_topology_origin_nodes(parameters, topology)
+        self._update_topology_node_loads(parameters, topology)
         self._update_topology_edges(parameters, topology)
 
         eq_state = equilibrium_state_numpy(topology, tmax, eta)
