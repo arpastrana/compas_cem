@@ -6,9 +6,6 @@ from compas_cem.diagrams import FormDiagram
 __all__ = ["static_equilibrium_numpy"]
 
 
-SMALL_VALUE = 1e-3
-
-
 def static_equilibrium_numpy(topology, tmax=100, eta=1e-6, verbose=False, callback=None):
     """
     Generate a form diagram in static equilibrium using numpy.
@@ -158,13 +155,19 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 # compute trail force
                 trail_force = length_vector_numpy(rvec)  # always positive
 
+                # NOTE: to avoid NaNs, do not normalize residual vector if it is zero length
+                if trail_force:
+                    nrvec = rvec / trail_force
+                else:
+                    nrvec = rvec
+
                 # store next node position
-                next_pos = pos + length * rvec / trail_force
+                next_pos = pos + length * nrvec
                 node_xyz[next_node] = next_pos
 
                 # correct trail force sign based on trail signed length
-                # TODO: autograd.np does not support derivatives on copysign
-                if trail_force * length < 0:  #
+                # NOTE: autograd.np does not support derivatives on copysign
+                if trail_force * length < 0.0:
                     trail_force = trail_force * -1.0
 
                 # store trail force
@@ -216,8 +219,7 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
     """
     # assign nodes' coordinates
     for node, xyz in node_xyz.items():
-        form.node_xyz(node, xyz)
-        # form.node_attributes(key=node, names=["x", "y", "z"], values=xyz)
+        form.node_attributes(key=node, names=["x", "y", "z"], values=xyz)
 
     # assign forces on trail edges
     for edge, tforce in trail_forces.items():
