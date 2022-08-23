@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
     # calculate equilibrium
     topology.build_trails()
-    form = static_equilibrium(topology, eta=1e-5, tmax=100)
+    form = static_equilibrium(topology)
 
     # optimization
     optimizer = Optimizer()
@@ -182,23 +182,18 @@ if __name__ == "__main__":
     point_b = Point(3.0, -0.707, 0.0)
     optimizer.add_constraint((PointConstraint(3, point_b)))
 
-    # optimization settings
-    start = time()
-    algo = "LD_LBFGS"  # LN_BOBYQA, LD_LBFGS, LD_MMA
-    iters = 100  # 100
-    eps = 1e-6  # 1e-4
-
     # optimize
-    form = optimizer.solve_nlopt(topology, algo, iters, eps)
-
-    print("Elapsed time: {}".format(time() - start))
-    print("Total error: {}".format(optimizer.penalty))
+    eps = 1e-6
+    cform = optimizer.solve(topology, "LBFGS", eps=eps, verbose=True)
+    assert optimizer.penalty <= eps
 
     # plot
-    plotter = FormPlotter(topology, figsize=(16, 9))
+    plotter = Plotter()
 
-    plotter.draw_nodes(radius=0.03, text="key-xyz")
-    plotter.draw_edges(text="force-length")
-    plotter.draw_loads(scale=-0.25)
-    plotter.draw_reactions(scale=0.10)
+    plotter.add(form)
+    plotter.add(point_b, facecolor=(0, 1, 0))
+    plotter.add(point_a, facecolor=(1, 0, 0))
+    plotter.add(cform, show_edgetext=True, edgetext="forcelength")
+
+    plotter.zoom_extents()
     plotter.show()
