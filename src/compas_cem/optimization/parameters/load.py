@@ -55,11 +55,8 @@ if __name__ == "__main__":
     from random import choice
     from random import random
 
-    from compas.datastructures import network_transformed
-
     from compas.geometry import add_vectors
     from compas.geometry import Point
-    from compas.geometry import Translation
 
     from compas.utilities import pairwise
 

@@ -145,8 +145,6 @@ class Optimizer(Data):
         """
         Solve a constrained form-finding problem using gradient-based optimization.
 
-        The gradient of the objective function computed using automatic differentiation.
-
         Parameters
         ----------
         topology : :class:`compas_cem.diagrams.TopologyDiagram`
@@ -168,8 +166,8 @@ class Optimizer(Data):
             The method to compute the gradient of the objective function.
             The currently available methods are:
 
-            - AD: Automatic differentiation.
-            - FD: Finite differences.
+            - AD: Automatic differentiation
+            - FD: Finite differences
 
             Defaults to "AD".
         iters : ``int``, optional
