@@ -10,7 +10,7 @@ __all__ = ["NodeLoad"]
 
 class NodeLoad(Data):
     """
-    A load defined by a position and a vector.
+    A load defined by a position and a vector applied to one node.
 
     Parameters
     ----------

@@ -80,7 +80,7 @@ if __name__ == "__main__":
     topology = TopologyDiagram()
 
     # add nodes
-    num_nodes = 12
+    num_nodes = 3
     for i in range(num_nodes):
         topology.add_node(Node(i, [float(i), 0.0, 0.0]))
 

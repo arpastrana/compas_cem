@@ -1,10 +1,10 @@
 from time import time
 
+from functools import partial
+
 import autograd.numpy as np
 
 from autograd import grad as agrad
-
-from functools import partial
 
 from compas_cem.data import Data
 
@@ -367,7 +367,6 @@ class Optimizer(Data):
 
             value = x[index]
             topology.node_attribute(key=node, name=name, value=value)
-
 
     def _update_topology_edges(self, x, topology):
         """
