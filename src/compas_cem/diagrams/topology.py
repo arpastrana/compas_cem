@@ -286,6 +286,18 @@ class TopologyDiagram(Diagram):
         """
         return self.attributes["_auxiliary_trails"].values()
 
+    def has_trails(self):
+        """
+        Check if the topology diagram has trails.
+
+        Returns
+        -------
+        flag : ``bool``
+            ``True`` if the topology diagram has at least one trail.
+            Otherwise, ``False``
+        """
+        return self.number_of_trails() > 0
+
     def build_trails(self, auxiliary_trails=False):
         """
         Automatically generate the trails in the topology diagram.
@@ -472,7 +484,7 @@ class TopologyDiagram(Diagram):
         Direct deviation edges have both end-nodes with equal topological
         distance to a root node. Distances must be precomputed.
         """
-        return self._connected_edges_predicate(node, self._is_direct_deviation_edge)
+        return self._connected_edges_predicate(node, self.is_direct_deviation_edge)
 
     def _connected_indirect_deviation_edges(self, node):
         """
@@ -494,7 +506,7 @@ class TopologyDiagram(Diagram):
         Indirect deviation edges have both end-nodes with unequal topological
         distance to a root node. Distances must be precomputed.
         """
-        return self._connected_edges_predicate(node, self._is_indirect_deviation_edge)
+        return self._connected_edges_predicate(node, self.is_indirect_deviation_edge)
 
     def _connected_edges_predicate(self, node, predicate):
         """
@@ -679,7 +691,7 @@ class TopologyDiagram(Diagram):
             return True
         return False
 
-    def _is_direct_deviation_edge(self, edge):
+    def is_direct_deviation_edge(self, edge):
         """
         Tests if a deviation edge is direct.
 
@@ -701,7 +713,7 @@ class TopologyDiagram(Diagram):
 
         return self._is_deviation_edge_predicate(edge, predicate)
 
-    def _is_indirect_deviation_edge(self, edge):
+    def is_indirect_deviation_edge(self, edge):
         """
         Tests if a deviation edge is indirect.
 
