@@ -15,6 +15,8 @@ Unreleased
 
 **Fixed**
 
+- Fixed mising `kappa` argument in `optimization.solve_proxy`
+
 **Deprecated**
 
 **Removed**
