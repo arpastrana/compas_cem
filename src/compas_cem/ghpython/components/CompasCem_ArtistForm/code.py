@@ -3,7 +3,7 @@ Draw a form diagram.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 
-from compas.artists import Artist
+from compas_cem.ghpython import FormArtist
 
 
 class FormArtistComponent(component):
@@ -16,7 +16,7 @@ class FormArtistComponent(component):
         if not form:
             return
 
-        artist = Artist(form)
+        artist = FormArtist(form, artist_type=FormArtist)
 
         nodes = artist.draw_nodes(node_keys)
         edges = artist.draw_edges(edge_keys)

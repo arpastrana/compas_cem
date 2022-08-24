@@ -3,7 +3,7 @@ Draw a topology diagram.
 """
 from ghpythonlib.componentbase import executingcomponent as component
 
-from compas.artists import Artist
+from compas_cem.ghpython import TopologyArtist
 
 
 class TopologyArtistComponent(component):
@@ -16,7 +16,7 @@ class TopologyArtistComponent(component):
         if not topology:
             return
 
-        artist = Artist(topology)
+        artist = TopologyArtist(topology, artist_type=TopologyArtist)
 
         nodes = artist.draw_nodes(node_keys)
         origin_nodes = artist.draw_nodes_origin(node_keys)
