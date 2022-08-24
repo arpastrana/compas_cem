@@ -46,10 +46,13 @@ COLORS = {"tension": (227, 6, 75),  # red
           "node_black": (0, 0, 0),  # black
           "node_support": (0, 150, 10),  # green
           "node_origin": (155, 100, 255),  # purple
-          "edge_trail": (127, 0, 127),  # purple
-          "edge_deviation": (127, 255, 0),  # lime
-          "support_force": (75, 75, 75),  # dark gray / green (0, 150, 10)
-          "load": (0, 150, 10),  # green / light green (50, 250, 100)
+          "edge_trail": (128, 0, 255),  # purple
+          "edge_deviation": (127, 255, 0),  # lime  (127, 155, 0)
+          "edge_deviation_direct": (79, 255, 152),  # green
+          "edge_deviation_indirect": (165, 220, 255),  # light blue
+          # "edge_deviation_indirect": (255, 161, 137),  # coral
+          "support_force": (75, 75, 75),  # dark gray
+          "load": (0, 150, 10),  # green
           "trail": (250, 80, 210),  # pink
           "auxiliary_trail": (255, 155, 15)}  # orange
 

@@ -17,10 +17,12 @@ class TopologyDiagramObject(DiagramObject):
     form_diagram : :class:`~compas_cem.diagrams.TopologyDiagram`
         The form diagram to plot.
     """
-    edgecolor_trail = Color.from_rgb255(*COLORS["trail"]).rgb
+    edgecolor_trail = Color.from_rgb255(*COLORS["edge_trail"]).rgb
     edgecolor_deviation = Color.from_rgb255(*COLORS["edge_deviation"]).rgb
     edgecolor_auxiliary = Color.from_rgb255(*COLORS["auxiliary_trail"]).rgb
     origin_nodecolor = Color.from_rgb255(*COLORS["node_origin"]).rgb
+    edgecolor_deviationdirect = Color.from_rgb255(*COLORS["edge_deviation_direct"]).rgb
+    edgecolor_deviationindirect = Color.from_rgb255(*COLORS["edge_deviation_indirect"]).rgb
 
     def __init__(self, topology_diagram, **kwargs):
         super(TopologyDiagramObject, self).__init__(topology_diagram, **kwargs)
@@ -42,9 +44,16 @@ class TopologyDiagramObject(DiagramObject):
                     # draw trail edges
                     if self.diagram.is_trail_edge(edge):
                         color = self.edgecolor_trail
-                        # draw deviation edges
-                    elif self.diagram.is_deviation_edge(edge):
-                        color = self.edgecolor_deviation
+                    # draw deviation edges
+                    elif self.diagram.has_trails():
+                        if self.diagram.is_direct_deviation_edge(edge):
+                            color = self.edgecolor_deviationdirect
+                        elif self.diagram.is_indirect_deviation_edge(edge):
+                            color = self.edgecolor_deviationindirect
+                    else:
+                        if self.diagram.is_deviation_edge(edge):
+                            color = self.edgecolor_deviation
+
                 edge_color[edge] = color
 
             self._edge_color = edge_color
