@@ -30,7 +30,7 @@ from compas_cem.plotters import Plotter
 
 # geometry parameters
 diameter = 1.0
-num_sides = 128  # only even numbers
+num_sides = 16  # only even numbers
 appendix_length = 0.10
 tension_force = 1.0
 compression_force = -0.5

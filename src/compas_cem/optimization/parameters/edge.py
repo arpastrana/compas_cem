@@ -3,8 +3,7 @@ from ast import literal_eval
 from compas_cem.optimization.parameters import Parameter
 
 
-__all__ = ["TrailEdgeParameter",
-           "DeviationEdgeParameter"]
+__all__ = ["EdgeParameter"]
 
 # ------------------------------------------------------------------------------
 # Base Edge Parameter
@@ -79,38 +78,3 @@ class EdgeParameter(Parameter):
             if bound is not None:
                 bound = float(bound)
             setattr(self, bound_name, bound)
-
-
-# ------------------------------------------------------------------------------
-# Trail Edge Parameter
-# ------------------------------------------------------------------------------
-
-
-class TrailEdgeParameter(EdgeParameter):
-    """
-    Sets the length of a trail edge as an optimization parameter.
-    """
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(TrailEdgeParameter, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "length"
-
-# ------------------------------------------------------------------------------
-# Deviation Edge Parameter
-# ------------------------------------------------------------------------------
-
-
-class DeviationEdgeParameter(EdgeParameter):
-    """
-    Sets the force of a deviation edge as an optimization parameter.
-    """
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(DeviationEdgeParameter, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "force"
-
-# ------------------------------------------------------------------------------
-# Main
-# ------------------------------------------------------------------------------
-
-
-if __name__ == "__main__":
-    pass

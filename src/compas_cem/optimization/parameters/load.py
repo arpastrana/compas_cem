@@ -1,4 +1,4 @@
-from compas_cem.optimization.parameters.node import NodeParameter
+from compas_cem.optimization.parameters import NodeParameter
 
 
 __all__ = ["NodeLoadXParameter",
