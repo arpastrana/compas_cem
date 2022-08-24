@@ -17,6 +17,9 @@ from compas_cem.optimization import objective_function_numpy
 from compas_cem.optimization import nlopt_solver
 from compas_cem.optimization import nlopt_status
 
+from compas_cem.optimization.parameters import EdgeParameter
+from compas_cem.optimization.parameters import NodeParameter
+
 from nlopt import RoundoffLimited
 
 
@@ -34,8 +37,8 @@ class Optimizer(Data):
     def __init__(self, **kwargs):
         super(Optimizer, self).__init__(**kwargs)
 
-        self.parameters = {}
-        self.constraints = {}
+        self.parameters = dict()
+        self.constraints = dict()
 
         self.x_opt = None
         self.time_opt = None
@@ -43,6 +46,9 @@ class Optimizer(Data):
         self.evals = None
         self.gradient_norm = None
         self.status = None
+
+        self._ckey = -1
+        self._pkey = -1
 
 # ------------------------------------------------------------------------------
 # Counters
@@ -61,58 +67,42 @@ class Optimizer(Data):
         return len(self.constraints)
 
 # ------------------------------------------------------------------------------
-# Mappings
-# ------------------------------------------------------------------------------
-
-    def index_parameter(self):
-        """
-        A dictionary that maps indices to parameter keys.
-        """
-        return {idx: key for idx, key in enumerate(self.parameters.keys())}
-
-    def parameter_index(self):
-        """
-        A dictionary that maps parameter keys to indices.
-        """
-        return {key: idx for key, idx in self.index_parameter()}
-
-# ------------------------------------------------------------------------------
-# Additions
+# Parameters
 # ------------------------------------------------------------------------------
 
     def add_parameter(self, parameter):
         """
         Adds a parameter to the optimization problem.
         """
-        key = (parameter.key(), parameter.attr_name())
-        self.parameters[key] = parameter
+        self._pkey += 1
+        self.parameters[self._pkey] = parameter
+
+    def remove_parameter(self, pkey):
+        """
+        Removes an optimization parameter.
+        """
+        if pkey not in self.parameters:
+            raise KeyError("Parameter not found at object key: {}".format(pkey))
+        del self.parameters[pkey]
+
+# ------------------------------------------------------------------------------
+# Constraints
+# ------------------------------------------------------------------------------
 
     def add_constraint(self, constraint):
         """
         Adds a goal constraint.
         """
-        key = constraint.key()
-        self.constraints[key] = constraint
+        self._ckey += 1
+        self.constraints[self._ckey] = constraint
 
-# ------------------------------------------------------------------------------
-# Removals
-# ------------------------------------------------------------------------------
-
-    def remove_parameter(self, key):
+    def remove_constraint(self, ckey):
         """
-        Removes an optimization parameter.
+        Removes a constraint from the optimizer.
         """
-        if key not in self.parameters:
-            raise KeyError("Parameter not found at object key: {}".format(key))
-        del self.parameters[key]
-
-    def remove_constraint(self, key):
-        """
-        Removes a goal constraint from the optimizer.
-        """
-        if key not in self.constraints:
-            raise KeyError("Constraints not found on object key: {}".format(key))
-        del self.constraints[key]
+        if ckey not in self.constraints:
+            raise KeyError("Constraints not found on object key: {}".format(ckey))
+        del self.constraints[ckey]
 
 # ------------------------------------------------------------------------------
 # Objective Function
@@ -137,7 +127,7 @@ class Optimizer(Data):
         x_func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
         return partial(grad_f, x_func=x_func, step_size=step_size)
 
-# ------------------------------------------------------------------------------
+# ---------------------- --------------------------------------------------------
 # Solver
 # ------------------------------------------------------------------------------
 
@@ -293,22 +283,20 @@ class Optimizer(Data):
 # Optimization parameters
 # ------------------------------------------------------------------------------
 
-    def optimization_parameters(self, form):
+    def optimization_parameters(self, topology):
         """
         Creates optimization paremeters array.
         Only one entry in the array per constraint.
         Takes care of keeping the ordering.
         """
-        # TODO: This can become an (n, 3) array to acount for root nodes variables?
-        x = np.zeros(self.number_of_parameters())
+        parameters = np.zeros(self.number_of_parameters())
 
-        for index, ckey in self.index_parameter().items():
-            constraint = self.parameters[ckey]
-            x[index] = constraint.start_value(form)
+        for pkey, parameter in self.parameters.items():
+            parameters[pkey] = parameter.start_value(topology)
 
-        return x
+        return parameters
 
-    def optimization_bounds(self, form):
+    def optimization_bounds(self, topology):
         """
         Creates optimization bounds array.
         Only one entry in the array per constraint.
@@ -316,10 +304,9 @@ class Optimizer(Data):
         bounds_low = np.zeros(self.number_of_parameters())
         bounds_up = np.zeros(self.number_of_parameters())
 
-        for index, ckey in self.index_parameter().items():
-            parameter = self.parameters[ckey]
-            bounds_low[index] = parameter.bound_low(form)
-            bounds_up[index] = parameter.bound_up(form)
+        for pkey, parameter in self.parameters.items():
+            bounds_low[pkey] = parameter.bound_low(topology)
+            bounds_up[pkey] = parameter.bound_up(topology)
 
         return bounds_low, bounds_up
 
@@ -327,66 +314,26 @@ class Optimizer(Data):
 # Updates
 # ------------------------------------------------------------------------------
 
-    def _update_topology_origin_nodes(self, x, topology):
+    def _update_parameters(self, topology, parameters):
         """
+        Update the defined design parameters in a topology diagram.
         """
-        names = {"x", "y", "z"}
-        for index, ckey in self.index_parameter().items():
+        for pkey, parameter in self.parameters.items():
 
-            parameter = self.parameters[ckey]
+            value = parameters[pkey]
             name = parameter.attr_name()
-            node = parameter.key()
+            key = parameter.key()
 
-            # TODO: weak check, needs to be handled differently
-            if not isinstance(node, int) or name not in names:
-                continue
-
-            # TODO: this check should happen upon assembly, not during calculation?
-            if not topology.is_node_origin(node):
-                msg = "{} is not a root node. Assigned constraint is invalid!"
-                raise ValueError(msg.format(node))
-
-            value = x[index]
-            topology.node_attribute(key=node, name=name, value=value)
-
-    def _update_topology_node_loads(self, x, topology):
-        """
-        """
-        names = {"qx", "qy", "qz"}
-        for index, ckey in self.index_parameter().items():
-
-            parameter = self.parameters[ckey]
-            name = parameter.attr_name()
-            node = parameter.key()
-
-            # TODO: weak check, needs to be handled differently
-            if not isinstance(node, int) or name not in names:
-                continue
-
-            value = x[index]
-            topology.node_attribute(key=node, name=name, value=value)
-
-    def _update_topology_edges(self, x, topology):
-        """
-        """
-        for index, ckey in self.index_parameter().items():
-
-            edge = self.parameters[ckey].key()
-
-            # TODO: weak check, needs to be handled differently
-            if isinstance(edge, int):
-                continue
-
-            if topology.is_trail_edge(edge):
-                name = "length"
-            elif topology.is_deviation_edge(edge):
-                name = "force"
-
-            value = x[index]
-            topology.edge_attribute(key=edge, name=name, value=value)
+            if isinstance(parameter, NodeParameter):
+                topology.node_attribute(key=key, name=name, value=value)
+            elif isinstance(parameter, EdgeParameter):
+                topology.edge_attribute(key=key, name=name, value=value)
+            else:
+                msg = "Parameter {} is neither a node nor an edge parameter! {}"
+                raise TypeError(msg.format(type(parameter)))
 
 # ------------------------------------------------------------------------------
-# Optimization
+# Penalty function
 # ------------------------------------------------------------------------------
 
     def _calculate_penalty(self, eq_state):
@@ -398,12 +345,14 @@ class Optimizer(Data):
 
         return penalty
 
+# ------------------------------------------------------------------------------
+# Optimization
+# ------------------------------------------------------------------------------
+
     def _optimize_form(self, parameters, topology, tmax, eta):
         """
         """
-        self._update_topology_origin_nodes(parameters, topology)
-        self._update_topology_node_loads(parameters, topology)
-        self._update_topology_edges(parameters, topology)
+        self._update_parameters(topology, parameters)
 
         eq_state = equilibrium_state_numpy(topology, tmax, eta)
 
