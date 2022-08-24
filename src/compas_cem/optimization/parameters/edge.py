@@ -54,10 +54,10 @@ class EdgeParameter(Parameter):
 
         data = {}
 
-        data["key"] = repr(self._key)
-        data["bound_up"] = self._bound_up
-        data["bound_low"] = self._bound_low
-        data["attr_name"] = self._attr_name
+        data["_key"] = repr(self._key)
+        data["_bound_up"] = self._bound_up
+        data["_bound_low"] = self._bound_low
+        data["_attr_name"] = self._attr_name
 
         return data
 
@@ -71,10 +71,15 @@ class EdgeParameter(Parameter):
         data : ``dict``
             A data dictionary.
         """
-        self._key = tuple(literal_eval(data["key"]))
-        self._bound_up = float(data["bound_up"])
-        self._bound_low = float(data["bound_low"])
-        self._attr_name = str(data["attr_name"])
+        self._key = tuple(literal_eval(data["_key"]))
+        self._attr_name = str(data["_attr_name"])
+
+        for bound_name in ["_bound_up", "_bound_low"]:
+            bound = data[bound_name]
+            if bound is not None:
+                bound = float(bound)
+            setattr(self, bound_name, bound)
+
 
 # ------------------------------------------------------------------------------
 # Trail Edge Parameter
