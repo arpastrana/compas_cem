@@ -1,9 +1,9 @@
 {
-    "name": "Origin Node Y Parameter",
-    "nickname": "OriginNodeYParameter",
+    "name": "Node Load Z Parameter",
+    "nickname": "NodeLoadZParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Set the Y coordinate of an origin node as an optimization parameter.",
+    "description": "Set the Z parameter of an node load as an optimization parameter.",
     "exposure": 8,
 
     "ghpython": {
@@ -28,7 +28,7 @@
         "outputParameters": [
             {
                 "name": "parameter",
-                "description": "A COMPAS CEM origin node Y parameter.",
+                "description": "A COMPAS CEM node load Z parameter.",
                 "optional": false
             }
         ]

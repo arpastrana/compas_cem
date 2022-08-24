@@ -3,19 +3,21 @@ import pytest
 import numpy as np
 
 from compas.geometry import Plane
+from compas.geometry import scale_vector
 
 from compas_cem.equilibrium.force import trail_vector_out
 from compas_cem.equilibrium.force import indirect_deviation_edges_resultant_vector
 from compas_cem.equilibrium.force import direct_deviation_edges_resultant_vector
 from compas_cem.equilibrium.force import deviation_edges_resultant_vector
-from compas_cem.equilibrium.force import trail_edge_length_from_plane
+from compas_cem.equilibrium.force import trail_length_from_plane_intersection
 from compas_cem.equilibrium.force import node_equilibrium
 
-from compas_cem.equilibrium.force_numpy import trail_edge_length_from_plane_numpy
+from compas_cem.equilibrium.force_numpy import trail_length_from_plane_intersection_numpy
 
 # ==============================================================================
 # Tests - Equilibrium Helpers
 # ==============================================================================
+
 
 def test_trail_vector_out():
     """
@@ -39,12 +41,15 @@ def test_edge_length_from_plane():
     direction = [0.0, 1.0, 0.0]
     plane_a = Plane([0.0, 2.0, 0.0], [0.0, 1.0, 0.0])
     plane_b = Plane([2.0, 0.0, 0.0], [1.0, 0.0, 0.0])
+    plane_c = Plane([0.0, -2.0, 0.0], [0.0, 1.0, 0.0])
 
-    length_a = trail_edge_length_from_plane(pos, direction, plane_a)
-    length_b = trail_edge_length_from_plane(pos, direction, plane_b)
+    length_a = trail_length_from_plane_intersection(pos, direction, plane_a)
+    length_b = trail_length_from_plane_intersection(pos, direction, plane_b)
+    length_c = trail_length_from_plane_intersection(pos, direction, plane_c)
 
     assert np.allclose(length_a, 2.0), print(length_a)
     assert length_b is None  # no intersection
+    assert np.allclose(length_c, -2.0), print(length_c)
 
 
 def test_edge_length_from_plane_numpy():
@@ -56,12 +61,15 @@ def test_edge_length_from_plane_numpy():
     direction = np.array([0.0, 1.0, 0.0])
     plane_a = (np.array([0.0, 2.0, 0.0]), np.array([0.0, 1.0, 0.0]))
     plane_b = (np.array([2.0, 0.0, 0.0]), np.array([1.0, 0.0, 0.0]))
+    plane_c = (np.array([0.0, -2.0, 0.0]), np.array([0.0, 1.0, 0.0]))
 
-    length_a = trail_edge_length_from_plane_numpy(pos, direction, plane_a)
-    length_b = trail_edge_length_from_plane_numpy(pos, direction, plane_b)
+    length_a = trail_length_from_plane_intersection_numpy(pos, direction, plane_a)
+    length_b = trail_length_from_plane_intersection_numpy(pos, direction, plane_b)
+    length_c = trail_length_from_plane_intersection_numpy(pos, direction, plane_c)
 
     assert np.allclose(length_a, 2.0), print(length_a)
     assert length_b is None  # no intersection
+    assert np.allclose(length_c, -2.0), print(length_c)
 
 
 @pytest.mark.parametrize("topology, node, resultant",

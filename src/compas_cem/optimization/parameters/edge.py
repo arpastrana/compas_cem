@@ -3,8 +3,7 @@ from ast import literal_eval
 from compas_cem.optimization.parameters import Parameter
 
 
-__all__ = ["TrailEdgeParameter",
-           "DeviationEdgeParameter"]
+__all__ = ["EdgeParameter"]
 
 # ------------------------------------------------------------------------------
 # Base Edge Parameter
@@ -54,10 +53,10 @@ class EdgeParameter(Parameter):
 
         data = {}
 
-        data["key"] = repr(self._key)
-        data["bound_up"] = self._bound_up
-        data["bound_low"] = self._bound_low
-        data["attr_name"] = self._attr_name
+        data["_key"] = repr(self._key)
+        data["_bound_up"] = self._bound_up
+        data["_bound_low"] = self._bound_low
+        data["_attr_name"] = self._attr_name
 
         return data
 
@@ -71,41 +70,11 @@ class EdgeParameter(Parameter):
         data : ``dict``
             A data dictionary.
         """
-        self._key = tuple(literal_eval(data["key"]))
-        self._bound_up = float(data["bound_up"])
-        self._bound_low = float(data["bound_low"])
-        self._attr_name = str(data["attr_name"])
+        self._key = tuple(literal_eval(data["_key"]))
+        self._attr_name = str(data["_attr_name"])
 
-# ------------------------------------------------------------------------------
-# Trail Edge Parameter
-# ------------------------------------------------------------------------------
-
-
-class TrailEdgeParameter(EdgeParameter):
-    """
-    Sets the length of a trail edge as an optimization parameter.
-    """
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(TrailEdgeParameter, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "length"
-
-# ------------------------------------------------------------------------------
-# Deviation Edge Parameter
-# ------------------------------------------------------------------------------
-
-
-class DeviationEdgeParameter(EdgeParameter):
-    """
-    Sets the force of a deviation edge as an optimization parameter.
-    """
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(DeviationEdgeParameter, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "force"
-
-# ------------------------------------------------------------------------------
-# Main
-# ------------------------------------------------------------------------------
-
-
-if __name__ == "__main__":
-    pass
+        for bound_name in ["_bound_up", "_bound_low"]:
+            bound = data[bound_name]
+            if bound is not None:
+                bound = float(bound)
+            setattr(self, bound_name, bound)

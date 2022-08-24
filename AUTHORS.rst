@@ -29,8 +29,7 @@ And the code repository:
                 Parascho, Stefana},
         year={2021},
         doi={10.5281/zenodo.5705740},
-        url={https://doi.org/10.5281/zenodo.5705740},
-        note={https://https://arpastrana.github.io/compas\_cem}}
+        url={https://arpastrana.github.io/compas\_cem}}
 
 
 Authors

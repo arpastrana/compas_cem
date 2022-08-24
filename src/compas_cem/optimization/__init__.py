@@ -12,7 +12,7 @@ Optimizers
     :nosignatures:
 
     Optimizer
-    solve_nlopt_proxy
+    solve_proxy
 
 Optimization Constraints
 ========================
@@ -40,6 +40,9 @@ Optimization Parameters
     OriginNodeXParameter
     OriginNodeYParameter
     OriginNodeZParameter
+    NodeLoadXParameter
+    NodeLoadYParameter
+    NodeLoadZParameter
 """
 
 from __future__ import absolute_import
