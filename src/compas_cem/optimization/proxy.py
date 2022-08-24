@@ -5,9 +5,9 @@ __all__ = ["solve_proxy"]
 # Optimization
 # ------------------------------------------------------------------------------
 
-def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=None, tmax=100, eta=1e-6):
+def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=1e-6, kappa=1e-8, tmax=100, eta=1e-6):
     """
-    Solve a constrained form-finding task through a Proxy server hyperspace tunnel.
+    Solve a constrained form-finding problem through a Proxy hyperspace tunnel.
 
     Parameters
     ----------
@@ -17,24 +17,29 @@ def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=None, t
         A list with the constraints to optimize for.
     parameters : ``list``
         A list of optimization parameters.
-    algorithm : ``str``
+
+    algorithm : ``str``, optional
         The name of the gradient-based local optimization algorithm to use.
         Only the following local gradient-based optimization algorithms are supported:
 
         - SLSQP: Sequential Least Squares Programming
         - LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno
-        - AUGLAG: Augmented Lagrangian
         - MMA: Method of Moving Asymptotes
         - TNEWTON: Preconditioned Truncated Newton
+        - AUGLAG: Augmented Lagrangian
+        - VAR: Limited-Memory Variable-Metric Algorithm
 
+        Defaults to "SLSQP".
         Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
-    iters : ``int``
+    iters : ``int``, optional
         The maximum number of iterations to run the optimization algorithm for.
-    eps : ``float``
-        The numerical convergence threshold for the optimization algorithm.
-        If value is set to ``None``, this parameter is ignored and the
-        optimization algorithm will run until ``iters`` is exhausted.
-        Defaults to ``None``.
+        Defaults to ``100``.
+    eps : ``float``, optional
+        The convergence threshold for the output value of the objective function.
+        Defaults to ``1e-6``.
+    kappa : ``float``, optional
+        The convergence threshold for the norm of the gradient of the objective function.
+        Defaults to ``1e-8``.
     tmax : ``int``, optional
         The maximum number of iterations the CEM form-finding algorithm will run for.
         If ``eta`` is hit first, the form-finding algorithm will stop early.
@@ -78,6 +83,7 @@ def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=None, t
                            algorithm=algorithm,
                            iters=iters,
                            eps=eps,
+                           kappa=kappa,
                            tmax=tmax,
                            eta=eta)
 
