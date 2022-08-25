@@ -46,7 +46,7 @@ EXPORT_JSON = False
 VIEW = True
 SHOW_EDGETEXT = False
 
-STRIPS_DENSITY = 2  # only even numbers (2, 4, 6, ...) for best results
+STRIPS_DENSITY = 4  # only even numbers (2, 4, 6, ...) for best results
 
 # ------------------------------------------------------------------------------
 # Create a topology diagram

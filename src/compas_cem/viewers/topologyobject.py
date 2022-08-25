@@ -21,7 +21,6 @@ class TopologyDiagramObject(DiagramObject):
     edgecolor_deviation = Color.from_rgb255(*COLORS["edge_deviation"]).rgb
     edgecolor_auxiliary = Color.from_rgb255(*COLORS["auxiliary_trail"]).rgb
     origin_nodecolor = Color.from_rgb255(*COLORS["node_origin"]).rgb
-    edgecolor_deviationdirect = Color.from_rgb255(*COLORS["edge_deviation_direct"]).rgb
     edgecolor_deviationindirect = Color.from_rgb255(*COLORS["edge_deviation_indirect"]).rgb
 
     def __init__(self, topology_diagram, **kwargs):
@@ -47,7 +46,7 @@ class TopologyDiagramObject(DiagramObject):
                     # draw deviation edges
                     elif self.diagram.has_trails():
                         if self.diagram.is_direct_deviation_edge(edge):
-                            color = self.edgecolor_deviationdirect
+                            color = self.edgecolor_deviation
                         elif self.diagram.is_indirect_deviation_edge(edge):
                             color = self.edgecolor_deviationindirect
                     else:
