@@ -1,6 +1,7 @@
 from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import normalize_vector
+from compas.geometry import distance_point_point
 
 from compas_cem.diagrams import Diagram
 
@@ -48,9 +49,9 @@ class TopologyDiagram(Diagram):
 # ==============================================================================
 
     @classmethod
-    def from_dualquadmesh(cls, mesh, supports, trail_length=1.0, deviation_force=1.0):
+    def from_dualquadmesh(cls, mesh, supports, trail_length=None, trail_state=-1, deviation_force=1.0, deviation_state=-1):
         """
-        Convert a dual quad mesh into a topology digram from CEM.
+        Convert a dual quad mesh into a CEM topology digram.
 
 
         Inputs
@@ -58,7 +59,22 @@ class TopologyDiagram(Diagram):
         mesh : QuadMesh
             The dual of a quad mesh.
         supports : list
-            The list of vertex indices that represent supports.
+            The list of vertex indices in the mesh that represent supports.
+        trail_length : `float`, optional
+            The length of all the trail edges.
+            If `None`, then the trail edges inherit their length from the input mesh.
+            Defaults to `None`.
+        trail_state : `int`, optional
+            The internal force state of the trail edges.
+            A value of `-1` means compression and `1`, tension.
+            Defaults to `-1`.
+        deviation_force : `float`, optional
+            The force in all the deviation edges.
+            Defaults to `1.0`.
+        deviation_state : `int`, optional
+            The internal force state of the deviation edges.
+            A value of `-1` means compression and `1`, tension.
+            Defaults to `-1`.
 
         Returns
         -------
@@ -111,10 +127,15 @@ class TopologyDiagram(Diagram):
             topology.add_support(NodeSupport(vkey))
 
         for edge in deviation:
-            topology.add_edge(DeviationEdge(*edge, force=deviation_force))
+            force = deviation_state * deviation_force
+            topology.add_edge(DeviationEdge(*edge, force=force))
 
         for edge in trail:
-            topology.add_edge(TrailEdge(*edge, length=trail_length))
+            if not trail_length:
+                edge_coordinates = [topology.node_coordinates(node) for node in edge]
+                trail_length = distance_point_point(*edge_coordinates)
+            signed_length = trail_length* trail_state
+            topology.add_edge(TrailEdge(*edge, length=signed_length))
 
         return topology
 

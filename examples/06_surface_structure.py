@@ -30,9 +30,10 @@ from compas_cem.viewers import Viewer
 
 
 # ------------------------------------------------------------------------------
-# Globals
+# Controls
 # ------------------------------------------------------------------------------
 
+SELF_STRESSED = True
 OPTIMIZE = False
 
 EXPORT_JSON = False
@@ -84,10 +85,11 @@ topology = TopologyDiagram.from_dualquadmesh(mesh,
                                              deviation_force=-1.0)
 topology.build_trails()
 
-# for key in topology.nodes():
-#     if topology.is_node_support(key):
-#         continue
-#     topology.add_load(NodeLoad(key, [0.0, 0.0, -0.5]))
+if not SELF_STRESSED:
+    for key in topology.nodes():
+        if topology.is_node_support(key):
+            continue
+        topology.add_load(NodeLoad(key, [0.0, 0.0, -0.5]))
 
 # ------------------------------------------------------------------------------
 # Compute a state of static equilibrium
@@ -113,20 +115,12 @@ if OPTIMIZE:
     for node in topology.origin_nodes():
         opt.add_parameter(OriginNodeXParameter(node, bound_low=1.0, bound_up=1.0))
         opt.add_parameter(OriginNodeYParameter(node, bound_low=1.0, bound_up=1.0))
-        # opt.add_parameter(OriginNodeZParameter(node, bound_low=None, bound_up=0.0))
-
-    # # constraints
-    # for edge in topology.trail_edges():
-    #     opt.add_constraint(TrailEdgeForceConstraint(edge, -1.0))
-
-    # plane = ([0.0, 0.0, -1.0], [0.0, 0.0, 1.0])
-    # for node in supports:
-    #     opt.add_constraint(PlaneConstraint(node, plane=plane))
+        opt.add_parameter(OriginNodeZParameter(node, bound_low=None, bound_up=0.0))
 
     for node in topology.nodes():
         point = topology.node_coordinates(node)
-        # line = [add_vectors(point, (0.0, 0.0, zcoord)) for zcoord in (1.0, -1.0)]
-        # opt.add_constraint(LineConstraint(node, line=line))
+        if topology.is_node_origin(node):
+            continue
         opt.add_constraint(PointConstraint(node, point=point))
 
     # optimize

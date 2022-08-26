@@ -1,16 +1,7 @@
 import os
 
-from time import time
-from math import pi
-from math import cos
-from math import sin
-from statistics import mean
-
-import numpy as np
-
 from compas.geometry import scale_vector
-from compas.geometry import centroid_points
-
+from compas.geometry import Point
 from compas.geometry import Translation
 
 from compas.datastructures import mesh_dual
@@ -27,26 +18,25 @@ from compas_cem.optimization import Optimizer
 
 from compas_cem.optimization import TrailEdgeParameter
 from compas_cem.optimization import DeviationEdgeParameter
-from compas_cem.optimization import TrailEdgeForceConstraint
-from compas_cem.optimization import PlaneConstraint
-
-from compas_plotters.plotter import Plotter
+from compas_cem.optimization import PointConstraint
 
 from compas_cem.viewers import Viewer
 
-
 # ------------------------------------------------------------------------------
-# Globals
+# Controls
 # ------------------------------------------------------------------------------
 
-OPTIMIZE = False
+SELF_STRESSED = True
+OPTIMIZE = True
 
 EXPORT_JSON = False
 
 VIEW = True
-SHOW_EDGETEXT = False
+SHOW_EDGETEXT = True
 
-STRIPS_DENSITY = 4  # only even numbers (2, 4, 6, ...) for best results
+STRIPS_DENSITY = 2  # only even numbers (2, 4, 6, ...) for best results
+
+deviation_force = 1.0
 
 # ------------------------------------------------------------------------------
 # Create a topology diagram
@@ -66,8 +56,6 @@ print('dense quad mesh:', mesh)
 mesh = mesh_dual(mesh)
 mesh.collect_polyedges()
 print('dual quad mesh:', mesh)
-FILE = os.path.join(HERE, 'data/arch_bridge_3D_topology.json')
-mesh.to_json(FILE)
 
 supports, loads = [], []
 for pkey, polyedge in mesh.polyedges(data=True):
@@ -77,60 +65,57 @@ for pkey, polyedge in mesh.polyedges(data=True):
         elif len(polyedge) == 3 * STRIPS_DENSITY + 1:
             loads += polyedge
 print(len(supports), 'supports')
-print(len(loads), 'loads')
 
-mean_length = mean([mesh.edge_length(*edge) for edge in mesh.edges()])
+topology = TopologyDiagram.from_dualquadmesh(mesh,
+                                             supports,
+                                             trail_state=-1,
+                                             deviation_force=deviation_force,
+                                             deviation_state=-1)
 
-topology = TopologyDiagram.from_dualquadmesh(
-    mesh, supports, trail_length=-mean_length, deviation_force=-1.0)
+topology.build_trails()
 
-for key in loads:
-    topology.add_load(NodeLoad(key, [0.0, 0.0, -0.1]))
+if not SELF_STRESSED:
+    print(len(loads), 'loads')
+    for key in loads:
+        if topology.is_node_support(key):
+            continue
+        topology.add_load(NodeLoad(key, [0.0, 0.0, -0.1]))
 
 # ------------------------------------------------------------------------------
 # Compute a state of static equilibrium
 # ------------------------------------------------------------------------------
 
-topology.build_trails()
 form = static_equilibrium(topology, eta=1e-6, tmax=100)
-
-FILE = os.path.join(HERE, 'data/arch_bridge_3D_form_found.json')
-form.to_json(FILE)
 
 # ------------------------------------------------------------------------------
 # Optimization
 # ------------------------------------------------------------------------------
 
-# # create optimizer
-# opt = Optimizer()
+if OPTIMIZE:
+    # create optimizer
+    opt = Optimizer()
 
-# # parameters
-# for edge in topology.trail_edges():
-#     opt.add_parameter(TrailEdgeParameter(edge, -1.0, -1.0))
+    # parameters
+    for edge in topology.trail_edges():
+        opt.add_parameter(TrailEdgeParameter(edge))
 
-# for edge in topology.deviation_edges():
-#     opt.add_parameter(DeviationEdgeParameter(edge, -1.0, -0.1))
+    for edge in topology.deviation_edges():
+        opt.add_parameter(DeviationEdgeParameter(edge, bound_up=deviation_force))
 
-# # constraints
-# for edge in topology.trail_edges():
-#     opt.add_constraint(TrailEdgeForceConstraint(edge, -1.0))
+    # constraints
+    points = []
+    for node in topology.nodes():
+        if topology.is_node_origin(node):
+            continue
+        xyz = Point(*topology.node_coordinates(node))
+        opt.add_constraint(PointConstraint(node, xyz))
 
-# for vkey in supports:
-#     opt.add_constraint(PlaneConstraint(vkey, plane=((0.0, 0.0, 0.0), (0.0, 0.0, 1.0))))
-
-# # optimize
-# start = time()
-# form_opt = opt.solve_nlopt(topology, algorithm="LBFGS", iters=500, eps=1e-3)
-
-# # print out results
-# print("----------")
-# print(f"Optimizer. # Parameters {opt.number_of_parameters()}, # Constraints {opt.number_of_constraints()}")
-# print(f"Optimization elapsed time: {time() - start}")
-# print(f"Final value of the objective function: {opt.penalty}")
-# print(f"Norm of the gradient of the objective function: {opt.gradient_norm}")
-
-# FILE = os.path.join(HERE, 'data/arch_bridge_3D_form_opt.json')
-# form_opt.to_json(FILE)
+    # optimize
+    form_opt = opt.solve(topology,
+                         algorithm="SLSQP",
+                         iters=500,
+                         eps=1e-6,
+                         verbose=True)
 
 # ------------------------------------------------------------------------------
 # Export to JSON
@@ -188,7 +173,6 @@ if VIEW:
 # Visualize translated form diagram
 # ------------------------------------------------------------------------------
 
-
     form = form.transformed(Translation.from_vector(scale_vector(shift_vector, 2.)))
     viewer.add(form,
                show_nodes=True,
@@ -214,7 +198,8 @@ if VIEW:
 # ------------------------------------------------------------------------------
 
     if OPTIMIZE:
-        form_opt = form_opt.transformed(Translation.from_vector(scale_vector(shift_vector, 3.)))
+        T = Translation.from_vector(scale_vector(shift_vector, 3.))
+        form_opt = form_opt.transformed(T)
         viewer.add(form_opt,
                    show_nodes=True,
                    nodes=None,
@@ -233,6 +218,10 @@ if VIEW:
                    show_nodetext=False,
                    nodetext="xyz"
                    )
+
+        pointcolor = (255, 0, 0)
+        for point in points:
+            viewer.add(point.transformed(T), color=pointcolor, facecolor=facecolor, pointcolor=pointcolor, pointsize=40)
 
 # ------------------------------------------------------------------------------
 # Show scene
