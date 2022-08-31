@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.4.1
+            0.6.1
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -98,7 +98,9 @@
 <figure class="figure align-default">
 <img alt="../../_images/01_quick_start.png" class="figure-img img-fluid" src="../../_images/01_quick_start.png" />
 </figure>
-<div class="language-python notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span><span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">TopologyDiagram</span>
+<div class="language-python notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span><span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Translation</span>
+
+<span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">TopologyDiagram</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">TrailEdge</span>
@@ -109,8 +111,7 @@
 
 <span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">static_equilibrium</span>
 
-<span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">Plotter</span>
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Translation</span>
+<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">Plotter</span>
 
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -173,7 +174,7 @@
 
 <span class="c1"># add shifted form diagram to the scene</span>
 <span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">Translation</span><span class="o">.</span><span class="n">from_vector</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">nodesize</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">nodesize</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">show_edgetext</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">edgetext</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
 
 <span class="c1"># show plotter contents</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">zoom_extents</span><span class="p">()</span>
@@ -229,6 +230,7 @@
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.optimization.html">compas_cem.optimization</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.plotters.html">compas_cem.plotters</a></li>
+<li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.viewers.html">compas_cem.viewers</a></li>
 </ul>
 </li>
 </ul>

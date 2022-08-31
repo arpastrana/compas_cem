@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.4.1
+            0.6.1
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -99,7 +99,7 @@
 <h1>Optimizer</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.optimization.Optimizer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L25"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/optimizer.py#L33"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></p>
 <p>An object that modifies a form diagram to meet multiple constraints.</p>
 <p class="rubric">Methods</p>
@@ -117,52 +117,52 @@
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.gradient_func.html#compas_cem.optimization.Optimizer.gradient_func" title="compas_cem.optimization.Optimizer.gradient_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gradient_func</span></code></a></p></td>
 <td><p>The objective function to calculate gradients from.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.index_parameter.html#compas_cem.optimization.Optimizer.index_parameter" title="compas_cem.optimization.Optimizer.index_parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_parameter</span></code></a></p></td>
-<td><p>A dictionary that maps indices to parameter keys.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.number_of_constraints.html#compas_cem.optimization.Optimizer.number_of_constraints" title="compas_cem.optimization.Optimizer.number_of_constraints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_constraints</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.number_of_constraints.html#compas_cem.optimization.Optimizer.number_of_constraints" title="compas_cem.optimization.Optimizer.number_of_constraints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_constraints</span></code></a></p></td>
 <td><p>The number of constraints added to the optimizer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.number_of_parameters.html#compas_cem.optimization.Optimizer.number_of_parameters" title="compas_cem.optimization.Optimizer.number_of_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_parameters</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.number_of_parameters.html#compas_cem.optimization.Optimizer.number_of_parameters" title="compas_cem.optimization.Optimizer.number_of_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number_of_parameters</span></code></a></p></td>
 <td><p>The number of optimization parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.objective_func.html#compas_cem.optimization.Optimizer.objective_func" title="compas_cem.optimization.Optimizer.objective_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">objective_func</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.objective_func.html#compas_cem.optimization.Optimizer.objective_func" title="compas_cem.optimization.Optimizer.objective_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">objective_func</span></code></a></p></td>
 <td><p>The objective function to minimize.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.optimization_bounds.html#compas_cem.optimization.Optimizer.optimization_bounds" title="compas_cem.optimization.Optimizer.optimization_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimization_bounds</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.optimization_bounds.html#compas_cem.optimization.Optimizer.optimization_bounds" title="compas_cem.optimization.Optimizer.optimization_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimization_bounds</span></code></a></p></td>
 <td><p>Creates optimization bounds array.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.optimization_parameters.html#compas_cem.optimization.Optimizer.optimization_parameters" title="compas_cem.optimization.Optimizer.optimization_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimization_parameters</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.optimization_parameters.html#compas_cem.optimization.Optimizer.optimization_parameters" title="compas_cem.optimization.Optimizer.optimization_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimization_parameters</span></code></a></p></td>
 <td><p>Creates optimization paremeters array.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.parameter_index.html#compas_cem.optimization.Optimizer.parameter_index" title="compas_cem.optimization.Optimizer.parameter_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameter_index</span></code></a></p></td>
-<td><p>A dictionary that maps parameter keys to indices.</p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.remove_constraint.html#compas_cem.optimization.Optimizer.remove_constraint" title="compas_cem.optimization.Optimizer.remove_constraint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_constraint</span></code></a></p></td>
-<td><p>Removes a goal constraint from the optimizer.</p></td>
+<td><p>Removes a constraint from the optimizer.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.remove_parameter.html#compas_cem.optimization.Optimizer.remove_parameter" title="compas_cem.optimization.Optimizer.remove_parameter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_parameter</span></code></a></p></td>
 <td><p>Removes an optimization parameter.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.solve_nlopt.html#compas_cem.optimization.Optimizer.solve_nlopt" title="compas_cem.optimization.Optimizer.solve_nlopt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve_nlopt</span></code></a></p></td>
-<td><p>Solve an optimization problem with NLOpt.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.solve.html#compas_cem.optimization.Optimizer.solve" title="compas_cem.optimization.Optimizer.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a></p></td>
+<td><p>Solve a constrained form-finding problem using gradient-based optimization.</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Inherited Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.copy.html#compas_cem.optimization.Optimizer.copy" title="compas_cem.optimization.Optimizer.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.ToString.html#compas_cem.optimization.Optimizer.ToString" title="compas_cem.optimization.Optimizer.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
+<td><p>Converts the instance to a string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.copy.html#compas_cem.optimization.Optimizer.copy" title="compas_cem.optimization.Optimizer.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
 <td><p>Make an independent copy of the data object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_data.html#compas_cem.optimization.Optimizer.from_data" title="compas_cem.optimization.Optimizer.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_data.html#compas_cem.optimization.Optimizer.from_data" title="compas_cem.optimization.Optimizer.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
 <td><p>Construct an object of this type from the provided data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_json.html#compas_cem.optimization.Optimizer.from_json" title="compas_cem.optimization.Optimizer.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_json.html#compas_cem.optimization.Optimizer.from_json" title="compas_cem.optimization.Optimizer.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_jsonstring.html#compas_cem.optimization.Optimizer.from_jsonstring" title="compas_cem.optimization.Optimizer.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.from_jsonstring.html#compas_cem.optimization.Optimizer.from_jsonstring" title="compas_cem.optimization.Optimizer.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.sha256.html#compas_cem.optimization.Optimizer.sha256" title="compas_cem.optimization.Optimizer.sha256"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sha256</span></code></a></p></td>
+<td><p>Compute a hash of the data for comparison during version control using the sha256 algorithm.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.Optimizer.to_data.html#compas_cem.optimization.Optimizer.to_data" title="compas_cem.optimization.Optimizer.to_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_data</span></code></a></p></td>
 <td><p>Convert an object to its native data representation.</p></td>
@@ -232,6 +232,7 @@
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="toctree-l3 nav-item active"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
+<li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.viewers.html">compas_cem.viewers</a></li>
 </ul>
 </li>
 </ul>

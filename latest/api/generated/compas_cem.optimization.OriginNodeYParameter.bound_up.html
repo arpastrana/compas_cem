@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.4.1
+            0.6.1
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -101,10 +101,12 @@
 <h1>OriginNodeYParameter.bound_up</h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="compas_cem.optimization.OriginNodeYParameter.bound_up">
-<span class="sig-prename descclassname"><span class="pre">OriginNodeYParameter.</span></span><span class="sig-name descname"><span class="pre">bound_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/parameters/node.py#L45"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>The upper bound of the node optimization parameter.</p>
+<span class="sig-prename descclassname"><span class="pre">OriginNodeYParameter.</span></span><span class="sig-name descname"><span class="pre">bound_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/parameters/origin.py#L50"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>The upper bound of the edge optimization parameter.</p>
 <p class="rubric">Notes</p>
-<p>Calculated as the initial parameter plus this bound’s absolute value.</p>
+<p>If not set to <code class="docutils literal notranslate"><span class="pre">None</span></code> at instantiation, the bound is calculated as the
+starting value of this parameter plus this absolute value of the upper bound.
+Otherwise, it will return <code class="docutils literal notranslate"><span class="pre">float(&quot;inf&quot;)</span></code>.</p>
 </dd></dl>
 
 </section>
@@ -156,6 +158,7 @@
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="toctree-l3 nav-item active"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
+<li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.viewers.html">compas_cem.viewers</a></li>
 </ul>
 </li>
 </ul>

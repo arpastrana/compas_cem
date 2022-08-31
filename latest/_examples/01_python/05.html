@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.4.1
+            0.6.1
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -107,8 +107,6 @@
 
 <span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Translation</span>
 
-<span class="kn">from</span> <span class="nn">compas_plotters</span> <span class="kn">import</span> <span class="n">Plotter</span>
-
 <span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
 
 <span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">TopologyDiagram</span>
@@ -123,6 +121,8 @@
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">TrailEdgeForceConstraint</span>
 <span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">DeviationEdgeParameter</span>
 
+<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">Plotter</span>
+
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Create a topology diagram</span>
@@ -135,6 +135,7 @@
 <span class="n">tension_force</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">compression_force</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span>
 <span class="n">bound</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">grad_method</span> <span class="o">=</span> <span class="s2">&quot;AD&quot;</span>
 
 <span class="c1"># test number of subdivisions is even</span>
 <span class="k">assert</span> <span class="n">num_sides</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
@@ -192,24 +193,13 @@
 <span class="c1"># add optimization parameters</span>
 <span class="c1"># the forces in all the deviation edges are allowed to change</span>
 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">topology</span><span class="o">.</span><span class="n">deviation_edges</span><span class="p">():</span>
-    <span class="c1"># compression bounds</span>
-    <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span> <span class="o">=</span> <span class="p">(</span><span class="n">bound</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
-    <span class="c1"># tension bounds</span>
-    <span class="k">if</span> <span class="n">topology</span><span class="o">.</span><span class="n">edge_force</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span> <span class="o">=</span> <span class="p">(</span><span class="n">bound</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
-
-    <span class="n">opt</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="n">DeviationEdgeParameter</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span><span class="p">))</span>
+    <span class="n">opt</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="n">DeviationEdgeParameter</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">bound</span><span class="p">,</span> <span class="n">bound</span><span class="p">))</span>
 
 <span class="c1"># optimize</span>
-<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-<span class="n">form_opt</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">solve_nlopt</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;LBFGS&quot;</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
-
-<span class="c1"># print out results</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimizer. # Parameters </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">number_of_parameters</span><span class="p">()</span><span class="si">}</span><span class="s2">, # Constraints </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">number_of_constraints</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimization elapsed time: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final value of the objective function: </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">penalty</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Norm of the gradient of the objective function: </span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">gradient_norm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">form_opt</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span>
+                     <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;LBFGS&quot;</span><span class="p">,</span>
+                     <span class="n">grad</span><span class="o">=</span><span class="n">grad_method</span><span class="p">,</span>
+                     <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Plot results</span>
@@ -284,6 +274,7 @@
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.optimization.html">compas_cem.optimization</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.plotters.html">compas_cem.plotters</a></li>
+<li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.viewers.html">compas_cem.viewers</a></li>
 </ul>
 </li>
 </ul>

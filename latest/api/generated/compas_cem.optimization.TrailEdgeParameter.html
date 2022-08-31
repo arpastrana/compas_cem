@@ -20,7 +20,7 @@
   <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
   
-  <link rel="next" title="TrailEdgeParameter.attr_name" href="compas_cem.optimization.TrailEdgeParameter.attr_name.html" />
+  <link rel="next" title="TrailEdgeParameter.ToString" href="compas_cem.optimization.TrailEdgeParameter.ToString.html" />
   
 
   
@@ -50,7 +50,7 @@
         <meta id="doc_versions" data-url="https://arpastrana.github.io/compas_cem/doc_versions.txt" data-docs="https://arpastrana.github.io/compas_cem/">
         <li class="nav-item nav-versions dropdown">
           <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            0.4.1
+            0.6.1
           </a>
           <div id="doc_version_list" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="bd-versions"></div>
         </li>
@@ -99,35 +99,41 @@
 <h1>TrailEdgeParameter</h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="compas_cem.optimization.TrailEdgeParameter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">TrailEdgeParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/parameters/edge.py#L123"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">compas_cem.optimization.</span></span><span class="sig-name descname"><span class="pre">TrailEdgeParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/optimization/parameters/trail.py#L12"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">EdgeParameter</span></code></p>
 <p>Sets the length of a trail edge as an optimization parameter.</p>
 <p class="rubric">Inherited Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.attr_name.html#compas_cem.optimization.TrailEdgeParameter.attr_name" title="compas_cem.optimization.TrailEdgeParameter.attr_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attr_name</span></code></a></p></td>
-<td><p>The name of the edge attribute to parametrize.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.ToString.html#compas_cem.optimization.TrailEdgeParameter.ToString" title="compas_cem.optimization.TrailEdgeParameter.ToString"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToString</span></code></a></p></td>
+<td><p>Converts the instance to a string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.bound_low.html#compas_cem.optimization.TrailEdgeParameter.bound_low" title="compas_cem.optimization.TrailEdgeParameter.bound_low"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bound_low</span></code></a></p></td>
-<td><p>The lower bound of the edge optimization parameter.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.attr_name.html#compas_cem.optimization.TrailEdgeParameter.attr_name" title="compas_cem.optimization.TrailEdgeParameter.attr_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attr_name</span></code></a></p></td>
+<td><p>The name of the attribute in the diagram to parametrize.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.bound_up.html#compas_cem.optimization.TrailEdgeParameter.bound_up" title="compas_cem.optimization.TrailEdgeParameter.bound_up"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bound_up</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.bound_low.html#compas_cem.optimization.TrailEdgeParameter.bound_low" title="compas_cem.optimization.TrailEdgeParameter.bound_low"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bound_low</span></code></a></p></td>
+<td><p>The lower bound of the optimization parameter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.bound_up.html#compas_cem.optimization.TrailEdgeParameter.bound_up" title="compas_cem.optimization.TrailEdgeParameter.bound_up"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bound_up</span></code></a></p></td>
 <td><p>The upper bound of the edge optimization parameter.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.copy.html#compas_cem.optimization.TrailEdgeParameter.copy" title="compas_cem.optimization.TrailEdgeParameter.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.copy.html#compas_cem.optimization.TrailEdgeParameter.copy" title="compas_cem.optimization.TrailEdgeParameter.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
 <td><p>Make an independent copy of the data object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_data.html#compas_cem.optimization.TrailEdgeParameter.from_data" title="compas_cem.optimization.TrailEdgeParameter.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_data.html#compas_cem.optimization.TrailEdgeParameter.from_data" title="compas_cem.optimization.TrailEdgeParameter.from_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_data</span></code></a></p></td>
 <td><p>Construct an object of this type from the provided data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_json.html#compas_cem.optimization.TrailEdgeParameter.from_json" title="compas_cem.optimization.TrailEdgeParameter.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_json.html#compas_cem.optimization.TrailEdgeParameter.from_json" title="compas_cem.optimization.TrailEdgeParameter.from_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_json</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_jsonstring.html#compas_cem.optimization.TrailEdgeParameter.from_jsonstring" title="compas_cem.optimization.TrailEdgeParameter.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.from_jsonstring.html#compas_cem.optimization.TrailEdgeParameter.from_jsonstring" title="compas_cem.optimization.TrailEdgeParameter.from_jsonstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_jsonstring</span></code></a></p></td>
 <td><p>Construct an object from serialized data contained in a JSON string.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.key.html#compas_cem.optimization.TrailEdgeParameter.key" title="compas_cem.optimization.TrailEdgeParameter.key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key</span></code></a></p></td>
-<td><p>The edge key.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.key.html#compas_cem.optimization.TrailEdgeParameter.key" title="compas_cem.optimization.TrailEdgeParameter.key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">key</span></code></a></p></td>
+<td><p>The parameter key in the diagram.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.sha256.html#compas_cem.optimization.TrailEdgeParameter.sha256" title="compas_cem.optimization.TrailEdgeParameter.sha256"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sha256</span></code></a></p></td>
+<td><p>Compute a hash of the data for comparison during version control using the sha256 algorithm.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="compas_cem.optimization.TrailEdgeParameter.start_value.html#compas_cem.optimization.TrailEdgeParameter.start_value" title="compas_cem.optimization.TrailEdgeParameter.start_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_value</span></code></a></p></td>
 <td><p>The initial value of the edge optimization parameter.</p></td>
@@ -200,6 +206,7 @@
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
 <li class="toctree-l3 nav-item active"><a class="nav-link reference internal" href="../compas_cem.optimization.html">compas_cem.optimization</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.plotters.html">compas_cem.plotters</a></li>
+<li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../compas_cem.viewers.html">compas_cem.viewers</a></li>
 </ul>
 </li>
 </ul>
@@ -239,10 +246,10 @@
       
 
       
-      <a href="compas_cem.optimization.TrailEdgeParameter.attr_name.html" title="TrailEdgeParameter.attr_name" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
+      <a href="compas_cem.optimization.TrailEdgeParameter.ToString.html" title="TrailEdgeParameter.ToString" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
         <div class="nav-title footer-link flex-grow-1 align-self-center">
           <div class="nav-direction small font-weight-light">Next</div>
-          TrailEdgeParameter.attr_name
+          TrailEdgeParameter.ToString
         </div>
         <div class="nav-button p-2 m-2"><i class="fas fa-arrow-right"></i></div>
       </a>
