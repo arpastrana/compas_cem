@@ -15,8 +15,6 @@ from compas_cem.diagrams import FormDiagram
 __all__ = ["static_equilibrium"]
 
 
-SMALL_VALUE = 1e-3
-
 
 def static_equilibrium(topology, tmax=100, eta=1e-6, verbose=False, callback=None):
     """
@@ -133,10 +131,6 @@ def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None
                         # print out warning if there is a swipe in the force state of the edge
                         if plength * length < 0.:
                             print("Warning! Force state has flipped for edge {} due to plane intersection".format(edge))
-                        # print out warning if zero length
-                        if fabs(plength) < SMALL_VALUE:
-                            msg = "Warning! Length for edge {} after intersection is {}."
-                            print(msg.format(edge, length), "Check the plane.")
                         # override signed length
                         length = plength
 
@@ -213,7 +207,7 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.edge_attribute(key=(u, v), name="length", value=length)
 
 
-def node_equilibrium(form, node, t_vec, node_xyz, indirect=False, verbose=False):
+def node_equilibrium(form, node, t_vec, node_xyz, indirect=False):
     """
     Calculates the equilibrium of trail and deviation forces at a node.
 
@@ -246,14 +240,6 @@ def node_equilibrium(form, node, t_vec, node_xyz, indirect=False, verbose=False)
         ri_vec = [0.0, 0.0, 0.0]
 
     tvec_out = trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec)
-
-    if verbose:
-        print("-----")
-        print("node", node)
-        print("qvec", q_vec)
-        print("rd_vec", rd_vec)
-        print("ri_vec", rd_vec)
-        print("t vec np", tvec_out)
 
     return tvec_out
 
