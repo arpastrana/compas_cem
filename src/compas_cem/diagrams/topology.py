@@ -339,7 +339,7 @@ class TopologyDiagram(Diagram):
             Previous trails and auxiliary trails are recalculated every time
             this function is called.
         """
-        tr = {}
+        trails = {}
 
         # trail search
         nodes_in_trails = set()
@@ -375,13 +375,13 @@ class TopologyDiagram(Diagram):
                     break
 
                 if last_node == node:
-                    origin = node
-                    trail.append(origin)
+                    origin_node = node
+                    trail.append(origin_node)
                     visited.add(node)
                     break
 
             # set last node to be origin/start node
-            self.node_attribute(origin, "type", "_origin")
+            self.node_attribute(origin_node, "type", "_origin")
 
             trail.reverse()
 
@@ -390,7 +390,7 @@ class TopologyDiagram(Diagram):
             for index, node in enumerate(trail):
                 self.node_attribute(node, "_k", index)
 
-            tr[origin] = tuple(trail)
+            trails[origin_node] = tuple(trail)
             nodes_in_trails.update(visited)
 
         # output sanity checks
@@ -409,12 +409,10 @@ class TopologyDiagram(Diagram):
                 aux_node = self.add_node(Node(xyz=aux_xyz))
 
                 self.add_support(NodeSupport(aux_node))
-                edge = self.add_edge(
-                    TrailEdge(node, aux_node, self.auxiliary_trail_length))
+                edge = self.add_edge(TrailEdge(node, aux_node, self.auxiliary_trail_length))
                 aux_trails[node] = edge
 
             self.attributes["_auxiliary_trails"] = aux_trails
-
             print("Warning: {} auxiliary trails have been added to the topology diagram!".format(len(aux_trails)))
 
             return self.build_trails(auxiliary_trails=False)
@@ -425,12 +423,11 @@ class TopologyDiagram(Diagram):
         # there must be at least one support node for trails to run
         assert len(list(self.support_nodes())) > 0, "No supports assigned!"
         # no free nodes
-        msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(
-            unassigned)
+        msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(unassigned)
         assert len(unassigned) == 0, msg
 
         # store trails in topology diagram
-        self.attributes["_trails"] = tr
+        self.attributes["_trails"] = trails
 
 # ==============================================================================
 #  Node Collections
@@ -806,7 +803,6 @@ class TopologyDiagram(Diagram):
         if k is None:
             msg = "Node {} doesn't belong to a sequence yet. Try adding trails first."
             raise ValueError(msg.format(node))
-
         return k
 
     def edge_sequence(self, edge):
