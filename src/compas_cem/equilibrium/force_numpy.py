@@ -46,10 +46,11 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
     """
     Equilibrate forces in a topology diagram using numpy.
     """
-    trails = list(topology.trails())
-
     # there must be at least one trail
-    assert len(trails) != 0, "No trails in the diagram!"
+    assert topology.number_of_trails() > 0, "No trails in the diagram!"
+
+    # mapping between trails and sequences, immutable
+    trails_sequences = topology.trails_sequences()
 
     # input, output
     node_xyz = {n: np.array(topology.node_coordinates(n)) for n in topology.nodes()}
@@ -76,7 +77,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
         edge_planes[edge] = plane
 
     # internals
-    residual_vectors = {}
+    residual_vectors = {node: np.array(topology.reaction_force(node)) for node in topology.nodes()}
 
     # output
     reaction_forces = {}
@@ -87,25 +88,22 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
         # store last positions for residual
         last_positions = {k: v for k, v in node_xyz.items()}
 
-        for i in topology.sequences():  # layers
+        for k in range(topology.number_of_sequences()):  # sequences
 
-            for trail in trails:
+            for key, trail in topology.trails(keys=True):
 
-                # if index is larger than available nodes in trails
-                if i > (len(trail) - 1):
+                # if index is larger than available nodes in trail, skip trail
+                if k not in trails_sequences[key]:
                     continue
 
-                # get node key from trail
-                node = trail[i]
+                # select node from trail at current sequence
+                node = trails_sequences[key][k]
 
-                # set initial trail vector and position for first iteration
+                # get node position
                 pos = node_xyz[node]
-                if i == 0:
-                    rvec = np.zeros(3)
 
-                # otherwise, select last trail vector and position from dictionary
-                else:
-                    rvec = residual_vectors[node]
+                # get incoming residual vector
+                rvec = residual_vectors[node]
 
                 # node load
                 q_vec = node_loads[node]
@@ -124,13 +122,12 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 rvec = node_equilibrium(rvec, q_vec, rd_vec, ri_vec)
 
                 # if this is the last node, store and exit
-                if i == (len(trail) - 1):
-                    # store reaction force in support node
+                if topology.is_node_support(node):
                     reaction_forces[node] = rvec
                     continue
 
                 # otherwise, pick next node in the trail
-                next_node = trail[i + 1]
+                next_node = trails_sequences[key][k + 1]
 
                 # correct edge key
                 edge = (node, next_node)
@@ -144,7 +141,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 plane = edge_planes.get(edge)
 
                 # override length if a plane exists
-                if plane is not None:
+                if plane:
                     # get length from line plane intersection
                     plength = trail_length_from_plane_intersection_numpy(pos, rvec, plane)
 
@@ -165,7 +162,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 node_xyz[next_node] = next_pos
 
                 # correct trail force sign based on trail signed length
-                # NOTE: autograd.np does not support derivatives on copysign
+                # NOTE: autograd.np does not support derivatives of copysign
                 if trail_force * length < 0.0:
                     trail_force = trail_force * -1.0
 
@@ -187,21 +184,21 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
         pos_array = np.array([pos for key, pos in node_xyz.items()])
         last_pos_array = np.array([last_positions[key] for key, pos in node_xyz.items()])
 
-        # calculate residual
-        residual = np.sqrt(np.sum(np.square(last_pos_array - pos_array)))
-        # if residual smaller than threshold, stop iterating
-        if residual < eta:
+        # calculate residual distance
+        distance = np.sqrt(np.sum(np.square(last_pos_array - pos_array)))
+        # if residual distance smaller than threshold, stop iterating
+        if distance < eta:
             break
 
-    # if residual larger than threshold after kmax iterations, raise error
+    # if residual distance larger than threshold after tmax iterations, raise error
     if t > 0:
-        if residual > eta:
-            raise ValueError("Over {} iters. residual: {} > eta: {}".format(tmax, residual, eta))
+        if distance > eta:
+            raise ValueError("Over {} iters. Residual: {} > eta: {}".format(tmax, distance, eta))
 
     # print log
     if verbose:
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
-        print(msg.format(t, residual))
+        print(msg.format(t, distance))
 
     eq_state = {}
     eq_state["node_xyz"] = node_xyz
@@ -225,13 +222,12 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.edge_attribute(key=edge, name="force", value=tforce)
 
     # assign reaction forces
-    for node in form.support_nodes():
+    for node, rforce in reaction_forces.items():
         rforce = reaction_forces[node]
         form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
 
     # assign lengths to deviation edges
     for edge in form.edges():
-        # length = form.edge_length(u, v)
         u, v = edge
         length = length_vector_numpy(node_xyz[u] - node_xyz[v])
         force = form.edge_attribute(key=edge, name="force")

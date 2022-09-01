@@ -15,8 +15,7 @@ from compas_cem.diagrams import FormDiagram
 __all__ = ["static_equilibrium"]
 
 
-
-def static_equilibrium(topology, tmax=100, eta=1e-6, verbose=False, callback=None):
+def static_equilibrium(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, callback=None):
     """
     Generate a form diagram in static equilibrium.
 
@@ -24,6 +23,11 @@ def static_equilibrium(topology, tmax=100, eta=1e-6, verbose=False, callback=Non
     ----------
     topology : :class:`compas_cem.diagrams.TopologyDiagram`
         A topology diagram.
+    kmax : ``int``, optional
+        The last sequence in the diagram to calculate equilibrium at.
+        If ``kmax`` is ``None`` or the number of sequences in the diagram is smaller,
+        then ``kmax`` will be ignored and equilibrium will be calculated for all sequences.
+        Defaults to ``None``.
     tmax : ``int``, optional
         Maximum number of iterations the algorithm will run for.
         Defaults to ``100``.
@@ -46,51 +50,56 @@ def static_equilibrium(topology, tmax=100, eta=1e-6, verbose=False, callback=Non
     form : :class:`compas_cem.diagrams.FormDiagram`
         A form diagram.
     """
-    attrs = equilibrium_state(topology, tmax, eta, verbose, callback)
+    attrs = equilibrium_state(topology, kmax, tmax, eta, verbose, callback)
     form = FormDiagram.from_topology_diagram(topology)
     form_update(form, **attrs)
     return form
 
 
-def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None):
+def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, callback=None):
     """
     Equilibrate forces at the nodes of a topology diagram.
     """
-    trails = list(topology.trails())
-
     # there must be at least one trail
-    assert len(trails) != 0, "No trails in the diagram!"
+    assert topology.number_of_trails() > 0, "No trails in the diagram!"
 
-    # positions = {}
-    residual_vectors = {}
+    # mapping between trails and sequences
+    trails_sequences = topology.trails_sequences()
+
+    # create data containers that describe equilibrium state
     reaction_forces = {}
     trail_forces = {}
+    residual_vectors = {node: topology.reaction_force(node) for node in topology.nodes()}
     node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
+
+    # compute last sequence
+    klast = topology.sequence_last()
+    if kmax is not None:
+        assert kmax >= 0, "Kmax must be a non-negative number!"
+        if kmax < klast:
+            klast = kmax
 
     for t in range(tmax):  # max iterations
 
         # store last positions for residual
         last_xyz = {k: v for k, v in node_xyz.items()}
 
-        for i in topology.sequences():  # sequences
+        for k in range(klast + 1):  # sequences
 
-            for trail in trails:
+            for key, trail in topology.trails(keys=True):
 
-                # if index is larger than available nodes in trails
-                if i > (len(trail) - 1):
+                # if index is larger than available nodes in trail, skip trail
+                if k not in trails_sequences[key]:
                     continue
 
-                # select node from trail
-                node = trail[i]
+                # select node from trail at current sequence
+                node = trails_sequences[key][k]
 
-                # set initial trail vector and position for first iteration
+                # get node position
                 pos = node_xyz[node]
-                if i == 0:
-                    rvec = [0.0, 0.0, 0.0]
 
-                # otherwise, select last trail vector and position from dictionary
-                else:
-                    rvec = residual_vectors[node]
+                # get incoming residual vector
+                rvec = residual_vectors[node]
 
                 # calculate nodal equilibrium to get new residual vector
                 indirect = True
@@ -98,13 +107,13 @@ def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None
                     indirect = False
                 rvec = node_equilibrium(topology, node, rvec, node_xyz, indirect)
 
-                # if this is the last node, store reaction force and exit loop
-                if topology.is_node_support(node):
-                    reaction_forces[node] = rvec[:]
+                # if this is the last node, exit loop
+                if topology.is_node_support(node) or k == kmax:
+                    reaction_forces[node] = rvec
                     continue
 
                 # otherwise, pick next node in the trail
-                next_node = trail[i + 1]
+                next_node = trails_sequences[key][k + 1]
 
                 # correct edge key
                 edge = (node, next_node)
@@ -152,25 +161,25 @@ def equilibrium_state(topology, tmax=100, eta=1e-6, verbose=False, callback=None
         if t == 0:
             continue
 
-        # calculate residual
-        residual = 0.0
+        # calculate residual distance
+        distance = 0.0
         for key, pos in node_xyz.items():
             last_pos = last_xyz[key]
-            residual += distance_point_point(last_pos, pos)
+            distance += distance_point_point(last_pos, pos)
 
-        # if residual smaller than threshold, stop iterating
-        if residual < eta:
+        # if residual distance smaller than threshold, stop iterating
+        if distance < eta:
             break
 
-    # if residual larger than threshold after tmax iterations, raise error
+    # if residual distance larger than threshold after tmax iterations, raise error
     if t > 0:
-        if residual > eta:
-            raise ValueError("Over {} iters. residual: {} > eta: {}".format(tmax, residual, eta))
+        if distance > eta:
+            raise ValueError("Over {} iters. Residual: {} > eta: {}".format(tmax, distance, eta))
 
     # print log
     if verbose:
         msg = "====== Completed Equilibrium in {} iters. Residual: {}======"
-        print(msg.format(t, residual))
+        print(msg.format(t, distance))
 
     eq_state = {}
     eq_state["node_xyz"] = node_xyz
@@ -186,13 +195,10 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
     """
     # assign nodes' coordinates
     for node, xyz in node_xyz.items():
-        form.node_xyz(node, xyz)
-        # form.node_attributes(key=node, names=["x", "y", "z"], values=xyz)
+        form.node_attributes(key=node, names=["x", "y", "z"], values=xyz)
 
     # assign forces on trail edges
     for edge, tforce in trail_forces.items():
-        # tlength = form.edge_attribute(key=edge, name="length")
-        # tforce = copysign(tforce, tlength)
         form.edge_attribute(key=edge, name="force", value=tforce)
 
     # assign reaction forces
@@ -200,7 +206,8 @@ def form_update(form, node_xyz, trail_forces, reaction_forces):
         form.node_attributes(key=node, names=["rx", "ry", "rz"], values=rforce)
 
     # assign lengths to deviation edges
-    for u, v in form.edges():
+    for edge in form.edges():
+        u, v = edge
         length = form.edge_length(u, v)
         force = form.edge_attribute(key=edge, name="force")
         length = copysign(length, force)

@@ -9,6 +9,7 @@ class TopologyDisassemblyComponent(component):
         if not topology:
             return
 
+        sequence_keys = list(topology.sequences())
         trail_keys = list(topology.trails())
         auxiliary_trail_keys = list(topology.auxiliary_trails())
 
@@ -20,4 +21,4 @@ class TopologyDisassemblyComponent(component):
         origin_node_keys = list(topology.origin_nodes())
         support_node_keys = list(topology.support_nodes())
 
-        return node_keys, origin_node_keys, support_node_keys, edge_keys, trail_edge_keys, deviation_edge_keys, trail_keys, auxiliary_trail_keys
+        return node_keys, origin_node_keys, support_node_keys, edge_keys, trail_edge_keys, deviation_edge_keys, sequence_keys, trail_keys, auxiliary_trail_keys

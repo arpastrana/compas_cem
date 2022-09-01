@@ -46,6 +46,11 @@
                 "optional": false
             },
             {
+                "name": "sequence_keys",
+                "description": "The keys of the sequences in the topology diagram.",
+                "optional": false
+            },
+            {
                 "name": "trail_keys",
                 "description": "The keys of the trails in the topology diagram.",
                 "optional": false

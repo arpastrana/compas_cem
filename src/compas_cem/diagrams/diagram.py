@@ -205,7 +205,7 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
 
     def reaction_force(self, node):
         """
-        Gets the reaction force vector at a node support.
+        Gets the reaction force vector at a node.
 
         Parameters
         ----------
