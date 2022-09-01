@@ -11,6 +11,12 @@ Unreleased
 
 **Added**
 
+- Implemented `Topology.number_of_sequences()`
+- Enabled `static_equilibrium` calculations up to a `kmax` sequence.
+- Implemented `Topology.trails_sequences` mapping.
+- Implemented `Topology.trail_sequence` mapping.
+- Implemented `Topology.shift_trail` to change the starting sequence of a trail.
+- Implemented `Topology.from_dualquadmesh`.
 - Created colors for direct and indirect deviation edges.
 - An origin node can be parametrized by more than one optimization parameter (position and applied load).
 - An edge can be assigned more than one constraint for optimization.
@@ -20,6 +26,10 @@ Unreleased
 
 **Changed**
 
+- `Topology.auxiliary_trails()` takes `keys` as parameter to iterate over origin node keys and trails.
+- `Topology.trails()` takes `keys` as parameter to iterate over origin node keys and trails.
+- `Topology.sequence()` takes `keys` as parameter to iterate over origin node keys and trails.
+- `Topology.sequences()` outputs tuples with the nodes in every sequence instead of a range to `klast`.
 - Set explicit use of `compas_cem.ghpython` artist in `FormArtist`.
 - Set explicit use of `compas_cem.ghpython` artists in `TopologyArtist`.
 
