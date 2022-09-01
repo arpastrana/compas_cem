@@ -193,7 +193,7 @@ class TopologyArtist(NetworkArtist):
             A dictionary of text labels
         """
         def gkey_format(x):
-            return geometric_key(self.topology.node_xyz(x), precision)
+            return geometric_key(self.topology.node_coordinates(x), precision)
 
         def key_gkey_format(x):
             return "{}\n{}".format(x, gkey_format(x))
@@ -206,7 +206,6 @@ class TopologyArtist(NetworkArtist):
 
         def key_sequence_format(x):
             return "{}\n{}".format(x, sequence_format(x))
-
 
         precision = self.float_precision
 

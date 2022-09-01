@@ -97,7 +97,15 @@ class FormArtist(NetworkArtist):
         Draw the edges of a form diagram.
         """
         cmap = self.edge_statecolors
-        ec = {e: cmap[copysign(1.0, self.form.edge_attribute(e, "force") or 0.0)] for e in self.form.edges()}
+        ec = {}
+        for edge in self.form.edges():
+            force = self.form.edge_force(edge)
+            if force == 0.0:
+                color = cmap[0]
+            else:
+                color = cmap[copysign(1, force)]
+
+            ec[edge] = color
 
         return super(FormArtist, self).draw_edges(color=ec)
 
@@ -168,7 +176,7 @@ class FormArtist(NetworkArtist):
             if f_len < tol:
                 continue
 
-            start = self.form.node_xyz(node)
+            start = self.form.node_coordinates(node)
             end = add_vectors(start, f_vec_scaled)
 
             # shift
@@ -199,7 +207,7 @@ class FormArtist(NetworkArtist):
             A dictionary of text labels
         """
         def gkey_format(x):
-            return geometric_key(self.form.node_xyz(x), precision)
+            return geometric_key(self.form.node_coordinates(x), precision)
 
         def key_gkey_format(x):
             return "{}\n{}".format(x, gkey_format(x))

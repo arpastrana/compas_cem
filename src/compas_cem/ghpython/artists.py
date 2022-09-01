@@ -286,15 +286,13 @@ class FormArtist(DiagramArtist):
         reaction : list of :class:`Rhino.Geometry.Line`
         """
         diagram = self.diagram
-        nodes = nodes or list(self.diagram.support_nodes())
+        nodes = nodes or list(self.diagram.nodes())
         attrs = ["rx", "ry", "rz"]
 
         # TODO: needs a more robust check for arrow orientation
         # what we need is to know whether the arrow needs a full shift.
         shift = {}
         for node in nodes:
-            if not diagram.is_node_support(node):
-                continue
             s = False
             forces = [diagram.edge_force(e) for e in diagram.connected_edges(node)]
             max_force = max(forces, key=lambda f: fabs(f))
@@ -392,7 +390,7 @@ class TopologyArtist(DiagramArtist):
         polylines = []
         for trail in self.diagram.trails():
             p = {}
-            p["points"] = [self.diagram.node_xyz(node) for node in trail]
+            p["points"] = [self.diagram.node_coordinates(node) for node in trail]
             polylines.append(p)
 
         return draw_polylines(polylines)
