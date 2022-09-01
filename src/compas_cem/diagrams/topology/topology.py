@@ -1,25 +1,24 @@
 from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import normalize_vector
-from compas.geometry import distance_point_point
+
+from compas_cem.elements import Node
+from compas_cem.supports import NodeSupport
+from compas_cem.elements import TrailEdge
 
 from compas_cem.diagrams import Diagram
 
-from compas_cem.elements import Node, TrailEdge, DeviationEdge
-
-from compas_cem.supports import NodeSupport
-
-from compas.utilities import pairwise
+from compas_cem.diagrams.topology import MeshMixins
 
 
 __all__ = ["TopologyDiagram"]
 
 # ==============================================================================
-# Form Diagram
+# Topology Diagram
 # ==============================================================================
 
 
-class TopologyDiagram(Diagram):
+class TopologyDiagram(Diagram, MeshMixins):
     """
     The very heart of life.
 
@@ -43,109 +42,6 @@ class TopologyDiagram(Diagram):
         self.attributes["_auxiliary_trails"] = dict()
         self.attributes["_aux_length"] = -1.0
         self.attributes["_aux_vector"] = [1.0, 1.0, 1.0]
-
-# ==============================================================================
-# Constructors
-# ==============================================================================
-
-    @classmethod
-    def from_dualquadmesh(cls, mesh, supports, trail_length=None, trail_state=-1, deviation_force=1.0, deviation_state=-1):
-        """
-        Convert a dual quad mesh into a CEM topology digram.
-
-
-        Inputs
-        ------
-        mesh : QuadMesh
-            The dual of a quad mesh.
-        supports : list
-            The list of vertex indices in the mesh that represent supports.
-        trail_length : `float`, optional
-            The length of all the trail edges.
-            If `None`, then the trail edges inherit their length from the input mesh.
-            Defaults to `None`.
-        trail_state : `int`, optional
-            The internal force state of the trail edges.
-            A value of `-1` means compression and `1`, tension.
-            Defaults to `-1`.
-        deviation_force : `float`, optional
-            The force in all the deviation edges.
-            Defaults to `1.0`.
-        deviation_state : `int`, optional
-            The internal force state of the deviation edges.
-            A value of `-1` means compression and `1`, tension.
-            Defaults to `-1`.
-
-        Returns
-        -------
-        diagram : TopologyDiagram
-            The topology diagram.
-        """
-
-        mesh.collect_polyedges()
-
-        supports = set(supports)
-
-        trail = []
-        deviation = []
-
-        for pkey, polyedge in mesh.polyedges(data=True):
-
-            start, end = polyedge[0], polyedge[-1]
-
-            # TODO: closed polyedge (TO TEST/FIX)
-            if start == end:
-                deviation.extend(list(pairwise(polyedge)))
-
-            # open polyedge
-            else:
-                # no supports at polyedge extremities
-                if start not in supports and end not in supports:
-                    deviation.extend(list(pairwise(polyedge)))
-
-                # supports at both polyedge extremities
-                elif start in supports and end in supports:
-
-                    if polyedge[1] in supports:
-                        continue
-
-                    n = int(len(polyedge) / 2) - 1
-
-                    # central edge becomes deviation
-                    deviation.append(tuple(polyedge[n: n + 2]))
-
-                    # rest splits into two trails
-                    trail.extend(list(pairwise(polyedge[:n + 1])))
-                    trail.extend(list(pairwise(polyedge[n + 1:])))
-
-                # unique support at polyedge extremities
-                else:
-                    trail.extend(list(pairwise(polyedge)))
-
-        topology = cls()
-
-        for vkey in mesh.vertices():
-            topology.add_node(Node(key=vkey, xyz=mesh.vertex_coordinates(vkey)))
-
-        for vkey in supports:
-            topology.add_support(NodeSupport(vkey))
-
-        for edge in deviation:
-            force = deviation_state * deviation_force
-            topology.add_edge(DeviationEdge(*edge, force=force))
-
-        for edge in trail:
-
-            if trail_length:
-                signed_length = trail_length * trail_state
-            else:
-                edge_coordinates = [topology.node_coordinates(node) for node in edge]
-                assert len(edge_coordinates) == 2
-                signed_length = distance_point_point(*edge_coordinates) * trail_state
-
-            topology.add_edge(TrailEdge(*edge, length=signed_length))
-
-        return topology
 
 # ==============================================================================
 # Properties
@@ -306,36 +202,73 @@ class TopologyDiagram(Diagram):
 # Trails
 # ==============================================================================
 
-    def trails(self):
+    def trail(self, key):
+        """
+        Gets the keys of the nodes in a trail.
+
+        The nodes are sorted such that the first node is an origin node and the
+        last, a support node.
+
+        Parameters
+        ----------
+        key : ``int``
+            The trail key, which is equivalent to the key of its origin node.
+
+        Returns
+        -------
+        trail : ``List[int]``
+            The sorted node keys.
+        """
+        return self.attributes["_trails"][key]
+
+    def trails(self, keys=False):
         """
         Iterate over all the existing trails in the topology diagram.
 
+        Parameters
+        ----------
+        keys : ``bool``, optional
+            Defaults to ``False``.
+
         Yields
         ------
-        trail : ``list``
-            The next trail.
+        trail : ``List[int]`` or ``Tuple[int, List[int]]``
+            The next trail if ``keys`` is ``False``.
+            Otherwise, a tuple with the trail key and the keys of the nodes on the trail.
 
         Notes
         -----
         A trail is an ordered sequence of node keys.
-        This iterator include auxiliary trails, if any.
+        This iterator yields auxiliary trails too, if any.
         """
-        return self.attributes["_trails"].values()
+        trails = self.attributes["_trails"]
+        if not keys:
+            return trails.values()
+        return trails.items()
 
-    def auxiliary_trails(self):
+    def auxiliary_trails(self, keys=False):
         """
         Iterate over all the available auxiliary trails in the topology diagram.
 
+        Parameters
+        ----------
+        keys : ``bool``, optional
+            Defaults to ``False``.
+
         Yields
         ------
-        auxiliary_trail : ``list``
-            The next auxiliary trail.
+        aux_trail : ``list`` or ``Tuple[int, List[int]]``
+            The next auxiliary trail if ``keys`` is ``False``.
+            Otherwise, a tuple with the trail key and the keys of the nodes on the auxiliary trail.
 
         Notes
         -----
-        An auxiliary trail is a trail with at least two nodes.
+        An auxiliary trail is a helper trail with two nodes.
         """
-        return self.attributes["_auxiliary_trails"].values()
+        aux_trails = self.attributes["_auxiliary_trails"]
+        if not keys:
+            return aux_trails.values()
+        return aux_trails.items()
 
     def has_trails(self):
         """
@@ -363,7 +296,8 @@ class TopologyDiagram(Diagram):
             For example, if the current sequence of the origin node is 1 and k=3,
             then, the starting sequence of this trail becomes 3.
         """
-        assert self.is_node_origin(key) == True, "That is not an origin node!"
+        assert self.is_node_origin(key), "That is not an origin node!"
+
         if not self.has_trails():
             msg = "The diagram has no trails! Run topology.build_trails() first"
             raise ValueError(msg)
@@ -662,7 +596,9 @@ class TopologyDiagram(Diagram):
         attributes : ``dict``
             The attributes of the next direct deviation edge if ``data=True``.
         """
-        predicate = lambda edge, attr: self.is_direct_deviation_edge(edge)
+        def predicate(edge, attr):
+            return self.is_direct_deviation_edge(edge)
+
         return self.edges_where_predicate(predicate, data)
 
     def indirect_deviation_edges(self, data=False):
@@ -682,7 +618,9 @@ class TopologyDiagram(Diagram):
         attributes : ``dict``
             The attributes of the next indirect deviation edge if ``data=True``.
         """
-        predicate = lambda edge, attr: self.is_indirect_deviation_edge(edge)
+        def predicate(edge, attr):
+            return self.is_indirect_deviation_edge(edge)
+
         return self.edges_where_predicate(predicate, data)
 
     def auxiliary_trail_edges(self, data=False):
@@ -916,27 +854,96 @@ class TopologyDiagram(Diagram):
         u, v = edge
         return self.node_sequence(u), self.node_sequence(v)
 
-    def sequences(self):
+    def sequences(self, keys=False):
         """
-        Iterate over the sequence keys in the diagram.
+        Iterate over all the sequences in the topology diagram in ascending order.
+
+        Parameters
+        ----------
+        keys : ``bool``, optional
+            Defaults to ``False``.
 
         Yields
         ------
-        sequence : `int`
-            The next sequence number.
+        sequence : ``Tuple[int]`` or ``Tuple[int, Tuple[int]]``
+            The next sequence if ``keys`` is ``False``.
+            Otherwise, a tuple with the sequence key and the corresponding node keys.
         """
-        return range(self.sequence_max() + 1)
+        for k in range(self.number_of_sequences()):
 
-    def sequence_max(self):
+            def predicate(node, attr):
+                return self.node_sequence(node) == k
+
+            sequence = tuple(self.nodes_where_predicate(predicate))
+            if not keys:
+                yield sequence
+            else:
+                yield k, sequence
+
+    def number_of_sequences(self):
         """
-        The largest sequence key.
+        The number of sequences in the topology diagram.
 
-        Yields
-        ------
+        Equivalent to the largest sequence key.
+
+        Returns
+        -------
         sequence : `int`
-            The largest sequence number.
+            The number of sequences.
+        """
+        return self.sequence_last() + 1
+
+    def sequence_last(self):
+        """
+        The key of the last sequence in the topology diagram.
+
+        Returns
+        -------
+        key : `int`
+            The sequence key.
         """
         return max(list(self.nodes_attribute(name="_k")))
+
+# ==============================================================================
+# Mappings
+# ==============================================================================
+
+    def trail_sequences(self, key):
+        """
+        Create a mapping between the sequences in the diagram and the nodes in the trail.
+
+        Parameters
+        ----------
+        key : ``int``
+            The trail key.
+
+        Returns
+        -------
+        sequence_map : ``Dict[int]``
+            A dictionary wherein keys are sequences and values are node keys.
+        """
+        sequences = dict()
+        for node in self.trail(key):
+            sequences[self.node_sequence(node)] = node
+
+        return sequences
+
+    def trails_sequences(self):
+        """
+        Creates a mapping between the nodes in all the trails and the available sequences.
+
+        Returns
+        -------
+        sequences_map : ``Dict[int]``
+            A dictionary wherein keys are trail keys and values are dictionaries
+            wherein keys are sequences and values are node keys.
+        """
+        sequences = dict()
+
+        for key, trail in self.trails(keys=True):
+            sequences[key] = self.trail_sequences(key)
+
+        return sequences
 
 # ==============================================================================
 # Magic methods
