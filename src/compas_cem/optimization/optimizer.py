@@ -246,7 +246,7 @@ class Optimizer(Data):
             print("Results may still be useful though!")
             x_opt = self.optimization_parameters(topology)
         except RuntimeError:
-            print("Optimization failed for reasons I do not understand yet...")
+            print("Optimization failed due to a runtime error!")
             print(f"Optimization total runtime: {round(time() - start, 4)} seconds")
             return static_equilibrium(topology)
 
