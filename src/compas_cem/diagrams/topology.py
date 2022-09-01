@@ -90,17 +90,18 @@ class TopologyDiagram(Diagram):
         deviation = []
 
         for pkey, polyedge in mesh.polyedges(data=True):
+
             start, end = polyedge[0], polyedge[-1]
 
-            # closed polyedge (TO TEST/FIX)
+            # TODO: closed polyedge (TO TEST/FIX)
             if start == end:
-                deviation += [edge for edge in pairwise(polyedge)]
+                deviation.extend(list(pairwise(polyedge)))
 
             # open polyedge
             else:
-                # not supports at polyedge extremities
+                # no supports at polyedge extremities
                 if start not in supports and end not in supports:
-                    deviation += [edge for edge in pairwise(polyedge)]
+                    deviation.extend(list(pairwise(polyedge)))
 
                 # supports at both polyedge extremities
                 elif start in supports and end in supports:
@@ -109,19 +110,22 @@ class TopologyDiagram(Diagram):
                         continue
 
                     n = int(len(polyedge) / 2) - 1
+
                     # central edge becomes deviation
                     deviation.append(tuple(polyedge[n: n + 2]))
-                    trail += [edge for edge in list(pairwise(polyedge[:n + 1])) + list(
-                        pairwise(polyedge[n + 1:]))]  # rest splits into two trails
+
+                    # rest splits into two trails
+                    trail.extend(list(pairwise(polyedge[:n + 1])))
+                    trail.extend(list(pairwise(polyedge[n + 1:])))
 
                 # unique support at polyedge extremities
                 else:
-                    trail += [edge for edge in pairwise(polyedge)]
+                    trail.extend(list(pairwise(polyedge)))
 
-        topology = TopologyDiagram()
+        topology = cls()
 
         for vkey in mesh.vertices():
-            topology.add_node(Node(vkey, mesh.vertex_coordinates(vkey)))
+            topology.add_node(Node(key=vkey, xyz=mesh.vertex_coordinates(vkey)))
 
         for vkey in supports:
             topology.add_support(NodeSupport(vkey))
@@ -131,10 +135,14 @@ class TopologyDiagram(Diagram):
             topology.add_edge(DeviationEdge(*edge, force=force))
 
         for edge in trail:
-            if not trail_length:
+
+            if trail_length:
+                signed_length = trail_length * trail_state
+            else:
                 edge_coordinates = [topology.node_coordinates(node) for node in edge]
-                trail_length = distance_point_point(*edge_coordinates)
-            signed_length = trail_length* trail_state
+                assert len(edge_coordinates) == 2
+                signed_length = distance_point_point(*edge_coordinates) * trail_state
+
             topology.add_edge(TrailEdge(*edge, length=signed_length))
 
         return topology
@@ -230,7 +238,7 @@ class TopologyDiagram(Diagram):
 
     def number_of_trails(self):
         """
-        Number of trails in the topology diagram.
+        The number of trails in the topology diagram.
 
         Return
         ------
@@ -241,7 +249,7 @@ class TopologyDiagram(Diagram):
 
     def number_of_auxiliary_trails(self):
         """
-        Number of auxiliary trails in the topology diagram.
+        The number of auxiliary trails in the topology diagram.
 
         Return
         ------
@@ -250,9 +258,20 @@ class TopologyDiagram(Diagram):
         """
         return len(list(self.auxiliary_trails()))
 
+    def number_of_trail_edges(self):
+        """
+        The number of trail edges in the topology diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of trail edges.
+        """
+        return len(list(self.trail_edges()))
+
     def number_of_deviation_edges(self):
         """
-        Number of deviation edges in the topology diagram.
+        The number of deviation edges in the topology diagram.
 
         Return
         ------
@@ -261,16 +280,27 @@ class TopologyDiagram(Diagram):
         """
         return len(list(self.deviation_edges()))
 
-    def number_of_trail_edges(self):
+    def number_of_direct_deviation_edges(self):
         """
-        Number of trail edges in the topology diagram.
+        The number of direct deviation edges in the topology diagram.
 
         Return
         ------
         number : ``int``
-            The number of trail edges.
+            The number of direct deviation edges.
         """
-        return len(list(self.trail_edges()))
+        return len(list(self.direct_deviation_edges()))
+
+    def number_of_indirect_deviation_edges(self):
+        """
+        The number of direct deviation edges in the topology diagram.
+
+        Return
+        ------
+        number : ``int``
+            The number of direct deviation edges.
+        """
+        return len(list(self.indirect_deviation_edges()))
 
 # ==============================================================================
 # Trails
@@ -318,6 +348,30 @@ class TopologyDiagram(Diagram):
             Otherwise, ``False``
         """
         return self.number_of_trails() > 0
+
+    def shift_trail(self, key, sequence):
+        """
+        Shift all the nodes in a trail to start at a given sequence.
+
+        Parameters
+        ----------
+        key : ``int``
+            The key of the origin node of the trail.
+        sequence : ``int``
+            The new starting sequence of the trail.
+
+            For example, if the current sequence of the origin node is 1 and k=3,
+            then, the starting sequence of this trail becomes 3.
+        """
+        assert self.is_node_origin(key) == True, "That is not an origin node!"
+        if not self.has_trails():
+            msg = "The diagram has no trails! Run topology.build_trails() first"
+            raise ValueError(msg)
+
+        trail = self.attributes["_trails"][key]
+        for idx, node in enumerate(trail):
+            sequence_new = sequence + idx
+            self.node_attribute(node, name="_k", value=sequence_new)
 
     def build_trails(self, auxiliary_trails=False):
         """
@@ -555,7 +609,7 @@ class TopologyDiagram(Diagram):
 
     def trail_edges(self, data=False):
         """
-        Iterates over the keys of all trail edges.
+        Iterates over the keys of all the trail edges in the diagram.
 
         Parameters
         ----------
@@ -574,7 +628,7 @@ class TopologyDiagram(Diagram):
 
     def deviation_edges(self, data=False):
         """
-        Iterates over the keys of all deviation edges.
+        Iterates over the keys of all the deviation edges in the diagram.
 
         Parameters
         ----------
@@ -585,11 +639,51 @@ class TopologyDiagram(Diagram):
         Yields
         -------
         deviation_edge : ``tuple``
-            The key of the next trail edge.
+            The key of the next deviation edge.
         attributes : ``dict``
             The attributes of the next deviation edge if ``data=True``.
         """
         return self.edges_where({"type": "deviation"}, data)
+
+    def direct_deviation_edges(self, data=False):
+        """
+        Iterates over the keys of all the direct deviation edges in the diagram.
+
+        Parameters
+        ----------
+        data : ``bool``
+            ``True`` if the edges attributes should be yielded simultaneously.
+            Defaults to ``False``.
+
+        Yields
+        -------
+        deviation_edge : ``tuple``
+            The key of the next direct deviation edge.
+        attributes : ``dict``
+            The attributes of the next direct deviation edge if ``data=True``.
+        """
+        predicate = lambda edge, attr: self.is_direct_deviation_edge(edge)
+        return self.edges_where_predicate(predicate, data)
+
+    def indirect_deviation_edges(self, data=False):
+        """
+        Iterates over the keys of all indirect deviation edges in the diagram.
+
+        Parameters
+        ----------
+        data : ``bool``
+            ``True`` if the edges attributes should be yielded simultaneously.
+            Defaults to ``False``.
+
+        Yields
+        -------
+        deviation_edge : ``tuple``
+            The key of the next indirect deviation edge.
+        attributes : ``dict``
+            The attributes of the next indirect deviation edge if ``data=True``.
+        """
+        predicate = lambda edge, attr: self.is_indirect_deviation_edge(edge)
+        return self.edges_where_predicate(predicate, data)
 
     def auxiliary_trail_edges(self, data=False):
         """
@@ -604,9 +698,9 @@ class TopologyDiagram(Diagram):
         Yields
         -------
         deviation_edge : ``tuple``
-            The key of the next trail edge.
+            The key of the next auxiliary trail edge.
         attributes : ``dict``
-            The attributes of the next trail edge if ``data=True``.
+            The attributes of the next auxiliary trail edge if ``data=True``.
         """
         def predicate(edge, attr):
             return self.is_auxiliary_trail_edge(edge)
@@ -824,25 +918,25 @@ class TopologyDiagram(Diagram):
 
     def sequences(self):
         """
-        Iterate over the sequences in the diagram.
+        Iterate over the sequence keys in the diagram.
 
         Yields
         ------
         sequence : `int`
             The next sequence number.
         """
-        return range(self.sequence_max())
+        return range(self.sequence_max() + 1)
 
     def sequence_max(self):
         """
-        The largest sequence number.
+        The largest sequence key.
 
         Yields
         ------
         sequence : `int`
             The largest sequence number.
         """
-        return max([len(trail) for trail in self.trails()])
+        return max(list(self.nodes_attribute(name="_k")))
 
 # ==============================================================================
 # Magic methods
