@@ -30,7 +30,7 @@ class TopologyArtist(NetworkArtist):
                  edgewidth=1.0,
                  nodetext=None,  # must be a dict, or 'key', or 'index'
                  edgetext=None,  # must be a dict, or 'key', or 'index'
-                 nodes_load=None,
+                 edgecolor=None,  # must be a string, 'state' or 'type'
                  show_loads=True,
                  show_nodetext=False,
                  show_edgetext=False,
@@ -49,6 +49,8 @@ class TopologyArtist(NetworkArtist):
                                  0.0: COLORS["edge"],
                                  "auxiliary_trail": COLORS["auxiliary_trail"]}
 
+        self.edge_typecolors = COLORS
+
         self.edge_linestyles = {"trail": "-",  # solid
                                 "deviation": "--"}  # dashed
 
@@ -58,6 +60,8 @@ class TopologyArtist(NetworkArtist):
 
         self.edge_text = self._edge_textlabel(edgetext)
         self.node_text = self._node_textlabel(nodetext)
+
+        self.edge_color2 = edgecolor or "state"
 
         self.show_loads = show_loads
         self.show_nodetext = show_nodetext
@@ -107,24 +111,45 @@ class TopologyArtist(NetworkArtist):
         Draw the edges of a topology diagram.
         """
         topology = self.topology
-        cmap = self.edge_statecolors
 
         edges = list(topology.edges())
         edge_color = {}
-        for edge in edges:
-            # draw auxiliary trail edges
-            if topology.is_auxiliary_trail_edge(edge):
-                edge_color[edge] = cmap["auxiliary_trail"]
-            else:
-                # draw trail edges
-                if topology.is_trail_edge(edge):
-                    attr_name = "length"
-                    # draw deviation edges
-                elif topology.is_deviation_edge(edge):
-                    attr_name = "force"
 
-                ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
-                edge_color[edge] = cmap[ckey]
+        if self.edge_color2 == "state":
+            cmap = self.edge_statecolors
+            for edge in edges:
+                # draw auxiliary trail edges
+                if topology.is_auxiliary_trail_edge(edge):
+                    edge_color[edge] = cmap["auxiliary_trail"]
+                else:
+                    # draw trail edges
+                    if topology.is_trail_edge(edge):
+                        attr_name = "length"
+                        # draw deviation edges
+                    elif topology.is_deviation_edge(edge):
+                        attr_name = "force"
+
+                    ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
+                    edge_color[edge] = cmap[ckey]
+
+        elif self.edge_color2 == "type":
+            cmap = self.edge_typecolors
+            for edge in edges:
+                if topology.is_auxiliary_trail_edge(edge):
+                    attr_name = "auxiliary_trail"
+                else:
+                    if topology.is_trail_edge(edge):
+                        attr_name = "edge_trail"
+                    elif topology.has_trails():
+                        if topology.is_direct_deviation_edge(edge):
+                            attr_name = "edge_deviation"
+                        elif topology.is_indirect_deviation_edge(edge):
+                            attr_name = "edge_deviation_indirect"
+                    else:
+                        if topology.is_deviation_edge(edge):
+                            attr_name = "edge_deviation"
+
+                edge_color[edge] = cmap[attr_name]
 
         # draw edges
         super(TopologyArtist, self).draw_edges(color=edge_color)
@@ -159,7 +184,8 @@ class TopologyArtist(NetworkArtist):
         Input
         -----
         text_tag : `str`
-            Tag query. Supported tags are: "xyz", "keyxyz" and "type".
+            Tag query. Supported tags are: "key", "xyz", "keyxyz",
+            "type", "sequence" and "keysequence".
 
         Returns
         -------
@@ -175,11 +201,20 @@ class TopologyArtist(NetworkArtist):
         def type_format(x):
             return "{}".format(self.topology.node_attribute(x, "type"))
 
+        def sequence_format(x):
+            return "{}".format(self.topology.node_sequence(x))
+
+        def key_sequence_format(x):
+            return "{}\n{}".format(x, sequence_format(x))
+
+
         precision = self.float_precision
 
         tags_formatter = {"xyz": gkey_format,
                           "keyxyz": key_gkey_format,
-                          "type": type_format}
+                          "type": type_format,
+                          "sequence": sequence_format,
+                          "keysequence": key_sequence_format}
 
         if text_tag not in tags_formatter:
             return None
@@ -236,6 +271,7 @@ class TopologyArtist(NetworkArtist):
         tags_formatter = {"force": force_format,
                           "length": length_format,
                           "state": state_format,
+                          "forcelength": force_length_format,
                           "forcelengthstate": force_length_state_format,
                           "type": type_format}
 
