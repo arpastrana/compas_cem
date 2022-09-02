@@ -11,6 +11,8 @@ Unreleased
 
 **Added**
 
+- Created `MoveOriginNodes` GH component.
+- Implemented `ShiftTrails` GH component.
 - Implemented `Topology.number_of_sequences()`
 - Enabled `static_equilibrium` calculations up to a `kmax` sequence.
 - Implemented `Topology.trails_sequences` mapping.
@@ -21,7 +23,6 @@ Unreleased
 - An origin node can be parametrized by more than one optimization parameter (position and applied load).
 - An edge can be assigned more than one constraint for optimization.
 - A node can be assigned more than one constraint for optimization.
-- Enabled `NodeLoad` x, y, z components to be used as an optimization parameter.
 - Enabled `NodeLoad` x, y, z components to be used as an optimization parameter.
 
 **Changed**
