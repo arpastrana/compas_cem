@@ -1,0 +1,36 @@
+{
+    "name": "Shift Trails",
+    "nickname": "ShiftTrails",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Shift the starting sequence of a selection of trails in a topology diagram.",
+    "exposure": 16,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "origin_node_keys",
+                "description": "The keys of the origin nodes in the trails to modify.",
+                "scriptParamAccess": "list",
+                "typeHintID": "int"
+            },
+            {
+                "name": "sequences",
+                "description": "The new starting sequences.",
+                "scriptParamAccess": "list",
+                "typeHintID": "int"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            }
+        ]
+    }
+}

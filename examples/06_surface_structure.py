@@ -22,6 +22,9 @@ from compas_cem.optimization import DeviationEdgeParameter
 from compas_cem.optimization import OriginNodeXParameter
 from compas_cem.optimization import OriginNodeYParameter
 from compas_cem.optimization import OriginNodeZParameter
+from compas_cem.optimization import NodeLoadXParameter
+from compas_cem.optimization import NodeLoadYParameter
+from compas_cem.optimization import NodeLoadZParameter
 from compas_cem.optimization import PlaneConstraint
 from compas_cem.optimization import LineConstraint
 from compas_cem.optimization import PointConstraint
@@ -33,8 +36,11 @@ from compas_cem.viewers import Viewer
 # Controls
 # ------------------------------------------------------------------------------
 
-SELF_STRESSED = True
-OPTIMIZE = False
+PLANAR = True
+OPTIMIZE = True
+OPTIMIZER = "SLSQP"
+ITERS = 1000
+EPS = 1e-2
 
 EXPORT_JSON = False
 
@@ -42,6 +48,8 @@ VIEW = True
 SHOW_EDGETEXT = False
 
 STRIPS_DENSITY = 4  # only even numbers (2, 4, 6, ...) for best results
+SHIFT_TRAILS = True
+DEVIATION_FORCE = 0.1  # starting force in all deviation edges
 
 # ------------------------------------------------------------------------------
 # Create a topology diagram
@@ -81,15 +89,37 @@ mean_length = mean([mesh.edge_length(*edge) for edge in mesh.edges()])
 
 topology = TopologyDiagram.from_dualquadmesh(mesh,
                                              supports,
-                                             trail_length=-mean_length,
-                                             deviation_force=-1.0)
+                                             trail_state=-1,
+                                             deviation_force=DEVIATION_FORCE,
+                                             deviation_state=-1)
 topology.build_trails()
 
-if not SELF_STRESSED:
+if not PLANAR:
     for key in topology.nodes():
         if topology.is_node_support(key):
             continue
         topology.add_load(NodeLoad(key, [0.0, 0.0, -0.5]))
+
+# ------------------------------------------------------------------------------
+# Shift trail sequences to avoid having indirect deviation edges
+# ------------------------------------------------------------------------------
+
+if SHIFT_TRAILS:
+    print("Shifting sequences, baby!")
+
+    while topology.number_of_indirect_deviation_edges() > 0:
+        for node_origin in topology.origin_nodes():
+
+            for edge in topology.connected_edges(node_origin):
+
+                if topology.is_indirect_deviation_edge(edge):
+                    u, v = edge
+                    node_other = u if node_origin != u else v
+                    sequence = topology.node_sequence(node_origin)
+                    sequence_other = topology.node_sequence(node_other)
+
+                    if sequence_other > sequence:
+                        topology.shift_trail(node_origin, sequence_other)
 
 # ------------------------------------------------------------------------------
 # Compute a state of static equilibrium
@@ -106,28 +136,31 @@ if OPTIMIZE:
     opt = Optimizer()
 
     # parameters
-    for edge in topology.trail_edges():
-        opt.add_parameter(TrailEdgeParameter(edge, bound_low=10, bound_up=mean_length))
+    for node in topology.origin_nodes():
+        opt.add_parameter(NodeLoadXParameter(node))
+        opt.add_parameter(NodeLoadYParameter(node))
+        if not PLANAR:
+            opt.add_parameter(NodeLoadZParameter(node))
 
     for edge in topology.deviation_edges():
-        opt.add_parameter(DeviationEdgeParameter(edge, bound_low=10, bound_up=1.0))
+        opt.add_parameter(DeviationEdgeParameter(edge, bound_up=DEVIATION_FORCE))
 
-    for node in topology.origin_nodes():
-        opt.add_parameter(OriginNodeXParameter(node, bound_low=1.0, bound_up=1.0))
-        opt.add_parameter(OriginNodeYParameter(node, bound_low=1.0, bound_up=1.0))
-        opt.add_parameter(OriginNodeZParameter(node, bound_low=None, bound_up=0.0))
-
+    # constraints
     for node in topology.nodes():
         point = topology.node_coordinates(node)
-        if topology.is_node_origin(node):
-            continue
-        opt.add_constraint(PointConstraint(node, point=point))
+        if not topology.is_node_origin(node):
+            opt.add_constraint(PointConstraint(node, point=point))
+
+    tmax = 1
+    if topology.number_of_indirect_deviation_edges() > 0:
+        tmax = 100
 
     # optimize
     form_opt = opt.solve(topology.copy(),
-                         algorithm="LBFGS",
-                         iters=200,
-                         eps=1e-1,
+                         algorithm=OPTIMIZER,
+                         iters=ITERS,
+                         tmax=tmax,
+                         eps=EPS,
                          verbose=True)
 
 # ------------------------------------------------------------------------------

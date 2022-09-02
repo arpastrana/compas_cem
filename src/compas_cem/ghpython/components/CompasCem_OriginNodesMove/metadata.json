@@ -1,0 +1,36 @@
+{
+    "name": "Move Origin Nodes",
+    "nickname": "MoveOriginNodes",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Move the origin nodes of a topology diagram to a new location.",
+    "exposure": 16,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "origin_node_keys",
+                "description": "The keys of the origin nodes in the diagram.",
+                "scriptParamAccess": "list",
+                "typeHintID": "int"
+            },
+            {
+                "name": "points",
+                "description": "The XYZ coordinates of the new locations.",
+                "scriptParamAccess": "list",
+                "typeHintID": "point"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            }
+        ]
+    }
+}
