@@ -4,7 +4,6 @@ Shift the starting sequence of a selection of trails in a topology diagram.
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas.utilities import iterable_like
-from compas_rhino.geometry import RhinoPoint
 
 
 class ShiftTrailsSequenceComponent(component):
