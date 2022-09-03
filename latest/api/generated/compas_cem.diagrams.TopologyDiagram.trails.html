@@ -20,11 +20,11 @@
   <link rel="stylesheet" type="text/css" href="../../_static/css/compas-reference.css" />
 
   
-  <link rel="next" title="TopologyDiagram.ToString" href="compas_cem.diagrams.TopologyDiagram.ToString.html" />
+  <link rel="next" title="TopologyDiagram.trails_sequences" href="compas_cem.diagrams.TopologyDiagram.trails_sequences.html" />
   
 
   
-  <link rel="prev" title="TopologyDiagram.trail_edges" href="compas_cem.diagrams.TopologyDiagram.trail_edges.html" />
+  <link rel="prev" title="TopologyDiagram.trail_sequences" href="compas_cem.diagrams.TopologyDiagram.trail_sequences.html" />
   
 
   <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -101,16 +101,20 @@
 <h1>TopologyDiagram.trails</h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="compas_cem.diagrams.TopologyDiagram.trails">
-<span class="sig-prename descclassname"><span class="pre">TopologyDiagram.</span></span><span class="sig-name descname"><span class="pre">trails</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology.py#L182"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">TopologyDiagram.</span></span><span class="sig-name descname"><span class="pre">trails</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology/topology.py#L224"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Iterate over all the existing trails in the topology diagram.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>trail</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) – The next trail.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>keys</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) – Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>trail</strong> (<code class="docutils literal notranslate"><span class="pre">List[int]</span></code> or <code class="docutils literal notranslate"><span class="pre">Tuple[int,</span> <span class="pre">List[int]]</span></code>) – The next trail if <code class="docutils literal notranslate"><span class="pre">keys</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.
+Otherwise, a tuple with the trail key and the keys of the nodes on the trail.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>A trail is an ordered sequence of node keys.
-This iterator include auxiliary trails, if any.</p>
+This iterator yields auxiliary trails too, if any.</p>
 </dd></dl>
 
 </section>
@@ -192,20 +196,20 @@ This iterator include auxiliary trails, if any.</p>
   <footer class="compas-footer">
     <nav class="nav p-2">
       
-      <a href="compas_cem.diagrams.TopologyDiagram.trail_edges.html" title="TopologyDiagram.trail_edges" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
+      <a href="compas_cem.diagrams.TopologyDiagram.trail_sequences.html" title="TopologyDiagram.trail_sequences" class="nav-link footer-link float-start text-left d-flex w-50" rel="prev">
         <div class="nav-button p-2 m-2"><i class="fas fa-arrow-left"></i></div>
         <div class="nav-title flex-grow-1 align-self-center">
           <div class="nav-direction small font-weight-light">Previous</div>
-          TopologyDiagram.trail_edges
+          TopologyDiagram.trail_sequences
         </div>
       </a>
       
 
       
-      <a href="compas_cem.diagrams.TopologyDiagram.ToString.html" title="TopologyDiagram.ToString" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
+      <a href="compas_cem.diagrams.TopologyDiagram.trails_sequences.html" title="TopologyDiagram.trails_sequences" class="nav-link footer-link float-end text-right d-flex w-50" rel="next">
         <div class="nav-title footer-link flex-grow-1 align-self-center">
           <div class="nav-direction small font-weight-light">Next</div>
-          TopologyDiagram.ToString
+          TopologyDiagram.trails_sequences
         </div>
         <div class="nav-button p-2 m-2"><i class="fas fa-arrow-right"></i></div>
       </a>

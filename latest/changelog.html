@@ -98,15 +98,26 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <h2>Unreleased</h2>
 <p><strong>Added</strong></p>
 <ul class="simple">
+<li><p>Created <cite>MoveOriginNodes</cite> GH component.</p></li>
+<li><p>Implemented <cite>ShiftTrails</cite> GH component.</p></li>
+<li><p>Implemented <cite>Topology.number_of_sequences()</cite></p></li>
+<li><p>Enabled <cite>static_equilibrium</cite> calculations up to a <cite>kmax</cite> sequence.</p></li>
+<li><p>Implemented <cite>Topology.trails_sequences</cite> mapping.</p></li>
+<li><p>Implemented <cite>Topology.trail_sequence</cite> mapping.</p></li>
+<li><p>Implemented <cite>Topology.shift_trail</cite> to change the starting sequence of a trail.</p></li>
+<li><p>Implemented <cite>Topology.from_dualquadmesh</cite>.</p></li>
 <li><p>Created colors for direct and indirect deviation edges.</p></li>
 <li><p>An origin node can be parametrized by more than one optimization parameter (position and applied load).</p></li>
 <li><p>An edge can be assigned more than one constraint for optimization.</p></li>
 <li><p>A node can be assigned more than one constraint for optimization.</p></li>
 <li><p>Enabled <cite>NodeLoad</cite> x, y, z components to be used as an optimization parameter.</p></li>
-<li><p>Enabled <cite>NodeLoad</cite> x, y, z components to be used as an optimization parameter.</p></li>
 </ul>
 <p><strong>Changed</strong></p>
 <ul class="simple">
+<li><p><cite>Topology.auxiliary_trails()</cite> takes <cite>keys</cite> as parameter to iterate over origin node keys and trails.</p></li>
+<li><p><cite>Topology.trails()</cite> takes <cite>keys</cite> as parameter to iterate over origin node keys and trails.</p></li>
+<li><p><cite>Topology.sequence()</cite> takes <cite>keys</cite> as parameter to iterate over origin node keys and trails.</p></li>
+<li><p><cite>Topology.sequences()</cite> outputs tuples with the nodes in every sequence instead of a range to <cite>klast</cite>.</p></li>
 <li><p>Set explicit use of <cite>compas_cem.ghpython</cite> artist in <cite>FormArtist</cite>.</p></li>
 <li><p>Set explicit use of <cite>compas_cem.ghpython</cite> artists in <cite>TopologyArtist</cite>.</p></li>
 </ul>

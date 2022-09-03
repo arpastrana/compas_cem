@@ -101,15 +101,19 @@
 <h1>TopologyDiagram.auxiliary_trails</h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="compas_cem.diagrams.TopologyDiagram.auxiliary_trails">
-<span class="sig-prename descclassname"><span class="pre">TopologyDiagram.</span></span><span class="sig-name descname"><span class="pre">auxiliary_trails</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology.py#L198"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-prename descclassname"><span class="pre">TopologyDiagram.</span></span><span class="sig-name descname"><span class="pre">auxiliary_trails</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/arpastrana/compas_cem/blob/master/src/compas_cem/diagrams/topology/topology.py#L249"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Iterate over all the available auxiliary trails in the topology diagram.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Yields<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>auxiliary_trail</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code>) – The next auxiliary trail.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>keys</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>, optional) – Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>aux_trail</strong> (<code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">Tuple[int,</span> <span class="pre">List[int]]</span></code>) – The next auxiliary trail if <code class="docutils literal notranslate"><span class="pre">keys</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.
+Otherwise, a tuple with the trail key and the keys of the nodes on the auxiliary trail.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>An auxiliary trail is a trail with at least two nodes.</p>
+<p>An auxiliary trail is a helper trail with two nodes.</p>
 </dd></dl>
 
 </section>
