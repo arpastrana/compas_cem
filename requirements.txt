@@ -2,3 +2,4 @@ compas
 nlopt
 trimesh
 autograd
+compas_singular
