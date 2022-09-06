@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from compas.colors import Color
 
 from compas_cem import COLORS
@@ -27,35 +29,64 @@ class FormDiagramObject(DiagramObject):
         self.linecolors = self.edge_color
         self.pointcolors = self.node_color
 
+        # TODO: Is adding these commands here a good idea?
+        self.draw_edges()
+        self.draw_loads()
+        self.draw_residuals()
+        self.draw_nodetext()
+        self.draw_edgetext()
+
     @property
     def edge_color(self):
-        if not self._edge_color:
-            edge_color = {}
-            for edge in self.edges:
-                edge_force = self.diagram.edge_force(edge)
-                if edge_force >= 0.0:
-                    color = self.edgecolor_tension
-                elif edge_force < 0.0:
-                    color = self.edgecolor_compression
-                else:
-                    color = self.default_edgecolor
-                edge_color[edge] = color
-            self._edge_color = edge_color
+        if self._edge_color:
+            return self._edge_color
+
+        edge_color = {}
+        for edge in self.edges:
+            edge_force = self.diagram.edge_force(edge)
+            if edge_force >= 0.0:
+                color = self.edgecolor_tension
+            elif edge_force < 0.0:
+                color = self.edgecolor_compression
+            else:
+                color = self.default_edgecolor
+            edge_color[edge] = color
+        self._edge_color = edge_color
 
         return self._edge_color
 
     @property
     def node_color(self):
-        if not self._node_color:
-            node_color = {}
-            for node in self.nodes:
-                if self.diagram.is_node_support(node):
-                    color = self.support_nodecolor
-                else:
-                    color = self.default_nodecolor
-                node_color[node] = color
-            self._node_color = node_color
+        if self._node_color:
+            return self._node_color
+
+        node_color = {}
+        for node in self.nodes:
+            if self.diagram.is_node_support(node):
+                color = self.support_nodecolor
+            else:
+                color = self.default_nodecolor
+            node_color[node] = color
+        self._node_color = node_color
+
         return self._node_color
+
+    @property
+    def edges_by_type(self):
+        if self._edges_by_type:
+            return self._edges_by_type
+
+        edges = defaultdict(list)
+        for edge in self.edges:
+            edge_force = self.diagram.edge_force(edge)
+            if edge_force >= 0.0:
+                edges["tension"].append(edge)
+            elif edge_force < 0.0:
+                edges["compression"].append(edge)
+
+        self._edges_by_type = edges
+
+        return self._edges_by_type
 
 
 if __name__ == "__main__":

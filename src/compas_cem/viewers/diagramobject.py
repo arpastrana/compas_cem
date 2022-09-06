@@ -1,3 +1,5 @@
+from collections.abc import Iterable
+
 from math import copysign
 from math import fabs
 
@@ -9,8 +11,11 @@ from compas.geometry import scale_vector
 from compas.geometry import normalize_vector
 from compas.geometry import translate_points
 
+from compas.geometry import Circle
+from compas.geometry import Plane
 from compas.geometry import Vector
 from compas.geometry import Point
+from compas.geometry import Cylinder
 
 from compas.utilities import geometric_key
 
@@ -18,6 +23,8 @@ from compas_cem import COLORS
 
 from compas_view2.objects import NetworkObject
 from compas_view2.shapes import Text
+from compas_view2.collections import Collection
+from compas_view2.shapes import Arrow
 
 
 __all__ = ["DiagramObject"]
@@ -98,7 +105,7 @@ class DiagramObject(NetworkObject):
     support_nodecolor = Color.from_rgb255(*COLORS["node_support"]).rgb
 
     default_nodesize = 10.0
-    default_edgewidth = 2.0
+    default_edgewidth = 0.015
     default_nodexyz = [0.0, 0.0, 0.0]
 
     default_loadscale = 1.0
@@ -112,6 +119,7 @@ class DiagramObject(NetworkObject):
     default_textcolor = Color.black().rgb
     default_textsize = 30
     default_floatprecision = "2f"
+    default_opacity = 0.75
 
     def __init__(self,
                  diagram,
@@ -126,7 +134,7 @@ class DiagramObject(NetworkObject):
                  residualscale=None,
                  loadtol=None,
                  residualtol=None,
-                 show_nodes=True,
+                 show_nodes=False,
                  show_edges=True,
                  show_loads=True,
                  show_residuals=True,
@@ -142,6 +150,8 @@ class DiagramObject(NetworkObject):
 
         self._nodes = None
         self._edges = None
+        self._edges_by_type = None
+
         self._node_xyz = None
         self._node_color = None
         self._edge_color = None
@@ -180,12 +190,6 @@ class DiagramObject(NetworkObject):
         self.text_color = text_color or self.default_textcolor
 
         self.viewer = viewer
-
-        # TODO: Is adding these commands here a good idea?
-        self.draw_loads()
-        self.draw_residuals()
-        self.draw_nodetext()
-        self.draw_edgetext()
 
 # ------------------------------------------------------------------------------
 # Properties
@@ -290,14 +294,31 @@ class DiagramObject(NetworkObject):
     @property
     def edge_width(self):
         if not self._edge_width:
-            self._edge_width = self.default_edgewidth
+            self.edge_width = self.default_edgewidth
         return self._edge_width
 
     @edge_width.setter
-    def edge_width(self, edgewidth):
-        if isinstance(edgewidth, (int, float)):
+    def edge_width(self, width):
+        if isinstance(width, dict):
+            self._edge_width = width
+        elif isinstance(width, (int, float)):
+            self._edge_width = {edge: width for edge in self.edges}
+        elif isinstance(width, Iterable):
+            low, high = width
+            edgewidth = dict()
+            forces = [fabs(self.diagram.edge_force(edge)) for edge in self.edges]
+            forcemin = min(forces)
+            forcemax = max(forces)
+            for edge in self.edges:
+                force = fabs(self.diagram.edge_force(edge))
+                try:
+                    ratio = (force - forcemin) / (forcemax - forcemin)
+                except ZeroDivisionError:
+                    ratio = 1.0
+                width = (1.0 - ratio) * low + ratio * high
+                edgewidth[edge] = width
+
             self._edge_width = edgewidth
-            self.linewidth = edgewidth
 
     @property
     def load_scale(self):
@@ -384,7 +405,27 @@ class DiagramObject(NetworkObject):
 
     def draw_edges(self):
         """
-        Draw edges.
+        Draw the edges of a diagram.
+        """
+        if not self.show_edges:
+            return
+
+        meshes = self._edge_meshes()
+
+        for edge_type, edges in self.edges_by_type.items():
+            if not edges:
+                continue
+            edge_meshes = [meshes[edge] for edge in edges]
+            color = self.edge_color[edges[0]]  # TODO: needs cleaner alternative
+            self.viewer.add(Collection(edge_meshes),
+                            facecolor=color,
+                            linecolor=color,
+                            show_edges=True,
+                            opacity=self.default_opacity)
+
+    def draw_edges2(self):
+        """
+        Draw the edges of a diagram.
         """
         positions = []
         colors = []
@@ -422,11 +463,11 @@ class DiagramObject(NetworkObject):
                                     attr_names=self.default_loadattrs,
                                     shift={})
 
-        for load in loads.values():
-            self.viewer.add(load["vector"],
-                            position=load["point"],
-                            size=load["vector"].length,
-                            color=self.default_loadcolor)
+        loads = list(loads.values())
+        self.viewer.add(Collection(loads),
+                        facecolor=self.default_loadcolor,
+                        show_edges=False,
+                        opacity=self.default_opacity)
 
     def draw_residuals(self):
         """
@@ -461,14 +502,18 @@ class DiagramObject(NetworkObject):
                                         scale=self.residual_scale,
                                         tol=self.residual_tol,
                                         attr_names=self.default_residualattrs,
-                                        shift={})  # shift=reaction_shifts())
+                                        shift=reaction_shifts())
 
-        for residual in residuals.values():
+        residuals = list(residuals.values())
 
-            self.viewer.add(residual["vector"],
-                            position=residual["point"],
-                            size=residual["vector"].length,
-                            color=self.default_residualcolor)
+        self.viewer.add(Collection(residuals),
+                        facecolor=self.default_residualcolor,
+                        show_edges=False,
+                        opacity=self.default_opacity)
+
+# ------------------------------------------------------------------------------
+# Text
+# ------------------------------------------------------------------------------
 
     def draw_nodetext(self):
         """
@@ -537,8 +582,6 @@ class DiagramObject(NetworkObject):
         forces = {}
         for node in nodes:
 
-            force = {}
-
             f_vec = self.diagram.node_attributes(node, attr_names)
             f_vec_norm = normalize_vector(f_vec)
             f_vec_scaled = scale_vector(f_vec, scale)
@@ -560,11 +603,11 @@ class DiagramObject(NetworkObject):
                 gap_vector = scale_vector(f_vec_norm, gap_arrow)
                 start, end = translate_points([start, end], gap_vector)
 
-            force["point"] = Point(*start)
-            force["vector"] = Vector.from_start_end(start, end)
-
-            forces[node] = force
-
+            forces[node] = Arrow(Point(*start),
+                                 Vector.from_start_end(start, end),
+                                 head_portion=0.2,
+                                 head_width=0.07,
+                                 body_width=0.02)
         return forces
 
     def _node_textlabel(self, text_tag):
@@ -663,6 +706,23 @@ class DiagramObject(NetworkObject):
 
         return text_labels
 
+    def _edge_meshes(self, as_collection=False):
+        """
+        Generate a mesh for each of the selected edges in a diagram.
+        """
+        cylinders = dict()
+
+        for u, v in self.edges:
+
+            midpoint = self.diagram.edge_midpoint(u, v)
+            plane = Plane(midpoint, self.diagram.edge_vector(u, v))
+            radius = self.edge_width[(u, v)] / 2.0
+            circle = Circle(plane, radius)
+            cylinder = Cylinder(circle, height=self.diagram.edge_length(u, v))
+            cylinders[u, v] = cylinder
+
+        return cylinders
+
 # ------------------------------------------------------------------------------
 # COMPAS View2 Interface
 # ------------------------------------------------------------------------------
@@ -677,4 +737,4 @@ class DiagramObject(NetworkObject):
         """
         Draw edges.
         """
-        return self.draw_edges()
+        return [], [], []
