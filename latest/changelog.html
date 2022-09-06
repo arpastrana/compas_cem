@@ -98,6 +98,9 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <h2>Unreleased</h2>
 <p><strong>Added</strong></p>
 <ul class="simple">
+<li><p>Added sequence coloring for nodes to <cite>plotters.TopologyArtist</cite>.</p></li>
+<li><p>Automatically compute edge widths from a two-tuple with <cite>plotters.FormArtist</cite>.</p></li>
+<li><p>Automatically compute edge widths from a two-tuple with <cite>viewers.DiagramObject</cite>.</p></li>
 <li><p>Created <cite>MoveOriginNodes</cite> GH component.</p></li>
 <li><p>Implemented <cite>ShiftTrails</cite> GH component.</p></li>
 <li><p>Implemented <cite>Topology.number_of_sequences()</cite></p></li>
@@ -114,6 +117,7 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 <p><strong>Changed</strong></p>
 <ul class="simple">
+<li><p>Plot reaction forces and applied loads as arrow meshes in <cite>viewers.DiagramObject</cite> instead of lines.</p></li>
 <li><p><cite>Topology.auxiliary_trails()</cite> takes <cite>keys</cite> as parameter to iterate over origin node keys and trails.</p></li>
 <li><p><cite>Topology.trails()</cite> takes <cite>keys</cite> as parameter to iterate over origin node keys and trails.</p></li>
 <li><p><cite>Topology.sequence()</cite> takes <cite>keys</cite> as parameter to iterate over origin node keys and trails.</p></li>
