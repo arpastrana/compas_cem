@@ -70,6 +70,8 @@ class FormArtist(NetworkArtist):
         self.reaction_tol = reactiontol
         self.reaction_scale = reactionscale
 
+        self.edge_width = edgewidth
+
         self.edge_text = self._edge_textlabel(edgetext)
         self.node_text = self._node_textlabel(nodetext)
 
@@ -77,6 +79,34 @@ class FormArtist(NetworkArtist):
         self.show_reactions = show_reactions
         self.show_nodetext = show_nodetext
         self.show_edgetext = show_edgetext
+
+    @property
+    def edge_width(self):
+        return NetworkArtist.edge_width.fget(self)
+
+    @edge_width.setter
+    def edge_width(self, edgewidth):
+        NetworkArtist.edge_width.fset(self, edgewidth)
+
+        if self._edge_width:
+            return
+
+        low, high = edgewidth
+        edgewidth = dict()
+        forces = [fabs(self.network.edge_force(edge)) for edge in self.edges]
+        forcemin = min(forces)
+        forcemax = max(forces)
+
+        for edge in self.edges:
+            force = fabs(self.network.edge_force(edge))
+            try:
+                ratio = (force - forcemin) / (forcemax - forcemin)
+            except ZeroDivisionError:
+                ratio = 1.0
+            width = (1.0 - ratio) * low + ratio * high
+            edgewidth[edge] = width
+
+        self._edge_width = edgewidth
 
     def draw_nodes(self):
         """
