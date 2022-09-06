@@ -109,7 +109,9 @@ plotter.add(topology, nodesize=0.2)
 plotter.add(form.transformed(Translation.from_vector([2.0, 0.0, 0.0])),
             nodesize=0.2,
             loadscale=0.5,
-            reactionscale=0.5)
+            reactionscale=0.5,
+            edgetext="force",
+            show_edgetext=True)
 
 # ------------------------------------------------------------------------------
 # Plot scene

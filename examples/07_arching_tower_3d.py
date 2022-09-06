@@ -5,7 +5,6 @@ from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
 from compas.geometry import dot_vectors
 from compas.geometry import subtract_vectors
-from compas.geometry import length_vector
 from compas.geometry import Point
 from compas.geometry import Translation
 
@@ -18,7 +17,6 @@ from compas_cem.diagrams import TopologyDiagram
 from compas_cem.loads import NodeLoad
 
 from compas_cem.equilibrium import static_equilibrium
-from compas_cem.equilibrium import static_equilibrium_numpy
 
 from compas_cem.optimization import Optimizer
 
@@ -193,9 +191,11 @@ if PLOT or VIEW:
     shift_vector = [20.0, 0.0, 0.0]
     topology = topology.transformed(Translation.from_vector(scale_vector(shift_vector, 1.)))
     form = form.transformed(Translation.from_vector(scale_vector(shift_vector, 2.)))
+    forms = [form]
 
     if OPTIMIZE:
         form_opt = form_opt.transformed(Translation.from_vector(scale_vector(shift_vector, 3.)))
+        forms.append(form_opt)
 
 # ------------------------------------------------------------------------------
 # Plot
@@ -203,20 +203,23 @@ if PLOT or VIEW:
 
 if PLOT:
 
+    ns = 12
+    form_edgewidth = (0.75, 3.0)
+
     plotter = Plotter(figsize=(18, 9))
 
     plotter.add(topology,
-                nodesize=15,
+                nodesize=ns,
                 edgecolor="type",
                 nodetext="sequence",
-                show_nodetext=True,
-                )
+                show_nodetext=True)
 
-    plotter.add(form, nodesize=15)
-
-
-    if OPTIMIZE:
-        plotter.add(form_opt, nodesize=15, edgetext="force", show_edgetext=SHOW_EDGETEXT)
+    for form in forms:
+        plotter.add(form,
+                    edgewidth=form_edgewidth,
+                    nodesize=ns,
+                    edgetext="force",
+                    show_edgetext=SHOW_EDGETEXT)
 
     plotter.zoom_extents(padding=-2)
     plotter.show()
@@ -240,43 +243,18 @@ if VIEW:
 # ------------------------------------------------------------------------------
 
     viewer.add(topology,
-               show_nodes=True,
-               nodes=None,
-               nodesize=15.0,
-               show_edges=True,
-               edges=None,
-               edgewidth=2.0,
-               show_loads=False,
-               loadscale=2.5,
-               )
+               edgewidth=0.03,
+               show_loads=False)
 
 # ------------------------------------------------------------------------------
 # Visualize translated form diagram
 # ------------------------------------------------------------------------------
 
-    diagrams = [form]
-    if OPTIMIZE:
-        diagrams.append(form_opt)
-
-    for diagram in diagrams:
-        viewer.add(diagram,
-                   show_nodes=True,
-                   nodes=None,
-                   nodesize=15.0,
-                   show_edges=True,
-                   edges=None,
-                   edgewidth=2.0,
-                   show_loads=True,
-                   loadscale=1.0,
-                   loadtol=1e-1,
-                   show_residuals=False,
-                   residualscale=1.0,
-                   residualtol=1.5,
-                   show_edgetext=SHOW_EDGETEXT,
+    for form in forms:
+        viewer.add(form,
+                   edgewidth=(0.03, 0.15),
                    edgetext="force",
-                   show_nodetext=False,
-                   nodetext="xyz"
-                   )
+                   show_edgetext=SHOW_EDGETEXT)
 
 # ------------------------------------------------------------------------------
 # Show scene
