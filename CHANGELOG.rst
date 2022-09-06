@@ -11,6 +11,9 @@ Unreleased
 
 **Added**
 
+- Added sequence coloring for nodes to `plotters.TopologyArtist`.
+- Automatically compute edge widths from a two-tuple with `plotters.FormArtist`.
+- Automatically compute edge widths from a two-tuple with `viewers.DiagramObject`.
 - Created `MoveOriginNodes` GH component.
 - Implemented `ShiftTrails` GH component.
 - Implemented `Topology.number_of_sequences()`
@@ -27,6 +30,7 @@ Unreleased
 
 **Changed**
 
+- Plot reaction forces and applied loads as arrow meshes in `viewers.DiagramObject` instead of lines.
 - `Topology.auxiliary_trails()` takes `keys` as parameter to iterate over origin node keys and trails.
 - `Topology.trails()` takes `keys` as parameter to iterate over origin node keys and trails.
 - `Topology.sequence()` takes `keys` as parameter to iterate over origin node keys and trails.

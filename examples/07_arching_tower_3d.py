@@ -45,7 +45,7 @@ ITERS = 300
 EPS = 1.
 
 PLOT = True
-VIEW = False
+VIEW = True
 SHOW_EDGETEXT = False
 
 EXPORT_JSON = False
@@ -212,7 +212,8 @@ if PLOT:
                 nodesize=ns,
                 edgecolor="type",
                 nodetext="sequence",
-                show_nodetext=True)
+                nodecolor="sequence",
+                show_nodetext=False)
 
     for form in forms:
         plotter.add(form,
