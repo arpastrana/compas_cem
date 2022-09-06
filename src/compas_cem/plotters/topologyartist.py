@@ -4,6 +4,8 @@ from math import fabs
 
 from compas_cem import COLORS
 
+from compas.colors import Color
+from compas.colors import ColorMap
 from compas.geometry import add_vectors
 from compas.geometry import Line
 from compas.geometry import Rotation
@@ -30,6 +32,7 @@ class TopologyArtist(NetworkArtist):
                  edgewidth=1.0,
                  nodetext=None,  # must be a dict, or 'key', or 'index'
                  edgetext=None,  # must be a dict, or 'key', or 'index'
+                 nodecolor=None,  # must be a string, 'type' or 'sequence'
                  edgecolor=None,  # must be a string, 'state' or 'type'
                  show_loads=True,
                  show_nodetext=False,
@@ -40,9 +43,11 @@ class TopologyArtist(NetworkArtist):
                                              edgewidth=edgewidth,
                                              **kwargs)
 
-        self.node_colors = {"support": COLORS["node_support"],
-                            "_origin": COLORS["node_origin"],
-                            "default": COLORS["node"]}
+        self.node_typecolors = {"support": COLORS["node_support"],
+                                "_origin": COLORS["node_origin"],
+                                "default": COLORS["node"]}
+
+        self.node_sequencecolors = ColorMap.from_color(Color.from_rgb255(*COLORS["trail"]), "light")
 
         self.edge_statecolors = {-1.0: COLORS["compression"],
                                  1.0: COLORS["tension"],
@@ -61,7 +66,8 @@ class TopologyArtist(NetworkArtist):
         self.edge_text = self._edge_textlabel(edgetext)
         self.node_text = self._node_textlabel(nodetext)
 
-        self.edge_color2 = edgecolor or "state"
+        self.node_colors = nodecolor or "type"
+        self.edge_colors = edgecolor or "state"
 
         self.show_loads = show_loads
         self.show_nodetext = show_nodetext
@@ -71,13 +77,77 @@ class TopologyArtist(NetworkArtist):
         """
         Draw the nodes of a topology diagram.
         """
-        cmap = self.node_colors
+        if self.node_colors == "type":
+            attr_name = "type"
+        elif self.node_colors == "sequence":
+            attr_name = "_k"
+            maxval = self.network.sequence_last()
+
         node_color = {}
-        for node in self.topology.nodes():
-            key = self.topology.node_attribute(node, "type") or "default"
-            node_color[node] = cmap[key]
+        for node in self.nodes:
+            attr = self.topology.node_attribute(node, attr_name)
+            if self.node_colors == "type":
+                attr = attr or "default"
+                color = self.node_typecolors[attr]
+            elif self.node_colors == "sequence":
+                color = self.node_sequencecolors(float(attr), maxval=maxval)
+
+            node_color[node] = color
 
         super(TopologyArtist, self).draw_nodes(color=node_color)
+
+    def draw_edges(self):
+        """
+        Draw the edges of a topology diagram.
+        """
+        topology = self.topology
+
+        edge_color = {}
+
+        if self.edge_colors == "state":
+            cmap = self.edge_statecolors
+            for edge in self.edges:
+                # draw auxiliary trail edges
+                if topology.is_auxiliary_trail_edge(edge):
+                    edge_color[edge] = cmap["auxiliary_trail"]
+                else:
+                    # draw trail edges
+                    if topology.is_trail_edge(edge):
+                        attr_name = "length"
+                        # draw deviation edges
+                    elif topology.is_deviation_edge(edge):
+                        attr_name = "force"
+
+                    ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
+                    edge_color[edge] = cmap[ckey]
+
+        elif self.edge_colors == "type":
+            cmap = self.edge_typecolors
+            for edge in self.edges:
+                if topology.is_auxiliary_trail_edge(edge):
+                    attr_name = "auxiliary_trail"
+                else:
+                    if topology.is_trail_edge(edge):
+                        attr_name = "edge_trail"
+                    elif topology.has_trails():
+                        if topology.is_direct_deviation_edge(edge):
+                            attr_name = "edge_deviation"
+                        elif topology.is_indirect_deviation_edge(edge):
+                            attr_name = "edge_deviation_indirect"
+                    else:
+                        if topology.is_deviation_edge(edge):
+                            attr_name = "edge_deviation"
+
+                edge_color[edge] = cmap[attr_name]
+
+        # draw edges
+        super(TopologyArtist, self).draw_edges(color=edge_color)
+
+        # change linestyle
+        edge_lines = self._edgecollection
+        lsmap = self.edge_linestyles
+        els = [lsmap[topology.edge_attribute(e, "type")] for e in self.edges]
+        edge_lines.set_linestyle(els)
 
     def draw_loads(self):
         """
@@ -105,60 +175,6 @@ class TopologyArtist(NetworkArtist):
                                  draw_as_segment=True,
                                  zorder=4000,
                                  linewidth=0.3)  # hardcoded, following value from COMPAS
-
-    def draw_edges(self):
-        """
-        Draw the edges of a topology diagram.
-        """
-        topology = self.topology
-
-        edges = list(topology.edges())
-        edge_color = {}
-
-        if self.edge_color2 == "state":
-            cmap = self.edge_statecolors
-            for edge in edges:
-                # draw auxiliary trail edges
-                if topology.is_auxiliary_trail_edge(edge):
-                    edge_color[edge] = cmap["auxiliary_trail"]
-                else:
-                    # draw trail edges
-                    if topology.is_trail_edge(edge):
-                        attr_name = "length"
-                        # draw deviation edges
-                    elif topology.is_deviation_edge(edge):
-                        attr_name = "force"
-
-                    ckey = copysign(1.0, topology.edge_attribute(edge, attr_name))
-                    edge_color[edge] = cmap[ckey]
-
-        elif self.edge_color2 == "type":
-            cmap = self.edge_typecolors
-            for edge in edges:
-                if topology.is_auxiliary_trail_edge(edge):
-                    attr_name = "auxiliary_trail"
-                else:
-                    if topology.is_trail_edge(edge):
-                        attr_name = "edge_trail"
-                    elif topology.has_trails():
-                        if topology.is_direct_deviation_edge(edge):
-                            attr_name = "edge_deviation"
-                        elif topology.is_indirect_deviation_edge(edge):
-                            attr_name = "edge_deviation_indirect"
-                    else:
-                        if topology.is_deviation_edge(edge):
-                            attr_name = "edge_deviation"
-
-                edge_color[edge] = cmap[attr_name]
-
-        # draw edges
-        super(TopologyArtist, self).draw_edges(color=edge_color)
-
-        # change linestyle
-        edge_lines = self._edgecollection
-        lsmap = self.edge_linestyles
-        els = [lsmap[topology.edge_attribute(e, "type")] for e in edges]
-        edge_lines.set_linestyle(els)
 
     def draw(self):
         """
