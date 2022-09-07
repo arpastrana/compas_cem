@@ -147,7 +147,7 @@ If you use **COMPAS CEM** for a project or research, please cite us using these 
 Acknowledgements
 ================
 
-This material is based upon work supported by the U.S. National Science Foundation (NSF) under Grant No.OAC-2118201 and the `NSF Institute for Data Driven Dynamical Design <https://www.mines.edu/id4>`_.
+This work has been supported in part by the U.S. National Science Foundation under grant OAC-2118201 and the `NSF Institute for Data Driven Dynamical Design <https://www.mines.edu/id4>`_.
 
 
 License
