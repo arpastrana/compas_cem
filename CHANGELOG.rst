@@ -11,6 +11,7 @@ Unreleased
 
 **Added**
 
+- Added `EdgeDirectionConstraint` grasshopper plugin.
 - Implemented `constraints.EdgeDirectionConstraint`
 - Added sequence coloring for nodes to `plotters.TopologyArtist`.
 - Automatically compute edge widths from a two-tuple with `plotters.FormArtist`.
