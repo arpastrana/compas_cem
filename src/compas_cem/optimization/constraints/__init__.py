@@ -34,6 +34,7 @@ from .plane import *  # noqa F403
 from .line import *  # noqa F403
 from .force import *  # noqa F403
 from .length import *  # noqa F403
+from .direction import *  # noqa F403
 
 # import compas
 # if not compas.IPY:

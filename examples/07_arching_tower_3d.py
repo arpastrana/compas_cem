@@ -188,7 +188,7 @@ if EXPORT_JSON:
 # ------------------------------------------------------------------------------
 
 if PLOT or VIEW:
-    shift_vector = [20.0, 0.0, 0.0]
+    shift_vector = [22.0, 0.0, 0.0]
     topology = topology.transformed(Translation.from_vector(scale_vector(shift_vector, 1.)))
     form = form.transformed(Translation.from_vector(scale_vector(shift_vector, 2.)))
     forms = [form]
@@ -212,14 +212,16 @@ if PLOT:
                 nodesize=ns,
                 edgecolor="type",
                 nodetext="sequence",
-                nodecolor="sequence",
-                show_nodetext=False)
+                nodecolor="type",
+                show_nodetext=True)
 
     for form in forms:
         plotter.add(form,
                     edgewidth=form_edgewidth,
                     nodesize=ns,
                     edgetext="force",
+                    show_loads=False,
+                    show_reactions=False,
                     show_edgetext=SHOW_EDGETEXT)
 
     plotter.zoom_extents(padding=-2)

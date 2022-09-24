@@ -82,6 +82,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
     # output
     reaction_forces = {}
     trail_forces = {}
+    trail_directions = {}
 
     for t in range(tmax):  # max iterations
 
@@ -152,10 +153,14 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 # compute trail force
                 trail_force = length_vector_numpy(rvec)  # always positive
 
+                # compute trail direction by normalizing residual vector
                 # NOTE: to avoid NaNs, do not normalize residual vector if it is zero length
                 nrvec = rvec / trail_force
                 if np.isnan(length_vector_numpy(nrvec)):
                     nrvec = rvec
+
+                # store trail direction
+                trail_directions[edge] = nrvec
 
                 # store next node position
                 next_pos = pos + length * nrvec
@@ -203,13 +208,14 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
     eq_state = {}
     eq_state["node_xyz"] = node_xyz
     eq_state["trail_forces"] = trail_forces
+    eq_state["trail_directions"] = trail_directions
     eq_state["reaction_forces"] = reaction_forces
 
     # return node_xyz, trail_forces, reaction_forces
     return eq_state
 
 
-def form_update(form, node_xyz, trail_forces, reaction_forces):
+def form_update(form, node_xyz, trail_forces, reaction_forces, **kwargs):
     """
     Update the node and edge attributes of a form after equilibrating it.
     """

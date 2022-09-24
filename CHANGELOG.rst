@@ -11,6 +11,7 @@ Unreleased
 
 **Added**
 
+- Implemented `constraints.EdgeDirectionConstraint`
 - Added sequence coloring for nodes to `plotters.TopologyArtist`.
 - Automatically compute edge widths from a two-tuple with `plotters.FormArtist`.
 - Automatically compute edge widths from a two-tuple with `viewers.DiagramObject`.
