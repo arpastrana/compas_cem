@@ -16,8 +16,9 @@ class EdgeDirectionConstraint(VectorConstraint):
     def __init__(self, edge=None, vector=None, weight=1.0):
         super(EdgeDirectionConstraint, self).__init__(edge, vector, weight)
 
-    def target(self, point):
+    def target(self, reference):
         """
+        The target vector.
         """
         return normalize_vector(self._target)
 
@@ -28,9 +29,8 @@ class EdgeDirectionConstraint(VectorConstraint):
         # cosine_similarity = dot_vectors(u, v) / (length_vector(u) * length_vector(v))
         # 1 - fabs(cosine_similarity)
         u, v = self.key()
-        vector = subtract_vectors(data["node_xyz"][u], data["node_xyz"][v])
-        vector = scale_vector(vector, 1.0 / (length_vector_sqrd(vector) ** 0.5))
-        return vector
+        vector = subtract_vectors(data["node_xyz"][v], data["node_xyz"][u])
+        return scale_vector(vector, 1.0 / (length_vector_sqrd(vector) ** 0.5))
 
 
 if __name__ == "__main__":

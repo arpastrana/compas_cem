@@ -1,9 +1,9 @@
 {
-    "name": "Deviation Edge Length Constraint",
-    "nickname": "DeviationEdgeLengthConstraint",
+    "name": "Edge Direction Constraint",
+    "nickname": "EdgeDirectionConstraint",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Make the length of a deviation edge reach a target value.",
+    "description": "Align the direction of a trail or a deviation edge with a target vector.",
     "exposure": 4,
 
     "ghpython": {
@@ -11,12 +11,12 @@
         "inputParameters": [
             {
                 "name": "edge_key",
-                "description": "The key of a COMPAS CEM deviation edge."
+                "description": "The key of a COMPAS CEM trail or deviation edge."
             },
             {
-                "name": "length",
-                "description": "The target length.",
-                "typeHintID": "float"
+                "name": "vector",
+                "description": "The target vector.",
+                "typeHintID": "vector"
             },
             {
                 "name": "weight",
@@ -27,7 +27,7 @@
         "outputParameters": [
             {
                 "name": "constraint",
-                "description": "A COMPAS CEM deviation edge length constraint.",
+                "description": "A COMPAS CEM edge direction constraint.",
                 "optional": false
             }
         ]

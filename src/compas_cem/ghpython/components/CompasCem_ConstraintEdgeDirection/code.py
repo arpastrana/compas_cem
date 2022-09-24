@@ -1,6 +1,7 @@
 """
-Make the length of a deviation edge reach a target value.
+Align the direction of a trail or a deviation edge with a target vector.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.optimization import EdgeDirectionConstraint
