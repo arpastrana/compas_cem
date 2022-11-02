@@ -85,7 +85,7 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
         # store last positions for residual
         last_xyz = {k: v for k, v in node_xyz.items()}
 
-        for k in range(klast + 1):  # sequences
+        for k in range(topology.number_of_sequences()):  # sequences
 
             for key, trail in topology.trails(keys=True):
 
