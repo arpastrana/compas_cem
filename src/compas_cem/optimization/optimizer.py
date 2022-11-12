@@ -37,8 +37,8 @@ class Optimizer(Data):
     def __init__(self, **kwargs):
         super(Optimizer, self).__init__(**kwargs)
 
-        self.parameters = dict()
-        self.constraints = dict()
+        self.parameters = {}
+        self.constraints = {}
 
         self.x_opt = None
         self.time_opt = None
