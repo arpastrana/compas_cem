@@ -2,20 +2,20 @@
 Citing
 ********************************************************************************
 
-If you use **COMPAS CEM** for a project or research, please cite our paper preprint:
+If you use **COMPAS CEM** for a project or research, please consider citing our journal paper:
 
 .. code-block:: latex
 
-    @misc{pastrana_constrainedformfinding_2021,
-          title = {Constrained {{Form}}-{{Finding}} of {{Tension}}-{{Compression Structures}} Using {{Automatic Differentiation}}},
-          author={Pastrana, Rafael and
-                  Ohlbrock, Patrick Ole and
-                  D'Acunto, Pierluigi and
-                  Parascho, Stefana},
-          year={2021},
-          url={https://arxiv.org/abs/2111.02607},
-          eprint={2111.02607},
-          archivePrefix={arXiv}}
+    @article{pastrana_constrainedformfinding_2022,
+             title = {Constrained {Form}-{Finding} of {Tension}–{Compression} {Structures} using {Automatic} {Differentiation}},
+             author = {Pastrana, Rafael and Ohlbrock, Patrick Ole and Oberbichler, Thomas and D’Acunto, Pierluigi and Parascho, Stefana},
+             journal = {Computer-Aided Design},
+             doi = {10.1016/j.cad.2022.103435},
+             volume = {155},
+             issn = {0010-4485},
+             url = {https://www.sciencedirect.com/science/article/pii/S0010448522001683},
+             month = feb,
+             year = {2022}}
 
 And the code repository:
 
@@ -35,7 +35,7 @@ And the code repository:
 Authors
 =======
 
-* Rafael Pastrana <arpj@princeton> `@arpastrana <https://github.com/arpastrana>`_
+* Rafael Pastrana <arpastrana@princeton> `@arpastrana <https://github.com/arpastrana>`_
 * Ole Ohlbrock <ohlbrock@arch.ethz.ch> `@OleOhlbrock <https://github.com/OleOhlbrock>`_
 * Pierluigi D'Acunto <pierluigidacunto@tum.de> `@pierluigidacunto <https://github.com/pierluigidacunto>`_
-* Stefana Parascho <parascho@princeton.edu> `@stefanaparascho <https://github.com/stefanaparascho>`_
+* Stefana Parascho <stefana.parascho@epfl.ch> `@stefanaparascho <https://github.com/stefanaparascho>`_
