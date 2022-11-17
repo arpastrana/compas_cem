@@ -11,8 +11,10 @@ Unreleased
 
 **Added**
 
-- Added `EdgeDirectionConstraint` grasshopper plugin.
-- Implemented `constraints.EdgeDirectionConstraint`
+- Added `PolylineConstraint` component to grasshopper plugin.
+- Implemented `constraints.PolylineConstraint`.
+- Added `EdgeDirectionConstraint` component to grasshopper plugin.
+- Implemented `constraints.EdgeDirectionConstraint`.
 
 **Changed**
 

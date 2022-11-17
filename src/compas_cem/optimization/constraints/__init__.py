@@ -35,6 +35,7 @@ from .line import *  # noqa F403
 from .force import *  # noqa F403
 from .length import *  # noqa F403
 from .direction import *  # noqa F403
+from .polyline import *  # noqa F403
 
 # import compas
 # if not compas.IPY:
