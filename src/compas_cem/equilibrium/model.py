@@ -1,7 +1,7 @@
 import autograd.numpy as np
 
 from compas_cem.equilibrium import EquilibriumState
-from compas_cem.equilibrium import EquilibriumStructure
+from compas_cem.equilibrium import EquilibriumTopology
 
 
 class EquilibriumModel:
@@ -15,7 +15,7 @@ class EquilibriumModel:
     """
     def __init__(self, topology):
         self.topology = topology
-        self.structure = EquilibriumStructure(topology)
+        self.structure = EquilibriumTopology(topology)
 
     def __call__(self, xyz, forces, lengths, loads):
         """

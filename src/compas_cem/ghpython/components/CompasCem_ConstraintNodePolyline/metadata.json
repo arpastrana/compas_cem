@@ -1,5 +1,5 @@
 {
-    "name": "Point Constraint",
+    "name": "Polyline Constraint",
     "nickname": "PolylineConstraint",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

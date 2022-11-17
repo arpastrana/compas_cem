@@ -28,9 +28,9 @@ from .force import *  # noqa F403
 import compas
 if not compas.IPY:
     from .force_numpy import *  # noqa F403
-    from .model import *  # noqa F403
     from .state import *  # noqa F403
     from .topology import *  # noqa F403
+    from .model import *  # noqa F403
 
 
 __all__ = [name for name in dir() if not name.startswith('_')]

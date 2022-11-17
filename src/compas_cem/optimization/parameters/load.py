@@ -77,7 +77,7 @@ if __name__ == "__main__":
     topology = TopologyDiagram()
 
     # add nodes
-    num_nodes = 3
+    num_nodes = 7
     for i in range(num_nodes):
         topology.add_node(Node(i, [float(i), 0.0, 0.0]))
 
@@ -99,6 +99,7 @@ if __name__ == "__main__":
     radius = fabs(length)
     pt = [0., 0., 0.]
     points = []
+
     for i in range(1, num_nodes):
         theta = 0.5 * pi * random()
         x = radius * cos(theta)
@@ -112,7 +113,7 @@ if __name__ == "__main__":
         optimizer.add_parameter(NodeLoadYParameter(i, 0.5, 0.5))
 
     # optimize
-    cform = optimizer.solve(topology, "LBFGS", iters=500, verbose=True)
+    cform = optimizer.solve(topology, "SLSQP", iters=500, verbose=True)
 
     # plot
     plotter = Plotter(figsize=(16.0, 9.0))
@@ -121,6 +122,7 @@ if __name__ == "__main__":
     for point in points:
         plotter.add(point, facecolor=(1, 0.5, 0.05))
 
+    plotter.add(topology)
     plotter.add(cform)
 
     plotter.zoom_extents()

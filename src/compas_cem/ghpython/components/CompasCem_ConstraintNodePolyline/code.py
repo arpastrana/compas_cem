@@ -7,7 +7,7 @@ from compas_cem.optimization import PolylineConstraint
 from compas_rhino.geometry import RhinoPolyline
 
 
-class PointConstraintComponent(component):
+class PolylineConstraintComponent(component):
     def RunScript(self, node_key, polyline, weight):
         weight = weight or 1.0
         if node_key is None or not polyline:

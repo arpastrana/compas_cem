@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
     for edge in topology.deviation_edges():
         force = fabs(topology.edge_force(edge))
-        assert force <= 1e-3, f"Absolute edge force: {force}"
+        assert force <= 1e-3
 
     # ------------------------------------------------------------------------------
     # Plot results
