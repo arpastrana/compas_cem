@@ -1,0 +1,36 @@
+{
+    "name": "Polyline Constraint",
+    "nickname": "PolylineConstraint",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Pull the position of a node to a target polyline.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "node_key",
+                "description": "The key of a COMPAS CEM node.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "polyline",
+                "description": "The target polyline.",
+                "typeHintID": "polyline"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the constraint in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "constraint",
+                "description": "A COMPAS CEM node polyline constraint.",
+                "optional": false
+            }
+        ]
+    }
+}

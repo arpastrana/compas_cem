@@ -69,6 +69,7 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
     # create data containers that describe equilibrium state
     reaction_forces = {}
     trail_forces = {}
+    trail_directions = {}
     residual_vectors = {node: topology.reaction_force(node) for node in topology.nodes()}
     node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
 
@@ -84,7 +85,7 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
         # store last positions for residual
         last_xyz = {k: v for k, v in node_xyz.items()}
 
-        for k in range(klast + 1):  # sequences
+        for k in range(topology.number_of_sequences()):  # sequences
 
             for key, trail in topology.trails(keys=True):
 
@@ -144,11 +145,15 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
                         length = plength
 
                 # store next node position
-                next_pos = add_vectors(pos, scale_vector(normalize_vector(rvec), length))
+                nrvec = normalize_vector(rvec)
+                next_pos = add_vectors(pos, scale_vector(nrvec, length))
                 node_xyz[next_node] = next_pos
 
                 # store trail force
                 trail_forces[edge] = copysign(length_vector(rvec), length)
+
+                # store trail direction
+                trail_directions[edge] = nrvec
 
                 # store residual vector
                 residual_vectors[next_node] = rvec
@@ -185,11 +190,12 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
     eq_state["node_xyz"] = node_xyz
     eq_state["trail_forces"] = trail_forces
     eq_state["reaction_forces"] = reaction_forces
+    eq_state["trail_directions"] = trail_directions
 
     return eq_state
 
 
-def form_update(form, node_xyz, trail_forces, reaction_forces):
+def form_update(form, node_xyz, trail_forces, reaction_forces, **kwargs):
     """
     Update the node and edge attributes of a form after equilibrating it.
     """

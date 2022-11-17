@@ -1,0 +1,35 @@
+{
+    "name": "Edge Direction Constraint",
+    "nickname": "EdgeDirectionConstraint",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Align the direction of a trail or a deviation edge with a target vector.",
+    "exposure": 4,
+
+    "ghpython": {
+        "isAdvancedMode": true,
+        "inputParameters": [
+            {
+                "name": "edge_key",
+                "description": "The key of a COMPAS CEM trail or deviation edge."
+            },
+            {
+                "name": "vector",
+                "description": "The target vector.",
+                "typeHintID": "vector"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the constraint in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "constraint",
+                "description": "A COMPAS CEM edge direction constraint.",
+                "optional": false
+            }
+        ]
+    }
+}

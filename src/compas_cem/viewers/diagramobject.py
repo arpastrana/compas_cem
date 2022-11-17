@@ -417,6 +417,7 @@ class DiagramObject(NetworkObject):
                 continue
             edge_meshes = [meshes[edge] for edge in edges]
             color = self.edge_color[edges[0]]  # TODO: needs cleaner alternative
+
             self.viewer.add(Collection(edge_meshes),
                             facecolor=color,
                             linecolor=color,
