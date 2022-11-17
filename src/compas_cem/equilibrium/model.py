@@ -36,4 +36,4 @@ class EquilibriumModel:
 
         r = tk
 
-        return EquilibriumState()
+        return EquilibriumState(r)

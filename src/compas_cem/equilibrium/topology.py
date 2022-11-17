@@ -1,14 +1,11 @@
-import numpy as np
-
 from compas.numerical import connectivity_matrix
-from compas.numerical import adjacency_matrix
 
 
 # ==========================================================================
 # Structure
 # ==========================================================================
 
-class EquilibriumStructure:
+class EquilibriumTopology:
     def __init__(self, topology):
         self._topology = topology
 
