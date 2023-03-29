@@ -70,25 +70,80 @@ topology.build_trails()
 # form = static_equilibrium(topology, eta=1e-6, tmax=100, verbose=True)
 
 # ------------------------------------------------------------------------------
-# Compute a state of static equilibrium
+# Imports
 # ------------------------------------------------------------------------------
 
+from compas.datastructures import network_connectivity_matrix
+from compas.utilities import pairwise
 import numpy as np
+import jax.numpy as jnp
 import equinox as eqx
 
 class EquilibriumModel(eqx.Module):
     pass
 
 
+# ------------------------------------------------------------------------------
+# Graph
+# ------------------------------------------------------------------------------
+
+def network_incidence_matrix(network):
+    """
+    Calculate the incidence matrix of a network.
+    """
+    return np.abs(network_connectivity_matrix(topology))
+
+
+def network_signed_incidence_matrix(network):
+    """
+    Compute the signed incidence matrix of a network.
+    """
+    node_index = network.key_index()
+    edge_index = network.uv_index()
+    incidence = network_incidence_matrix(network)
+
+    for node in network.nodes():
+        i = node_index[node]
+
+        for edge in network.connected_edges(node):
+            j = edge_index[edge]
+            val = 1.
+            if edge[0] != node:
+                val = -1.
+            incidence[j, i] = val
+
+    return incidence
+
+connectivity = network_connectivity_matrix(topology)
+incidence = network_incidence_matrix(topology)
+incidence_signed = network_signed_incidence_matrix(topology)
+
+print(connectivity)
+print(incidence)
+print(incidence_signed)
+
 # trails_sequences = topology.trails_sequences()
 # trails = {k: v[:] for k, v in topology.trails()}
+
+# ------------------------------------------------------------------------------
+# Nodes
+# ------------------------------------------------------------------------------
 
 nodes = list(topology.nodes())
 node_index = topology.key_index()
 
+# ------------------------------------------------------------------------------
+# Edges
+# ------------------------------------------------------------------------------
+
 edges = list(topology.edges())
 edge_index = topology.uv_index()
 index_edge = topology.index_uv()
+print(f"{edges=}")
+
+# ------------------------------------------------------------------------------
+# Deviation mask
+# ------------------------------------------------------------------------------
 
 deviation_mask = []
 for edge in edges:
@@ -97,27 +152,30 @@ for edge in edges:
         mask_value = 1
     deviation_mask.append(mask_value)
 
-print(f"{edges=}")
 print(f"{deviation_mask=}")
+
+# ------------------------------------------------------------------------------
+# Sequences
+# ------------------------------------------------------------------------------
 
 # topology.shift_trail(2, 1)
 sequences = np.ones((
                      topology.number_of_sequences(),
                      topology.number_of_trails()),
                     dtype=np.int32)
-sequences *= -1
+
+sequences *= -1  # negate to deal with shifted trails
 
 for tidx, trail in enumerate(topology.trails()):
     for node in trail:
         seq = topology.node_sequence(node)
         sequences[seq][tidx] = node_index[node]
 
-# trail_lengths = np.zeros(topology.number_of_edges())
-# for i, edge in enumerate(edges):
-#    if topology.is_trail_edge(edge):
-#        trail_lengths[i] = topology.edge_length_2(edge)
+# ------------------------------------------------------------------------------
+# Trail lengths - NOTE: outgoing per node
+# ------------------------------------------------------------------------------
 
-trail_lengths = np.zeros(topology.number_of_nodes())
+trail_lengths = np.zeros((topology.number_of_nodes(), 1))
 
 for trail in topology.trails():
     for u, v in pairwise(trail):
@@ -128,24 +186,42 @@ for trail in topology.trails():
 
 print(f"{trail_lengths=}")
 
-raise
+# ------------------------------------------------------------------------------
+# Deviation forces
+# ------------------------------------------------------------------------------
 
 deviation_forces = np.zeros(topology.number_of_edges())
 for i, edge in enumerate(edges):
     if topology.is_deviation_edge(edge):
        deviation_forces[i] = topology.edge_force(edge)
+deviation_forces = np.reshape(deviation_forces, (-1, 1))
 
 print(f"{deviation_forces=}")
+
+# ------------------------------------------------------------------------------
+# Starting parameters
+# ------------------------------------------------------------------------------
 
 loads = list(topology.node_load(node) for node in nodes)
 loads = np.asarray(loads)
 
 positions = list(topology.node_coordinates(node) for node in nodes)
 positions = np.asarray(positions)
+positions_start = np.asarray(positions)
 
 residuals = []
 residual = np.zeros((topology.number_of_trails(), 3))
 
+# deviation = np.ones((topology.number_of_trails(), 3)) * -1.0
+
+print(f"{positions=}")
+
+# ------------------------------------------------------------------------------
+# Functions
+# ------------------------------------------------------------------------------
+
+def vector_length(v, axis=1, keepdims=True):
+    return np.linalg.norm(v, axis=axis, keepdims=keepdims)
 
 def residual_vector(r, d, q):
     return r - d - q
@@ -154,24 +230,64 @@ def position_vector(p, r, l, t):
     return p + l * (r / t)
 
 def trail_force(r):
-    return np.linalg.norm(residual, axis=1, keepdims=True)
+    return vector_length(r)
 
-deviation = np.ones((topology.number_of_trails(), 3)) * -1.0
+def edge_vector(xyz, connectivity):
+    vector = connectivity @ xyz
+    return vector / vector_length(vector)
+
+def deviation_vector(seq, vectors, incidence, forces):
+    incidence_seq = incidence[:, seq]  # (num edges, num nodes seq)
+    incident_forces = incidence_seq * forces # (num edges, num nodes seq)
+
+    return incident_forces.T @ vectors
+
+# ------------------------------------------------------------------------------
+# Form finding
+# ------------------------------------------------------------------------------
+
+# TODO: Create signed incidence matrix, connectivity matrix and deviation mask
+# TODO: do we really need the connectivity matrix? all of them are very sparse
+
+print("\n*** Starting form finding ***")
+position_start = positions[sequences[0], :]
+position_last = position_start
 
 # iterate over sequences
-for sequence in sequences:
-    load = loads[sequence, :]
-    position_last = positions[sequence, :]
-    # tlength = trail_lengths[sequence, :]
+for i, sequence in enumerate(sequences):
 
+    """
+    vectors = connectivity @ xyz
+    pos, residual = vmap(node_equilibrium)(sequence, xyz, residual, dev_forces)
+    """
+    print(f"Sequence: {i}")
+
+    load = loads[sequence, :]
+    # position_last = positions[sequence, :]
+    tlength = trail_lengths[sequence, :]
+    # update position matrix
+    positions[sequence, :] = position_last
+
+    # NOTE: more efficient to slice and sum?
+    # TODO: mask indirect deviation edges when t = 0
+    # TODO: implement deviation_vector function
     # deviation = deviation_vector(sequence, positions, adjacency, deviation_mask)
+    edge_vecs = edge_vector(positions, connectivity)
+    deviation = deviation_vector(sequence,
+                                 edge_vecs,
+                                 incidence_signed,
+                                 deviation_forces)
+
+    # TODO: mask -1 values in sequence #shiftedtrails. before or after equilibrium computation?
     residual = residual_vector(residual, deviation, load)
     residuals.append(residual)
 
     tforce = trail_force(residual)
-    tlength = 1.
 
-    position_new = position_vector(position_last, residual, tlength, tforce)
+    position_new = position_vector(position_last,
+                                   residual,
+                                   tlength,
+                                   tforce)
 
     print(sequence)
     print(load)
@@ -182,8 +298,13 @@ for sequence in sequences:
     print(f"{position_new=}")
 
     print()
+
+    # replace last positions with new positions
     position_last = position_new
 
+
+print(f"{positions_start=}")
+print(f"{positions=}")
 print("ok")
 
 # ------------------------------------------------------------------------------
