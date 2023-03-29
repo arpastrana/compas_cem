@@ -29,7 +29,8 @@ import compas
 if not compas.IPY:
     from .force_numpy import *  # noqa F403
     from .state import *  # noqa F403
-    from .topology import *  # noqa F403
+    # from .topology import *  # noqa F403
+    from .graph import *  # noqa F403
     from .model import *  # noqa F403
 
 
