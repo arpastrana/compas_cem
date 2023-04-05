@@ -57,7 +57,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
 
     # output, mutable
     edge_forces = {e: np.array(topology.edge_force(e)) for e in topology.edges()}
-    edge_lengths = {e: np.array(topology.edge_attribute(e, "length")) for e in topology.edges()}
+    edge_lengths = {e: np.array(topology.edge_length_2(e)) for e in topology.edges()}
 
     # input, immutable
     # numpy
@@ -70,7 +70,7 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
     # edge planes
     edge_planes = {}
     for edge in topology.trail_edges():
-        plane = topology.edge_attribute(edge, "plane")
+        plane = topology.edge_plane(edge)
         if not plane:
             continue
         plane = [np.array(vector) for vector in plane]

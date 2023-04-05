@@ -255,6 +255,22 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         """
         return self.edge_attribute(key=edge, name="length")
 
+    def edge_plane(self, edge):
+        """
+        Gets the projection plane at an edge.
+
+        Parameters
+        ----------
+        edge : ``tuple``
+            The u, v edge key.
+
+        Return
+        ------
+        plane : ``tuple``
+            The projection plane of the edge.
+        """
+        return self.edge_attribute(key=edge, name="plane")
+
 # ==============================================================================
 # Magic methods
 # ==============================================================================

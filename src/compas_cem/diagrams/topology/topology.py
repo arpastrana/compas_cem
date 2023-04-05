@@ -910,7 +910,7 @@ class TopologyDiagram(Diagram, MeshMixins):
 
     def trail_sequences(self, key):
         """
-        Create a mapping between the sequences in the diagram and the nodes in the trail.
+        Create a mapping between topological sequences and the nodes in a trail.
 
         Parameters
         ----------
@@ -930,7 +930,9 @@ class TopologyDiagram(Diagram, MeshMixins):
 
     def trails_sequences(self):
         """
-        Creates a mapping between the nodes in all the trails and the available sequences.
+        Creates a mapping of mappings between the nodes of the trails and the sequences.
+
+        The mapping has the form ``{trail_key: {sequence: node}}``.
 
         Returns
         -------
