@@ -102,14 +102,14 @@
 <h3>1. Create a virtual environment</h3>
 <p>First, create a new anaconda environment from the Anaconda Command Prompt if you are on Windows, or from your Terminal if you are on MacOS or Linux.</p>
 <p>Here we chose the name of the environment to be <code class="docutils literal notranslate"><span class="pre">cem</span></code>, but you can call it <code class="docutils literal notranslate"><span class="pre">spacecowboy</span></code> if you prefer.</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda create -n cem
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>cem
 </code></pre></div>
 </div>
 </section>
 <section id="activate-the-virtual-environment">
 <h3>2. Activate the virtual environment</h3>
 <p>Next, activate the <code class="docutils literal notranslate"><span class="pre">cem</span></code> environment. Anaconda environments are like bubbles that keep installations and dependencies isolated from other parts in your machine. In other words, what happens in <code class="docutils literal notranslate"><span class="pre">cem</span></code> stays in <code class="docutils literal notranslate"><span class="pre">cem</span></code>! 🕺🏻</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda activate cem
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda<span class="w"> </span>activate<span class="w"> </span>cem
 </code></pre></div>
 </div>
 </section>
@@ -117,7 +117,7 @@
 <h3>3. Install COMPAS via conda</h3>
 <p>As a <code class="docutils literal notranslate"><span class="pre">compas</span></code> extension, <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> requires <code class="docutils literal notranslate"><span class="pre">compas</span></code> to work.
 The recommended way to install <code class="docutils literal notranslate"><span class="pre">compas</span></code> is through conda, but you can consult other installation options in the <a class="reference external" href="https://compas.dev/compas/latest/installation">COMPAS installation</a> documentation.</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda install -c conda-forge compas
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>compas
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -128,12 +128,12 @@ The recommended way to install <code class="docutils literal notranslate"><span 
 <section id="install-compas-cem-via-pip">
 <h3>4. Install COMPAS CEM via pip</h3>
 <p>Finally, install <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> with a one-liner:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip install compas-cem
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip<span class="w"> </span>install<span class="w"> </span>compas-cem
 </code></pre></div>
 </div>
 <p>To double-check that everything is up and running, type the following in the
 command line and hit enter:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>python -c <span class="s2">&quot;import compas_cem&quot;</span>
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import compas_cem&quot;</span>
 </code></pre></div>
 </div>
 <p>If no errors show up, celebrate 🎉! You have a working installation of <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>.</p>
@@ -151,7 +151,7 @@ The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshop
 <section id="remove-any-leftovers">
 <h3>1. Remove any leftovers</h3>
 <p>In case there was an older <code class="docutils literal notranslate"><span class="pre">compas</span></code> or <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> M version linked to <a class="reference external" href="https://www.rhino3d.com/">Rhino</a>.</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>python -m compas_rhino.uninstall -v <span class="m">7</span>.0
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>python<span class="w"> </span>-m<span class="w"> </span>compas_rhino.uninstall<span class="w"> </span>-v<span class="w"> </span><span class="m">7</span>.0
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -164,7 +164,7 @@ The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshop
 <p>Let’s connect <code class="docutils literal notranslate"><span class="pre">compas</span></code>, <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>, <code class="docutils literal notranslate"><span class="pre">compas_rhino</span></code> and <code class="docutils literal notranslate"><span class="pre">compas_ghpython</span></code> to
 Rhino. If you were wondering, the last two are installed automatically when we first installed <code class="docutils literal notranslate"><span class="pre">compas</span></code>.</p>
 <p>Type in your command line:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>python -m compas_rhino.install -v <span class="m">7</span>.0
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>python<span class="w"> </span>-m<span class="w"> </span>compas_rhino.install<span class="w"> </span>-v<span class="w"> </span><span class="m">7</span>.0
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -184,11 +184,11 @@ Rhino. If you were wondering, the last two are installed automatically when we f
 <section id="update-compas-cem">
 <h2>Update COMPAS CEM</h2>
 <p>If you installed <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> one day in the past with <code class="docutils literal notranslate"><span class="pre">pip</span></code> and you want to update it to the latest available version, the update command is the following:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip install --upgrade compas-cem
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>compas-cem
 </code></pre></div>
 </div>
 <p>Alternatively, if you want to switch to a specific version, type this:</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip install compas-cem<span class="o">==</span><span class="m">0</span>.16.1
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip<span class="w"> </span>install<span class="w"> </span>compas-cem<span class="o">==</span><span class="m">0</span>.16.1
 </code></pre></div>
 </div>
 <div class="admonition note">

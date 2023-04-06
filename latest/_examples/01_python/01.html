@@ -133,9 +133,9 @@
 <span class="c1"># Add edges</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 
-<span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
+<span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.5</span><span class="p">))</span>
 <span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">DeviationEdge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">force</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
-<span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">))</span>
+<span class="n">topology</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">length</span><span class="o">=-</span><span class="mf">1.5</span><span class="p">))</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Add supports</span>
@@ -170,11 +170,12 @@
 <span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">()</span>
 
 <span class="c1"># add topology diagram to scene</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">nodesize</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">artist</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">nodesize</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">show_nodetext</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_edgetext</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 
 <span class="c1"># add shifted form diagram to the scene</span>
 <span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">Translation</span><span class="o">.</span><span class="n">from_vector</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]))</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">nodesize</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">show_edgetext</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">edgetext</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">nodesize</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">show_nodetext</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_edgetext</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># show plotter contents</span>
 <span class="n">plotter</span><span class="o">.</span><span class="n">zoom_extents</span><span class="p">()</span>
