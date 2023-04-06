@@ -15,6 +15,7 @@ Unreleased
 - Implemented `constraints.PolylineConstraint`.
 - Added `EdgeDirectionConstraint` component to grasshopper plugin.
 - Implemented `constraints.EdgeDirectionConstraint`.
+- Added `Diagram.edge_plane` to query the projection plane of an edge.
 
 **Changed**
 
