@@ -242,7 +242,26 @@ def chdir(dirname=None):
       'gh_io_folder': 'Folder where GH_IO.dll is located. If not specified, it will try to download from NuGet.',
       'ironpython': 'Command for running the IronPython executable. Defaults to `ipy`.'})
 def ghplugin(ctx, gh_io_folder=None, ironpython=None):
-    """Build Grasshopper user objects from source"""
+    """Build Grasshopper user objects from source
+
+    Notes
+    -----
+    If you are building the gh plugin on mac for the first time, you will 
+    probably have to download mono, ironpython, the GH_IO.dll library and the 
+    ipy.sh script. 
+
+    You can get GH_IO.dll and the ipy.sh script from the temp/ folder in your
+    last computer. Or look around online.
+    
+    Download the mono installer from https://www.mono-project.com.
+    Then, download the ironpython installer from their github releases page:
+    https://github.com/IronLanguages/ironpython2/releases
+
+    Note that you may need to update the ipy.sh script to point to the correct
+    version of mono and ironpython.
+
+    Have fun.
+    """
     clean(ctx, docs=False, bytecode=False, builds=False, ghuser=True)
     with chdir(BASE_FOLDER):
         with tempfile.TemporaryDirectory('actions.ghcomponentizer') as action_dir:
