@@ -737,7 +737,8 @@ class TopologyDiagram(Diagram, MeshMixins):
         flag : ``bool``
             ``True``if the edge is in an auxiliary trail. ``False`` otherwise.
         """
-        if edge in set(self.auxiliary_trails()):
+        aux_trails = set([tuple(edge) for edge in self.auxiliary_trails()])
+        if edge in set(aux_trails):
             return True
         return False
 
