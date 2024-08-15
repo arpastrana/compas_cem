@@ -27,10 +27,10 @@ source_suffix = [".rst", ]
 templates_path = sphinx_compas_theme.get_autosummary_templates_path()
 exclude_patterns = []
 
-pygments_style   = "sphinx"
-show_authors     = True
+pygments_style = "sphinx"
+show_authors = True
 add_module_names = True
-language         = None
+language = None
 
 
 # -- Extension configuration ------------------------------------------------
@@ -60,13 +60,16 @@ autodoc_member_order = "alphabetical"
 
 autoclass_content = "class"
 
+
 def skip(app, what, name, obj, would_skip, options):
     if name.startswith('_'):
         return True
     return would_skip
 
+
 def setup(app):
     app.connect("autodoc-skip-member", skip)
+
 
 # autosummary options
 
@@ -91,16 +94,20 @@ napoleon_use_rtype = False
 plot_html_show_source_link = False
 plot_html_show_formats = False
 
+
 # docstring sections
 
 def parse_attributes_section(self, section):
     return self._format_fields("Attributes", self._consume_fields())
 
+
 NumpyDocstring._parse_attributes_section = parse_attributes_section
+
 
 def patched_parse(self):
     self._sections["attributes"] = self._parse_attributes_section
     self._unpatched_parse()
+
 
 NumpyDocstring._unpatched_parse = NumpyDocstring._parse
 NumpyDocstring._parse = patched_parse
@@ -111,6 +118,7 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/", None),
     "compas": ("https://compas.dev/compas/latest/", None),
 }
+
 
 # linkcode
 
@@ -147,6 +155,7 @@ def linkcode_resolve(domain, info):
 
     return f"https://github.com/arpastrana/compas_cem/blob/master/src/{filename}.py#L{lineno}"
 
+
 # extlinks
 
 extlinks = {}
@@ -157,12 +166,12 @@ html_theme = "compaspkg"
 html_theme_path = sphinx_compas_theme.get_html_theme_path()
 
 html_theme_options = {
-    "package_name"    : "compas_cem",
-    "package_title"   : project,
-    "package_version" : release,
-    "package_author"  : "Rafael Pastrana",
-    "package_docs"    : "https://arpastrana.github.io/compas_cem/",
-    "package_repo"    : "https://github.com/arpastrana/compas_cem",
+    "package_name": "compas_cem",
+    "package_title": project,
+    "package_version": release,
+    "package_author": "Rafael Pastrana",
+    "package_docs": "https://arpastrana.github.io/compas_cem/",
+    "package_repo": "https://github.com/arpastrana/compas_cem",
     "package_old_versions_txt": "https://arpastrana.github.io/compas_cem/doc_versions.txt"
 }
 
