@@ -4,20 +4,20 @@ COMPAS CEM
 
 .. rst-class:: lead
 
-.. _CEM Framework: https://arxiv.org/abs/2111.02607
+.. _CEM Framework: https://doi.org/10.1016/j.cad.2022.103435
 .. _COMPAS: https://compas.dev/
 .. _Rafael Pastrana: https://pastrana.xyz/
 .. _Princeton: https://soa.princeton.edu/
 .. _Ole Ohlbrock: https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en
 .. _Pierluigi D'Acunto: https://www.professoren.tum.de/en/dacunto-pierluigi
-.. _Stefana Parascho: https://soa.princeton.edu/content/stefana-parascho
+.. _Stefana Parascho: https://people.epfl.ch/stefana.parascho?lang=en
 .. _Rhino: https://www.rhino3d.com/
 .. _Blender: https://www.blender.org/
 .. _Grasshopper: https://grasshopper3d.com/
 .. _metaverse: https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27
 
 
-The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
+The `Combinatorial Equilibrium Modeling (CEM) <https://doi.org/10.1016/j.cad.2022.103435>`_ framework for `COMPAS`_.
 
 .. figure:: /images/staircase_24_fps_128_colors.gif
     :figclass: figure
@@ -45,7 +45,9 @@ Main features
 Credits
 -------
 
-COMPAS CEM is developed by `Rafael Pastrana`_ at `Princeton`_, with the endorsement and support of `Ole Ohlbrock`_, `Pierluigi D'Acunto`_ and `Stefana Parascho`_.
+COMPAS CEM is developed by `Rafael Pastrana`_ at `Princeton`_, with the support of `Ole Ohlbrock`_, `Pierluigi D'Acunto`_ and `Stefana Parascho`_.
+
+This work has been supported in part by the U.S. National Science Foundation under grant OAC-2118201 and the `NSF Institute for Data Driven Dynamical Design <https://www.mines.edu/id4>`_.
 
 
 Table of Contents

@@ -36,12 +36,12 @@ COMPAS CEM
 
 .. _COMPAS: https://compas.dev/
 .. _COMPAS CEM Docs: https://arpastrana.github.io/compas_cem/latest/index.html
-.. _CEM Framework: https://arxiv.org/abs/2111.02607
+.. _CEM Framework: https://doi.org/10.1016/j.cad.2022.103435
 .. _Rafael Pastrana: https://pastrana.xyz/
 .. _Princeton: https://soa.princeton.edu/
 .. _Ole Ohlbrock: https://schwartz.arch.ethz.ch/Team/patrickoleohlbrock.php?lan=en
 .. _Pierluigi D'Acunto: https://www.professoren.tum.de/en/dacunto-pierluigi
-.. _Stefana Parascho: https://soa.princeton.edu/content/stefana-parascho
+.. _Stefana Parascho: https://people.epfl.ch/stefana.parascho?lang=en
 .. _Anaconda: https://www.anaconda.com/
 .. _Rhino: https://www.rhino3d.com/
 .. _Blender: https://www.blender.org/
@@ -49,13 +49,12 @@ COMPAS CEM
 .. _metaverse: https://apnews.com/article/meta-facebook-explaining-the-metaverse-f57e01cd5739840945e89fd668b0fa27
 
 
-
 .. figure:: ./docs/images/staircase_24_fps_128_colors.gif
     :figclass: figure
     :class: figure-img img-fluid
 
 
-The `Combinatorial Equilibrium Modeling (CEM) <https://arxiv.org/abs/2111.02607>`_ framework for `COMPAS`_.
+The `Combinatorial Equilibrium Modeling (CEM) <https://doi.org/10.1016/j.cad.2022.103435>`_ framework for `COMPAS`_.
 
 The `CEM framework`_ is a numerical form-finding approach to generate forms in static equilibrium for spatial bar structures subjected to combinations of tension-compression forces and design constraints.
 **COMPAS CEM** encapsulates the `CEM framework`_ into an open-source structural design tool that enables the formulation and the solution of constrained form-finding problems in plain and simple `Python <https://www.python.org/>`_ code.
@@ -98,6 +97,8 @@ If no errors show up, celebrate 🎉! You have a working installation of **COMPA
 
 Grasshopper plugin
 ------------------
+
+**Warning**: Note that `Grasshopper`_ plugin of ****COMPAS CEM** is only supported in **Rhino 7**.
 
 Once **COMPAS CEM** was installed from the comment line, we can additionally link it to `Rhino`_ and use it as `Grasshopper`_ plugin:
 

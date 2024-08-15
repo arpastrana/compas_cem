@@ -52,11 +52,15 @@ The recommended way to install ``compas`` is through conda, but you can consult 
 
 ::
 
-    conda install -c conda-forge compas
+    conda install -c conda-forge compas==1.17.10 compas_view2==0.7.0
 
 .. note::
 
-   You may run into errors when installing ``compas``. If you encounter a problem such as not being able to install ``planarity``, that "Microsoft Visual C++ Build Tools are missing", or that ``numpy`` fails to pass a sanity check, please refer to `COMPAS known installation issues`_ page for instructions on how to solve these problems.
+   You may run into errors when installing ``compas``. `If you encounter a problem such as not being able to install ``planarity``, that "Microsoft Visual C++ Build Tools are missing", or that ``numpy`` fails to pass a sanity check, please refer to `COMPAS known installation issues`_ page for instructions on how to solve these problems.
+
+.. note::
+
+   Also note that we do not support ``compas>=2.0``. Maybe one day.
 
 
 
@@ -105,6 +109,10 @@ In case there was an older ``compas`` or ``compas_cem`` M version linked to `Rhi
 
    The flag `-v 7.0` indicates that we will be uninstalling ``compas_cem`` and company from Rhino 7. If you are working with Rhino 6, replace that last bit with `-v 6.0`.
 
+.. note::
+
+    We only offer support for Rhino 7. Rhino 8 will be supported in a future release of ``compas_cem``.
+
 2. Link COMPAS CEM
 ------------------
 
@@ -142,7 +150,7 @@ If you installed ``compas_cem`` one day in the past with ``pip`` and you want to
     pip install --upgrade compas-cem
 
 
-Alternatively, if you want to switch to a specific version, type this:
+Alternatively, if you want to switch to a specific version, for example version ``0.16.1``, type this:
 
 ::
 
