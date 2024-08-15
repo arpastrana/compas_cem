@@ -1,4 +1,4 @@
-compas
+compas==1.17.10
 nlopt
 trimesh
 autograd
