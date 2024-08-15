@@ -1,5 +1,5 @@
 compas==1.17.10
-nlopt
-trimesh
-autograd
-compas_singular
+nlopt==2.6.2
+trimesh==3.20.0
+autograd==1.5
+compas_singular==0.1.5
