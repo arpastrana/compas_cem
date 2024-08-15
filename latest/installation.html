@@ -117,12 +117,16 @@
 <h3>3. Install COMPAS via conda</h3>
 <p>As a <code class="docutils literal notranslate"><span class="pre">compas</span></code> extension, <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> requires <code class="docutils literal notranslate"><span class="pre">compas</span></code> to work.
 The recommended way to install <code class="docutils literal notranslate"><span class="pre">compas</span></code> is through conda, but you can consult other installation options in the <a class="reference external" href="https://compas.dev/compas/latest/installation">COMPAS installation</a> documentation.</p>
-<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>compas
+<div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span><span class="nv">compas</span><span class="o">==</span><span class="m">1</span>.17.10<span class="w"> </span><span class="nv">compas_view2</span><span class="o">==</span><span class="m">0</span>.7.0
 </code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You may run into errors when installing <code class="docutils literal notranslate"><span class="pre">compas</span></code>. If you encounter a problem such as not being able to install <code class="docutils literal notranslate"><span class="pre">planarity</span></code>, that “Microsoft Visual C++ Build Tools are missing”, or that <code class="docutils literal notranslate"><span class="pre">numpy</span></code> fails to pass a sanity check, please refer to <a class="reference external" href="https://compas.dev/compas/latest/installation#known-issues">COMPAS known installation issues</a> page for instructions on how to solve these problems.</p>
+<p>You may run into errors when installing <code class="docutils literal notranslate"><span class="pre">compas</span></code>. <cite>If you encounter a problem such as not being able to install ``planarity`</cite>, that “Microsoft Visual C++ Build Tools are missing”, or that <code class="docutils literal notranslate"><span class="pre">numpy</span></code> fails to pass a sanity check, please refer to <a class="reference external" href="https://compas.dev/compas/latest/installation#known-issues">COMPAS known installation issues</a> page for instructions on how to solve these problems.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Also note that we do not support <code class="docutils literal notranslate"><span class="pre">compas&gt;=2.0</span></code>. Maybe one day.</p>
 </div>
 </section>
 <section id="install-compas-cem-via-pip">
@@ -158,6 +162,10 @@ The <a class="reference external" href="https://www.grasshopper3d.com/">Grasshop
 <p class="admonition-title">Note</p>
 <p>The flag <cite>-v 7.0</cite> indicates that we will be uninstalling <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code> and company from Rhino 7. If you are working with Rhino 6, replace that last bit with <cite>-v 6.0</cite>.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We only offer support for Rhino 7. Rhino 8 will be supported in a future release of <code class="docutils literal notranslate"><span class="pre">compas_cem</span></code>.</p>
+</div>
 </section>
 <section id="link-compas-cem">
 <h3>2. Link COMPAS CEM</h3>
@@ -187,7 +195,7 @@ Rhino. If you were wondering, the last two are installed automatically when we f
 <div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>compas-cem
 </code></pre></div>
 </div>
-<p>Alternatively, if you want to switch to a specific version, type this:</p>
+<p>Alternatively, if you want to switch to a specific version, for example version <code class="docutils literal notranslate"><span class="pre">0.16.1</span></code>, type this:</p>
 <div class="language-bash notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span>pip<span class="w"> </span>install<span class="w"> </span>compas-cem<span class="o">==</span><span class="m">0</span>.16.1
 </code></pre></div>
 </div>
