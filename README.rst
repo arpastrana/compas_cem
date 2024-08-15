@@ -28,10 +28,6 @@ COMPAS CEM
    :target: https://zenodo.org/badge/latestdoi/278780552
    :alt: Zenodo DOI
 
-.. image:: https://img.shields.io/twitter/follow/compas_dev?style=social
-   :target: https://twitter.com/compas_dev
-   :alt: Twitter follow
-
 .. end-badges
 
 .. _COMPAS: https://compas.dev/
@@ -98,7 +94,7 @@ If no errors show up, celebrate 🎉! You have a working installation of **COMPA
 Grasshopper plugin
 ------------------
 
-**Warning**: Note that `Grasshopper`_ plugin of ****COMPAS CEM** is only supported in **Rhino 7**.
+**Warning**: Note that `Grasshopper`_ plugin of **COMPAS CEM** is only supported in **Rhino 6** and **Rhino 7**.
 
 Once **COMPAS CEM** was installed from the comment line, we can additionally link it to `Rhino`_ and use it as `Grasshopper`_ plugin:
 
