@@ -98,30 +98,30 @@
 <figure class="figure align-default">
 <img alt="../../_images/05_tensegrity_wheel_2d.png" class="figure-img img-fluid" src="../../_images/05_tensegrity_wheel_2d.png" />
 </figure>
-<div class="language-python notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span>
+<div class="language-python notranslate"><div class="highlight"><pre><button class="btn copy"><i class="far fa-copy"></i></button><code><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">cos</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sin</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">compas.geometry</span> <span class="kn">import</span> <span class="n">Translation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Translation</span>
 
-<span class="kn">from</span> <span class="nn">compas.utilities</span> <span class="kn">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.diagrams</span> <span class="kn">import</span> <span class="n">TopologyDiagram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.diagrams</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyDiagram</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">Node</span>
-<span class="kn">from</span> <span class="nn">compas_cem.elements</span> <span class="kn">import</span> <span class="n">DeviationEdge</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.elements</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.elements</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviationEdge</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.equilibrium</span> <span class="kn">import</span> <span class="n">static_equilibrium</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.equilibrium</span><span class="w"> </span><span class="kn">import</span> <span class="n">static_equilibrium</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">Optimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">TrailEdgeForceConstraint</span>
-<span class="kn">from</span> <span class="nn">compas_cem.optimization</span> <span class="kn">import</span> <span class="n">DeviationEdgeParameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrailEdgeForceConstraint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeviationEdgeParameter</span>
 
-<span class="kn">from</span> <span class="nn">compas_cem.plotters</span> <span class="kn">import</span> <span class="n">Plotter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">compas_cem.plotters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plotter</span>
 
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
@@ -271,8 +271,6 @@
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.elements.html">compas_cem.elements</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.loads.html">compas_cem.loads</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.supports.html">compas_cem.supports</a></li>
-<li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.equilibrium.html">compas_cem.equilibrium</a></li>
-<li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.optimization.html">compas_cem.optimization</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.plotters.html">compas_cem.plotters</a></li>
 <li class="toctree-l3 nav-item"><a class="nav-link reference internal" href="../../api/compas_cem.viewers.html">compas_cem.viewers</a></li>
 </ul>
