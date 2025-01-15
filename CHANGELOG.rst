@@ -6,6 +6,33 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <https://keepachangelog.com/en/1.0.0/>`_
 and this project adheres to `Semantic Versioning <https://semver.org/spec/v2.0.0.html>`_.
 
+Unreleased
+----------
+
+**Added**
+
+- Added set conversion in `TopologyDiagram.is_auxiliary_trail_edge()`.
+
+**Changed**
+
+- Pinned dependency to `numpy==1.26.3`.
+- Pinned dependency to `compas==1.17.10`.
+- Updated installation instructions in docs website.
+- Set minimum supported python version to `3.8`.
+- Bumped to docs action to `docs@.2.21`.
+- Pinned `sphinx, `pytest`, and `pytest-lazy-fixture` dependencies in `requirements_dev.txt`.
+- Set `crazy-max/ghaction-github-pages@v3.1.0` in `docs` action.
+- Set `compas-actions.docs@v2.2.1` in `docs` action.
+- Updated grashopper components in examples.
+
+**Fixed**
+
+**Deprecated**
+
+**Removed**
+
+- Removed `compas_singular` dependency.
+
 0.8.0
 ----------
 
