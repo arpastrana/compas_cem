@@ -28,7 +28,7 @@ optional_requirements = {}
 
 setup(
     name="compas_cem",
-    version="0.8.1",
+    version="0.8.2",
     description="The Combinatorial Equilibrium Modeling framework for COMPAS",
     long_description=long_description,
     long_description_content_type="text/markdown",
