@@ -13,7 +13,7 @@ Unreleased
 
 **Changed**
 
-- Pinned dependency to `nlopt==2.6.2`.
+- Pinned dependency to `nlopt==2.7.1`.
 
 Pinned
 
