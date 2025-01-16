@@ -14,7 +14,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: compas-dev/compas-actions.docs@v3.0.0
+      - uses: compas-dev/compas-actions.docs@v2.1.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           doc_url: https://arpastrana.github.io/compas_cem
