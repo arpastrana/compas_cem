@@ -13,6 +13,10 @@ Unreleased
 
 **Changed**
 
+- Pinned dependency to `nlopt==2.6.2`.
+
+Pinned
+
 **Fixed**
 
 **Deprecated**
