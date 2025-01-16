@@ -2,4 +2,4 @@ numpy==1.26.3
 compas==1.17.10
 trimesh==3.20.0
 autograd==1.5
-nlopt==2.6.2
+nlopt==2.7.1
