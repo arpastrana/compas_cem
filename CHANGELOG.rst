@@ -11,6 +11,8 @@ Unreleased
 
 **Added**
 
+- Implemented `FormDiagram.from_equilibrium_state` constructor for compatibility with `jax_cem`.
+
 **Changed**
 
 **Fixed**
