@@ -56,6 +56,7 @@ Unreleased
 
 **Changed**
 
+- Loosened dependency version from `numpy==1.26.3` to `numpy=>=1.26.3`.
 - Pinned dependency to `nlopt==2.7.1`.
 
 Pinned
