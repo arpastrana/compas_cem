@@ -270,22 +270,20 @@ class FormArtist(DiagramArtist):
 
         Parameters
         ----------
-        nodes: list, optional
-            A list of supports nodes to draw the reaction forces on.
-            The default is ``None``, in which case all support nodes are taken.
-        scale : ``float``
-            The scale of the reaction forces.
-            Defaults to ``1.0``.
-        gap : ``float``
+        nodes :
+            The support nodes to draw the reaction forces on. If `None`, every
+            support node is taken.
+        scale :
+            The factor to scale the reaction forces by.
+        gap :
             The offset between a node and the incident reaction force.
-            Defaults to ``0.0``.
-        min_load: ``float``
+        min_force :
             The smallest reaction force magnitude to draw.
-            Defaults to ``1e-3``
 
         Returns
         -------
-        reaction : list of :class:`Rhino.Geometry.Line`
+        reactions :
+            One line per drawn reaction force.
         """
         diagram = self.diagram
         nodes = nodes or list(self.diagram.nodes())

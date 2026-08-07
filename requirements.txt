@@ -1,4 +1,6 @@
-compas>=2.15,<3.0
-numpy>=1.26
 autograd
+compas>=2.15,<3.0
+compas_plotter>=1.0.1
+compas_viewer>=2.0
 nlopt>2.7
+numpy>=1.26

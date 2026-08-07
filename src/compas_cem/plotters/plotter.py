@@ -1,11 +1,11 @@
-from compas_plotters import Plotter
+from compas_plotter import Plotter
 
 __all__ = ["Plotter"]
 
 
 class Plotter(Plotter):
     """
-    A thin wrapper on the :class:`compas_plotters.plotter.Plotter`.
+    A thin wrapper on the :class:`compas_plotter.plotter.Plotter`.
 
     This object exists only for API consistency with `compas_cem.viewers.Viewer`.
     """

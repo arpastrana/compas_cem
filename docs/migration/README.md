@@ -1,7 +1,9 @@
 # compas_cem modernization plan
 
-Status: **Phases 0 and 1 complete.** Phase 2 in progress. Target release
-**0.9.0**, deliberately breaking.
+Status: **Phases 0, 1 and 2 complete.** Phase 0 and Phase 1 are merged into
+`main`; Phase 2 is signed off and awaiting review. Phases 3 to 5 not started.
+Target release **0.9.0**, deliberately breaking. §14 is the current handover
+and §15 the Phase 5 blueprint.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
@@ -500,9 +502,8 @@ Neither blocks Phase 1 or 2, but Phase 3 stalls without the first:
 1. **Who decouples `jax_cem` from `compas_cem` and publishes it to PyPI** — see
    §5 and the cycle-breaking note. The two `from_topology_diagram` constructors
    move down into this repo; the kernel then depends on `compas` only.
-2. **Grasshopper componentizer for Phase 5** — keep `componentize_cpy.py`
-   producing `.ghuser` for yak to wrap (what `compas_fab` and `compas_timber` do),
-   or ship script components inside a `.gh` library instead.
+2. ~~**Grasshopper componentizer for Phase 5**~~ — **resolved 2026-08-07: keep
+   the componentizer and follow `compas_fab`.** See §15.
 
 Also owed before tagging 0.9.0: the `gh-pages` → mike migration, and a throwaway
 `v0.9.0-rc1` tag to exercise `release.yml`, which is tag-triggered and therefore
@@ -632,7 +633,9 @@ drift. Only 05 does. See §11.2.
   geometry by ~5e-9. The original file stores nodes in the order `7, 3, 5, 0, 4,
   2, 1, 6`; preserving it makes the fixture reproduce exactly. Anything that
   rebuilds a diagram from scratch has to preserve insertion order or the
-  optimizer comparison is worthless.
+  optimizer comparison is worthless. The one-shot script that rebuilt it was not
+  kept; the pre-migration file it was derived from is at
+  `70e13c1a:examples/03_bridge_2d.json`.
 - **`compas.numerical.connectivity_matrix` is never imported.** §4.1 lists it;
   the package does not use it.
 - **`connected_edges` needed a rename, not just a helper.** COMPAS 2 keeps the
@@ -703,6 +706,8 @@ tests cover both vocabularies, the rejection cases, and JSON round-trip and
 `copy()` regressions. The round-trip tests matter most: they exercise the exact
 path that broke in the move to COMPAS 2.
 
+See §13.9 for the five options weighed and §13.11 for the decision record.
+
 ### 11.4 Carried into Phase 2
 
 - The examples import `compas_cem.plotters` at module scope, which cannot import
@@ -737,3 +742,765 @@ verbatim. Also fixed on the way past:
 - The `keys` flag on the trail iterators documented only its default.
 - 11 empty `""" """` docstrings removed rather than filled, on dunders and
   property setters that inherit their meaning.
+
+---
+
+## 12. Phase 2 outcome
+
+Delivered on branch `phase-2`, branched off `phase-1`. **Signed off**: Rafael ran
+all five examples and the viewer check by hand on 2026-08-07 and confirmed both
+backends draw correctly. §12.4 records what was checked and how to rerun it.
+
+| gate | result |
+| --- | --- |
+| tests | 96/96 (this layer has none; unchanged from Phase 1) |
+| `tests/baseline/capture.py` | 01, 02, 03, 04 still byte-identical, with the real plotters back |
+| `ruff check` / `format --check` | clean |
+| docs | builds with **zero** griffe warnings, down from 8 |
+| docstrings | **zero** undocumented public definitions in `plotters` and `viewers`, down from 25/42 and 52/70 |
+
+### 12.1 The highest-variance item was not a problem
+
+§10.4 flagged `viewers/diagramobject.py` reaching into private `compas_view2`
+hooks (`_points_data`, `_lines_data`) as the biggest unknown in the plan.
+`compas_viewer` 2.0.2 exposes `_read_points_data`, `_read_lines_data`,
+`_read_frontfaces_data` and `_read_backfaces_data` on its `GraphObject`, which
+are direct equivalents. The port overrides the first two to emit per-node and
+per-edge colors, where the upstream versions broadcast a single default.
+
+The other compas_view2 pieces map cleanly too: `Collection` to `Group`, `Text`
+to `Tag`, and the `viewer.add(...)` calls to `self.add(...)` on the scene object,
+which parents the arrows and labels to the diagram so they show and hide with it.
+
+### 12.2 What the port changed
+
+- `plotters/{formartist,topologyartist,register,proxy}.py` are gone, replaced by
+  `plotters/scene_objects.py` with `DiagramPlotterObject` and the form and
+  topology subclasses. `proxy.py` was deleted as dead code per §10.4.
+- `viewers/{diagramobject,formobject,topologyobject,register}.py` are gone,
+  replaced by `viewers/scene_objects.py` on the same shape.
+- Both packages register their scene objects on import via
+  `compas.scene.register`, and call `register_scene_objects()` first. compas
+  auto-discovers plugins in `compas*` packages only and discovers into an empty
+  registry only, so a plugin module cannot work here — this is the same
+  arrangement `jax_fdm` uses. `__all_plugins__` no longer lists
+  `compas_cem.plotters.register`, which no longer exists.
+- `compas_plotter>=1.0.1` and `compas_viewer>=2.0` are runtime dependencies in
+  `requirements.txt`. See §12.5.
+
+### 12.3 Three things the visual comparison caught
+
+Rendering the same five examples from `main` under the legacy environment and
+diffing against the port found three regressions that reading the code did not:
+
+1. **Node markers came out 25 times too small.** The 1.x artist defaulted to
+   `sizepolicy="relative"`, which divides the node size by the node count;
+   `compas_plotter` 1.0.1 defaults to `"absolute"`, which divides by the plotter
+   resolution. `DiagramPlotterObject` pins the default back to `"relative"`.
+2. **The default key labels disappeared.** `show_nodetext=True` with no tag drew
+   node keys and `u-v` edge keys in 1.x. The first port drew nothing, because it
+   treated "no tag" as "no labels". Restored as `default_node_textlabels` and
+   `default_edge_textlabels`.
+3. **The load crosses vanished behind the nodes.** `compas_plotter`'s
+   `LineObject` fixes its own `zorder` at 1000 in its constructor, and the node
+   markers draw at 1020, so the crosses were drawn and then covered. Setting
+   `zorder` on the returned object afterwards does nothing, because the
+   matplotlib artist already exists. The crosses are now drawn straight onto the
+   canvas as one `LineCollection`.
+
+Sampling the pixels of both renders confirms the palette is untouched: tension
+`(227, 6, 75)` appears at identical pixel counts in the legacy and the ported
+image. §10.4 anticipated a colour shift from `COLORS` being 0–255 int tuples that
+the plotters layer never normalized; in practice the 1.x plotter accepted them
+and the two renders match.
+
+### 12.4 What still needs your eyes
+
+- **The plotters are done and verified.** `renders/` holds the five ported
+  images and `renders/legacy/` the same five from `main` under the legacy
+  environment. Compare them; they should be indistinguishable. Regenerate with
+  `PYTHONPATH=src MPLBACKEND=Agg python tests/baseline/render.py`. The directory
+  is gitignored.
+- **The viewers are verified.** No example uses the `Viewer`, so
+  `renders/viewer_check.py` builds a topology and a form diagram and opens both.
+  Run it from the repository root, since it resolves its data file relatively.
+  Headless checks alone got as far as confirming that both scene objects resolve
+  through `compas.scene` and that their point and line buffers carry the right
+  per-element colors; the arrow geometry and the label placement needed a
+  display, and were confirmed by hand.
+
+### 12.5 Resolved: the visualization backends are runtime dependencies
+
+`compas_plotter>=1.0.1` and `compas_viewer>=2.0` were briefly parked in
+`requirements-dev.txt`, because the docs build imports those modules. Rafael
+settled it on 2026-08-07: **both are ordinary runtime dependencies**, in
+`requirements.txt`. Unlike `jax_fdm`, which treats its backends as optional and
+guards them with `has_backend`, drawing a diagram is not an optional extra of
+this package.
+
+The consequence to keep in mind is that installing `compas_cem` now installs
+PySide6, which is large. It does not affect a headless install or import:
+`import compas_cem` does not reach the viewer, and the CI `check_import` step
+passes. Verified on a clean runtime-only environment — no dev extra — where all
+five examples run and both `compas_cem.plotters` and `compas_cem.viewers`
+import.
+
+`compas` itself is also declared, so it no longer needs installing separately.
+That collapsed the installation instructions from four steps to two, and they
+now use `pip` and `venv` rather than conda, which is being phased out across the
+COMPAS ecosystem.
+
+### 12.6 The four latent bugs are fixed
+
+All four of §10.4's, plus the two docstring faults behind the griffe warnings:
+
+- the undefined `edge` inside `state_format`, in both the plotters and the
+  viewers copy — both closures now read the `edge` they are passed;
+- `self.topology` referenced on `DiagramObject`, which only defined
+  `self.diagram` — `topology` is now a property on the topology subclass only,
+  and the base uses `diagram`;
+- the `show_nodes` setter that assigned to `_show_edges` — gone with the hand
+  rolled property block, replaced by the upstream `show_points`/`show_lines`;
+- `ghpython/artists.py` documented a `min_load` parameter on `draw_reactions`,
+  whose signature takes `min_force`, copy-pasted from `draw_loads`;
+- `viewers/topologyobject.py` documented its constructor argument as
+  `form_diagram` on a topology diagram object.
+
+### 12.7 Why the divide-by-zero warnings only appear now
+
+Running examples 04 and 05 under COMPAS 2 prints warnings the legacy stack never
+showed:
+
+```
+force_numpy.py:168: RuntimeWarning: invalid value encountered in divide
+  nrvec = rvec / trail_force
+```
+
+**The arithmetic did not change.** Probing the division site in both stacks
+records exactly the same operation, `[-0., -0., -0.] / 0.0`, occurring exactly
+twice in example 04. This is §9.2's zero-force auxiliary trail, unchanged.
+
+What changed is who was silencing numpy. `compas/numerical/linalg.py` in COMPAS
+1.17.10 runs, at module scope:
+
+```python
+old_settings = seterr(all="ignore")
+```
+
+That mutes every numpy floating-point signal for the whole process, on import,
+and never restores it — `old_settings` is assigned and never read again.
+`import compas.geometry` pulls that module in transitively, and every example
+imports `compas.geometry`, so the entire legacy process ran with floating-point
+signalling switched off. COMPAS 2 removed `compas.numerical` altogether, so
+nothing calls `seterr` and numpy's default `invalid='warn'` applies.
+
+Forcing `np.seterr(invalid='raise')` makes the difference plain: the migrated
+package raises `FloatingPointError` at `force_numpy.py:168`, while the legacy
+package raises nothing, because importing `compas.geometry` quietly resets the
+state underneath. Note also that only `0/0` signals `invalid` — `nan/nan` and
+`nan/2` are silent — so these warnings are the genuine zero-length residual, not
+NaN propagating from somewhere upstream.
+
+Two consequences:
+
+- The warnings are **correct and useful**, and should not be suppressed. They are
+  the audible form of the bug §9.2 could otherwise only detect by disabling
+  `stopval`.
+- They disappear when §4.3's double-`where` safe normalize lands in Phase 3/4,
+  which §9.2 already says should *repair* examples 04 and 05 rather than
+  preserve them. Until then, expect them on those two examples.
+
+### 12.8 An unreported bug left alone in `update_node_xyz`
+
+Noticed while folding the mixins in Phase 1, and **deliberately not fixed**,
+because fixing it changes behaviour and the phase was meant to preserve it.
+
+`Diagram.update_node_xyz(key, xyz)` evicts the geometric key of the *new*
+position before inserting the node there:
+
+```python
+gkey = self.gkey(xyz)          # the key it is about to occupy
+if gkey in self.gkey_node:
+    del self.gkey_node[gkey]
+self._add_node_element(Node(key, xyz))
+```
+
+The entry it should evict is the *old* position's, which is the one now stale.
+As written, `gkey_node` keeps pointing at the node's previous location forever,
+so `node_key(old_xyz)` keeps resolving to a node that has moved away, and the
+lookup table grows an entry per move.
+
+It is invisible today because the solver never calls `update_node_xyz` — only
+`node_xyz(key, xyz)` does, and nothing on the equilibrium path sets coordinates
+that way. The Grasshopper `OriginNodesMove` component is the closest live
+caller. Worth fixing alongside the Phase 4 parameter work, which is the first
+thing that will move nodes in anger, and worth a regression test that
+`node_key(old_xyz)` stops resolving after a move.
+
+---
+
+## 13. API alignment audit: `jax_fdm`, `smax`, `compas_cem`
+
+Written 2026-08-07, before committing to an authoring API for 0.9.0. Nothing in
+this section is implemented. It exists so the decision is made once, with the
+evidence in front of it, rather than re-derived.
+
+The question that prompted it: `compas_cem` builds diagrams out of element
+objects (`add_edge(TrailEdge(0, 1, length=-1.0))`), which is unlike its two
+sibling libraries. Which of the three idioms should 0.9.0 adopt, and does the
+answer survive wanting **area loads** and **partially fixed supports** later?
+
+### 13.1 Three idioms, and the one difference that cannot be aligned
+
+| | substrate | authoring | supports | loads |
+| --- | --- | --- | --- | --- |
+| `jax_fdm` | COMPAS `Graph` / `Mesh`, **mutable** | plain `add_node(x=, y=, z=)` and `add_edge(u, v)`. **No element objects, no overrides.** | `node_support(key)`, a boolean `is_support` attribute | `node_load(key, load)`, `face_load(key, load)` |
+| `smax` | equinox pytree, **immutable** | `Structure(nodes, elements, supports)` from lists of objects. **No `add_*` at all.** | `Support(node_id, fixity)` over `[ux, uy, uz, rx, ry, rz]`, plus `FixedSupport`, `PinnedSupport`, `RollerSupport(axis=)` | `PointLoad`, `PointMoment`, `LineLoad` under `NodeLoad` / `ElementLoad` bases, grouped by `LoadCase` |
+| `compas_cem` | COMPAS `Graph`, **mutable** | `add_node(obj)`, `add_edge(obj)`, `add_support(obj)`, `add_load(obj)` | `type == "support"` attribute | `qx`, `qy`, `qz` attributes |
+
+**`smax` is object-based because equinox pytrees are immutable.** A `Structure`
+cannot be mutated, so it must be handed complete collections at construction.
+That constraint does not exist for `compas_cem` or `jax_fdm`, both of which sit
+on mutable COMPAS datastructures. Its constructor-from-lists shape is therefore
+a consequence of JAX and must **not** be imported here.
+
+Which makes `jax_fdm` the only meaningful comparator — and `jax_fdm` is exactly
+the "no element objects" design.
+
+### 13.2 `compas_cem` already unwraps the objects
+
+`TopologyDiagram.add_support` and `add_load` resolve the object to bare
+attributes on the very next line:
+
+```python
+value = support.node if support.node is not None else support.xyz
+node = self.node_key(value)
+self.node_attribute(node, "type", "support")
+```
+
+They are already thin adapters over an attribute write. Half of the object-free
+design is in place, inconsistently.
+
+### 13.3 What the element classes actually do
+
+| class | Grasshopper producer | geometry constructor | core call sites | finding |
+| --- | --- | --- | --- | --- |
+| `Node(key, xyz)` | **none** | — | 6 | `self.attributes = {}` is written and never read anywhere |
+| `Edge(u, v, attrs)` | **none** | `from_line` | 1 | `form.py` builds `Edge(u, v, {})` purely to satisfy the API |
+| `TrailEdge` | yes | yes | 3 | a real Grasshopper wire value |
+| `DeviationEdge` | yes | yes | 2 | a real Grasshopper wire value |
+| `NodeLoad`, `NodeSupport` | yes | yes | — | real wire values, unwrapped immediately on add |
+
+The Grasshopper-justified set is exactly **`TrailEdge`, `DeviationEdge`,
+`NodeLoad`, `NodeSupport`**. `Node` and `Edge` have **no Grasshopper consumer at
+all** and can be removed with no consequence for Phase 5.
+
+Of the roughly 45 element constructions in `src`, all but four are throwaway
+`__main__` demo blocks under `optimization/`. The four real ones are
+`build_trails`, `from_dualquadmesh`, `update_node_xyz` and the kernel bridge in
+`form.py`. Every one of them gets shorter without the objects.
+
+### 13.4 The case *for* the object design, fairly stated
+
+Worth recording, because the decision should not rest on a caricature.
+
+1. **Construction decoupled from a container.** An element describes an intent
+   that has no receiver yet — a trail edge can be expressed before any diagram
+   exists. That is what enables declarative model definitions, generators that
+   emit element lists, model recipes that can be passed around or persisted, and
+   fixtures that are data rather than code. Grasshopper is the visible instance
+   of this, not the reason for it. `smax` converged on the same property from a
+   different direction.
+2. **It keeps the datastructure small.** Without objects, every new concept
+   becomes another method on `Diagram` — `add_trail_edge`, `add_deviation_edge`,
+   `add_area_load`, `add_support(fixity=)` — and the vocabulary migrates into the
+   datastructure. With objects the vocabulary lives in `elements/` and `Diagram`
+   keeps one polymorphic door, which also lets a third party add an element type
+   without subclassing `Diagram`. `smax` is the limit case: its `Structure` has
+   almost no methods.
+
+Against which: **this implementation realizes almost none of that.** The objects
+are unwrapped on the next line, `Node.attributes` is dead, they raise
+`NotImplementedError` on serialization (so the persistable-recipe benefit does
+not actually exist), `Edge(u, v, {})` is ceremony, nothing is validated at
+construction, and they shadowed the base graph API — which is the defect that
+started this whole line of enquiry (§11.3). It is an object model that has been
+used as an argument-passing convention.
+
+### 13.5 `edge_length_2` is not redundant
+
+The suspicion that `edge_length_2` only exists because COMPAS 1 could not take a
+single tuple key is **wrong**, and acting on it would break the solver. The two
+methods return different quantities and both are live:
+
+- `edge_length(edge)` — COMPAS's geometric distance between the end nodes. Used
+  in `force.py` to compute the *realized* length after form-finding.
+- `edge_length_2(edge)` — the stored signed `length` **attribute**. Read by the
+  solver itself, which builds its `edge_lengths` from it, and by the plotters,
+  the viewers, the Grasshopper results component and the baseline harness.
+
+What *is* wrong is the name, which exists only to dodge the clash. A
+`# TODO: overwrite inheritance` in the test suite dates from the same problem.
+
+Note also that the `length` attribute means the **prescribed** length on a
+topology diagram and the **realized** signed length on a form diagram. One name,
+two meanings, depending on which diagram is in hand. Worth separating.
+
+### 13.6 Naming conventions to adopt from `jax_fdm`
+
+`jax_fdm` never shadows a COMPAS name — `edge_length` stays geometric and
+untouched — and gives every domain quantity its own noun, with a singular
+get-or-set form and a plural batch form: `edge_forcedensity` / `edges_forcedensities`,
+`edge_force` / `edges_forces`, `edge_loadpath` / `edges_loadpaths`, `edge_load`,
+`node_load`, `node_support`, `nodes_supports`, `nodes_free`, `nodes_fixed`.
+
+| `compas_cem` today | proposed | reason |
+| --- | --- | --- |
+| `edge_length_2(edge)` | `edge_signed_length(edge, length=None)` | its own noun, no clash, get-or-set |
+| `edge_force(edge)` | `edge_force(edge, force=None)` | add the setter; then identical to `jax_fdm` |
+| `node_load(node)` | `node_load(node, load=None)` | add the setter; then identical to `jax_fdm` |
+| `support_nodes()`, `loaded_nodes()`, `origin_nodes()` | `nodes_supports()`, `nodes_loaded()`, `nodes_origins()` | entity-first plural, as `jax_fdm` does throughout |
+| — | `edges_forces()`, `edges_lengths()`, `edges_signed_lengths()` | plural batch accessors, which do not exist yet |
+
+Already aligned and to be left alone: `is_node_support(key)` is identical in both.
+
+One name to watch: `compas_cem.NodeLoad` is a *concrete* point load, whereas
+`smax.NodeLoad` is the *abstract base* and its concrete class is `PointLoad`. If
+the load vocabulary ever grows here, prefer `smax`'s split.
+
+### 13.7 Do area loads and partial supports change the answer?
+
+They do not, and they mildly favour the object-free design.
+
+**Area loads.** The precedent is `FDMesh.face_load(key, load)` in `jax_fdm`, with
+`px`/`py`/`pz` per face. `smax` has none yet; one would slot under `ElementLoad`.
+The obstacle here is structural: a topology diagram is a `Graph`, so there are no
+faces to carry an area load. Two routes — a mesh-backed diagram in the `FDMesh`
+mould, which changes the datastructure, or an area load **resolved into nodal
+loads when it is added**, through tributary areas. The second fits CEM, because
+the solver only ever reads nodal loads. It is also one more attribute-writing
+method, whereas the object design would need an `AreaLoad` class for `Diagram` to
+dispatch on.
+
+**Partially fixed supports.** `jax_fdm` is boolean-only, which is inherent to
+FDM: a node is free or fixed. `smax` carries a full six-degree-of-freedom fixity
+because it is a stiffness solver with a real DOF space. CEM has neither —
+supports *terminate trails*, and the reaction is whatever the trail delivers.
+There is no stiffness matrix to constrain per axis.
+
+`compas_cem` already expresses directional restraint by other means:
+`TrailEdge(plane=...)` constrains where a trail lands, and `ReactionForceGoal`
+targets the reaction vector. **A roller in CEM is a plane or a goal, not a
+fixity flag.** Whether per-axis fixity means anything here should be decided
+deliberately rather than adopted by analogy with `smax`.
+
+If it is wanted, take `smax`'s *data* without its class hierarchy:
+
+```python
+topology.add_support(node)                            # full, the default
+topology.add_support(node, fixity=(True, True, False))
+```
+
+A keyword argument is strictly cheaper to add later than a
+`FixedSupport`/`PinnedSupport`/`RollerSupport` hierarchy that the diagram must
+dispatch on. `smax` needs those classes only because its constructor takes a
+*list* of supports.
+
+### 13.8 Where this leaves the decision
+
+Leaning, not yet committed, and **not implemented**:
+
+- Adopt the object-free authoring API, aligned to `jax_fdm`, since the two share
+  a substrate and the query API already matches. CEM's vocabulary is small and
+  closed, which is the condition under which "vocabulary on the datastructure"
+  stays manageable.
+- Take §13.6's naming in the same pass, because renaming twice is worse.
+- Express future capability as keyword arguments, not subclasses.
+- **Keep `TrailEdge`, `DeviationEdge`, `NodeLoad` and `NodeSupport`**, relocated
+  into the `ghpython` layer in Phase 5 rather than rewritten — they already do
+  the deferred-construction job, and that seam is worth preserving. Drop `Node`
+  and `Edge` now; nothing consumes them.
+- If declarative or persistable model recipes are ever wanted, that is the point
+  at which those four get working `__data__` and are promoted back out.
+
+Sequencing note: relocating the elements breaks the current Grasshopper
+components at import. They are already dead under COMPAS 2 (IronPython 2.7,
+`RhinoLine`, `compas_ghpython.artists`), so the layer stays non-functional until
+Phase 5 either way — but it should be a decision, not a discovery.
+
+### 13.9 The five options considered
+
+Recorded because the letters were used in discussion and are easy to confuse.
+All five answer the same question: COMPAS 2 deserializes by calling
+`add_node(key=, attr_dict=)` and `add_edge(u, v, attr_dict=)`, which collided
+with the object-taking overrides (§11.3). **C is what was chosen and
+implemented. A was built during Phase 1's development and then withdrawn before
+Phase 1 merged.** See §13.11.
+
+| | approach | for | against |
+| --- | --- | --- | --- |
+| **A** | `add_element(element)`, one new name, dispatch on `Node` / `Edge` with an explicit `raise` | does not shadow upstream; symmetric with `add_support` / `add_load`; one name to learn | union return type; 119 call sites moved |
+| **B** | two names, `add_node_element` / `add_edge_element` | return types stay distinct; closest to the old mental model | two clumsy names instead of one; same churn as A |
+| **C** *(chosen)* | keep `add_node` / `add_edge`, dispatch on the **type of the argument** | zero churn — examples, docs, tutorials and Grasshopper all keep working | see below |
+| **D** | keep the object-taking names, override `__from_data__` to restore by assignment, as COMPAS 1 did | zero churn | reimplements upstream deserialization and has to track it forever |
+| **E** | remove the element objects, use the COMPAS idiom directly | see §13.1–13.8 | vocabulary migrates onto `Diagram` |
+
+**C in full**, since it is the one that keeps the existing signatures:
+
+```python
+def add_node(self, node=None, key=None, attr_dict=None, **kwattr):
+    if isinstance(node, Node):
+        return self._add_node_element(node)
+    if node is not None and key is None:
+        key = node                    # a positional COMPAS-style call
+    return super().add_node(key=key, attr_dict=attr_dict, **kwattr)
+
+def add_edge(self, edge=None, v=None, attr_dict=None, **kwattr):
+    if isinstance(edge, Edge):
+        return self._add_edge_element(edge)
+    return super().add_edge(edge, v, attr_dict=attr_dict, **kwattr)   # edge doubles as u
+```
+
+It does work: deserialization passes `key` and `attr_dict` by keyword for nodes
+and `u, v` positionally for edges, so neither path collides. What it costs is
+that the first positional parameter means two different things, its *name* is
+wrong half the time — `edge` when the value is really `u` — the signature cannot
+be typed honestly, and `add_node(SomeUnrelatedObject())` is silently accepted as
+a node key. It also leaves the package dependent on upstream continuing to call
+those two methods in a shape that has been anticipated, which is precisely the
+assumption that broke in the move to COMPAS 2.
+
+### 13.10 What completing the object design would cost
+
+The counterfactual to E, costed, so the choice is not made against a caricature.
+The two benefits in §13.4 are **separable** — either can be taken without the
+other.
+
+**The starting point is better than it looks.** `Goal` and `Parameter` already
+round-trip through `__data__` / `__from_data__`, ported in Phase 1. `Optimizer`
+and the elements are the only pieces that do not. The package therefore already
+has a working serializable object layer for the optimization half; the modelling
+half was left unfinished.
+
+**Benefit 1 — construction decoupled from a container.**
+
+| change | scope |
+| --- | --- |
+| `__data__` / `__from_data__` on `Node`, `Edge`, `TrailEdge`, `DeviationEdge`, `NodeLoad`, `NodeSupport` | six classes. `TrailEdge.plane` needs the `target_dtype` and `cls_from_dtype` treatment that `Goal.__data__` already demonstrates |
+| a recipe container that serializes as a unit, and `TopologyDiagram.from_elements(...)` | a new class plus a materialization step |
+| pin down node identity, which today is a key **or** a set of coordinates | the hard part |
+| merge and compose semantics for two recipes | falls out of coordinate identity, if that is chosen |
+
+The identity rule is the real work. A recipe earns its keep only if it is
+key-free, so that it can be generated, merged, transformed and only then
+materialized into keys. But `node_key`'s integer passthrough and the `gkey_node`
+deduplication are what 20 of the 39 Grasshopper components depend on, so
+changing the rule is not a local edit.
+
+Note what this buys *over what already exists*: `TopologyDiagram.to_json()`
+works today. A recipe adds key-free identity — composable, mergeable, editable
+by hand — and, together with the existing `Goal` and `Parameter` serialization
+plus a `__data__` for `Optimizer`, a serializable **whole problem definition**
+that can be saved, reloaded, diffed or sent over RPC.
+
+**Benefit 2 — a small datastructure and third-party extensibility.**
+
+| change | scope |
+| --- | --- |
+| replace the `isinstance` chain with `element.add_to(diagram)`, or a registry | inverts the dependency: `Diagram` imports `elements` today, and `elements` is a leaf, so duck typing keeps it clean |
+| route loads and supports through the same door | `add_element(NodeSupport(...))` replaces `add_support` and `add_load`; three doors become one |
+| new concepts then never touch `Diagram` | an `AreaLoad` class instead of an `add_area_load` method |
+
+Much cheaper than benefit 1, and it needs no serialization at all.
+
+**Independent of both:** validation at construction, which has a seam that is
+entirely unused; `Node.attributes`, written and never read, either used or
+deleted; and the `Edge(u, v, {})` ceremony in the kernel bridge removed.
+
+**The cost.**
+
+- Six serialization pairs and their tests, a recipe container, the dispatch
+  inversion, and the identity rule — the last carrying real regression risk
+  against behaviour the Grasshopper layer depends on.
+- `elements` becomes a documented public API surface. It is 8 of 18
+  undocumented today, and under E most of it disappears instead.
+- Recurring: every new modelling concept becomes a class plus serialization plus
+  documentation, rather than one method. This is the cost that compounds.
+- Neither branch avoids the §13.6 naming work, nor changes the fix for the
+  shadowing defect.
+
+**What decides it.** Not which design reads better in the abstract, but whether
+there is a real consumer for key-free composable model recipes. Grasshopper is
+not one — it needs values on a wire, which the current classes already provide
+without any serialization at all. If something else wants to generate, merge or
+persist CEM models programmatically, then the object design is worth completing
+and is closer to finished than it appears. If nothing does, benefit 1 is
+speculative.
+
+**The cheap middle.** Adopt E in the core, and give the four Grasshopper-
+justified classes working `__data__` when they relocate in Phase 5. That yields
+serializable wire values and preserves the deferred-construction seam without
+making `Diagram` polymorphic or touching the identity rule. Should a recipe
+consumer appear later, those four are promoted back out — which is what §13.8
+already contemplates.
+
+### 13.11 Decision: option C, implemented
+
+Chosen by Rafael on 2026-08-07. Option A had been built during Phase 1's
+development; after this audit, **Phase 1 was rewritten before it was merged**, so
+`main` never carried `add_element` (§11.3). The reasoning: C respects the API
+that the examples, the documentation, the tutorials and every existing `.gh`
+file are written against, and it is the cheapest option to pivot away from
+later, in either direction.
+
+`Diagram.add_node` and `Diagram.add_edge` now accept both vocabularies:
+
+```python
+topology.add_node(Node(0, [0.0, 0.0, 0.0]))     # element
+topology.add_node(0, x=0.0, y=0.0, z=0.0)       # key, as the base graph does
+topology.add_edge(TrailEdge(0, 1, length=-1.0))  # element
+topology.add_edge(0, 1, attr_dict={...})         # keys, as deserialization replays
+```
+
+`add_element` never reached `main`; all 119 call sites use `add_node` and
+`add_edge`. `_add_node_element` and `_add_edge_element` remain as the private
+element paths. The implementation and its tests ship in Phase 1.
+
+**Two guardrails offset C's known weakness.** §13.9 records that C's danger is a
+first positional parameter carrying two meanings, so a wrong object is silently
+accepted as a node key:
+
+- the entry points reject a mismatched element — `add_node` refuses an `Edge`,
+  `add_edge` refuses a `Node`, and any `compas.data.Data` instance offered as a
+  key raises rather than becoming one. A key given both positionally and by name
+  also raises.
+- eleven tests were added: both vocabularies on both methods, the four rejection
+  cases, and JSON round-trip and `copy()` regression tests on three fixtures.
+  The round-trip tests are the ones that matter — they exercise the exact path
+  that broke in the move to COMPAS 2, and they will fail loudly if upstream ever
+  changes how it replays construction again.
+
+Verified behaviour-preserving: 107 tests pass, up from 96; baselines 01 to 04
+remain byte-identical and 05 differs as always (§11.2); and the five rendered
+examples are **byte-identical before and after the change**, confirmed by
+re-rendering across the reversal. Folding C into Phase 1 was verified the same
+way — the working tree was compared against the pre-fold branch and only the
+narrative in this file and the changelog differed.
+
+**What this does not settle.** The §13.6 naming work is orthogonal and still
+owed — `edge_length_2` in particular is not redundant (§13.5) but is badly
+named. And E remains available: §13.8's reasoning is unaffected by this choice,
+since C changes only which door the element objects enter through, not whether
+they exist.
+
+---
+
+## 14. Handover: state at the end of the Phase 1 and 2 run
+
+Written 2026-08-07, at the end of the session that delivered Phases 1 and 2.
+
+### 14.1 Where the branches are
+
+| branch | state |
+| --- | --- |
+| `main` | Phase 0 (PR #16) and **Phase 1 (PR #17, merged as a merge commit)**. Five commits preserved: `[Deps]`, `[Diagrams]`, `[Goals]`, `[Examples]`, `[Docs]` |
+| `phase-2` | **4 commits, open for review.** Sits exactly 4 ahead of `main`, so it needed no rebase after Phase 1 merged: `[Plotters]`, `[Viewers]`, `[Deps]`, `[Docs]` |
+
+PR #17 passed **14/14 checks** — all twelve build cells (3.10 to 3.13 across
+ubuntu, macOS and windows), `docs`, and the changelog check. That was the first
+CI run of the whole migration, and it closed the last verification gap: Windows
+and Linux had never been exercised, including the newly-runtime `PySide6`.
+
+Phase 2's own acceptance is visual and was confirmed by hand: all five examples
+and `renders/viewer_check.py` were run and inspected (§12.4).
+
+Stale branches were pruned at the end of the run: local `phase-1` and
+`phase-0-tooling`, and remote `origin/phase-1`. `phase-0-tooling` was checked
+first — its §10.6 content reached `main` by cherry-pick, so nothing was lost.
+
+Six pre-migration remote branches were deliberately **left alone**, since they
+predate this work:
+
+| branch | last commit | state |
+| --- | --- | --- |
+| `cad`, `polyline`, `sequences`, `singular`, `vectorize` | 2022–2023 | merged into `main`, no unique commits — safe to delete whenever |
+| `autograd` | 2022-08-15 | **not merged**, 3 commits not on `main` — read before deleting |
+| `gh-pages` | — | the published docs site, must not be deleted |
+
+### 14.2 The governing objective
+
+Set by Rafael and recorded here because it decides what comes next: **complete
+the COMPAS 2 migration first.** Only afterwards tighten or change API contracts
+to align with `jax_fdm` or `smax`. The §13 audit stands as the record for when
+that time comes; §13.6's naming work is deferred, not cancelled.
+
+### 14.3 What "complete the COMPAS 2 migration" now means
+
+The `ghpython` layer is the **only** module still on COMPAS 1 APIs — 16 files
+referencing `compas_rhino.geometry.Rhino*`, `compas_ghpython.artists`,
+`compas.artists` and `installable_rhino_packages`. Every other module is
+migrated. That puts **Phase 5 ahead of Phases 3 and 4**, which are JAX
+migrations rather than COMPAS 2 ones.
+
+Scope, measured: 39 components totalling 845 lines, of which **26 touch no Rhino
+geometry at all** and are near-mechanical; 13 need the §4.5 conversions map;
+`artists.py` is 397 lines; `install.py` and `uninstall.py` are 69 lines to
+delete, per §5's yak-only decision.
+
+**Phase 5 is no longer blocked.** The componentizer question, §10.5 item 2, was
+resolved: keep it, and follow `compas_fab`. **§15 is the blueprint** — the exact
+`tasks.py` config, the `yak_template` layout, and the four `release.yml` inputs,
+including that the publish job must move to `windows-latest`.
+
+One prerequisite remains inside that work: §15.3, establishing how
+`componentize_cpy.py` assigns GUIDs. If it derives them from component names,
+the Phase 1 `Constraint` → `Goal` renames changed them and existing `.gh` files
+will not resolve. Most likely a migration note rather than a code change.
+
+### 14.4 Ready to start now, in parallel
+
+The `jax_cem` decoupling and PyPI publish (§10.5 item 1). It gates Phase 3
+entirely and blocks nothing else, so it should not wait for Phase 5.
+
+### 14.5 Owed before tagging 0.9.0
+
+- the `gh-pages` migration from the Sphinx layout to mike's `versions.json`;
+- a throwaway `v0.9.0-rc1` tag to exercise `release.yml`, which is tag-triggered
+  and still completely unrun;
+- the version bump; `pyproject.toml` still reads 0.8.6.
+
+A suggestion the plan does not settle: **scope 0.9.0 as "runs on COMPAS 2"** and
+leave JAX to the next release. Phase 5 is the natural boundary, and it puts a
+working package in users' hands before the kernel work begins.
+
+### 14.6 Working environment
+
+Neither environment is checked in; §10.2 has both recipes. `.venv` is the COMPAS
+2 environment (Python 3.12, `compas` 2.15.1, `compas_plotter` 1.0.1,
+`compas_viewer` 2.0.2, `nlopt` 2.11, editable install of the package).
+`.venv-legacy` is the pre-migration baseline environment and is still needed to
+regenerate legacy comparison renders.
+
+`renders/` is gitignored and disposable. Only `renders/viewer_check.py` is kept,
+because no example uses the `Viewer` and it is the only way to exercise it; run
+it from the repository root. The images were deleted once Phase 2 was signed
+off. To regenerate:
+
+```bash
+# the current renders
+PYTHONPATH=src MPLBACKEND=Agg python tests/baseline/render.py
+
+# the legacy comparison set, from before the COMPAS 2 migration
+git worktree add --detach /tmp/legacy-wt 70e13c1a
+cp tests/baseline/render.py /tmp/legacy-wt/tests/baseline/render.py
+cd /tmp/legacy-wt && PYTHONPATH=src MPLBACKEND=Agg \
+    COMPAS_CEM_RENDER_DIR=<repo>/renders/legacy ../.venv-legacy/bin/python \
+    tests/baseline/render.py
+```
+
+`70e13c1a` is the last commit before Phase 1 merged, so it is the newest tree the
+legacy environment can still run.
+
+---
+
+## 15. Decision: the Grasshopper componentizer, and the Phase 5 blueprint
+
+Resolved 2026-08-07, closing §7 item 1 and §10.5 item 2. **Keep
+`componentize_cpy.py` producing `.ghuser` files for yak to wrap, and adhere to
+the `compas_invocations2` protocol exactly as `compas_fab` does.**
+
+### 15.1 Why there was no real contest
+
+The entire pipeline already exists and is already installed as a dependency.
+`compas_invocations2` ships:
+
+| task | what it does |
+| --- | --- |
+| `build.build_cpython_ghuser_components` | clones `compas-dev/compas-actions.ghpython_components`, runs `componentize_cpy.py`, turns a source directory into a directory of `.ghuser` files. Carries worked-out macOS Mono and `libgdiplus` handling |
+| `grasshopper.yakerize` | consumes the `.ghuser` files and builds the `.yak` |
+| `grasshopper.publish_yak` | pushes to the yak server |
+| `grasshopper.update_gh_header` | rewrites the `# r: compas_cem>=x.y.z` header across every `code.py`, which is §4.5's requirement |
+| `build.clean` | already knows to wipe the ghuser target directory |
+
+`compas_cem`'s existing layout — `components/<Name>/{code.py, metadata.json,
+icon.png}` — is already exactly what the componentizer consumes. And `yakerize`
+copies only files matching `*.ghuser`, so a `.gh` library has **no route into yak
+packaging at all**: choosing it would mean building and hosting distribution by
+hand, against the grain of the ecosystem, for a package whose whole identity is
+being a COMPAS extension.
+
+`compas_timber` turns out not to build Grasshopper components from `tasks.py` at
+all, so **`compas_fab` is the model to copy.**
+
+### 15.2 The blueprint, taken from `compas_fab`
+
+**Rename the component directory** to `components_cpython/`, matching
+`compas_fab` and the note in §4.5 that it ships `components_cpython/` only.
+
+**`tasks.py`** gains the `grasshopper` import, three tasks, and one config block:
+
+```python
+from compas_invocations2 import grasshopper
+
+ns = Collection(
+    ...,
+    build.build_cpython_ghuser_components,
+    grasshopper.yakerize,
+    grasshopper.publish_yak,
+)
+ns.configure(
+    {
+        "base_folder": os.path.dirname(__file__),
+        "ghuser_cpython": {
+            "source_dir": "src/compas_cem/ghpython/components_cpython",
+            "target_dir": "src/compas_cem/ghpython/components_cpython/ghuser",
+            "prefix": "COMPAS CEM: ",
+        },
+    }
+)
+```
+
+**Add `src/compas_cem/ghpython/yak_template/`** holding `manifest.yml` and
+`icon.png`. The manifest carries `name`, `version: {{ version }}` — which
+`yakerize` substitutes from `pyproject.toml` — `authors`, `description`, `url`
+and `keywords`.
+
+**`release.yml`** needs no separate yak invocation: `compas-actions.publish@v3`,
+which this repository already uses, builds the components itself. The publish
+job gains four inputs and **must move from `ubuntu-latest` to `windows-latest`**,
+because the componentizer loads `GH_IO.dll`:
+
+```yaml
+  publish:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: compas-dev/compas-actions.publish@v3
+        with:
+          pypi_token: ${{ secrets.PYPI }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          build_ghpython_components: true
+          gh_source: src/compas_cem/ghpython/components_cpython
+          gh_target: src/compas_cem/ghpython/components_cpython/ghuser
+          gh_prefix: "COMPAS CEM: "
+          gh_interpreter: "cpython"
+          release_name_prefix: COMPAS CEM
+```
+
+`yakerize` and `publish_yak` remain available from `tasks.py` for local and
+manual publishing, which is also how `compas_fab` arranges it.
+
+### 15.3 Prerequisite: settle how GUIDs are assigned
+
+**Unresolved, and it must be checked before Phase 5 ships.** §11.1 found that no
+`instanceGuid` appears anywhere in this repository, and `compas_ghpython` ships
+no `metadata.json` in its wheel, so the schema could not be read from the
+installed packages.
+
+If `componentize_cpy.py` derives a component's GUID **deterministically from its
+name**, then renaming the eight `CompasCem_Constraint*` directories to
+`CompasCem_Goal*` in Phase 1 changed those GUIDs, and existing `.gh` files that
+reference them will not resolve after an upgrade. Verify against
+`compas-dev/compas-actions.ghpython_components` before publishing. The remedy is
+most likely a documented migration note for 0.9.0 rather than any code change,
+since `Constraint` → `Goal` is a deliberate break (§5).

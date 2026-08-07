@@ -22,9 +22,6 @@ Two environment variables support comparison runs:
 
 Solver returns are intercepted rather than read out of each example's globals,
 because several examples rebind `form` to a translated copy before plotting.
-
-If the plotters package cannot be imported, a drawing-free stand-in is installed
-in its place so the numerical capture still runs, and a note is printed saying so.
 """
 
 import json
@@ -32,7 +29,6 @@ import os
 import runpy
 import sys
 import traceback
-import types
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
@@ -87,44 +83,6 @@ def optimizer_state(optimizer):
     return state
 
 
-class NoOpPlotter:
-    """
-    A plotter that accepts every call and draws nothing.
-    """
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __getattr__(self, name):
-        """
-        Absorb any plotter method the examples reach for.
-        """
-
-        def noop(*args, **kwargs):
-            return None
-
-        return noop
-
-
-def stub_plotters():
-    """
-    Install a drawing-free stand-in for the plotters package.
-
-    The examples import a plotter at module scope, so a plotters package that
-    cannot import stops the numerical capture before it starts. Plotting runs
-    after the solver in every example and never feeds back into it, so removing
-    it leaves the recorded numbers untouched.
-    """
-    names = ["Plotter", "FormArtist", "TopologyArtist"]
-
-    module = types.ModuleType("compas_cem.plotters")
-    for name in names:
-        setattr(module, name, NoOpPlotter)
-    setattr(module, "__all__", names)
-
-    sys.modules["compas_cem.plotters"] = module
-
-
 def originals():
     """
     Grab the unwrapped solver entry points once, before any probe is installed.
@@ -132,14 +90,10 @@ def originals():
     import compas_cem.equilibrium as eq
     from compas_cem.optimization import Optimizer
 
-    try:
-        from compas_cem.plotters import Plotter
-    except ImportError as error:
-        print(f"plotters unavailable ({error}); capturing without plots")
-        stub_plotters()
-    else:
-        # examples end in plotter.show(), which would block
-        Plotter.show = lambda self, *args, **kwargs: None
+    from compas_cem.plotters import Plotter
+
+    # examples end in plotter.show(), which would block
+    Plotter.show = lambda self, *args, **kwargs: None
 
     return eq, Optimizer, eq.static_equilibrium, Optimizer.solve
 

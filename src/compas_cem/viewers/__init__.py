@@ -6,23 +6,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from compas.scene.context import register_scene_objects
 
-def is_compasviewers_installed():
-    try:
-        import compas_view2  # noqa F401
-    except ImportError:
-        return False
-    return True
+from .viewer import *  # noqa F403
+from .scene_objects import *  # noqa F403
+from .scene_objects import register_viewer_scene_objects
 
-
-if is_compasviewers_installed():
-    from .diagramobject import *  # noqa F403
-    from .topologyobject import *  # noqa F403
-    from .formobject import *  # noqa F403
-    from .register import register_objects
-    from .viewer import *  # noqa F403
-
-    register_objects()
-
+# Built-in discovery must run first: compas only auto-discovers scene objects
+# into an empty registry, and it scans compas* packages only.
+register_scene_objects()
+register_viewer_scene_objects()
 
 __all__ = [name for name in dir() if not name.startswith("_")]

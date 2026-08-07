@@ -17,10 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Diagram.node_connected_edges`, which returns the edges incident to a node.
 - Added `TopologyDiagram.__from_data__`, which restores the integer keys of the trail bookkeeping after a round trip.
 - Added regression tests that trails and auxiliary trails survive a JSON round trip.
+- Added `plotters/scene_objects.py` and `viewers/scene_objects.py`, replacing the artist and object modules of both visualization backends.
+- Added `tests/baseline/render.py`, which renders every example headless for visual review of the plotters.
 
 ### Changed
 
 - Migrated from COMPAS 1.17.10 to `compas>=2.15,<3.0`.
+- Promoted `compas_plotter>=1.0.1` and `compas_viewer>=2.0` to runtime dependencies. Drawing a diagram is not an optional extra of this package, so installing it installs both backends.
+- Rewrote the installation instructions around `pip` and `venv`. conda is being phased out across the COMPAS ecosystem, and `compas` no longer needs installing separately because `compas_cem` declares it.
+- Marked the Grasshopper plugin as not installable in this release. It linked into Rhino 6 and 7 through `compas_rhino.install`, which COMPAS 2 removed.
 - Renamed `Constraint` to `Goal` throughout, a clean break with no deprecation aliases. The nine concrete classes, the `VectorConstraint` and `FloatConstraint` bases, the `constraints` module, `Optimizer.add_constraint` and `remove_constraint`, the `solve_proxy` wire signature and the eight Grasshopper component directories all follow. This frees the name `Constraint` for genuine hard constraints, which nlopt supports and the package does not yet use.
 - Made `Diagram.add_node` and `Diagram.add_edge` accept either a node or edge element, or a key with attributes. COMPAS 2 deserializes a graph by replaying `add_node(key=, attr_dict=)` and `add_edge(u, v, attr_dict=)`, which the object-taking overrides shadowed, breaking `copy()` and `from_json()`. Both entry points now dispatch on the argument, so the authoring API is unchanged and deserialization reaches the base graph.
 - Made the entry points reject a mismatched element rather than silently treating it as a node key: `add_node` refuses an edge element, `add_edge` refuses a node element, and a key given both positionally and by name raises.
@@ -31,7 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Regenerated `examples/03_bridge_2d.json`, which was COMPAS 1.7.1 JSON and unreadable by COMPAS 2. Node and edge insertion order is preserved, because it sets the order of the optimizer's parameter vector.
 - Widened `requires-python` to `>=3.10,<3.14` and both CI matrices to 3.10 through 3.13, now that the `distutils` ceiling is gone.
 - Replaced the reStructuredText module docstrings and inline markup with Markdown, and moved parameter and return types out of docstrings and into the signature position that mkdocstrings renders.
-
+- Migrated the plotters from `compas_plotters` artists to `compas_plotter>=1.0.1` scene objects, and the viewers from `compas_view2` objects to `compas_viewer>=2.0` scene objects. Both register through `compas.scene.register` on import, because compas discovers scene object plugins in `compas*` packages only.
+- Pinned the plotter node size policy to `relative`. The upstream scene object defaults to `absolute`, which divides the node size by the plotter resolution instead of the node count and draws markers two orders of magnitude smaller.
+- Drew the topology load crosses straight onto the canvas. A line scene object fixes its own stacking order in its constructor, which put the crosses underneath the opaque node markers.
+- Fixed `state_format` in both visualization backends reading an undefined `edge` instead of the edge it was passed.
+- Fixed `DiagramObject` referring to `self.topology`, which it never defined.
+- Fixed a `show_nodes` setter that assigned to `_show_edges`.
+- Fixed `DiagramArtist.draw_reactions` documenting a `min_load` parameter that its signature calls `min_force`, and `TopologyDiagramObject` documenting its argument as `form_diagram`.
 - Moved the documentation from Sphinx and reStructuredText to mkdocs-material with mkdocstrings.
 - Converted `README`, `CHANGELOG` and `AUTHORS` from reStructuredText to Markdown.
 - Replaced the abandoned `pytest-lazy-fixture` with `pytest-lazy-fixtures`, which lifts the `pytest<8` ceiling.
@@ -39,7 +50,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CI to `compas-actions.build@v5`, `compas-actions.docs@v5` and `compas-actions.publish@v3`.
 - Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.
 - Loosened dependency version from `numpy<2` to `numpy>=1.26`. The upper bound was never necessary; the test suite passes on numpy 2.
-- Declared `requires-python = ">=3.9,<3.12"`. `compas==1.17.10` imports `distutils`, which was removed in Python 3.12.
 
 ### Removed
 
@@ -47,6 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `.travis.yml`, which targeted Python 2.7.
 - Removed the `compas_cem.diagrams.mixins` package, folded into `Diagram`.
 - Removed `Diagram.connected_edges`, superseded by `node_connected_edges`. COMPAS 2 gives the inherited name a different meaning: it takes no node and returns edge groups per connected component.
+- Removed `plotters/proxy.py`. It was dead code calling a `FormPlotter` and a `TopologyPlotter` that no longer exist.
+- Removed the `FormArtist`, `TopologyArtist` and `DiagramArtist` plotter classes and the `register_artists` plugin, superseded by the plotter scene objects.
 
 ## [0.8.6] 2025-02-24
 

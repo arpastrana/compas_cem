@@ -127,3 +127,9 @@ src/compas_cem/ghpython/components/ghuser/
 
 # throwaway legacy baseline env (Phase 0)
 .venv-legacy/
+
+# headless renders for visual review of the visualization layer
+renders/
+
+# uv resolves fresh per CI cell; a committed lock would pin all of them
+uv.lock

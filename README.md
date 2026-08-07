@@ -29,7 +29,7 @@ The [CEM framework](https://doi.org/10.1016/j.cad.2022.103435) is a numerical fo
 These are succint instructions to install **COMPAS CEM** and its [Grasshopper](https://grasshopper3d.com/) plugin.
 For detailed guidance, please refer to the [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/latest/index.html).
 
-Install **COMPAS CEM** in a dedicated [Anaconda](https://www.anaconda.com/) environment via `pip`:
+Install **COMPAS CEM** with `pip`. It requires Python 3.10 or newer, and pulls in `compas` and the plotter and viewer backends for you:
 
 ```bash
 pip install compas-cem
@@ -46,15 +46,7 @@ If no errors show up, celebrate 🎉! You have a working installation of **COMPA
 
 ### Grasshopper plugin
 
-**Warning**: Note that [Grasshopper](https://grasshopper3d.com/) plugin of **COMPAS CEM** is only supported in **Rhino 6** and **Rhino 7**.
-
-Once **COMPAS CEM** was installed from the comment line, we can additionally link it to [Rhino](https://www.rhino3d.com/) and use it as [Grasshopper](https://grasshopper3d.com/) plugin:
-
-```bash
-python -m compas_rhino.install -v 7.0
-```
-
-The flag `-v 7.0` indicates that we will be installing **COMPAS CEM** and company in Rhino 7. If you are working with Rhino 6, replace that last bit with `-v 6.0`.
+**Warning**: The [Grasshopper](https://grasshopper3d.com/) plugin is **not installable in this release**. It targeted Rhino 6 and 7 through `compas_rhino.install`, which does not exist in COMPAS 2, and it is being reworked for Rhino 8 and 9 with [yak](https://developer.rhino3d.com/guides/yak/) packaging. Until that lands, use **COMPAS CEM** from Python.
 
 ## First steps
 
