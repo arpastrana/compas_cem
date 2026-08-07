@@ -31,4 +31,4 @@ from __future__ import print_function
 from .node_mixins import *  # noqa F403
 from .edge_mixins import *  # noqa F403
 
-__all__ = [name for name in dir() if not name.startswith('_')]
+__all__ = [name for name in dir() if not name.startswith("_")]

@@ -1,6 +1,5 @@
 from compas_cem.data import Data
 
-
 __all__ = ["Edge"]
 
 # ==============================================================================
@@ -12,6 +11,7 @@ class Edge(Data):
     """
     The edge base class.
     """
+
     def __init__(self, u, v, attrs, **kwargs):
         super(Edge, self).__init__(**kwargs)
 
@@ -53,6 +53,7 @@ class Edge(Data):
         """
         for node in (self.u, self.v):
             yield node
+
 
 # ==============================================================================
 # Main

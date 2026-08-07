@@ -5,7 +5,18 @@ __all__ = ["solve_proxy"]
 # Optimization
 # ------------------------------------------------------------------------------
 
-def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=1e-6, kappa=1e-8, tmax=100, eta=1e-6):
+
+def solve_proxy(
+    topology,
+    constraints,
+    parameters,
+    algorithm,
+    iters,
+    eps=1e-6,
+    kappa=1e-8,
+    tmax=100,
+    eta=1e-6,
+):
     """
     Solve a constrained form-finding problem through a Proxy hyperspace tunnel.
 
@@ -79,13 +90,15 @@ def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=1e-6, k
     for parameter in parameters:
         optimizer.add_parameter(parameter)
 
-    form = optimizer.solve(topology=topology,
-                           algorithm=algorithm,
-                           iters=iters,
-                           eps=eps,
-                           kappa=kappa,
-                           tmax=tmax,
-                           eta=eta)
+    form = optimizer.solve(
+        topology=topology,
+        algorithm=algorithm,
+        iters=iters,
+        eps=eps,
+        kappa=kappa,
+        tmax=tmax,
+        eta=eta,
+    )
 
     duration = optimizer.time_opt
     objective = optimizer.penalty
@@ -94,6 +107,7 @@ def solve_proxy(topology, constraints, parameters, algorithm, iters, eps=1e-6, k
     status = optimizer.status
 
     return topology, form, objective, grad_norm, evals, duration, status
+
 
 # ------------------------------------------------------------------------------
 # Main

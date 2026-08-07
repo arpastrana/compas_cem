@@ -1,6 +1,7 @@
 """
 Import a COMPAS CEM form diagram from a JSON file.
 """
+
 import os
 
 from ghpythonlib.componentbase import executingcomponent as component

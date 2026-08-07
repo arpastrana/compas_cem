@@ -1,9 +1,6 @@
 from compas_cem.optimization.parameters import NodeParameter
 
-
-__all__ = ["OriginNodeXParameter",
-           "OriginNodeYParameter",
-           "OriginNodeZParameter"]
+__all__ = ["OriginNodeXParameter", "OriginNodeYParameter", "OriginNodeZParameter"]
 
 # ------------------------------------------------------------------------------
 # Origin Node Parameter on X
@@ -14,9 +11,11 @@ class OriginNodeXParameter(NodeParameter):
     """
     Sets the X coordinate of an origin node as an optimization parameter.
     """
+
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(OriginNodeXParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "x"
+
 
 # ------------------------------------------------------------------------------
 # Origin Node Parameter on Y
@@ -27,9 +26,11 @@ class OriginNodeYParameter(NodeParameter):
     """
     Sets the Y coordinate of an origin node as an optimization parameter.
     """
+
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(OriginNodeYParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "y"
+
 
 # ------------------------------------------------------------------------------
 # Origin Node Parameter on Z
@@ -40,9 +41,11 @@ class OriginNodeZParameter(NodeParameter):
     """
     Sets the Z coordinate of an origin node as an optimization parameter.
     """
+
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(OriginNodeZParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "z"
+
 
 # ------------------------------------------------------------------------------
 # Main function
@@ -50,28 +53,20 @@ class OriginNodeZParameter(NodeParameter):
 
 
 if __name__ == "__main__":
-
     from compas.geometry import Point
 
     from compas_cem.diagrams import TopologyDiagram
-
+    from compas_cem.elements import DeviationEdge
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
-    from compas_cem.elements import DeviationEdge
-
-    from compas_cem.loads import NodeLoad
-
-    from compas_cem.supports import NodeSupport
-
     from compas_cem.equilibrium import static_equilibrium
-
-    from compas_cem.optimization import Optimizer
+    from compas_cem.loads import NodeLoad
     from compas_cem.optimization import DeviationEdgeParameter
-    from compas_cem.optimization import TrailEdgeParameter
-
+    from compas_cem.optimization import Optimizer
     from compas_cem.optimization import PointConstraint
-
+    from compas_cem.optimization import TrailEdgeParameter
     from compas_cem.plotters import Plotter
+    from compas_cem.supports import NodeSupport
 
     # create a topology diagram
     topology = TopologyDiagram()

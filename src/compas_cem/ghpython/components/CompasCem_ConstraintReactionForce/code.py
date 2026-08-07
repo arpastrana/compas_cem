@@ -1,6 +1,7 @@
 """
 Make the reaction force on a trail edge to meet a target force vector.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_rhino.geometry import RhinoVector

@@ -1,5 +1,4 @@
-numpy<2
 compas==1.17.10
-trimesh==3.20.0
+numpy>=1.26
 autograd
 nlopt>2.7

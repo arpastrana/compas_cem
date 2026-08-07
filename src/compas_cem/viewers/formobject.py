@@ -3,9 +3,7 @@ from collections import defaultdict
 from compas.colors import Color
 
 from compas_cem import COLORS
-
 from compas_cem.viewers import DiagramObject
-
 
 __all__ = ["FormDiagramObject"]
 
@@ -19,6 +17,7 @@ class FormDiagramObject(DiagramObject):
     form_diagram : :class:`~compas_cem.diagrams.FormDiagram`
         The form diagram to plot.
     """
+
     edgecolor_tension = Color.from_rgb255(*COLORS["tension"]).rgb
     edgecolor_compression = Color.from_rgb255(*COLORS["compression"]).rgb
 

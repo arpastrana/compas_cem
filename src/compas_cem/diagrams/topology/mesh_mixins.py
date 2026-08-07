@@ -1,13 +1,10 @@
 from compas.geometry import distance_point_point
-
 from compas.utilities import pairwise
 
+from compas_cem.elements import DeviationEdge
 from compas_cem.elements import Node
 from compas_cem.elements import TrailEdge
-from compas_cem.elements import DeviationEdge
-
 from compas_cem.supports import NodeSupport
-
 
 __all__ = ["MeshMixins"]
 
@@ -16,9 +13,18 @@ __all__ = ["MeshMixins"]
 # Mesh Mixins
 # ==============================================================================
 
+
 class MeshMixins(object):
     @classmethod
-    def from_dualquadmesh(cls, mesh, supports, trail_length=None, trail_state=-1, deviation_force=1.0, deviation_state=-1):
+    def from_dualquadmesh(
+        cls,
+        mesh,
+        supports,
+        trail_length=None,
+        trail_state=-1,
+        deviation_force=1.0,
+        deviation_state=-1,
+    ):
         """
         Generate a topology diagram from the dual of a quad mesh.
 
@@ -49,7 +55,6 @@ class MeshMixins(object):
         diagram : TopologyDiagram
             The topology diagram.
         """
-
         mesh.collect_polyedges()
 
         supports = set(supports)
@@ -58,7 +63,6 @@ class MeshMixins(object):
         deviation = []
 
         for pkey, polyedge in mesh.polyedges(data=True):
-
             start, end = polyedge[0], polyedge[-1]
 
             # TODO: closed polyedge (TO TEST/FIX)
@@ -73,18 +77,17 @@ class MeshMixins(object):
 
                 # supports at both polyedge extremities
                 elif start in supports and end in supports:
-
                     if polyedge[1] in supports:
                         continue
 
                     n = int(len(polyedge) / 2) - 1
 
                     # central edge becomes deviation
-                    deviation.append(tuple(polyedge[n: n + 2]))
+                    deviation.append(tuple(polyedge[n : n + 2]))
 
                     # rest splits into two trails
-                    trail.extend(list(pairwise(polyedge[:n + 1])))
-                    trail.extend(list(pairwise(polyedge[n + 1:])))
+                    trail.extend(list(pairwise(polyedge[: n + 1])))
+                    trail.extend(list(pairwise(polyedge[n + 1 :])))
 
                 # unique support at polyedge extremities
                 else:
@@ -103,7 +106,6 @@ class MeshMixins(object):
             topology.add_edge(DeviationEdge(*edge, force=force))
 
         for edge in trail:
-
             if trail_length:
                 signed_length = trail_length * trail_state
             else:

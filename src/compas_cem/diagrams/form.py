@@ -1,8 +1,6 @@
-from compas_cem.elements import Node
-from compas_cem.elements import Edge
-
 from compas_cem.diagrams import Diagram
-
+from compas_cem.elements import Edge
+from compas_cem.elements import Node
 
 __all__ = ["FormDiagram"]
 
@@ -27,12 +25,13 @@ class FormDiagram(Diagram):
     form : :class:`compas_cem.diagrams.FormDiagram`
         A form diagram.
     """
+
     def __init__(self, *args, **kwargs):
         super(FormDiagram, self).__init__(*args, **kwargs)
 
-# ==============================================================================
-# Constructors
-# ==============================================================================
+    # ==============================================================================
+    # Constructors
+    # ==============================================================================
 
     @classmethod
     def from_topology_diagram(cls, topology):
@@ -59,6 +58,7 @@ class FormDiagram(Diagram):
 # ==============================================================================
 # Helpers
 # ==============================================================================
+
 
 def form_from_eqstate(eqstate, structure, cls=None):
     """
@@ -107,6 +107,7 @@ def form_update(form, eqstate, structure):
         form.node_attributes(node, "xyz", xyz[node])
         form.node_attributes(node, ["rx", "ry", "rz"], reactions[node])
         form.node_attributes(node, ["qx", "qy", "qz"], loads[node])
+
 
 # ==============================================================================
 # Main

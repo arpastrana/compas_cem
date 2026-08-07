@@ -1,21 +1,22 @@
 from math import copysign
 from math import fabs
 
-from compas.geometry import dot_vectors
-from compas.geometry import scale_vector
 from compas.geometry import add_vectors
-from compas.geometry import subtract_vectors
-from compas.geometry import normalize_vector
-from compas.geometry import length_vector
 from compas.geometry import distance_point_point
+from compas.geometry import dot_vectors
+from compas.geometry import length_vector
+from compas.geometry import normalize_vector
+from compas.geometry import scale_vector
+from compas.geometry import subtract_vectors
 
 from compas_cem.diagrams import FormDiagram
-
 
 __all__ = ["static_equilibrium"]
 
 
-def static_equilibrium(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, callback=None):
+def static_equilibrium(
+    topology, kmax=None, tmax=100, eta=1e-6, verbose=False, callback=None
+):
     """
     Generate a form diagram in static equilibrium.
 
@@ -56,7 +57,9 @@ def static_equilibrium(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, c
     return form
 
 
-def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, callback=None):
+def equilibrium_state(
+    topology, kmax=None, tmax=100, eta=1e-6, verbose=False, callback=None
+):
     """
     Equilibrate forces at the nodes of a topology diagram.
     """
@@ -70,7 +73,9 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
     reaction_forces = {}
     trail_forces = {}
     trail_directions = {}
-    residual_vectors = {node: topology.reaction_force(node) for node in topology.nodes()}
+    residual_vectors = {
+        node: topology.reaction_force(node) for node in topology.nodes()
+    }
     node_xyz = {node: topology.node_coordinates(node) for node in topology.nodes()}
 
     # compute last sequence
@@ -81,14 +86,11 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
             klast = kmax
 
     for t in range(tmax):  # max iterations
-
         # store last positions for residual
         last_xyz = {k: v for k, v in node_xyz.items()}
 
         for k in range(topology.number_of_sequences()):  # sequences
-
             for key, trail in topology.trails(keys=True):
-
                 # if index is larger than available nodes in trail, skip trail
                 if k not in trails_sequences[key]:
                     continue
@@ -139,8 +141,12 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
                     #  valid intersection length exists
                     else:
                         # print out warning if there is a swipe in the force state of the edge
-                        if plength * length < 0.:
-                            print("Warning! Force state has flipped for edge {} due to plane intersection".format(edge))
+                        if plength * length < 0.0:
+                            print(
+                                "Warning! Force state has flipped for edge {} due to plane intersection".format(
+                                    edge
+                                )
+                            )
                         # override signed length
                         length = plength
 
@@ -179,7 +185,9 @@ def equilibrium_state(topology, kmax=None, tmax=100, eta=1e-6, verbose=False, ca
     # if residual distance larger than threshold after tmax iterations, raise error
     if t > 0:
         if distance > eta:
-            raise ValueError("Over {} iters. Residual: {} > eta: {}".format(tmax, distance, eta))
+            raise ValueError(
+                "Over {} iters. Residual: {} > eta: {}".format(tmax, distance, eta)
+            )
 
     # print log
     if verbose:

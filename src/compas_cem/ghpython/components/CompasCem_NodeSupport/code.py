@@ -1,6 +1,7 @@
 """
 Create a node support from a point.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_rhino.geometry import RhinoPoint

@@ -41,4 +41,4 @@ from .polyline import *  # noqa F403
 # if not compas.IPY:
 #     from .mesh import *
 
-__all__ = [name for name in dir() if not name.startswith('_')]
+__all__ = [name for name in dir() if not name.startswith("_")]

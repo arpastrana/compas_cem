@@ -3,7 +3,6 @@ from compas_view2.app import App
 from compas_cem.diagrams import FormDiagram
 from compas_cem.diagrams import TopologyDiagram
 
-
 __all__ = ["Viewer"]
 
 
@@ -15,6 +14,7 @@ class Viewer(App):
     registering the diagram objects, and adding the viewer itself as an attribute
     of the objects.
     """
+
     def __init__(self, *args, **kwargs):
         super(Viewer, self).__init__(*args, **kwargs)
 

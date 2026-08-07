@@ -1,6 +1,7 @@
 """
 Get the lengths and forces of the edges in a form diagram.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 

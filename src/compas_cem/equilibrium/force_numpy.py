@@ -2,11 +2,12 @@ import autograd.numpy as np
 
 from compas_cem.diagrams import FormDiagram
 
-
 __all__ = ["static_equilibrium_numpy"]
 
 
-def static_equilibrium_numpy(topology, tmax=100, eta=1e-6, verbose=False, callback=None):
+def static_equilibrium_numpy(
+    topology, tmax=100, eta=1e-6, verbose=False, callback=None
+):
     """
     Generate a form diagram in static equilibrium using numpy.
 
@@ -63,8 +64,12 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
     # numpy
     node_loads = {n: np.array(topology.node_load(n)) for n in topology.nodes()}
     # no numpy
-    node_direct = {n: topology._connected_direct_deviation_edges(n) for n in topology.nodes()}
-    node_indirect = {n: topology._connected_indirect_deviation_edges(n) for n in topology.nodes()}
+    node_direct = {
+        n: topology._connected_direct_deviation_edges(n) for n in topology.nodes()
+    }
+    node_indirect = {
+        n: topology._connected_indirect_deviation_edges(n) for n in topology.nodes()
+    }
     edge_keys = {e for e in topology.edges()}
 
     # edge planes
@@ -77,7 +82,9 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
         edge_planes[edge] = plane
 
     # internals
-    residual_vectors = {node: np.array(topology.reaction_force(node)) for node in topology.nodes()}
+    residual_vectors = {
+        node: np.array(topology.reaction_force(node)) for node in topology.nodes()
+    }
 
     # output
     reaction_forces = {}
@@ -85,14 +92,11 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
     trail_directions = {}
 
     for t in range(tmax):  # max iterations
-
         # store last positions for residual
         last_positions = {k: v for k, v in node_xyz.items()}
 
         for k in range(topology.number_of_sequences()):  # sequences
-
             for key, trail in topology.trails(keys=True):
-
                 # if index is larger than available nodes in trail, skip trail
                 if k not in trails_sequences[key]:
                     continue
@@ -111,13 +115,17 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
 
                 # direct deviation edges vector
                 dir_edges = node_direct[node]
-                rd_vec = deviation_edges_resultant_vector(node, node_xyz, dir_edges, edge_forces)
+                rd_vec = deviation_edges_resultant_vector(
+                    node, node_xyz, dir_edges, edge_forces
+                )
 
                 # indirect deviation edges vector
                 ri_vec = np.zeros(3)
                 if t > 0:
                     indir_edges = node_indirect[node]
-                    ri_vec = deviation_edges_resultant_vector(node, node_xyz, indir_edges, edge_forces)
+                    ri_vec = deviation_edges_resultant_vector(
+                        node, node_xyz, indir_edges, edge_forces
+                    )
 
                 # node equilibrium, bottleneck 60%
                 rvec = node_equilibrium(rvec, q_vec, rd_vec, ri_vec)
@@ -144,7 +152,9 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
                 # override length if a plane exists
                 if plane:
                     # get length from line plane intersection
-                    plength = trail_length_from_plane_intersection_numpy(pos, rvec, plane)
+                    plength = trail_length_from_plane_intersection_numpy(
+                        pos, rvec, plane
+                    )
 
                     # check that returned length is not null
                     if plength:
@@ -187,7 +197,9 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
 
         # TODO: simplify by iterating only over values?
         pos_array = np.array([pos for key, pos in node_xyz.items()])
-        last_pos_array = np.array([last_positions[key] for key, pos in node_xyz.items()])
+        last_pos_array = np.array(
+            [last_positions[key] for key, pos in node_xyz.items()]
+        )
 
         # calculate residual distance
         distance = np.sqrt(np.sum(np.square(last_pos_array - pos_array)))
@@ -198,7 +210,9 @@ def equilibrium_state_numpy(topology, tmax=100, eta=1e-6, verbose=False, callbac
     # if residual distance larger than threshold after tmax iterations, raise error
     if t > 0:
         if distance > eta:
-            raise ValueError("Over {} iters. Residual: {} > eta: {}".format(tmax, distance, eta))
+            raise ValueError(
+                "Over {} iters. Residual: {} > eta: {}".format(tmax, distance, eta)
+            )
 
     # print log
     if verbose:
@@ -362,6 +376,7 @@ def trail_vector_out(tvec_in, q_vec, rd_vec, ri_vec):
         An outgoing trail vector.
     """
     return -1.0 * (tvec_in + q_vec + rd_vec + ri_vec)
+
 
 # ------------------------------------------------------------------------------
 # Utilities

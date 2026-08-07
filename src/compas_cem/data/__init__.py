@@ -23,4 +23,4 @@ from __future__ import print_function
 # from .<module> import *
 from .data import *  # noqa F403
 
-__all__ = [name for name in dir() if not name.startswith('_')]
+__all__ = [name for name in dir() if not name.startswith("_")]

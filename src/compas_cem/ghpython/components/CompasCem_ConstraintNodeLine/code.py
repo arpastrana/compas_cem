@@ -1,6 +1,7 @@
 """
 Pull the position of a node to a target line ray.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.optimization import LineConstraint

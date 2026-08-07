@@ -1,69 +1,33 @@
+name: release
+
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
-name: release
+      - 'v*'
 
 jobs:
   build:
-    name: Create Release
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.9", "3.10", "3.11"]
+
     steps:
-
-      - name: Get version from tag
-        id: tag_name
-        run: |
-          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
-        shell: bash
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: compas-dev/compas-actions.build@v5
         with:
-          tag_name: ${{ github.ref }}
-          release_name: COMPAS CEM ${{ github.ref }}
-          draft: false
-          prerelease: false
+          python: ${{ matrix.python }}
+          invoke_lint: true
+          invoke_test: true
+          check_import: true
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # Rhino 8 yak packaging and CPython Grasshopper components attach here (Phase 5).
+      - uses: compas-dev/compas-actions.publish@v3
         with:
-          python-version: 3.8
-
-      - uses: compas-dev/compas-actions.build@v3.0.1
-        with:
-          test_lint: true
-          test_compas: true
-      - uses: NuGet/setup-nuget@v1.0.5
-      - name: Install dependencies
-        run: |
-          choco install ironpython --version=2.7.8.1
-
-      - name: 🦗 Build grasshopper components
-        uses: compas-dev/compas-actions.ghpython_components@v1
-        with:
-          source: src/compas_cem/ghpython/components
-          target: src/compas_cem/ghpython/components/ghuser
-
-      - name: 💃 Build release
-        if: success() && startsWith(github.ref, 'refs/tags')
-        run: |
-          python -m pip install --upgrade pip
-          pip install setuptools wheel twine
-          python setup.py clean --all sdist bdist_wheel
-
-      - name: 📦 Publish release to PyPI
-        if: success() && startsWith(github.ref, 'refs/tags')
-        run: |
-            twine check dist/*
-            twine upload dist/* --skip-existing
-        env:
-            TWINE_USERNAME: __token__
-            TWINE_PASSWORD: ${{ secrets.PYPI }}
+          pypi_token: ${{ secrets.PYPI }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_name_prefix: COMPAS CEM

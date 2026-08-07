@@ -1,17 +1,12 @@
-from nlopt import opt
-
+from nlopt import LD_AUGLAG
 from nlopt import LD_LBFGS
 from nlopt import LD_MMA
 from nlopt import LD_SLSQP
 from nlopt import LD_TNEWTON
-from nlopt import LD_AUGLAG
 from nlopt import LD_VAR2
+from nlopt import opt
 
-
-__all__ = ["nlopt_algorithm",
-           "nlopt_algorithms",
-           "nlopt_solver",
-           "nlopt_status"]
+__all__ = ["nlopt_algorithm", "nlopt_algorithms", "nlopt_solver", "nlopt_status"]
 
 
 def nlopt_algorithm(name):
@@ -68,13 +63,14 @@ def nlopt_algorithms():
     Refer to the NLopt `documentation <https://nlopt.readthedocs.io/en/latest/>`_ for more details on their theoretical underpinnings.
     """
     algorithms = {}
-    gradient_based = {"SLSQP": LD_SLSQP,
-                      "MMA": LD_MMA,
-                      "LBFGS": LD_LBFGS,
-                      "TNEWTON": LD_TNEWTON,
-                      "VAR": LD_VAR2,
-                      "AUGLAG": LD_AUGLAG
-                      }
+    gradient_based = {
+        "SLSQP": LD_SLSQP,
+        "MMA": LD_MMA,
+        "LBFGS": LD_LBFGS,
+        "TNEWTON": LD_TNEWTON,
+        "VAR": LD_VAR2,
+        "AUGLAG": LD_AUGLAG,
+    }
 
     algorithms.update(gradient_based)
 
@@ -97,18 +93,22 @@ def nlopt_status(constant):
     """
     results = {}
 
-    success = {1: "NLOPT_SUCCESS",
-               2: "NLOPT_EPSVAL_REACHED",
-               3: "NLOPT_FTOL_REACHED",
-               4: "NLOPT_XTOL_REACHED",
-               5: "NLOPT_ITERSMAX_REACHED",
-               6: "NLOPT_MAXTIME_REACHED"}
+    success = {
+        1: "NLOPT_SUCCESS",
+        2: "NLOPT_EPSVAL_REACHED",
+        3: "NLOPT_FTOL_REACHED",
+        4: "NLOPT_XTOL_REACHED",
+        5: "NLOPT_ITERSMAX_REACHED",
+        6: "NLOPT_MAXTIME_REACHED",
+    }
 
-    failure = {-1: "NLOPT_GENERIC_FAILURE",
-               -2: "NLOPT_INVALID_ARGS",
-               -3: "NLOPT_OUT_OF_MEMORY",
-               -4: "NLOPT_ROUNDOFF_LIMITED",
-               -5: "NLOPT_FORCED_STOP"}
+    failure = {
+        -1: "NLOPT_GENERIC_FAILURE",
+        -2: "NLOPT_INVALID_ARGS",
+        -3: "NLOPT_OUT_OF_MEMORY",
+        -4: "NLOPT_ROUNDOFF_LIMITED",
+        -5: "NLOPT_FORCED_STOP",
+    }
 
     results.update(success)
     results.update(failure)

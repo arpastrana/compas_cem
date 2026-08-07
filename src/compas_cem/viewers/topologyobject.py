@@ -3,9 +3,7 @@ from collections import defaultdict
 from compas.colors import Color
 
 from compas_cem import COLORS
-
 from compas_cem.viewers import DiagramObject
-
 
 __all__ = ["TopologyDiagramObject"]
 
@@ -19,11 +17,14 @@ class TopologyDiagramObject(DiagramObject):
     form_diagram : :class:`~compas_cem.diagrams.TopologyDiagram`
         The form diagram to plot.
     """
+
     edgecolor_trail = Color.from_rgb255(*COLORS["edge_trail"]).rgb
     edgecolor_deviation = Color.from_rgb255(*COLORS["edge_deviation"]).rgb
     edgecolor_auxiliary = Color.from_rgb255(*COLORS["auxiliary_trail"]).rgb
     origin_nodecolor = Color.from_rgb255(*COLORS["node_origin"]).rgb
-    edgecolor_deviationindirect = Color.from_rgb255(*COLORS["edge_deviation_indirect"]).rgb
+    edgecolor_deviationindirect = Color.from_rgb255(
+        *COLORS["edge_deviation_indirect"]
+    ).rgb
 
     def __init__(self, topology_diagram, **kwargs):
         super(TopologyDiagramObject, self).__init__(topology_diagram, **kwargs)

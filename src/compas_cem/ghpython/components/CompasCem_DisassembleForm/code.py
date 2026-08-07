@@ -1,6 +1,7 @@
 """
 Disassemble a form diagram into its constituent parts.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 

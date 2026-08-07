@@ -1,6 +1,7 @@
 """
 Export a COMPAS CEM diagram and save it as a JSON file.
 """
+
 import os
 
 from ghpythonlib.componentbase import executingcomponent as component

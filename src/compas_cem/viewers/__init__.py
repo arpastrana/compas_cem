@@ -40,7 +40,6 @@ def is_compasviewers_installed():
 
 
 if is_compasviewers_installed():
-
     from .diagramobject import *  # noqa F403
     from .topologyobject import *  # noqa F403
     from .formobject import *  # noqa F403
@@ -50,4 +49,4 @@ if is_compasviewers_installed():
     register_objects()
 
 
-__all__ = [name for name in dir() if not name.startswith('_')]
+__all__ = [name for name in dir() if not name.startswith("_")]

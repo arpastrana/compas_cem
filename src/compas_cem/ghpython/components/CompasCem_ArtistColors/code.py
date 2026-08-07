@@ -1,6 +1,7 @@
 """
 Get the artists color scheme for the objects of the CEM framework.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem import COLORS
@@ -22,6 +23,17 @@ class ArtistColorsComponent(component):
         color_trail = colors["trail"]
         color_auxiliary_trail = colors["auxiliary_trail"]
 
-        colors = (color_tension, color_compression, color_edge, color_node, color_node_support, color_node_origin, color_load, color_reaction, color_trail, color_auxiliary_trail)
+        colors = (
+            color_tension,
+            color_compression,
+            color_edge,
+            color_node,
+            color_node_support,
+            color_node_origin,
+            color_load,
+            color_reaction,
+            color_trail,
+            color_auxiliary_trail,
+        )
 
         return colors

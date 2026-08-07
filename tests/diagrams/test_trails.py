@@ -1,10 +1,13 @@
 import pytest
 
+from pytest_lazy_fixtures import lf
+
 # ==============================================================================
 # Tests
 # ==============================================================================
 
 # TODO: A sanity check for nodes with no trails!
+
 
 def test_trails_number(compression_strut):
     """
@@ -23,7 +26,6 @@ def test_trails_first_last_node_types(compression_strut):
     topology.build_trails()
 
     for trail in topology.trails():
-
         assert topology.is_node_origin(trail[0]) == True
         assert topology.is_node_support(trail[-1]) == True
 
@@ -45,9 +47,10 @@ def test_trails_type_intermediate_nodes(compression_strut):
             assert topology.is_node_support(node) == False
 
 
-@pytest.mark.parametrize("topology",
-                         [(pytest.lazy_fixture("support_missing_topology")),
-                          (pytest.lazy_fixture("tree_2d_needs_auxiliary_trails"))])
+@pytest.mark.parametrize(
+    "topology",
+    [(lf("support_missing_topology")), (lf("tree_2d_needs_auxiliary_trails"))],
+)
 def test_trails_nodes_unassigned(topology):
     """
     Fails because some nodes are unassigned after doing the trail search.
@@ -72,8 +75,7 @@ def test_trails_no_supports(unsupported_topology):
         unsupported_topology.build_trails()
 
 
-@pytest.mark.parametrize("topology",
-                         [(pytest.lazy_fixture("tree_2d_needs_auxiliary_trails"))])
+@pytest.mark.parametrize("topology", [(lf("tree_2d_needs_auxiliary_trails"))])
 def test_auxiliary_trails_auto(topology):
     """
     Appends auxiliary trails at the nodes shared one or more deviation edges.
@@ -89,10 +91,11 @@ def test_auxiliary_trails_auto(topology):
     assert aux_trails_set == set(topology.auxiliary_trail_edges())
     assert set(topology.trails()) - set(topology.auxiliary_trails()) == {(3, 4)}
 
-@pytest.mark.parametrize("topology",
-                         [(pytest.lazy_fixture("compression_strut")),
-                          (pytest.lazy_fixture("threebar_funicular")),
-                          (pytest.lazy_fixture("braced_tower_2d"))])
+
+@pytest.mark.parametrize(
+    "topology",
+    [(lf("compression_strut")), (lf("threebar_funicular")), (lf("braced_tower_2d"))],
+)
 def test_auxiliary_trails_empty(topology):
     """
     Checks that neither auxiliary trails nor auxiliary edges exist in the diagram.

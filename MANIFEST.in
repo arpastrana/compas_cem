@@ -8,13 +8,13 @@ prune tests
 prune temp
 
 include LICENSE
-include README.rst
-include AUTHORS.rst
-include CHANGELOG.rst
+include README.md
+include AUTHORS.md
+include CHANGELOG.md
 include requirements.txt
 
 exclude requirements-dev.txt
-exclude pytest.ini .bumpversion.cfg .editorconfig
+exclude mkdocs.yml .editorconfig
 exclude tasks.py
 exclude CONTRIBUTING.md
 

@@ -1,6 +1,7 @@
 """
 Set the length of a trail edge as an optimization parameter.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.optimization import TrailEdgeParameter

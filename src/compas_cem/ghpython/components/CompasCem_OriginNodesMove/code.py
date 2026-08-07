@@ -1,6 +1,7 @@
 """
 Move the origin nodes of a topology diagram to a new location.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas.utilities import iterable_like

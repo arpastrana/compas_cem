@@ -1,6 +1,5 @@
 from compas_cem.optimization.parameters import Parameter
 
-
 __all__ = ["NodeParameter"]
 
 
@@ -8,10 +7,12 @@ __all__ = ["NodeParameter"]
 # Base Node Parameter
 # ------------------------------------------------------------------------------
 
+
 class NodeParameter(Parameter):
     """
     Parametrize a node attribute to solve an optimization problem.
     """
+
     def __init__(self, key, bound_low, bound_up, **kwargs):
         super(NodeParameter, self).__init__(key, bound_low, bound_up, **kwargs)
 
@@ -22,9 +23,9 @@ class NodeParameter(Parameter):
         val = topology.node_attribute(key=self.key(), name=self._attr_name)
         return val
 
-# ------------------------------------------------------------------------------
-# Data
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Data
+    # ------------------------------------------------------------------------------
 
     @property
     def data(self):

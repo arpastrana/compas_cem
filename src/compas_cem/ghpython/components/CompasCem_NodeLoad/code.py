@@ -1,6 +1,7 @@
 """
 Create a load vector to be applied at a node.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_rhino.geometry import RhinoPoint

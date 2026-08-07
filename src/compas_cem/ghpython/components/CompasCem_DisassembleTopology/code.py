@@ -1,6 +1,7 @@
 """
 Disassemble a topology diagram into its constituent parts.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 
@@ -21,4 +22,14 @@ class TopologyDisassemblyComponent(component):
         origin_node_keys = list(topology.origin_nodes())
         support_node_keys = list(topology.support_nodes())
 
-        return node_keys, origin_node_keys, support_node_keys, edge_keys, trail_edge_keys, deviation_edge_keys, sequence_keys, trail_keys, auxiliary_trail_keys
+        return (
+            node_keys,
+            origin_node_keys,
+            support_node_keys,
+            edge_keys,
+            trail_edge_keys,
+            deviation_edge_keys,
+            sequence_keys,
+            trail_keys,
+            auxiliary_trail_keys,
+        )

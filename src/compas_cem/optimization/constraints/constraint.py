@@ -2,11 +2,9 @@ from abc import abstractmethod
 from ast import literal_eval
 
 from compas.data.encoders import cls_from_dtype
-
 from compas.geometry import distance_point_point_sqrd
 
 from compas_cem.data import Data
-
 
 # ------------------------------------------------------------------------------
 # Constraint
@@ -17,6 +15,7 @@ class Constraint(Data):
     """
     The blueprint of a constraint.
     """
+
     def __init__(self, key, target, weight, **kwargs):
         super(Constraint, self).__init__(**kwargs)
         self._key = key  # a topological key
@@ -105,6 +104,7 @@ class Constraint(Data):
         st = "{0}(key={1!r}, target={2!r}, weight={3!r})"
         return st.format(self.__class__.__name__, self._key, self._target, self._weight)
 
+
 # ------------------------------------------------------------------------------
 # Vector Constraint
 # ------------------------------------------------------------------------------
@@ -114,6 +114,7 @@ class VectorConstraint(Constraint):
     """
     The blueprint of a constraint that measures distances between two vectors.
     """
+
     def target(self, *args, **kwargs):
         """
         The target vector.
@@ -134,6 +135,7 @@ class VectorConstraint(Constraint):
 
         return distance_point_point_sqrd(vec_a, vec_b) * self.weight
 
+
 # ------------------------------------------------------------------------------
 # Float Constraint
 # ------------------------------------------------------------------------------
@@ -143,6 +145,7 @@ class FloatConstraint(Constraint):
     """
     The blueprint of a constraint that measures distances between two floats.
     """
+
     def target(self, *args, **kwargs):
         """
         The target float value.
@@ -202,6 +205,7 @@ class FloatConstraint(Constraint):
         self._key = literal_eval(data["key"])
         self._target = literal_eval(data["target"])
         self._weight = float(data["weight"])
+
 
 # ==============================================================================
 # Main

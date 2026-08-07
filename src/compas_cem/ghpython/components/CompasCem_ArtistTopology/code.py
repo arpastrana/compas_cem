@@ -1,6 +1,7 @@
 """
 Draw a topology diagram.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.ghpython import TopologyArtist
@@ -30,4 +31,13 @@ class TopologyArtistComponent(component):
 
         loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
 
-        return nodes, origin_nodes, support_nodes, edges, trail_edges, deviation_edges, trails, loads
+        return (
+            nodes,
+            origin_nodes,
+            support_nodes,
+            edges,
+            trail_edges,
+            deviation_edges,
+            trails,
+            loads,
+        )

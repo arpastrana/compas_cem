@@ -1,21 +1,17 @@
 from math import copysign
 from math import fabs
 
+from compas.geometry import Point
+from compas.geometry import Vector
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
-from compas.geometry import scale_vector
 from compas.geometry import normalize_vector
+from compas.geometry import scale_vector
 from compas.geometry import translate_points
-
-from compas.geometry import Vector
-from compas.geometry import Point
-
 from compas.utilities import geometric_key
-
 from compas_plotters.artists import NetworkArtist
 
 from compas_cem import COLORS
-
 
 __all__ = ["FormArtist"]
 
@@ -29,32 +25,38 @@ class FormArtist(NetworkArtist):
     form_diagram : :class:`~compas_cem.diagrams.FormDiagram`
         The form diagram to plot.
     """
-    def __init__(self,
-                 form_diagram,
-                 nodesize=0.1,
-                 edgewidth=1.0,
-                 nodetext=None,
-                 edgetext=None,
-                 loadtol=1e-3,
-                 loadscale=1.0,
-                 reactiontol=1e-3,
-                 reactionscale=1.0,
-                 show_loads=True,
-                 show_reactions=True,
-                 show_nodetext=False,
-                 show_edgetext=False,
-                 **kwargs):
-        super(FormArtist, self).__init__(form_diagram,
-                                         edgewidth=edgewidth,
-                                         nodesize=nodesize,
-                                         **kwargs)
 
-        self.edge_statecolors = {-1: COLORS["compression"],
-                                 1: COLORS["tension"],
-                                 0: COLORS["edge"]}
+    def __init__(
+        self,
+        form_diagram,
+        nodesize=0.1,
+        edgewidth=1.0,
+        nodetext=None,
+        edgetext=None,
+        loadtol=1e-3,
+        loadscale=1.0,
+        reactiontol=1e-3,
+        reactionscale=1.0,
+        show_loads=True,
+        show_reactions=True,
+        show_nodetext=False,
+        show_edgetext=False,
+        **kwargs,
+    ):
+        super(FormArtist, self).__init__(
+            form_diagram, edgewidth=edgewidth, nodesize=nodesize, **kwargs
+        )
 
-        self.node_colors = {"support": COLORS["node_support"],
-                            "default": COLORS["node"]}
+        self.edge_statecolors = {
+            -1: COLORS["compression"],
+            1: COLORS["tension"],
+            0: COLORS["edge"],
+        }
+
+        self.node_colors = {
+            "support": COLORS["node_support"],
+            "default": COLORS["node"],
+        }
 
         self.form = self.network
 
@@ -143,17 +145,20 @@ class FormArtist(NetworkArtist):
         """
         Draw the loads acting on the nodes of a force diagram.
         """
-        self._draw_forces(nodes=self.nodes,
-                          attr_names=self.load_attrs,
-                          scale=self.load_scale,
-                          color=self.load_color,
-                          tol=self.load_tol,
-                          shift={key: False for key in self.nodes})
+        self._draw_forces(
+            nodes=self.nodes,
+            attr_names=self.load_attrs,
+            scale=self.load_scale,
+            color=self.load_color,
+            tol=self.load_tol,
+            shift={key: False for key in self.nodes},
+        )
 
     def draw_reactions(self):
         """
         Draw the reaction forces at the supports of a form diagram.
         """
+
         def _reaction_shifts():
             # TODO: needs a more robust check for arrow orientation
             # what we need is to know whether the arrow needs a full shift.
@@ -162,19 +167,23 @@ class FormArtist(NetworkArtist):
             for key in self.form.nodes():
                 # every support must connect to only one trail edge
                 s = False
-                forces = [self.form.edge_force(e) for e in self.form.connected_edges(key)]
+                forces = [
+                    self.form.edge_force(e) for e in self.form.connected_edges(key)
+                ]
                 max_force = max(forces, key=lambda f: fabs(f))
                 if max_force < 0.0:
                     s = True
                 shift[key] = s
             return shift
 
-        self._draw_forces(nodes=self.nodes,
-                          attr_names=self.reaction_attrs,
-                          scale=self.reaction_scale,
-                          color=self.reaction_color,
-                          tol=self.reaction_tol,
-                          shift=_reaction_shifts())
+        self._draw_forces(
+            nodes=self.nodes,
+            attr_names=self.reaction_attrs,
+            scale=self.reaction_scale,
+            color=self.reaction_color,
+            tol=self.reaction_tol,
+            shift=_reaction_shifts(),
+        )
 
     def _draw_forces(self, nodes, attr_names, scale, color, shift, tol):
         """
@@ -196,7 +205,6 @@ class FormArtist(NetworkArtist):
             The minimum force magnitude to draw.
         """
         for node in nodes:
-
             f_vec = self.form.node_attributes(node, attr_names)
             f_vec_scaled = scale_vector(f_vec, scale)
             f_vec_norm = normalize_vector(f_vec)
@@ -236,6 +244,7 @@ class FormArtist(NetworkArtist):
         text_labels : ``dict``
             A dictionary of text labels
         """
+
         def gkey_format(x):
             return geometric_key(self.form.node_coordinates(x), precision)
 
@@ -244,8 +253,7 @@ class FormArtist(NetworkArtist):
 
         precision = self.float_precision
 
-        tags_formatter = {"xyz": gkey_format,
-                          "keyxyz": key_gkey_format}
+        tags_formatter = {"xyz": gkey_format, "keyxyz": key_gkey_format}
 
         if text_tag not in tags_formatter:
             return None
@@ -274,6 +282,7 @@ class FormArtist(NetworkArtist):
         text_labels : ``dict``
             A dictionary of text labels
         """
+
         def force_format(x):
             return "{0:.{1}}".format(self.form.edge_force(x), precision)
 
@@ -285,9 +294,11 @@ class FormArtist(NetworkArtist):
 
         precision = self.float_precision
 
-        tags_formatter = {"force": force_format,
-                          "length": length_format,
-                          "forcelength": force_length_format}
+        tags_formatter = {
+            "force": force_format,
+            "length": length_format,
+            "forcelength": force_length_format,
+        }
 
         if text_tag not in tags_formatter:
             return None

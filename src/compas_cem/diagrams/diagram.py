@@ -2,9 +2,8 @@ from compas.datastructures import Network
 from compas.geometry import length_vector
 
 from compas_cem.data import Data
-from compas_cem.diagrams import NodeMixins
 from compas_cem.diagrams import EdgeMixins
-
+from compas_cem.diagrams import NodeMixins
 
 __all__ = ["Diagram"]
 
@@ -18,31 +17,34 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
     """
     Base class that shares functionality across diagrams.
     """
+
     def __init__(self, *args, **kwargs):
         super(Diagram, self).__init__(*args, **kwargs)
 
-        self.update_default_node_attributes({"x": 0.0,
-                                             "y": 0.0,
-                                             "z": 0.0,
-                                             "qx": 0.0,
-                                             "qy": 0.0,
-                                             "qz": 0.0,
-                                             "rx": 0.0,
-                                             "ry": 0.0,
-                                             "rz": 0.0,
-                                             "_k": None,
-                                             "type": None})
+        self.update_default_node_attributes(
+            {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "qx": 0.0,
+                "qy": 0.0,
+                "qz": 0.0,
+                "rx": 0.0,
+                "ry": 0.0,
+                "rz": 0.0,
+                "_k": None,
+                "type": None,
+            }
+        )
 
-        self.update_default_edge_attributes({"type": None,
-                                             "length": 0.0,
-                                             "force": 0.0})
+        self.update_default_edge_attributes({"type": None, "length": 0.0, "force": 0.0})
 
         self.attributes["gkey_node"] = {}
         self.attributes["tol"] = "3f"
 
-# ==============================================================================
-# Properties
-# ==============================================================================
+    # ==============================================================================
+    # Properties
+    # ==============================================================================
 
     @property
     def tol(self):
@@ -54,8 +56,7 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
 
     @tol.setter
     def tol(self, tol):
-        """
-        """
+        """ """
         self.attributes["tol"] = tol
 
     @property
@@ -65,9 +66,9 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         """
         return self.attributes["gkey_node"]
 
-# ==============================================================================
-#  Node collections
-# ==============================================================================
+    # ==============================================================================
+    #  Node collections
+    # ==============================================================================
 
     def support_nodes(self):
         """
@@ -99,9 +100,9 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
             if self.is_node_loaded(node, min_force):
                 yield node
 
-# ==============================================================================
-# Counters
-# ==============================================================================
+    # ==============================================================================
+    # Counters
+    # ==============================================================================
 
     def number_of_support_nodes(self):
         """
@@ -125,9 +126,9 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         """
         return len(list(self.loaded_nodes()))
 
-# ==============================================================================
-# Node Filters
-# ==============================================================================
+    # ==============================================================================
+    # Node Filters
+    # ==============================================================================
 
     def is_node_support(self, node):
         """
@@ -163,9 +164,9 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         """
         return length_vector(self.node_load(node)) > min_force
 
-# ==============================================================================
-# Edge Filters
-# ==============================================================================
+    # ==============================================================================
+    # Edge Filters
+    # ==============================================================================
 
     def is_edge_supported(self, edge):
         """
@@ -183,9 +184,9 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         """
         return any([self.is_node_support(node) for node in edge])
 
-# ==============================================================================
-# Node Attributes
-# ==============================================================================
+    # ==============================================================================
+    # Node Attributes
+    # ==============================================================================
 
     def node_load(self, node):
         """
@@ -219,9 +220,9 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         """
         return self.node_attributes(key=node, names=["rx", "ry", "rz"])
 
-# ==============================================================================
-# Edge Attributes
-# ==============================================================================
+    # ==============================================================================
+    # Edge Attributes
+    # ==============================================================================
 
     def edge_force(self, edge):
         """
@@ -271,25 +272,26 @@ class Diagram(Data, NodeMixins, EdgeMixins, Network):
         """
         return self.edge_attribute(key=edge, name="plane")
 
-# ==============================================================================
-# Magic methods
-# ==============================================================================
+    # ==============================================================================
+    # Magic methods
+    # ==============================================================================
 
     def __repr__(self):
-        """
-        """
+        """ """
         tpl = "{}(\n\tEdges: {}\n\tNodes: {}\n\tSupport Nodes: {}\n\tLoaded nodes: {}\n\t)"
-        data = [self.__class__.__name__,
-                self.number_of_edges(),
-                self.number_of_nodes(),
-                self.number_of_support_nodes(),
-                self.number_of_loaded_nodes()]
+        data = [
+            self.__class__.__name__,
+            self.number_of_edges(),
+            self.number_of_nodes(),
+            self.number_of_support_nodes(),
+            self.number_of_loaded_nodes(),
+        ]
         return tpl.format(*data)
 
     def __str__(self):
-        """
-        """
+        """ """
         return self.__repr__()
+
 
 # ==============================================================================
 # Main

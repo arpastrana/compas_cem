@@ -1,11 +1,10 @@
 from compas.geometry import dot_vectors
-from compas.geometry import normalize_vector
-from compas.geometry import subtract_vectors
 from compas.geometry import length_vector_sqrd
+from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
+from compas.geometry import subtract_vectors
 
 from compas_cem.optimization.constraints import VectorConstraint
-
 
 __all__ = ["EdgeDirectionConstraint"]
 
@@ -18,6 +17,7 @@ class EdgeDirectionConstraint(VectorConstraint):
     The reference direction of the edge is a vector pointing from its starting node (u),
     towards its end node (v).
     """
+
     def __init__(self, edge=None, vector=None, weight=1.0):
         super(EdgeDirectionConstraint, self).__init__(edge, vector, weight)
 
@@ -61,26 +61,20 @@ class EdgeDirectionConstraint(VectorConstraint):
 
 
 if __name__ == "__main__":
-
     from math import fabs
 
     from compas.geometry import Translation
 
     from compas_cem.diagrams import TopologyDiagram
-
+    from compas_cem.elements import DeviationEdge
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
-    from compas_cem.elements import DeviationEdge
-
-    from compas_cem.loads import NodeLoad
-    from compas_cem.supports import NodeSupport
-
     from compas_cem.equilibrium import static_equilibrium
-
-    from compas_cem.optimization import Optimizer
+    from compas_cem.loads import NodeLoad
     from compas_cem.optimization import DeviationEdgeParameter
-
+    from compas_cem.optimization import Optimizer
     from compas_cem.plotters import Plotter
+    from compas_cem.supports import NodeSupport
 
     # ------------------------------------------------------------------------------
     # Instantiate a topology diagram
@@ -157,9 +151,7 @@ if __name__ == "__main__":
     # Optimization
     # ------------------------------------------------------------------------------
 
-    form_opt = opt.solve(topology=topology,
-                         algorithm="SLSQP",
-                         verbose=True)
+    form_opt = opt.solve(topology=topology, algorithm="SLSQP", verbose=True)
 
     # ------------------------------------------------------------------------------
     # Test
