@@ -1,4 +1,4 @@
-compas==1.17.10
+compas>=2.15,<3.0
 numpy>=1.26
 autograd
 nlopt>2.7
