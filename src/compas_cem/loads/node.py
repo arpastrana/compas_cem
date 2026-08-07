@@ -9,14 +9,14 @@ __all__ = ["NodeLoad"]
 
 class NodeLoad(Data):
     """
-    A load defined by a position and a vector applied to one node.
+    A point load applied to one node of a diagram.
 
     Parameters
     ----------
-    node : ``int``
-        A node key
-    vector : ``list`` of ``float``
-        The load magnitude of the point load in xyz directions.
+    node :
+        The key of the node to load.
+    vector :
+        The xyz components of the load. Defaults to one unit downwards.
     """
 
     def __init__(self, node, vector=[0.0, 0.0, -1.0], **kwargs):
@@ -28,26 +28,30 @@ class NodeLoad(Data):
     @classmethod
     def from_point_and_vector(cls, point, vector):
         """
-        Create a NodeLoad from a point and a vector.
+        Create a load from a point and a vector.
 
         Parameters
         ----------
-        point : ``list`` of ``float``
-            The xyz coordinates of the positions where to applied the load.
-        vector : ``list`` of ``float``
-            The xyz coordinates of the load vector.
+        point :
+            The coordinates of the position where the load is applied.
+        vector :
+            The xyz components of the load.
 
         Returns
         -------
-        load : ``NodeLoad``
-            A load object.
+        load :
+            A load with no node key, positioned at the given point.
+
+        Notes
+        -----
+        The load binds to a diagram node whose coordinates match the point. If
+        no node sits there, the load is not assigned.
         """
         load = cls(node=None, vector=vector)
         load.xyz = point
         return load
 
     def __repr__(self):
-        """ """
         msg = "{0}(xyz={1!r}, load={2!r})"
         return msg.format(self.__class__.__name__, self.xyz, self.vector)
 

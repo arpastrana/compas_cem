@@ -1,5 +1,6 @@
 import pytest
-
+from compas.data import json_dumps
+from compas.data import json_loads
 from pytest_lazy_fixtures import lf
 
 # ==============================================================================
@@ -105,3 +106,45 @@ def test_auxiliary_trails_empty(topology):
     assert topology.number_of_auxiliary_trails() == 0
     assert len(list(topology.auxiliary_trails())) == 0
     assert len(list(topology.auxiliary_trail_edges())) == 0
+
+
+# ==============================================================================
+# Serialization
+# ==============================================================================
+
+
+@pytest.mark.parametrize(
+    "topology",
+    [(lf("compression_strut")), (lf("threebar_funicular")), (lf("braced_tower_2d"))],
+)
+def test_trails_survive_json_roundtrip(topology):
+    """
+    Checks that trails can still be looked up by node key after a round trip.
+
+    The trails are keyed by origin node and stored among the diagram attributes,
+    which JSON can only key by string.
+    """
+    topology.build_trails()
+    other = json_loads(json_dumps(topology))
+
+    assert other.attributes["_trails"] == topology.attributes["_trails"]
+
+    for key in topology.attributes["_trails"]:
+        assert other.trail(key) == topology.trail(key)
+        assert other.trail_sequences(key) == topology.trail_sequences(key)
+
+
+def test_auxiliary_trails_survive_json_roundtrip(tree_2d_needs_auxiliary_trails):
+    """
+    Checks that the auxiliary trail edges survive a round trip.
+    """
+    topology = tree_2d_needs_auxiliary_trails
+    topology.build_trails(auxiliary_trails=True)
+    other = json_loads(json_dumps(topology))
+
+    assert (
+        other.attributes["_auxiliary_trails"]
+        == topology.attributes["_auxiliary_trails"]
+    )
+    assert set(other.auxiliary_trails()) == set(topology.auxiliary_trails())
+    assert set(other.auxiliary_trail_edges()) == set(topology.auxiliary_trail_edges())

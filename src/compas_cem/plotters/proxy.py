@@ -1,4 +1,4 @@
-from compas.utilities import iterable_like
+from compas.itertools import iterable_like
 
 __all__ = ["form_plotter_proxy", "topology_plotter_proxy"]
 

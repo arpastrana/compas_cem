@@ -204,7 +204,7 @@ def check_edges_forces(form, edge_force_out):
 def check_edges_lengths(form, edge_length_out):
     for edge in form.edges(data=False):
         length = edge_length_out.get(edge)
-        test_length = form.edge_length(*edge)  # TODO: overwrite inheritance
+        test_length = form.edge_length(edge)  # TODO: overwrite inheritance
         assert np.allclose(length, test_length)
 
 

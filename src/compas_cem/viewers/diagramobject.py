@@ -13,7 +13,7 @@ from compas.geometry import length_vector
 from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
 from compas.geometry import translate_points
-from compas.utilities import geometric_key
+from compas.tolerance import TOL
 from compas_view2.collections import Collection
 from compas_view2.objects import NetworkObject
 from compas_view2.shapes import Arrow
@@ -500,7 +500,7 @@ class DiagramObject(NetworkObject):
                 s = False
                 forces = [
                     self.diagram.edge_force(e)
-                    for e in self.diagram.connected_edges(key)
+                    for e in self.diagram.node_connected_edges(key)
                 ]
                 max_force = max(forces, key=lambda f: fabs(f))
                 if max_force < 0.0:
@@ -651,7 +651,7 @@ class DiagramObject(NetworkObject):
         """
 
         def gkey_format(x):
-            return geometric_key(
+            return TOL.geometric_key(
                 self.diagram.node_coordinates(x), self.default_floatprecision
             )
 

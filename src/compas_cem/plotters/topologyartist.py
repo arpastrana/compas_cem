@@ -7,7 +7,7 @@ from compas.colors import ColorMap
 from compas.geometry import Line
 from compas.geometry import Rotation
 from compas.geometry import add_vectors
-from compas.utilities import geometric_key
+from compas.tolerance import TOL
 from compas_plotters.artists import NetworkArtist
 
 from compas_cem import COLORS
@@ -217,7 +217,7 @@ class TopologyArtist(NetworkArtist):
         """
 
         def gkey_format(x):
-            return geometric_key(self.topology.node_coordinates(x), precision)
+            return TOL.geometric_key(self.topology.node_coordinates(x), precision)
 
         def key_gkey_format(x):
             return "{}\n{}".format(x, gkey_format(x))

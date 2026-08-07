@@ -1,28 +1,5 @@
 """
-compas_cem.plotters
-****************************
-
-.. currentmodule:: compas_cem.plotters
-
-
-Artists
-=======
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    FormArtist
-    TopologyArtist
-
-Plotters
-========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    Plotter
+Two-dimensional drawing of topology and form diagrams.
 """
 
 from __future__ import absolute_import

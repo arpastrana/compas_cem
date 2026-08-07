@@ -11,19 +11,18 @@ __all__ = ["FormDiagram"]
 
 class FormDiagram(Diagram):
     """
-    The heart of life.
+    The output of the form-finding algorithm.
+
+    A form diagram carries the same nodes and edges as the topology diagram it
+    came from, positioned in static equilibrium, with the resulting edge forces
+    and support reactions stored on it.
 
     Parameters
     ----------
-    *args : ``list``
-        Arguments.
-    **kwargs : ``dict``
-        Keyword arguments.
-
-    Returns
-    -------
-    form : :class:`compas_cem.diagrams.FormDiagram`
-        A form diagram.
+    *args :
+        Arguments forwarded to the base diagram.
+    **kwargs :
+        Keyword arguments forwarded to the base diagram.
     """
 
     def __init__(self, *args, **kwargs):
@@ -37,6 +36,21 @@ class FormDiagram(Diagram):
     def from_topology_diagram(cls, topology):
         """
         Construct a form diagram from a topology diagram.
+
+        Parameters
+        ----------
+        topology :
+            The topology diagram to copy.
+
+        Returns
+        -------
+        form :
+            A form diagram with the same nodes and edges as the topology.
+
+        Notes
+        -----
+        The trail bookkeeping is dropped, because a form diagram is the result
+        of walking the trails rather than a description of them.
         """
         form = topology.copy(cls=cls)
 
@@ -51,6 +65,18 @@ class FormDiagram(Diagram):
     def from_equilibrium_state(cls, eq_state, structure):
         """
         Build a form diagram from an equilibrium state.
+
+        Parameters
+        ----------
+        eq_state :
+            An equilibrium state computed by the numerical kernel.
+        structure :
+            The structure the equilibrium state was computed on.
+
+        Returns
+        -------
+        form :
+            A form diagram carrying the equilibrium state.
         """
         return form_from_eqstate(eq_state, structure, cls)
 
@@ -63,6 +89,20 @@ class FormDiagram(Diagram):
 def form_from_eqstate(eqstate, structure, cls=None):
     """
     Generate a form diagram from an equilibrium state calculated with JAX CEM.
+
+    Parameters
+    ----------
+    eqstate :
+        An equilibrium state computed by the numerical kernel.
+    structure :
+        The structure the equilibrium state was computed on.
+    cls :
+        The form diagram class to instantiate. Defaults to `FormDiagram`.
+
+    Returns
+    -------
+    form :
+        A form diagram carrying the equilibrium state.
     """
     if cls is None:
         cls = FormDiagram
@@ -89,6 +129,15 @@ def form_from_eqstate(eqstate, structure, cls=None):
 def form_update(form, eqstate, structure):
     """
     Update in-place the attributes of a form diagram with an equilibrium state.
+
+    Parameters
+    ----------
+    form :
+        The form diagram to update.
+    eqstate :
+        An equilibrium state computed by the numerical kernel.
+    structure :
+        The structure the equilibrium state was computed on.
     """
     xyz = eqstate.xyz.tolist()
     loads = eqstate.loads.tolist()

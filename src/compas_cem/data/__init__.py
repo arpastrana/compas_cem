@@ -1,18 +1,5 @@
 """
-compas_cem.diagrams
-****************************
-
-.. currentmodule:: compas_cem.data
-
-
-Diagrams
-========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    Data
+The base class every serializable COMPAS CEM object inherits from.
 """
 
 from __future__ import absolute_import

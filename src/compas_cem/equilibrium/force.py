@@ -120,7 +120,7 @@ def equilibrium_state(
 
                 # correct edge key
                 edge = (node, next_node)
-                if not topology.has_edge(*edge):
+                if not topology.has_edge(edge):
                     edge = (next_node, node)
 
                 # query trail edge length
@@ -222,7 +222,7 @@ def form_update(form, node_xyz, trail_forces, reaction_forces, **kwargs):
     # assign lengths to deviation edges
     for edge in form.edges():
         u, v = edge
-        length = form.edge_length(u, v)
+        length = form.edge_length(edge)
         force = form.edge_attribute(key=edge, name="force")
         length = copysign(length, force)
         form.edge_attribute(key=(u, v), name="length", value=length)

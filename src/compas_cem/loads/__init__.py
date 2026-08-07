@@ -1,18 +1,5 @@
 """
-compas_cem.loads
-****************************
-
-.. currentmodule:: compas_cem.loads
-
-
-Loads
-=====
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    NodeLoad
+Point loads applied to the nodes of a topology diagram.
 """
 
 from __future__ import absolute_import

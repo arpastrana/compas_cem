@@ -1,20 +1,5 @@
 """
-compas_cem.equilibrium
-****************************
-
-.. currentmodule:: compas_cem.equilibrium
-
-
-Equilibrium
-============
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    static_equilibrium
-    static_equilibrium_numpy
-
+The form-finding algorithm that solves a topology diagram for static equilibrium.
 """
 
 from __future__ import absolute_import

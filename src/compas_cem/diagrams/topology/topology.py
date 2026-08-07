@@ -17,19 +17,18 @@ __all__ = ["TopologyDiagram"]
 
 class TopologyDiagram(Diagram, MeshMixins):
     """
-    The very heart of life.
+    The input to the form-finding algorithm.
+
+    A topology diagram carries the nodes, the trail and deviation edges, the
+    loads and the supports that describe a structure, but not the geometry that
+    puts it in equilibrium. Solving one yields a form diagram.
 
     Parameters
     ----------
-    *args : ``list``
-        Arguments.
-    **kwargs : ``dict``
-        Keyword arguments.
-
-    Returns
-    -------
-    topology : :class:`compas_cem.diagrams.Topology`
-        A form diagram.
+    *args :
+        Arguments forwarded to the base diagram.
+    **kwargs :
+        Keyword arguments forwarded to the base diagram.
     """
 
     def __init__(self, *args, **kwargs):
@@ -39,6 +38,43 @@ class TopologyDiagram(Diagram, MeshMixins):
         self.attributes["_auxiliary_trails"] = dict()
         self.attributes["_aux_length"] = -1.0
         self.attributes["_aux_vector"] = [1.0, 1.0, 1.0]
+
+    # ==============================================================================
+    # Serialization
+    # ==============================================================================
+
+    @classmethod
+    def __from_data__(cls, data):
+        """
+        Construct a topology diagram from a data dictionary.
+
+        Parameters
+        ----------
+        data :
+            A data dictionary.
+
+        Returns
+        -------
+        topology :
+            A topology diagram.
+
+        Notes
+        -----
+        The trail bookkeeping is keyed by origin node and stored among the
+        diagram attributes, which are serialized verbatim. JSON allows only
+        string dictionary keys, so those keys are converted back to integers
+        here. Without this the trails survive a round trip but can no longer be
+        looked up by node key.
+        """
+        topology = super(TopologyDiagram, cls).__from_data__(data)
+
+        for name in ("_trails", "_auxiliary_trails"):
+            trails = topology.attributes.get(name) or {}
+            topology.attributes[name] = {
+                int(key): tuple(value) for key, value in trails.items()
+            }
+
+        return topology
 
     # ==============================================================================
     # Properties
@@ -51,31 +87,29 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Returns
         -------
-        length : ``float``
-            The edge length.
+        length :
+            The signed length of the auxiliary trail edge.
         """
         return self.attributes["_aux_length"]
 
     @auxiliary_trail_length.setter
     def auxiliary_trail_length(self, length):
-        """ """
         self.attributes["_aux_length"] = length
 
     @property
     def auxiliary_trail_vector(self):
         """
-        The default vector used to automatically create an auxiliary trail edge.
+        The default direction used to automatically create an auxiliary trail edge.
 
         Returns
         -------
-        length : ``float``
-            The edge length.
+        vector :
+            The direction the auxiliary trail edge extends in.
         """
         return self.attributes["_aux_vector"]
 
     @auxiliary_trail_vector.setter
     def auxiliary_trail_vector(self, vector):
-        """ """
         self.attributes["_aux_vector"] = vector
 
     # ==============================================================================
@@ -88,7 +122,7 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        support : ``NodeSupport``
+        support :
             A node support object.
 
         Notes
@@ -111,7 +145,7 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        load : ``Load``
+        load :
             A load object.
         """
         value = load.node
@@ -131,9 +165,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         The number of trails in the topology diagram.
 
-        Return
-        ------
-        number : ``int``
+        Returns
+        -------
+        number :
             The number of trails.
         """
         return len(list(self.trails()))
@@ -142,9 +176,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         The number of auxiliary trails in the topology diagram.
 
-        Return
-        ------
-        number : ``int``
+        Returns
+        -------
+        number :
             The number of auxiliary trails.
         """
         return len(list(self.auxiliary_trails()))
@@ -153,9 +187,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         The number of trail edges in the topology diagram.
 
-        Return
-        ------
-        number : ``int``
+        Returns
+        -------
+        number :
             The number of trail edges.
         """
         return len(list(self.trail_edges()))
@@ -164,9 +198,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         The number of deviation edges in the topology diagram.
 
-        Return
-        ------
-        number : ``int``
+        Returns
+        -------
+        number :
             The number of deviation edges.
         """
         return len(list(self.deviation_edges()))
@@ -175,9 +209,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         The number of direct deviation edges in the topology diagram.
 
-        Return
-        ------
-        number : ``int``
+        Returns
+        -------
+        number :
             The number of direct deviation edges.
         """
         return len(list(self.direct_deviation_edges()))
@@ -186,9 +220,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         The number of direct deviation edges in the topology diagram.
 
-        Return
-        ------
-        number : ``int``
+        Returns
+        -------
+        number :
             The number of direct deviation edges.
         """
         return len(list(self.indirect_deviation_edges()))
@@ -206,12 +240,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        key : ``int``
+        key :
             The trail key, which is equivalent to the key of its origin node.
 
         Returns
         -------
-        trail : ``List[int]``
+        trail :
             The sorted node keys.
         """
         return self.attributes["_trails"][key]
@@ -222,13 +256,13 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        keys : ``bool``, optional
-            Defaults to ``False``.
+        keys :
+            If `True`, yield the trail key alongside the trail.
 
         Yields
         ------
-        trail : ``List[int]`` or ``Tuple[int, List[int]]``
-            The next trail if ``keys`` is ``False``.
+        trail :
+            The next trail if `keys` is `False`.
             Otherwise, a tuple with the trail key and the keys of the nodes on the trail.
 
         Notes
@@ -247,13 +281,13 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        keys : ``bool``, optional
-            Defaults to ``False``.
+        keys :
+            If `True`, yield the trail key alongside the trail.
 
         Yields
         ------
-        aux_trail : ``list`` or ``Tuple[int, List[int]]``
-            The next auxiliary trail if ``keys`` is ``False``.
+        aux_trail :
+            The next auxiliary trail if `keys` is `False`.
             Otherwise, a tuple with the trail key and the keys of the nodes on the auxiliary trail.
 
         Notes
@@ -271,9 +305,9 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Returns
         -------
-        flag : ``bool``
-            ``True`` if the topology diagram has at least one trail.
-            Otherwise, ``False``
+        flag :
+            `True` if the topology diagram has at least one trail.
+            Otherwise, `False`
         """
         return self.number_of_trails() > 0
 
@@ -283,9 +317,9 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        key : ``int``
+        key :
             The key of the origin node of the trail.
-        sequence : ``int``
+        sequence :
             The new starting sequence of the trail.
 
             For example, if the current sequence of the origin node is 1 and k=3,
@@ -313,7 +347,7 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        auxiliary_trails : ``bool``
+        auxiliary_trails :
             A flag to automatically append auxiliary trails to trail-unassigned nodes.
 
         Notes
@@ -427,7 +461,7 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Yields
         -------
-        origin_node : ``int``
+        origin_node :
             The key of the next origin node.
         """
         return self.nodes_where({"type": "_origin"})
@@ -442,12 +476,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             A node key.
 
         Returns
         -------
-        deviation_edges : ``list``
+        deviation_edges :
             The keys of the connected deviation edges.
             If no deviation edge is attached, the list will be empty.
         """
@@ -459,12 +493,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             A node key.
 
         Returns
         -------
-        trail_edges : ``list``
+        trail_edges :
             The keys of the connected trail edges.
             If no trail edge is attached, the list will be empty.
         """
@@ -476,12 +510,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             A node key.
 
         Returns
         -------
-        deviation_edges : ``list``
+        deviation_edges :
             The keys of the connected deviation edges.
             If no deviation edge is attached, the list will be empty.
 
@@ -498,12 +532,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             A node key.
 
         Returns
         -------
-        deviation_edges : ``list``
+        deviation_edges :
             The keys of the connected deviation edges.
             If no deviation edge is attached, the list will be empty.
 
@@ -520,19 +554,19 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             A node key.
-        predicate : ``func``
+        predicate :
             A predicate function to search for a specific edge type.
 
         Returns
         -------
-        selected_edges : ``list``
+        selected_edges :
             The keys of the selected edges.
             If no edge of the given type is attached, the list will be empty.
         """
         deviation_edges = []
-        for edge in self.connected_edges(node):
+        for edge in self.node_connected_edges(node):
             if predicate(edge):
                 deviation_edges.append(edge)
         return deviation_edges
@@ -547,16 +581,16 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        data : ``bool``
-            ``True`` if the edges attributes should be yielded simultaneously.
-            Defaults to ``False``.
+        data :
+            `True` if the edges attributes should be yielded simultaneously.
+            Defaults to `False`.
 
         Yields
         -------
-        trail_edge : ``tuple``
+        trail_edge :
             The key of the next trail edge.
-        attributes : ``dict``
-            The attributes of the next trail edge if ``data=True``.
+        attributes :
+            The attributes of the next trail edge if `data=True`.
         """
         return self.edges_where({"type": "trail"}, data)
 
@@ -566,16 +600,16 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        data : ``bool``
-            ``True`` if the edges attributes should be yielded simultaneously.
-            Defaults to ``False``.
+        data :
+            `True` if the edges attributes should be yielded simultaneously.
+            Defaults to `False`.
 
         Yields
         -------
-        deviation_edge : ``tuple``
+        deviation_edge :
             The key of the next deviation edge.
-        attributes : ``dict``
-            The attributes of the next deviation edge if ``data=True``.
+        attributes :
+            The attributes of the next deviation edge if `data=True`.
         """
         return self.edges_where({"type": "deviation"}, data)
 
@@ -585,16 +619,16 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        data : ``bool``
-            ``True`` if the edges attributes should be yielded simultaneously.
-            Defaults to ``False``.
+        data :
+            `True` if the edges attributes should be yielded simultaneously.
+            Defaults to `False`.
 
         Yields
         -------
-        deviation_edge : ``tuple``
+        deviation_edge :
             The key of the next direct deviation edge.
-        attributes : ``dict``
-            The attributes of the next direct deviation edge if ``data=True``.
+        attributes :
+            The attributes of the next direct deviation edge if `data=True`.
         """
 
         def predicate(edge, attr):
@@ -608,16 +642,16 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        data : ``bool``
-            ``True`` if the edges attributes should be yielded simultaneously.
-            Defaults to ``False``.
+        data :
+            `True` if the edges attributes should be yielded simultaneously.
+            Defaults to `False`.
 
         Yields
         -------
-        deviation_edge : ``tuple``
+        deviation_edge :
             The key of the next indirect deviation edge.
-        attributes : ``dict``
-            The attributes of the next indirect deviation edge if ``data=True``.
+        attributes :
+            The attributes of the next indirect deviation edge if `data=True`.
         """
 
         def predicate(edge, attr):
@@ -631,16 +665,16 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        data : ``bool``
-            ``True`` if the edges attributes should be yielded simultaneously.
-            Defaults to ``False``.
+        data :
+            `True` if the edges attributes should be yielded simultaneously.
+            Defaults to `False`.
 
         Yields
         -------
-        deviation_edge : ``tuple``
+        deviation_edge :
             The key of the next auxiliary trail edge.
-        attributes : ``dict``
-            The attributes of the next auxiliary trail edge if ``data=True``.
+        attributes :
+            The attributes of the next auxiliary trail edge if `data=True`.
         """
 
         def predicate(edge, attr):
@@ -658,14 +692,14 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             A node key.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the node is a origin node.
-            ``False`` otherwise.
+        flag :
+            `True`if the node is a origin node.
+            `False` otherwise.
         """
         return self.node_attribute(key=node, name="type") == "_origin"
 
@@ -675,14 +709,14 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             A node key.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the node is a support node.
-            ``False`` otherwise.
+        flag :
+            `True`if the node is a support node.
+            `False` otherwise.
         """
         return self.node_attribute(key=node, name="type") == "support"
 
@@ -696,13 +730,13 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        edge : ``tuple``
+        edge :
             The key of the edge to test.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the edge is a trail edge. ``False`` otherwise.
+        flag :
+            `True`if the edge is a trail edge. `False` otherwise.
         """
         if self.edge_attribute(edge, "type") == "trail":
             return True
@@ -714,13 +748,13 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        edge : ``tuple``
+        edge :
             The key of the edge to test.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the edge is a deviation edge. ``False`` otherwise.
+        flag :
+            `True`if the edge is a deviation edge. `False` otherwise.
         """
         if self.edge_attribute(edge, "type") == "deviation":
             return True
@@ -732,13 +766,13 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        edge : ``tuple``
+        edge :
             The key of the edge to test.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the edge is in an auxiliary trail. ``False`` otherwise.
+        flag :
+            `True`if the edge is in an auxiliary trail. `False` otherwise.
         """
         aux_trails = set([tuple(edge) for edge in self.auxiliary_trails()])
         if edge in set(aux_trails):
@@ -751,14 +785,14 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        edge : ``tuple``
+        edge :
             The key of the edge to test.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the deviation edge is direct.
-            ``False`` otherwise.
+        flag :
+            `True`if the deviation edge is direct.
+            `False` otherwise.
         """
 
         def predicate(x):
@@ -774,14 +808,14 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        edge : ``tuple``
+        edge :
             The key of the edge to test.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the deviation edge is indirect.
-            ``False`` otherwise.
+        flag :
+            `True`if the deviation edge is indirect.
+            `False` otherwise.
         """
 
         def predicate(x):
@@ -797,21 +831,21 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        edge : ``tuple``
+        edge :
             The key of the edge to test.
-        predicate : ``func``
+        predicate :
             A function that for user-defined test conditions.
             Predicate must take in a single edge key as argument.
 
         Returns
         -------
-        flag : ``bool``
-            ``True``if the deviation edge meets the predicate condition.
-            ``False`` otherwise.
+        flag :
+            `True`if the deviation edge meets the predicate condition.
+            `False` otherwise.
 
         Notes
         -----
-        Similar to ``FormDiagram.edges_where_predicate()``.
+        Similar to `FormDiagram.edges_where_predicate()`.
         """
         if not self.is_deviation_edge(edge):
             return False
@@ -829,12 +863,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        node : ``int``
+        node :
             The node key.
 
         Returns
         -------
-        k : ``int``
+        k :
             The sequence key.
         """
         k = self.node_attribute(key=node, name="_k")
@@ -849,12 +883,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        edge : ``tuple``
+        edge :
             The edge key.
 
         Returns
         -------
-        sequences : ``tuple``
+        sequences :
             The nodes sequences.
         """
         u, v = edge
@@ -866,13 +900,13 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        keys : ``bool``, optional
-            Defaults to ``False``.
+        keys :
+            If `True`, yield the trail key alongside the trail.
 
         Yields
         ------
-        sequence : ``Tuple[int]`` or ``Tuple[int, Tuple[int]]``
-            The next sequence if ``keys`` is ``False``.
+        sequence :
+            The next sequence if `keys` is `False`.
             Otherwise, a tuple with the sequence key and the corresponding node keys.
         """
         for k in range(self.number_of_sequences()):
@@ -920,12 +954,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         Parameters
         ----------
-        key : ``int``
+        key :
             The trail key.
 
         Returns
         -------
-        sequence_map : ``Dict[int]``
+        sequence_map :
             A dictionary wherein keys are sequences and values are node keys.
         """
         sequences = dict()
@@ -938,11 +972,11 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         Creates a mapping of mappings between the nodes of the trails and the sequences.
 
-        The mapping has the form ``{trail_key: {sequence: node}}``.
+        The mapping has the form `{trail_key: {sequence: node}}`.
 
         Returns
         -------
-        sequences_map : ``Dict[int]``
+        sequences_map :
             A dictionary wherein keys are trail keys and values are dictionaries
             wherein keys are sequences and values are node keys.
         """
@@ -958,7 +992,6 @@ class TopologyDiagram(Diagram, MeshMixins):
     # ==============================================================================
 
     def __repr__(self):
-        """ """
         tpl = "{}(\n\tEdges: {}\n\tTrail edges: {}\n\tDeviation edges: {}\n\tNodes: {}\n\tSupport nodes: {}\n\tLoaded nodes: {}\n\tTrails: {}\n\tAuxiliary trails: {}\n\t)"
         data = [
             self.__class__.__name__,

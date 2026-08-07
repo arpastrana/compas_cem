@@ -1,18 +1,5 @@
 """
-compas_cem.supports
-****************************
-
-.. currentmodule:: compas_cem.supports
-
-
-Supports
-========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    NodeSupport
+Supports that anchor the nodes where the trails of a topology diagram end.
 """
 
 from __future__ import absolute_import
