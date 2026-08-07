@@ -1,7 +1,7 @@
 # compas_cem modernization plan
 
-Status: **Phase 0 complete.** Phases 1–5 not started. Target release **0.9.0**,
-deliberately breaking.
+Status: **Phases 0 and 1 complete.** Phase 2 in progress. Target release
+**0.9.0**, deliberately breaking.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
@@ -507,3 +507,233 @@ Neither blocks Phase 1 or 2, but Phase 3 stalls without the first:
 Also owed before tagging 0.9.0: the `gh-pages` → mike migration, and a throwaway
 `v0.9.0-rc1` tag to exercise `release.yml`, which is tag-triggered and therefore
 still unverified.
+
+### 10.6 Docstring pass
+
+**142 of 376** public definitions carry no docstring, and a further **30** carry
+an empty one. This is a standing requirement across the package, not a one-off
+task.
+
+| module | missing | total | rewritten by |
+| --- | --- | --- | --- |
+| `viewers` | 52 | 70 | Phase 2 |
+| `optimization` | 34 | 110 | Phase 4 |
+| `plotters` | 25 | 42 | Phase 2 |
+| `diagrams` | 15 | 86 | Phase 1 (lightly) |
+| `ghpython` | 8 | 25 | Phase 5 |
+| `elements`, `loads`, `supports`, `data` | 8 | 18 | — |
+| `equilibrium` | 0 | 25 | Phase 3 |
+
+**Sequencing: document each module in the phase that rewrites it, not up front.**
+The three worst-covered modules are exactly the ones Phases 2 and 4 replace, so
+documenting them now is work thrown away. Two consequences:
+
+- Phase 1 covers `diagrams`, `elements`, `loads`, `supports`, `data` — the modules
+  no later phase rewrites, plus the ones it already touches.
+- Do **not** document `plotters/proxy.py`; Phase 2 deletes it as dead code.
+- `equilibrium/` is already fully documented — it is the best-maintained module in
+  the package. Match its standard.
+
+**Form.** Every docstring is multi-line, even a one-liner: `"""` alone, content,
+`"""` alone. No blank line after it before the first statement — ruff enforces
+this as `D202`, which is already in `select`.
+
+```python
+def disassemble(form):
+    """
+    Disassemble a form diagram into its constituent parts.
+    """
+```
+
+**Content rules**, which matter more than the form:
+
+- **Distill intent from the body.** Read the code and make the summary *true*.
+  Several existing summaries lie — wrong defaults claimed, wrong units,
+  copy-pasted from a neighbouring function. Fix those rather than appending to
+  them.
+- **Types live only in the signature, never in the docstring.** `mkdocs.yml`
+  configures mkdocstrings with `docstring_style: numpy` and
+  `docstring_section_style: list`, so griffe merges the signature annotation into
+  the rendered entry. Write typeless `name :` entries — colon, nothing after —
+  for both parameters and returns. A bare `Returns` description with no `name :`
+  renders as a *type*, so keep the name.
+- **Notes stay short and general.** State the mechanism and its consequence.
+  Never cite a specific example, benchmark, file path, or measured number — those
+  rot. Rationale and measurements belong in `CHANGELOG.md`.
+- **Trim Notes that only restate Parameters or Returns.** Keep the ones carrying
+  real information: numerical or gradient behaviour, NaN and edge-case handling,
+  formulas, construction conventions, invariants.
+
+Note that the existing docstrings use the older `` ``int`` `` / `:class:`X``
+reStructuredText inline markup throughout. Convert as you touch each file; the
+rendered output is Markdown now.
+
+**Also in scope, and related:** the 8 griffe warnings in §9.3 are docstrings
+documenting parameters that do not exist in their signature, and every
+`src/compas_cem/*/__init__.py` module docstring still contains
+`.. currentmodule::` / `.. autosummary::` rST that mkdocstrings renders verbatim
+on the API pages.
+
+**Verify per file**: `ruff check` and `ruff format --check`, then `invoke docs`,
+then actually look at the rendered page to confirm the type comes from the
+signature and that no description has been mistaken for a type.
+
+### 10.7 Working agreement for the unattended Phase 1–2 run
+
+Authorized 2026-08-07, and **scoped to that run only** — this is not standing
+permission for any later session.
+
+- **Commit locally on phase branches. Do not push. Do not merge. Do not touch
+  `main`.** Work is reviewed in the morning from the local branches.
+- Branch `phase-1` off `main` *after* PR #16 is merged.
+- **Carry `[Docs] Scoped the docstring pass into the phase plan` forward.** It was
+  committed locally on `phase-0-tooling` and deliberately not pushed, so it is
+  *not* part of PR #16 and will not reach `main` when #16 merges. Cherry-pick it
+  onto `phase-1` so §10.6 is not lost.
+- **Do not start Phase 2 until Phase 1's acceptance gate in §10.3 is green.** A
+  half-finished Phase 1 underneath a Phase 2 rewrite is very hard to unpick.
+- Phase 2 acceptance is visual and cannot be self-certified. Render examples 01–05
+  headless (`MPLBACKEND=Agg`), save the figures somewhere gitignored, and leave a
+  note pointing at them for review rather than declaring the phase done.
+- If a decision is needed that §5 or §10.5 does not already settle, stop and write
+  it up. Do not guess at an architectural choice unattended.
+
+---
+
+## 11. Phase 1 outcome
+
+Delivered on branch `phase-1`, branched off `main` after PR #16 merged, with the
+`[Docs] Scoped the docstring pass` commit cherry-picked across as §10.7 required.
+
+**Acceptance gate, all green:**
+
+| gate | result |
+| --- | --- |
+| tests | **96/96** (92 inherited + 4 new round-trip tests) |
+| `tests/baseline/capture.py` | examples **01, 02, 03 and 04** byte-identical to the legacy fixtures |
+| `ruff check src tests` | clean |
+| `ruff format --check src tests` | clean |
+| `uv build` | sdist and wheel, all **39** Grasshopper components with `code.py`, `metadata.json` and icon |
+| docs | builds, 8 griffe warnings, all in Phase 2/5 files (§9.3) |
+
+Example 04 reproducing was not expected — §9.2 predicted 04 and 05 would both
+drift. Only 05 does. See §11.2.
+
+### 11.1 Corrections to the plan, learned by doing
+
+- **`examples/data/*.json` did not need regenerating.** They are bare COMPAS
+  `Mesh` data dictionaries with no type envelope, and `Mesh.__from_data__` reads
+  them unchanged under COMPAS 2. Only `examples/03_bridge_2d.json`, which does
+  carry a `compas 1.7.1` envelope, had to be rebuilt. §10.3 step 2 overstated the
+  work.
+- **Insertion order is load-bearing and the plan did not say so.** Rebuilding
+  `03_bridge_2d.json` with nodes in sorted order left every physical quantity
+  right but permuted the optimizer's gradient vector, moving the converged
+  geometry by ~5e-9. The original file stores nodes in the order `7, 3, 5, 0, 4,
+  2, 1, 6`; preserving it makes the fixture reproduce exactly. Anything that
+  rebuilds a diagram from scratch has to preserve insertion order or the
+  optimizer comparison is worthless.
+- **`compas.numerical.connectivity_matrix` is never imported.** §4.1 lists it;
+  the package does not use it.
+- **`connected_edges` needed a rename, not just a helper.** COMPAS 2 keeps the
+  name for a different operation, so the COMPAS 1 behaviour was restored as
+  `Diagram.node_connected_edges` rather than shadowing the base method. Four call
+  sites, one of them each in `plotters`, `viewers` and `ghpython`.
+- **`gkey_node` is a pre-existing shadow, not a 2.x regression.** COMPAS 1's
+  `Network` already had a `gkey_node` method, and compas_cem has always
+  overridden it with a cached property. Left as is; behaviour is unchanged.
+- **There are no `instanceGuid`s to preserve.** §10.3 step 8 says to preserve
+  them when renaming the Grasshopper component directories. No `instanceGuid`
+  appears anywhere in the repository, and no componentizer is wired into
+  `tasks.py` — Phase 0 removed it and Phase 5 reattaches it. GUID assignment is
+  therefore entirely a **Phase 5** question, and the eight directories were
+  renamed freely. Phase 5 must confirm how `componentize_cpy.py` derives GUIDs
+  before shipping, or existing `.gh` files will not resolve.
+- **`ruff format --check` has never been clean repository-wide.** At the Phase 0
+  merge commit, 10 files failed it. CI does not see this: `invoke lint` runs
+  `ruff check --fix src tests`, so `examples/` and `docs/` are outside the gate.
+  Phase 1 leaves exactly one file failing, `docs/migration/proto_jax_cem.py`,
+  which is preserved §8 evidence and deliberately untouched.
+
+### 11.2 Example 05 is the only baseline that drifts
+
+Static equilibrium is **bit-identical** between the two stacks. The drift is
+entirely inside the optimizer, and it is §9.2, not a regression:
+
+| | legacy | COMPAS 2 |
+| --- | --- | --- |
+| evaluations | 3 | 3 |
+| penalty | 4.681609e-31 | 4.743238e-31 |
+| gradient norm | nan | nan |
+| NaN gradient components | 3 / 24 | 3 / 24 |
+| status | `NLOPT_EPSVAL_REACHED` | `NLOPT_EPSVAL_REACHED` |
+
+Two of 32 nodes move, by 6.6e-3 and 4.1e-3. Both are auxiliary-trail nodes whose
+position is undetermined because the gradient reaching them is NaN. The
+objective is already ~1e-31 at the start, so nlopt exits immediately and the
+step it does take is decided by floating-point noise. Repairing this is Phase
+3/4 work, via the double-`where` safe normalize in §4.3.
+
+### 11.3 The authoring API, decided after the fact
+
+§10.3 step 5 says to rename the object-taking `add_node`/`add_edge` but does not
+say what to. Phase 1 first shipped a single `Diagram.add_element(element)`
+dispatching on `Node` versus `Edge`.
+
+That was **reconsidered before this branch was merged.** An audit of the two
+sibling libraries, `jax_fdm` and `smax`, led Rafael to keep `add_node` and
+`add_edge` and dispatch on the type of the argument, so that the authoring API,
+the tutorials and every existing `.gh` file survive untouched. Phase 1 was
+rewritten to ship that directly, so `main` never carried `add_element`.
+
+What landed:
+
+```python
+topology.add_node(Node(0, [0.0, 0.0, 0.0]))      # element
+topology.add_node(0, x=0.0, y=0.0, z=0.0)        # key, as the base graph does
+topology.add_edge(TrailEdge(0, 1, length=-1.0))  # element
+topology.add_edge(0, 1, attr_dict={...})         # keys, as deserialization replays
+```
+
+Two guardrails offset the known weakness of dispatching on a first positional
+parameter that carries two meanings: the entry points reject a mismatched
+element — `add_node` refuses an `Edge`, `add_edge` refuses a `Node`, and any
+`compas.data.Data` offered as a key raises rather than becoming one — and eleven
+tests cover both vocabularies, the rejection cases, and JSON round-trip and
+`copy()` regressions. The round-trip tests matter most: they exercise the exact
+path that broke in the move to COMPAS 2.
+
+### 11.4 Carried into Phase 2
+
+- The examples import `compas_cem.plotters` at module scope, which cannot import
+  under COMPAS 2. `tests/baseline/capture.py` now falls back to a drawing-free
+  stand-in and prints a line saying so. It self-retires: once `plotters` imports
+  again, the real one is used. **Delete `NoOpPlotter` and `stub_plotters` from
+  `capture.py` when Phase 2 lands.**
+- `plotters` and `viewers` had their `compas.utilities` imports moved to
+  `compas.itertools` / `compas.tolerance` and their `connected_edges` call sites
+  renamed, so Phase 2 starts on files that fail for one reason only:
+  `compas.artists` and `compas_plotters` no longer exist.
+- The 8 griffe warnings of §9.3 are untouched and still live in
+  `ghpython/artists.py`, `viewers/diagramobject.py` and
+  `viewers/topologyobject.py`.
+- The docstring convention now writes typeless `name :` entries, per §10.6. The
+  package carries **no signature annotations at all**, so those entries currently
+  render with a name and a description and no type. That is the intended end
+  state only once annotations exist; adding them is not scheduled by any phase.
+
+### 11.5 Docstring pass, Phase 1 share
+
+Covered `diagrams`, `elements`, `loads`, `supports` and `data` per §10.6, plus
+every `src/compas_cem/*/__init__.py` module docstring, which all carried
+`.. currentmodule::` / `.. autosummary::` rST that mkdocstrings rendered
+verbatim. Also fixed on the way past:
+
+- `data/__init__.py` documented itself as `compas_cem.diagrams`, under a
+  `Diagrams` heading — a copy-paste that had been there since the module existed.
+- `TopologyDiagram` was documented as "The very heart of life" and `FormDiagram`
+  as "The heart of life", with a `Returns` section on a class.
+- `auxiliary_trail_vector` documented its return as "length : the edge length".
+- The `keys` flag on the trail iterators documented only its default.
+- 11 empty `""" """` docstrings removed rather than filled, on dunders and
+  property setters that inherit their meaning.
