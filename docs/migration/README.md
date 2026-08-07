@@ -1,9 +1,9 @@
 # compas_cem modernization plan
 
-Status: **Phases 0, 1 and 2 complete.** Phase 0 and Phase 1 are merged into
-`main`; Phase 2 is signed off and awaiting review. Phases 3 to 5 not started.
-Target release **0.9.0**, deliberately breaking. §14 is the current handover
-and §15 the Phase 5 blueprint.
+Status: **Phases 0, 1 and 2 are complete and merged into `main`** (PRs #16, #17
+and #18). Phases 3 to 5 not started; **Phase 5 is next.** Target release
+**0.9.0**, deliberately breaking. §14 is the current handover and §15 the
+Phase 5 blueprint.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
@@ -1303,13 +1303,16 @@ Written 2026-08-07, at the end of the session that delivered Phases 1 and 2.
 
 | branch | state |
 | --- | --- |
-| `main` | Phase 0 (PR #16) and **Phase 1 (PR #17, merged as a merge commit)**. Five commits preserved: `[Deps]`, `[Diagrams]`, `[Goals]`, `[Examples]`, `[Docs]` |
-| `phase-2` | **4 commits, open for review.** Sits exactly 4 ahead of `main`, so it needed no rebase after Phase 1 merged: `[Plotters]`, `[Viewers]`, `[Deps]`, `[Docs]` |
+| `main` | Phase 0 (PR #16), **Phase 1 (PR #17)** and **Phase 2 (PR #18)**, each merged as a merge commit with its commits preserved — five for Phase 1, four for Phase 2 |
 
-PR #17 passed **14/14 checks** — all twelve build cells (3.10 to 3.13 across
-ubuntu, macOS and windows), `docs`, and the changelog check. That was the first
-CI run of the whole migration, and it closed the last verification gap: Windows
-and Linux had never been exercised, including the newly-runtime `PySide6`.
+Both PRs passed **14/14** and both phase branches have been pruned locally and on
+the remote, so `main` is the only branch left besides the pre-migration ones
+below.
+
+PR #17 was the first CI run of the whole migration, across all twelve build cells
+(3.10 to 3.13 on ubuntu, macOS and windows) plus `docs` and the changelog check.
+It closed the last verification gap: Windows and Linux had never been exercised,
+including the newly-runtime `PySide6`.
 
 Phase 2's own acceptance is visual and was confirmed by hand: all five examples
 and `renders/viewer_check.py` were run and inspected (§12.4).
