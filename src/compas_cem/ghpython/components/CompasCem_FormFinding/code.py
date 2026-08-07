@@ -1,6 +1,7 @@
 """
 Generate a form diagram in static equilibrium.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.equilibrium import static_equilibrium

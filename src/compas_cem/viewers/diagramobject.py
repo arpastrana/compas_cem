@@ -1,31 +1,25 @@
 from collections.abc import Iterable
-
 from math import copysign
 from math import fabs
 
 from compas.colors import Color
-
+from compas.geometry import Circle
+from compas.geometry import Cylinder
+from compas.geometry import Plane
+from compas.geometry import Point
+from compas.geometry import Vector
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
-from compas.geometry import scale_vector
 from compas.geometry import normalize_vector
+from compas.geometry import scale_vector
 from compas.geometry import translate_points
-
-from compas.geometry import Circle
-from compas.geometry import Plane
-from compas.geometry import Vector
-from compas.geometry import Point
-from compas.geometry import Cylinder
-
 from compas.utilities import geometric_key
+from compas_view2.collections import Collection
+from compas_view2.objects import NetworkObject
+from compas_view2.shapes import Arrow
+from compas_view2.shapes import Text
 
 from compas_cem import COLORS
-
-from compas_view2.objects import NetworkObject
-from compas_view2.shapes import Text
-from compas_view2.collections import Collection
-from compas_view2.shapes import Arrow
-
 
 __all__ = ["DiagramObject"]
 
@@ -97,6 +91,7 @@ class DiagramObject(NetworkObject):
         The default width for edges that do not have a specified width.
 
     """
+
     default_nodecolor = Color.from_rgb255(*COLORS["node_black"]).rgb
     default_edgecolor = Color.from_rgb255(*COLORS["edge"]).rgb
     default_loadcolor = Color.from_rgb255(*COLORS["load"]).rgb
@@ -121,28 +116,30 @@ class DiagramObject(NetworkObject):
     default_floatprecision = "2f"
     default_opacity = 0.75
 
-    def __init__(self,
-                 diagram,
-                 viewer=None,
-                 nodes=None,
-                 edges=None,
-                 nodetext=None,
-                 edgetext=None,
-                 nodesize=None,
-                 edgewidth=None,
-                 loadscale=None,
-                 residualscale=None,
-                 loadtol=None,
-                 residualtol=None,
-                 show_nodes=False,
-                 show_edges=True,
-                 show_loads=True,
-                 show_residuals=True,
-                 show_nodetext=False,
-                 show_edgetext=False,
-                 text_size=None,
-                 text_color=None,
-                 **kwargs):
+    def __init__(
+        self,
+        diagram,
+        viewer=None,
+        nodes=None,
+        edges=None,
+        nodetext=None,
+        edgetext=None,
+        nodesize=None,
+        edgewidth=None,
+        loadscale=None,
+        residualscale=None,
+        loadtol=None,
+        residualtol=None,
+        show_nodes=False,
+        show_edges=True,
+        show_loads=True,
+        show_residuals=True,
+        show_nodetext=False,
+        show_edgetext=False,
+        text_size=None,
+        text_color=None,
+        **kwargs,
+    ):
 
         super(DiagramObject, self).__init__(diagram, **kwargs)
 
@@ -191,9 +188,9 @@ class DiagramObject(NetworkObject):
 
         self.viewer = viewer
 
-# ------------------------------------------------------------------------------
-# Properties
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Properties
+    # ------------------------------------------------------------------------------
 
     @property
     def diagram(self):
@@ -228,7 +225,10 @@ class DiagramObject(NetworkObject):
     @property
     def node_xyz(self):
         if not self._node_xyz:
-            self._node_xyz = {node: self.diagram.node_coordinates(node) for node in self.diagram.nodes()}
+            self._node_xyz = {
+                node: self.diagram.node_coordinates(node)
+                for node in self.diagram.nodes()
+            }
         return self._node_xyz
 
     @node_xyz.setter
@@ -250,13 +250,17 @@ class DiagramObject(NetworkObject):
     @property
     def node_color(self):
         if not self._node_color:
-            self._node_color = {node: self.default_nodecolor for node in self.diagram.nodes()}
+            self._node_color = {
+                node: self.default_nodecolor for node in self.diagram.nodes()
+            }
         return self._node_color
 
     @property
     def edge_color(self):
         if not self._edge_color:
-            self._edge_color = {node: self.default_edgecolor for node in self.diagram.edges()}
+            self._edge_color = {
+                node: self.default_edgecolor for node in self.diagram.edges()
+            }
         return self._edge_color
 
     @property
@@ -268,7 +272,7 @@ class DiagramObject(NetworkObject):
     @node_text.setter
     def node_text(self, text):
         if isinstance(text, str):
-            if text == 'key':
+            if text == "key":
                 self._node_text = {node: str(node) for node in self.diagram.nodes()}
             else:
                 self._node_text = self._node_textlabel(text)
@@ -278,14 +282,18 @@ class DiagramObject(NetworkObject):
     @property
     def edge_text(self):
         if not self._edge_text:
-            self._edge_text = {edge: "{}-{}".format(*edge) for edge in self.diagram.edges()}
+            self._edge_text = {
+                edge: "{}-{}".format(*edge) for edge in self.diagram.edges()
+            }
         return self._edge_text
 
     @edge_text.setter
     def edge_text(self, text):
         if isinstance(text, str):
-            if text == 'key':
-                self._edge_text = {edge: "{}-{}".format(*edge) for edge in self.diagram.edges()}
+            if text == "key":
+                self._edge_text = {
+                    edge: "{}-{}".format(*edge) for edge in self.diagram.edges()
+                }
             else:
                 self._edge_text = self._edge_textlabel(text)
         elif isinstance(text, dict):
@@ -384,9 +392,9 @@ class DiagramObject(NetworkObject):
             self._show_edges = showedges
             self.show_lines = showedges
 
-# ------------------------------------------------------------------------------
-# Draw stuff
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Draw stuff
+    # ------------------------------------------------------------------------------
 
     def draw_nodes(self):
         """
@@ -418,11 +426,13 @@ class DiagramObject(NetworkObject):
             edge_meshes = [meshes[edge] for edge in edges]
             color = self.edge_color[edges[0]]  # TODO: needs cleaner alternative
 
-            self.viewer.add(Collection(edge_meshes),
-                            facecolor=color,
-                            linecolor=color,
-                            show_edges=True,
-                            opacity=self.default_opacity)
+            self.viewer.add(
+                Collection(edge_meshes),
+                facecolor=color,
+                linecolor=color,
+                show_edges=True,
+                opacity=self.default_opacity,
+            )
 
     def draw_edges2(self):
         """
@@ -434,7 +444,6 @@ class DiagramObject(NetworkObject):
 
         i = 0
         for node_u, node_v in self.edges:
-
             positions.append(self.node_xyz.get(node_u, self.default_nodexyz))
             positions.append(self.node_xyz.get(node_v, self.default_nodexyz))
 
@@ -458,22 +467,27 @@ class DiagramObject(NetworkObject):
             print("No viewer found as DiagramObject attribute. Cannot draw loads!")
             return
 
-        loads = self._force_vectors(nodes=self.nodes,
-                                    scale=self.load_scale,
-                                    tol=self.load_tol,
-                                    attr_names=self.default_loadattrs,
-                                    shift={})
+        loads = self._force_vectors(
+            nodes=self.nodes,
+            scale=self.load_scale,
+            tol=self.load_tol,
+            attr_names=self.default_loadattrs,
+            shift={},
+        )
 
         loads = list(loads.values())
-        self.viewer.add(Collection(loads),
-                        facecolor=self.default_loadcolor,
-                        show_edges=False,
-                        opacity=self.default_opacity)
+        self.viewer.add(
+            Collection(loads),
+            facecolor=self.default_loadcolor,
+            show_edges=False,
+            opacity=self.default_opacity,
+        )
 
     def draw_residuals(self):
         """
         Draw the residual forces at the nodes of a diagram.
         """
+
         # TODO: How to do shifts with vectors in compas_view?
         # Maybe draw custom arrows as lines + cone?
         def reaction_shifts():
@@ -484,7 +498,10 @@ class DiagramObject(NetworkObject):
             for key in self.nodes:
                 # every support must connect to only one trail edge
                 s = False
-                forces = [self.diagram.edge_force(e) for e in self.diagram.connected_edges(key)]
+                forces = [
+                    self.diagram.edge_force(e)
+                    for e in self.diagram.connected_edges(key)
+                ]
                 max_force = max(forces, key=lambda f: fabs(f))
                 if max_force < 0.0:
                     s = True
@@ -499,22 +516,26 @@ class DiagramObject(NetworkObject):
             return
 
         # TODO: How to do residual vector shifts?
-        residuals = self._force_vectors(nodes=self.nodes,
-                                        scale=self.residual_scale,
-                                        tol=self.residual_tol,
-                                        attr_names=self.default_residualattrs,
-                                        shift=reaction_shifts())
+        residuals = self._force_vectors(
+            nodes=self.nodes,
+            scale=self.residual_scale,
+            tol=self.residual_tol,
+            attr_names=self.default_residualattrs,
+            shift=reaction_shifts(),
+        )
 
         residuals = list(residuals.values())
 
-        self.viewer.add(Collection(residuals),
-                        facecolor=self.default_residualcolor,
-                        show_edges=False,
-                        opacity=self.default_opacity)
+        self.viewer.add(
+            Collection(residuals),
+            facecolor=self.default_residualcolor,
+            show_edges=False,
+            opacity=self.default_opacity,
+        )
 
-# ------------------------------------------------------------------------------
-# Text
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Text
+    # ------------------------------------------------------------------------------
 
     def draw_nodetext(self):
         """
@@ -524,14 +545,16 @@ class DiagramObject(NetworkObject):
             return
 
         if not self.viewer:
-            print("No viewer found as DiagramObject attribute. Cannot draw node labels!")
+            print(
+                "No viewer found as DiagramObject attribute. Cannot draw node labels!"
+            )
             return
 
         for node in self.nodes:
             label = self.node_text.get(node)
-            text = Text(label,
-                        self.diagram.node_coordinates(node),
-                        height=self.text_size)
+            text = Text(
+                label, self.diagram.node_coordinates(node), height=self.text_size
+            )
             self.viewer.add(text, color=self.text_color)
 
     def draw_edgetext(self):
@@ -542,20 +565,20 @@ class DiagramObject(NetworkObject):
             return
 
         if not self.viewer:
-            print("No viewer found as DiagramObject attribute. Cannot draw edge labels!")
+            print(
+                "No viewer found as DiagramObject attribute. Cannot draw edge labels!"
+            )
             return
 
         for edge in self.edges:
             u, v = edge
             label = self.edge_text.get(edge, self.edge_text.get(v, u))
-            text = Text(label,
-                        self.diagram.edge_midpoint(u, v),
-                        height=self.text_size)
+            text = Text(label, self.diagram.edge_midpoint(u, v), height=self.text_size)
             self.viewer.add(text, color=self.text_color)
 
-# ------------------------------------------------------------------------------
-# Helper funtions
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Helper funtions
+    # ------------------------------------------------------------------------------
 
     def _force_vectors(self, nodes, attr_names, scale, shift, tol):
         """
@@ -582,7 +605,6 @@ class DiagramObject(NetworkObject):
         """
         forces = {}
         for node in nodes:
-
             f_vec = self.diagram.node_attributes(node, attr_names)
             f_vec_norm = normalize_vector(f_vec)
             f_vec_scaled = scale_vector(f_vec, scale)
@@ -604,11 +626,13 @@ class DiagramObject(NetworkObject):
                 gap_vector = scale_vector(f_vec_norm, gap_arrow)
                 start, end = translate_points([start, end], gap_vector)
 
-            forces[node] = Arrow(Point(*start),
-                                 Vector.from_start_end(start, end),
-                                 head_portion=0.2,
-                                 head_width=0.07,
-                                 body_width=0.02)
+            forces[node] = Arrow(
+                Point(*start),
+                Vector.from_start_end(start, end),
+                head_portion=0.2,
+                head_width=0.07,
+                body_width=0.02,
+            )
         return forces
 
     def _node_textlabel(self, text_tag):
@@ -625,8 +649,11 @@ class DiagramObject(NetworkObject):
         text_labels : ``dict``
             A dictionary of text labels
         """
+
         def gkey_format(x):
-            return geometric_key(self.diagram.node_coordinates(x), self.default_floatprecision)
+            return geometric_key(
+                self.diagram.node_coordinates(x), self.default_floatprecision
+            )
 
         def key_gkey_format(x):
             return "{}\n{}".format(x, gkey_format(x))
@@ -634,9 +661,11 @@ class DiagramObject(NetworkObject):
         def type_format(x):
             return "{}".format(self.topology.node_attribute(x, "type"))
 
-        tags_formatter = {"xyz": gkey_format,
-                          "keyxyz": key_gkey_format,
-                          "type": type_format}
+        tags_formatter = {
+            "xyz": gkey_format,
+            "keyxyz": key_gkey_format,
+            "type": type_format,
+        }
 
         if text_tag not in tags_formatter:
             return
@@ -665,11 +694,16 @@ class DiagramObject(NetworkObject):
         text_labels : ``dict``
             A dictionary of text labels
         """
+
         def force_format(x):
-            return "{0:.{1}}".format(fabs(self.diagram.edge_force(x)), self.default_floatprecision)
+            return "{0:.{1}}".format(
+                fabs(self.diagram.edge_force(x)), self.default_floatprecision
+            )
 
         def length_format(x):
-            return "{0:.{1}}".format(fabs(self.diagram.edge_length_2(x)), self.default_floatprecision)
+            return "{0:.{1}}".format(
+                fabs(self.diagram.edge_length_2(x)), self.default_floatprecision
+            )
 
         def force_length_format(x):
             return "f: {}\nl: {}".format(force_format(x), length_format(x))
@@ -686,14 +720,18 @@ class DiagramObject(NetworkObject):
             return "{}".format(self.diagram.edge_attribute(x, "type"))
 
         def force_length_state_format(x):
-            return "f: {}\nl: {}\ns: {}".format(force_format(x), length_format(x), state_format(x))
+            return "f: {}\nl: {}\ns: {}".format(
+                force_format(x), length_format(x), state_format(x)
+            )
 
-        tags_formatter = {"force": force_format,
-                          "length": length_format,
-                          "state": state_format,
-                          "forcelength": force_length_format,
-                          "forcelengthstate": force_length_state_format,
-                          "type": type_format}
+        tags_formatter = {
+            "force": force_format,
+            "length": length_format,
+            "state": state_format,
+            "forcelength": force_length_format,
+            "forcelengthstate": force_length_state_format,
+            "type": type_format,
+        }
 
         if text_tag not in tags_formatter:
             return
@@ -714,7 +752,6 @@ class DiagramObject(NetworkObject):
         cylinders = dict()
 
         for u, v in self.edges:
-
             midpoint = self.diagram.edge_midpoint(u, v)
             plane = Plane(midpoint, self.diagram.edge_vector(u, v))
             radius = self.edge_width[(u, v)] / 2.0
@@ -724,9 +761,9 @@ class DiagramObject(NetworkObject):
 
         return cylinders
 
-# ------------------------------------------------------------------------------
-# COMPAS View2 Interface
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # COMPAS View2 Interface
+    # ------------------------------------------------------------------------------
 
     def _points_data(self):
         """

@@ -1,8 +1,6 @@
 import numpy as np
 
-
-__all__ = ["grad_finite_differences",
-           "grad_autograd"]
+__all__ = ["grad_finite_differences", "grad_autograd"]
 
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
@@ -17,6 +15,7 @@ def grad_autograd(x, grad, grad_func, **kwargs):
     grad[:] = grad_func(x)
 
     return grad
+
 
 # ------------------------------------------------------------------------------
 # Gradient calculation with finite differences
@@ -33,7 +32,6 @@ def grad_finite_differences(x, grad, x_func, step_size, **kwargs):
     _x = np.copy(x)
 
     for i in range(len(x)):
-
         _xi = _x[i]
         _x[i] += step_size
 

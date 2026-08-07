@@ -1,6 +1,5 @@
 from compas_cem.elements import Node
 
-
 __all__ = ["EdgeMixins"]
 
 # ==============================================================================
@@ -9,8 +8,8 @@ __all__ = ["EdgeMixins"]
 
 
 class EdgeMixins(object):
-    """
-    """
+    """ """
+
     def add_edge(self, edge):
         """
         Adds a deviation or a trail edge.
@@ -45,15 +44,17 @@ class EdgeMixins(object):
         attr = {k: v for k, v in edge.attributes.items()}
         return super(EdgeMixins, self).add_edge(u=u, v=v, attr_dict=attr)
 
+
 # ==============================================================================
 # Main
 # ==============================================================================
 
 
 if __name__ == "__main__":
+    from compas.geometry import Line
+
     from compas_cem.diagrams import TopologyDiagram
     from compas_cem.elements import DeviationEdge
-    from compas.geometry import Line
 
     topology = TopologyDiagram()
     topology.add_node(Node.from_point([0.0, 1.0, 0.0]))

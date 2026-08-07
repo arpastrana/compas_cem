@@ -1,6 +1,5 @@
 from compas_cem.data import Data
 
-
 __all__ = ["Node"]
 
 # ==============================================================================
@@ -12,6 +11,7 @@ class Node(Data):
     """
     A node.
     """
+
     def __init__(self, key=None, xyz=[0.0, 0.0, 0.0], **kwargs):
         super(Node, self).__init__(**kwargs)
         self.key = key
@@ -40,9 +40,11 @@ class Node(Data):
         return cls(xyz=point)
 
     def __repr__(self):
-        """
-        """
-        return "{0!r}(key={1!r}, xyz={2!r})".format(self.__class__.__name__, self.key, self.xyz)
+        """ """
+        return "{0!r}(key={1!r}, xyz={2!r})".format(
+            self.__class__.__name__, self.key, self.xyz
+        )
+
 
 # ==============================================================================
 # Main

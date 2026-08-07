@@ -1,6 +1,7 @@
 """
 Create a deviation edge from a line.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.elements import DeviationEdge

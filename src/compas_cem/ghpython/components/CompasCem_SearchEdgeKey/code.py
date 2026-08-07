@@ -1,6 +1,7 @@
 """
 Search for an edge key in a topology or a form diagram using a line.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_rhino.geometry import RhinoLine

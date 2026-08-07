@@ -1,9 +1,6 @@
 from compas_cem.optimization.parameters import NodeParameter
 
-
-__all__ = ["NodeLoadXParameter",
-           "NodeLoadYParameter",
-           "NodeLoadZParameter"]
+__all__ = ["NodeLoadXParameter", "NodeLoadYParameter", "NodeLoadZParameter"]
 
 # ------------------------------------------------------------------------------
 # Node Load Parameter - X component
@@ -14,9 +11,11 @@ class NodeLoadXParameter(NodeParameter):
     """
     Sets the X component of a node load as an optimization parameter.
     """
+
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(NodeLoadXParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "qx"
+
 
 # ------------------------------------------------------------------------------
 # Node Load Parameter - Y component
@@ -27,9 +26,11 @@ class NodeLoadYParameter(NodeParameter):
     """
     Sets the Y component of an node load as an optimization parameter.
     """
+
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(NodeLoadYParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "qy"
+
 
 # ------------------------------------------------------------------------------
 # Node Load Parameter - Z component
@@ -40,38 +41,31 @@ class NodeLoadZParameter(NodeParameter):
     """
     Sets the Z component of a node load as an optimization parameter.
     """
+
     def __init__(self, key=None, bound_low=None, bound_up=None):
         super(NodeLoadZParameter, self).__init__(key, bound_low, bound_up)
         self._attr_name = "qz"
 
 
 if __name__ == "__main__":
-
+    from math import cos
     from math import fabs
     from math import pi
     from math import sin
-    from math import cos
-
     from random import choice
     from random import random
 
-    from compas.geometry import add_vectors
     from compas.geometry import Point
-
+    from compas.geometry import add_vectors
     from compas.utilities import pairwise
 
     from compas_cem.diagrams import TopologyDiagram
-
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
-
-    from compas_cem.supports import NodeSupport
-
     from compas_cem.optimization import Optimizer
-
     from compas_cem.optimization import PointConstraint
-
     from compas_cem.plotters import Plotter
+    from compas_cem.supports import NodeSupport
 
     # create a topology diagram
     topology = TopologyDiagram()
@@ -97,14 +91,14 @@ if __name__ == "__main__":
 
     # create point constraints at random
     radius = fabs(length)
-    pt = [0., 0., 0.]
+    pt = [0.0, 0.0, 0.0]
     points = []
 
     for i in range(1, num_nodes):
         theta = 0.5 * pi * random()
         x = radius * cos(theta)
-        y = radius * sin(theta * choice([-1., 1.]))
-        pt = Point(*add_vectors(pt, [x, y, 0.]))
+        y = radius * sin(theta * choice([-1.0, 1.0]))
+        pt = Point(*add_vectors(pt, [x, y, 0.0]))
         optimizer.add_constraint(PointConstraint(i, pt))
         points.append(pt)
 

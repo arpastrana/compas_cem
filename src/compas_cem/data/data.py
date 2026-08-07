@@ -1,6 +1,5 @@
 from compas.data import Data
 
-
 __all__ = ["Data"]
 
 
@@ -10,7 +9,7 @@ __all__ = ["Data"]
 
 
 class Data(Data):
-    """
-    """
+    """ """
+
     def __init__(self, **kwargs):
         super(Data, self).__init__(**kwargs)

@@ -1,21 +1,19 @@
 from compas_cem.optimization.constraints import FloatConstraint
 from compas_cem.optimization.constraints import VectorConstraint
 
-
-__all__ = ["TrailEdgeForceConstraint",
-           "ReactionForceConstraint"]
+__all__ = ["TrailEdgeForceConstraint", "ReactionForceConstraint"]
 
 
 class TrailEdgeForceConstraint(FloatConstraint):
     """
     Make a trail edge reach a target force value.
     """
+
     def __init__(self, edge=None, force=None, weight=1.0):
         super(TrailEdgeForceConstraint, self).__init__(edge, force, weight)
 
     def reference(self, data):
-        """
-        """
+        """ """
         return data["trail_forces"][self.key()]
 
 
@@ -23,42 +21,33 @@ class ReactionForceConstraint(VectorConstraint):
     """
     Makes the support reaction force at a node match a target vector.
     """
+
     def __init__(self, node=None, vector=None, weight=1.0):
         super(ReactionForceConstraint, self).__init__(node, vector, weight)
 
     def reference(self, data):
-        """
-        """
+        """ """
         return data["reaction_forces"][self.key()]
 
 
 if __name__ == "__main__":
-
     from time import time
 
     from compas.geometry import Point
 
     from compas_cem.diagrams import TopologyDiagram
-
+    from compas_cem.elements import DeviationEdge
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
-    from compas_cem.elements import DeviationEdge
-
+    from compas_cem.equilibrium import static_equilibrium
     from compas_cem.loads import NodeLoad
-
-    from compas_cem.supports import NodeSupport
-
-    from compas_cem.optimization import Optimizer
     from compas_cem.optimization import DeviationEdgeParameter
-
+    from compas_cem.optimization import Optimizer
     from compas_cem.optimization import OriginNodeXParameter
     from compas_cem.optimization import OriginNodeYParameter
-
     from compas_cem.optimization import PointConstraint
-
-    from compas_cem.equilibrium import static_equilibrium
-
     from compas_cem.plotters import FormPlotter
+    from compas_cem.supports import NodeSupport
 
     # create a topology diagram
     topology = TopologyDiagram()

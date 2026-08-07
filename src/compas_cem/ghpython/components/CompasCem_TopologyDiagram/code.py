@@ -1,13 +1,16 @@
 """
 Assemble a topology diagram.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.diagrams import TopologyDiagram
 
 
 class AssembleTopologyDiagramComponent(component):
-    def RunScript(self, trail_edges, deviation_edges, loads, supports, add_auxiliary_trails):
+    def RunScript(
+        self, trail_edges, deviation_edges, loads, supports, add_auxiliary_trails
+    ):
 
         add_auxiliary_trails = add_auxiliary_trails or False
         topology = TopologyDiagram()

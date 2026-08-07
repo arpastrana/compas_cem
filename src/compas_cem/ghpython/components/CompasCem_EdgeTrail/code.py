@@ -1,6 +1,7 @@
 """
 Create a trail edge from a rhino line.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_rhino.geometry import RhinoLine

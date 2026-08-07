@@ -2,7 +2,6 @@ from compas.geometry import closest_point_on_line
 
 from compas_cem.optimization.constraints import VectorConstraint
 
-
 __all__ = ["LineConstraint"]
 
 
@@ -10,46 +9,38 @@ class LineConstraint(VectorConstraint):
     """
     Pulls the xyz position of a node to a target line ray.
     """
+
     def __init__(self, node=None, line=None, weight=1.0):
         super(LineConstraint, self).__init__(node, line, weight)
 
     def reference(self, data):
-        """
-        """
+        """ """
         return data["node_xyz"][self.key()]
 
     def target(self, point):
-        """
-        """
+        """ """
         line = self._target
         return closest_point_on_line(point, line)
 
 
 if __name__ == "__main__":
-
     from time import time
 
     from compas.geometry import Line
     from compas.geometry import Point
 
     from compas_cem.diagrams import TopologyDiagram
-
+    from compas_cem.elements import DeviationEdge
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
-    from compas_cem.elements import DeviationEdge
-
-    from compas_cem.loads import NodeLoad
-
-    from compas_cem.supports import NodeSupport
-
-    from compas_cem.optimization import Optimizer
-    from compas_cem.optimization import DeviationEdgeParameter
-    from compas_cem.optimization import TrailEdgeParameter
-    from compas_cem.optimization import PointConstraint
-
     from compas_cem.equilibrium import static_equilibrium
-
+    from compas_cem.loads import NodeLoad
+    from compas_cem.optimization import DeviationEdgeParameter
+    from compas_cem.optimization import Optimizer
+    from compas_cem.optimization import PointConstraint
+    from compas_cem.optimization import TrailEdgeParameter
     from compas_cem.plotters import FormPlotter
+    from compas_cem.supports import NodeSupport
 
     # create a topology diagram
     topology = TopologyDiagram()

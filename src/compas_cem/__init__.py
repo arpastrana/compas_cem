@@ -39,27 +39,31 @@ TEMP = os.path.abspath(os.path.join(HOME, "temp"))
 JSON_DATA = os.path.abspath(os.path.join(DATA, "json"))
 
 # RGB color scheme
-COLORS = {"tension": (227, 6, 75),  # red
-          "compression": (12, 119, 184),  # blue
-          "edge": (50, 50, 50),  # dark gray
-          "node": (255, 255, 255),  # white
-          "node_black": (0, 0, 0),  # black
-          "node_support": (0, 150, 10),  # green
-          "node_origin": (155, 100, 255),  # purple
-          "edge_trail": (180, 0, 255),  # purple
-          "edge_deviation": (127, 255, 0),  # lime  (127, 155, 0)
-          "edge_deviation_indirect": (255, 100, 47),  # coral
-          "support_force": (75, 75, 75),  # dark gray
-          "load": (0, 150, 10),  # green
-          "trail": (250, 80, 210),  # pink
-          "auxiliary_trail": (255, 155, 15)}  # orange
+COLORS = {
+    "tension": (227, 6, 75),  # red
+    "compression": (12, 119, 184),  # blue
+    "edge": (50, 50, 50),  # dark gray
+    "node": (255, 255, 255),  # white
+    "node_black": (0, 0, 0),  # black
+    "node_support": (0, 150, 10),  # green
+    "node_origin": (155, 100, 255),  # purple
+    "edge_trail": (180, 0, 255),  # purple
+    "edge_deviation": (127, 255, 0),  # lime  (127, 155, 0)
+    "edge_deviation_indirect": (255, 100, 47),  # coral
+    "support_force": (75, 75, 75),  # dark gray
+    "load": (0, 150, 10),  # green
+    "trail": (250, 80, 210),  # pink
+    "auxiliary_trail": (255, 155, 15),  # orange
+}
 
 PROXY_PORT = 7123
 
 # TODO: add static equilibrium plugin
-__all_plugins__ = ['compas_cem.ghpython.install',
-                   'compas_cem.ghpython.uninstall',
-                   'compas_cem.ghpython.register',
-                   'compas_cem.plotters.register']
+__all_plugins__ = [
+    "compas_cem.ghpython.install",
+    "compas_cem.ghpython.uninstall",
+    "compas_cem.ghpython.register",
+    "compas_cem.plotters.register",
+]
 
 __all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]

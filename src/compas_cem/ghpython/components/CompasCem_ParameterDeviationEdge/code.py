@@ -1,6 +1,7 @@
 """
 Set the force of a deviation edge as an optimization parameter.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.optimization import DeviationEdgeParameter

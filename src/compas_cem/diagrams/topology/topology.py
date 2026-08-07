@@ -1,15 +1,12 @@
-from compas.geometry import scale_vector
 from compas.geometry import add_vectors
 from compas.geometry import normalize_vector
-
-from compas_cem.elements import Node
-from compas_cem.supports import NodeSupport
-from compas_cem.elements import TrailEdge
+from compas.geometry import scale_vector
 
 from compas_cem.diagrams import Diagram
-
 from compas_cem.diagrams.topology import MeshMixins
-
+from compas_cem.elements import Node
+from compas_cem.elements import TrailEdge
+from compas_cem.supports import NodeSupport
 
 __all__ = ["TopologyDiagram"]
 
@@ -43,9 +40,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         self.attributes["_aux_length"] = -1.0
         self.attributes["_aux_vector"] = [1.0, 1.0, 1.0]
 
-# ==============================================================================
-# Properties
-# ==============================================================================
+    # ==============================================================================
+    # Properties
+    # ==============================================================================
 
     @property
     def auxiliary_trail_length(self):
@@ -61,8 +58,7 @@ class TopologyDiagram(Diagram, MeshMixins):
 
     @auxiliary_trail_length.setter
     def auxiliary_trail_length(self, length):
-        """
-        """
+        """ """
         self.attributes["_aux_length"] = length
 
     @property
@@ -79,13 +75,12 @@ class TopologyDiagram(Diagram, MeshMixins):
 
     @auxiliary_trail_vector.setter
     def auxiliary_trail_vector(self, vector):
-        """
-        """
+        """ """
         self.attributes["_aux_vector"] = vector
 
-# ==============================================================================
-# Node Additions
-# ==============================================================================
+    # ==============================================================================
+    # Node Additions
+    # ==============================================================================
 
     def add_support(self, support):
         """
@@ -128,9 +123,9 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         self.node_attributes(node, ["qx", "qy", "qz"], load.vector)
 
-# ==============================================================================
-# Counters
-# ==============================================================================
+    # ==============================================================================
+    # Counters
+    # ==============================================================================
 
     def number_of_trails(self):
         """
@@ -198,9 +193,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         return len(list(self.indirect_deviation_edges()))
 
-# ==============================================================================
-# Trails
-# ==============================================================================
+    # ==============================================================================
+    # Trails
+    # ==============================================================================
 
     def trail(self, key):
         """
@@ -333,13 +328,11 @@ class TopologyDiagram(Diagram, MeshMixins):
         nodes_in_trails = set()
 
         for support in self.support_nodes():
-
             trail = []
             visited = set()
             node = support
 
             while True:
-
                 last_node = node
                 neighbors = self.neighbors(node)
 
@@ -387,7 +380,6 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         # automatically create auxiliary trails
         if auxiliary_trails:
-
             aux_trails = dict()
             aux_dir = normalize_vector(self.auxiliary_trail_vector)
 
@@ -397,11 +389,17 @@ class TopologyDiagram(Diagram, MeshMixins):
                 aux_node = self.add_node(Node(xyz=aux_xyz))
 
                 self.add_support(NodeSupport(aux_node))
-                edge = self.add_edge(TrailEdge(node, aux_node, self.auxiliary_trail_length))
+                edge = self.add_edge(
+                    TrailEdge(node, aux_node, self.auxiliary_trail_length)
+                )
                 aux_trails[node] = edge
 
             self.attributes["_auxiliary_trails"] = aux_trails
-            print("Warning: {} auxiliary trails have been added to the topology diagram!".format(len(aux_trails)))
+            print(
+                "Warning: {} auxiliary trails have been added to the topology diagram!".format(
+                    len(aux_trails)
+                )
+            )
 
             return self.build_trails(auxiliary_trails=False)
 
@@ -411,15 +409,17 @@ class TopologyDiagram(Diagram, MeshMixins):
         # there must be at least one support node for trails to run
         assert len(list(self.support_nodes())) > 0, "No supports assigned!"
         # no free nodes
-        msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(unassigned)
+        msg = "Nodes {} haven't been assigned to a trail. Check your topology!".format(
+            unassigned
+        )
         assert len(unassigned) == 0, msg
 
         # store trails in topology diagram
         self.attributes["_trails"] = trails
 
-# ==============================================================================
-#  Node Collections
-# ==============================================================================
+    # ==============================================================================
+    #  Node Collections
+    # ==============================================================================
 
     def origin_nodes(self):
         """
@@ -432,9 +432,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         return self.nodes_where({"type": "_origin"})
 
-# ==============================================================================
-#  Connected Edges
-# ==============================================================================
+    # ==============================================================================
+    #  Connected Edges
+    # ==============================================================================
 
     def connected_deviation_edges(self, node):
         """
@@ -537,9 +537,9 @@ class TopologyDiagram(Diagram, MeshMixins):
                 deviation_edges.append(edge)
         return deviation_edges
 
-# ==============================================================================
-# Edges
-# ==============================================================================
+    # ==============================================================================
+    # Edges
+    # ==============================================================================
 
     def trail_edges(self, data=False):
         """
@@ -596,6 +596,7 @@ class TopologyDiagram(Diagram, MeshMixins):
         attributes : ``dict``
             The attributes of the next direct deviation edge if ``data=True``.
         """
+
         def predicate(edge, attr):
             return self.is_direct_deviation_edge(edge)
 
@@ -618,6 +619,7 @@ class TopologyDiagram(Diagram, MeshMixins):
         attributes : ``dict``
             The attributes of the next indirect deviation edge if ``data=True``.
         """
+
         def predicate(edge, attr):
             return self.is_indirect_deviation_edge(edge)
 
@@ -640,14 +642,15 @@ class TopologyDiagram(Diagram, MeshMixins):
         attributes : ``dict``
             The attributes of the next auxiliary trail edge if ``data=True``.
         """
+
         def predicate(edge, attr):
             return self.is_auxiliary_trail_edge(edge)
 
         return self.edges_where_predicate(predicate, data)
 
-# ==============================================================================
-# Node Filters
-# ==============================================================================
+    # ==============================================================================
+    # Node Filters
+    # ==============================================================================
 
     def is_node_origin(self, node):
         """
@@ -683,9 +686,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         return self.node_attribute(key=node, name="type") == "support"
 
-# ==============================================================================
-# Edge Predicates
-# ==============================================================================
+    # ==============================================================================
+    # Edge Predicates
+    # ==============================================================================
 
     def is_trail_edge(self, edge):
         """
@@ -757,6 +760,7 @@ class TopologyDiagram(Diagram, MeshMixins):
             ``True``if the deviation edge is direct.
             ``False`` otherwise.
         """
+
         def predicate(x):
             a, b = self.edge_sequence(edge)
             if a == b:
@@ -779,6 +783,7 @@ class TopologyDiagram(Diagram, MeshMixins):
             ``True``if the deviation edge is indirect.
             ``False`` otherwise.
         """
+
         def predicate(x):
             a, b = self.edge_sequence(edge)
             if a != b:
@@ -814,9 +819,9 @@ class TopologyDiagram(Diagram, MeshMixins):
             return True
         return False
 
-# ==============================================================================
-#  Sequences
-# ==============================================================================
+    # ==============================================================================
+    #  Sequences
+    # ==============================================================================
 
     def node_sequence(self, node):
         """
@@ -905,9 +910,9 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         return max(list(self.nodes_attribute(name="_k")))
 
-# ==============================================================================
-# Mappings
-# ==============================================================================
+    # ==============================================================================
+    # Mappings
+    # ==============================================================================
 
     def trail_sequences(self, key):
         """
@@ -948,24 +953,26 @@ class TopologyDiagram(Diagram, MeshMixins):
 
         return sequences
 
-# ==============================================================================
-# Magic methods
-# ==============================================================================
+    # ==============================================================================
+    # Magic methods
+    # ==============================================================================
 
     def __repr__(self):
-        """
-        """
+        """ """
         tpl = "{}(\n\tEdges: {}\n\tTrail edges: {}\n\tDeviation edges: {}\n\tNodes: {}\n\tSupport nodes: {}\n\tLoaded nodes: {}\n\tTrails: {}\n\tAuxiliary trails: {}\n\t)"
-        data = [self.__class__.__name__,
-                self.number_of_edges(),
-                self.number_of_trail_edges(),
-                self.number_of_deviation_edges(),
-                self.number_of_nodes(),
-                self.number_of_support_nodes(),
-                self.number_of_loaded_nodes(),
-                self.number_of_trails(),
-                self.number_of_auxiliary_trails()]
+        data = [
+            self.__class__.__name__,
+            self.number_of_edges(),
+            self.number_of_trail_edges(),
+            self.number_of_deviation_edges(),
+            self.number_of_nodes(),
+            self.number_of_support_nodes(),
+            self.number_of_loaded_nodes(),
+            self.number_of_trails(),
+            self.number_of_auxiliary_trails(),
+        ]
         return tpl.format(*data)
+
 
 # ==============================================================================
 # Main

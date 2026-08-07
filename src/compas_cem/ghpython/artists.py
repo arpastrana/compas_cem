@@ -2,18 +2,15 @@ from math import fabs
 
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
-from compas.geometry import scale_vector
 from compas.geometry import normalize_vector
+from compas.geometry import scale_vector
 from compas.geometry import translate_points
-
-from compas_ghpython import draw_points
 from compas_ghpython import draw_lines
+from compas_ghpython import draw_points
 from compas_ghpython import draw_polylines
-
 from compas_ghpython.artists import NetworkArtist
 
 from compas_cem import COLORS
-
 
 __all__ = ["FormArtist", "TopologyArtist"]
 
@@ -36,12 +33,15 @@ class DiagramArtist(NetworkArtist):
     kwargs : dict, optional
         Extra named arguments for :class:`compas_ghpython.NetworkArtist`
     """
+
     def __init__(self, diagram, *args, **kwargs):
         super(DiagramArtist, self).__init__(diagram, *args, **kwargs)
 
-        self.edge_state_colors = {-1: COLORS["compression"],
-                                  1: COLORS["tension"],
-                                  0: COLORS["edge"]}
+        self.edge_state_colors = {
+            -1: COLORS["compression"],
+            1: COLORS["tension"],
+            0: COLORS["edge"],
+        }
 
         self.float_precision = "3f"
         self._diagram = diagram
@@ -79,7 +79,7 @@ class DiagramArtist(NetworkArtist):
         nodes = nodes or list(self.diagram.nodes())
         points = []
         for node in nodes:
-            points.append({'pos': self.diagram.node_coordinates(node)})
+            points.append({"pos": self.diagram.node_coordinates(node)})
 
         return draw_points(points)
 
@@ -100,7 +100,7 @@ class DiagramArtist(NetworkArtist):
         lines = []
         for edge in edges:
             start, end = self.diagram.edge_coordinates(*edge)
-            lines.append({'start': start, 'end': end})
+            lines.append({"start": start, "end": end})
 
         return draw_lines(lines)
 
@@ -241,6 +241,7 @@ class DiagramArtist(NetworkArtist):
         """
         pass
 
+
 # ------------------------------------------------------------------------------
 # Form diagram artist
 # ------------------------------------------------------------------------------
@@ -259,6 +260,7 @@ class FormArtist(DiagramArtist):
     kwargs : dict, optional
         Extra named arguments for :class:`compas_ghpython.NetworkArtist`
     """
+
     def __init__(self, form_diagram, *args, **kwargs):
         super(FormArtist, self).__init__(form_diagram, *args, **kwargs)
 
@@ -302,6 +304,7 @@ class FormArtist(DiagramArtist):
 
         return self._draw_forces(nodes, attrs, scale, shift, gap, min_force)
 
+
 # ------------------------------------------------------------------------------
 # Topology diagram artist
 # ------------------------------------------------------------------------------
@@ -320,6 +323,7 @@ class TopologyArtist(DiagramArtist):
     kwargs : dict, optional
         Extra named arguments for :class:`compas_ghpython.NetworkArtist`
     """
+
     def __init__(self, topology_diagram, *args, **kwargs):
         super(TopologyArtist, self).__init__(topology_diagram, *args, **kwargs)
 
@@ -357,7 +361,6 @@ class TopologyArtist(DiagramArtist):
         -------
         rhino_edges : list of :class:`Rhino.Geometry.Line`
         """
-
         edges = self._collection_keys("deviation_edges", "is_deviation_edge", edges)
         if not len(edges) == 0:
             return self.draw_edges(edges)

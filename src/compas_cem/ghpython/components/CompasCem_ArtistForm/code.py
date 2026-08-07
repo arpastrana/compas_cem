@@ -1,6 +1,7 @@
 """
 Draw a form diagram.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.ghpython import FormArtist
@@ -23,6 +24,8 @@ class FormArtistComponent(component):
         support_nodes = artist.draw_nodes_support(node_keys)
 
         loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
-        reactions = artist.draw_reactions(node_keys, min_force=force_min, scale=force_scale)
+        reactions = artist.draw_reactions(
+            node_keys, min_force=force_min, scale=force_scale
+        )
 
         return nodes, support_nodes, edges, loads, reactions

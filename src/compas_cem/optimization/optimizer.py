@@ -1,27 +1,20 @@
+from functools import partial
 from time import time
 
-from functools import partial
-
 import autograd.numpy as np
-
 from autograd import grad as agrad
-
-from compas_cem.data import Data
-
-from compas_cem.equilibrium import static_equilibrium
-from compas_cem.equilibrium.force_numpy import equilibrium_state_numpy
-
-from compas_cem.optimization import grad_autograd
-from compas_cem.optimization import grad_finite_differences
-from compas_cem.optimization import objective_function_numpy
-from compas_cem.optimization import nlopt_solver
-from compas_cem.optimization import nlopt_status
-
-from compas_cem.optimization.parameters import EdgeParameter
-from compas_cem.optimization.parameters import NodeParameter
-
 from nlopt import RoundoffLimited
 
+from compas_cem.data import Data
+from compas_cem.equilibrium import static_equilibrium
+from compas_cem.equilibrium.force_numpy import equilibrium_state_numpy
+from compas_cem.optimization import grad_autograd
+from compas_cem.optimization import grad_finite_differences
+from compas_cem.optimization import nlopt_solver
+from compas_cem.optimization import nlopt_status
+from compas_cem.optimization import objective_function_numpy
+from compas_cem.optimization.parameters import EdgeParameter
+from compas_cem.optimization.parameters import NodeParameter
 
 __all__ = ["Optimizer"]
 
@@ -34,6 +27,7 @@ class Optimizer(Data):
     """
     An object that modifies a form diagram to meet multiple constraints.
     """
+
     def __init__(self, **kwargs):
         super(Optimizer, self).__init__(**kwargs)
 
@@ -50,9 +44,9 @@ class Optimizer(Data):
         self._ckey = -1
         self._pkey = -1
 
-# ------------------------------------------------------------------------------
-# Counters
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Counters
+    # ------------------------------------------------------------------------------
 
     def number_of_parameters(self):
         """
@@ -66,9 +60,9 @@ class Optimizer(Data):
         """
         return len(self.constraints)
 
-# ------------------------------------------------------------------------------
-# Parameters
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Parameters
+    # ------------------------------------------------------------------------------
 
     def add_parameter(self, parameter):
         """
@@ -85,9 +79,9 @@ class Optimizer(Data):
             raise KeyError("Parameter not found at object key: {}".format(pkey))
         del self.parameters[pkey]
 
-# ------------------------------------------------------------------------------
-# Constraints
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Constraints
+    # ------------------------------------------------------------------------------
 
     def add_constraint(self, constraint):
         """
@@ -104,9 +98,9 @@ class Optimizer(Data):
             raise KeyError("Constraints not found on object key: {}".format(ckey))
         del self.constraints[ckey]
 
-# ------------------------------------------------------------------------------
-# Objective Function
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Objective Function
+    # ------------------------------------------------------------------------------
 
     def objective_func(self, topology, grad_func, tmax, eta):
         """
@@ -116,9 +110,9 @@ class Optimizer(Data):
         x_func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
         return partial(f, x_func=x_func, grad_func=grad_func)
 
-# ------------------------------------------------------------------------------
-# Gradient Function
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Gradient Function
+    # ------------------------------------------------------------------------------
 
     def gradient_func(self, grad_f, topology, tmax, eta, step_size):
         """
@@ -127,11 +121,23 @@ class Optimizer(Data):
         x_func = partial(self._optimize_form, topology=topology, tmax=tmax, eta=eta)
         return partial(grad_f, x_func=x_func, step_size=step_size)
 
-# ---------------------- --------------------------------------------------------
-# Solver
-# ------------------------------------------------------------------------------
+    # ---------------------- --------------------------------------------------------
+    # Solver
+    # ------------------------------------------------------------------------------
 
-    def solve(self, topology, algorithm="SLSQP", grad="AD", step_size=1e-6, iters=100, eps=1e-6, kappa=1e-8, tmax=100, eta=1e-6, verbose=False):
+    def solve(
+        self,
+        topology,
+        algorithm="SLSQP",
+        grad="AD",
+        step_size=1e-6,
+        iters=100,
+        eps=1e-6,
+        kappa=1e-8,
+        tmax=100,
+        eta=1e-6,
+        verbose=False,
+    ):
         """
         Solve a constrained form-finding problem using gradient-based optimization.
 
@@ -193,7 +199,9 @@ class Optimizer(Data):
         if verbose:
             print("----------")
             print("Optimization with {} started!".format(algorithm))
-            print(f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}")
+            print(
+                f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}"
+            )
 
         # test for bad stuff before going any further
         self.check_optimization_sanity()
@@ -204,13 +212,21 @@ class Optimizer(Data):
         if grad == "AD":
             if verbose:
                 print("Computing gradients using automatic differentiation!")
-            x_func = partial(self._optimize_form, topology=topology.copy(), tmax=tmax, eta=eta)
-            grad_func = partial(grad_autograd, grad_func=agrad(x_func))  # x, grad, x_func
+            x_func = partial(
+                self._optimize_form, topology=topology.copy(), tmax=tmax, eta=eta
+            )
+            grad_func = partial(
+                grad_autograd, grad_func=agrad(x_func)
+            )  # x, grad, x_func
 
         elif grad == "FD":
             if verbose:
-                print(f"Warning: Calculating gradients using finite differences with step size {step_size}. This may take a while...")
-            grad_func = self.gradient_func(grad_finite_differences, topology.copy(), tmax, eta, step_size)
+                print(
+                    f"Warning: Calculating gradients using finite differences with step size {step_size}. This may take a while..."
+                )
+            grad_func = self.gradient_func(
+                grad_finite_differences, topology.copy(), tmax, eta, step_size
+            )
 
         # grad_func = self.gradient_func(grad_func, topology.copy(), tmax, eta, step_size)
         obj_func = self.objective_func(topology, grad_func, tmax, eta)
@@ -222,14 +238,16 @@ class Optimizer(Data):
         bounds_low, bounds_up = self.optimization_bounds(topology)
 
         # stack keyword arguments
-        hyper_parameters = {"f": obj_func,
-                            "algorithm": algorithm,
-                            "dims": self.number_of_parameters(),
-                            "bounds_low": bounds_low,
-                            "bounds_up": bounds_up,
-                            "iters": iters,
-                            "eps": eps,
-                            "ftol": kappa}
+        hyper_parameters = {
+            "f": obj_func,
+            "algorithm": algorithm,
+            "dims": self.number_of_parameters(),
+            "bounds_low": bounds_low,
+            "bounds_up": bounds_up,
+            "iters": iters,
+            "eps": eps,
+            "ftol": kappa,
+        }
 
         # assemble optimization solver
         solver = nlopt_solver(**hyper_parameters)
@@ -272,16 +290,18 @@ class Optimizer(Data):
             print(f"Optimization total runtime: {round(time_opt, 6)} seconds")
             print("Number of evaluations incurred: {}".format(evals))
             print(f"Final value of the objective function: {round(loss_opt, 6)}")
-            print(f"Norm of the gradient of the objective function: {round(self.gradient_norm, 6)}")
+            print(
+                f"Norm of the gradient of the objective function: {round(self.gradient_norm, 6)}"
+            )
             print(f"Optimization status: {status}".format(status))
             print("----------")
 
         # exit like a champion
         return static_equilibrium(topology)
 
-# ------------------------------------------------------------------------------
-# Optimization parameters
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Optimization parameters
+    # ------------------------------------------------------------------------------
 
     def optimization_parameters(self, topology):
         """
@@ -310,16 +330,15 @@ class Optimizer(Data):
 
         return bounds_low, bounds_up
 
-# ------------------------------------------------------------------------------
-# Updates
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Updates
+    # ------------------------------------------------------------------------------
 
     def _update_parameters(self, topology, parameters):
         """
         Update the defined design parameters in a topology diagram.
         """
         for pkey, parameter in self.parameters.items():
-
             value = parameters[pkey]
             name = parameter.attr_name()
             key = parameter.key()
@@ -332,35 +351,33 @@ class Optimizer(Data):
                 msg = "Parameter {} is neither a node nor an edge parameter! {}"
                 raise TypeError(msg.format(type(parameter)))
 
-# ------------------------------------------------------------------------------
-# Penalty function
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Penalty function
+    # ------------------------------------------------------------------------------
 
     def _calculate_penalty(self, eq_state):
-        """
-        """
+        """ """
         penalty = 0.0
         for constraint in self.constraints.values():
             penalty += constraint.penalty(eq_state)
 
         return penalty
 
-# ------------------------------------------------------------------------------
-# Optimization
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Optimization
+    # ------------------------------------------------------------------------------
 
     def _optimize_form(self, parameters, topology, tmax, eta):
-        """
-        """
+        """ """
         self._update_parameters(topology, parameters)
 
         eq_state = equilibrium_state_numpy(topology, tmax, eta)
 
         return self._calculate_penalty(eq_state)
 
-# ------------------------------------------------------------------------------
-# Sanity Check
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Sanity Check
+    # ------------------------------------------------------------------------------
 
     def check_optimization_sanity(self):
         """
@@ -374,15 +391,20 @@ class Optimizer(Data):
             msg = "No constraints defined. Optimization not possible."
             raise ValueError(msg)
 
-# ------------------------------------------------------------------------------
-# Magic methods
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Magic methods
+    # ------------------------------------------------------------------------------
 
     def __repr__(self):
-        """
-        """
+        """ """
         tpl = "{} with {} parameters and {} constraints. Status: {}"
-        return tpl.format(self.__class__.__name__, self.number_of_parameters(), self.number_of_constraints(), self.status)
+        return tpl.format(
+            self.__class__.__name__,
+            self.number_of_parameters(),
+            self.number_of_constraints(),
+            self.status,
+        )
+
 
 # ------------------------------------------------------------------------------
 # Main

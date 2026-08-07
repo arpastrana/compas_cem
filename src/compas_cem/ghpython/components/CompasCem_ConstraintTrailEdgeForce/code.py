@@ -1,6 +1,7 @@
 """
 Make the force on a trail edge to reach a prescribed value.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.optimization import TrailEdgeForceConstraint

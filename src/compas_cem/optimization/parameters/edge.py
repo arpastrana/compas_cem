@@ -2,7 +2,6 @@ from ast import literal_eval
 
 from compas_cem.optimization.parameters import Parameter
 
-
 __all__ = ["EdgeParameter"]
 
 # ------------------------------------------------------------------------------
@@ -14,6 +13,7 @@ class EdgeParameter(Parameter):
     """
     Parametrize and edge to solve an optimization problem.
     """
+
     def __init__(self, key, bound_low, bound_up, **kwargs):
         super(EdgeParameter, self).__init__(key, bound_low, bound_up, **kwargs)
 
@@ -24,9 +24,9 @@ class EdgeParameter(Parameter):
         val = topology.edge_attribute(key=self.key(), name=self._attr_name)
         return val
 
-# ------------------------------------------------------------------------------
-# Data
-# ------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------
+    # Data
+    # ------------------------------------------------------------------------------
 
     @property
     def data(self):
@@ -50,7 +50,6 @@ class EdgeParameter(Parameter):
         (``repr(key)``) to ensure compatibility of all allowed key types with
         the JSON serialization format, which only allows for dict keys that are strings.
         """
-
         data = {}
 
         data["_key"] = repr(self._key)

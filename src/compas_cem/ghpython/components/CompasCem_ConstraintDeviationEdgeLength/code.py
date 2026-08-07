@@ -1,6 +1,7 @@
 """
 Make the length of a deviation edge reach a target value.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_cem.optimization import DeviationEdgeLengthConstraint

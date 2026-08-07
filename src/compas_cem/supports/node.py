@@ -1,6 +1,5 @@
 from compas_cem.data import Data
 
-
 __all__ = ["NodeSupport"]
 
 # ==============================================================================
@@ -22,6 +21,7 @@ class NodeSupport(Data):
     node_support : ``NodeSupport``
         A node support.
     """
+
     def __init__(self, node, **kwargs):
         super(NodeSupport, self).__init__(**kwargs)
         self.node = node
@@ -53,9 +53,9 @@ class NodeSupport(Data):
         return support
 
     def __repr__(self):
-        """
-        """
+        """ """
         return "{0}(xyz={1!r})".format(self.__class__.__name__, self.xyz)
+
 
 # ==============================================================================
 # Main

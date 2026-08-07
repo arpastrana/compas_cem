@@ -1,13 +1,10 @@
 from compas.utilities import iterable_like
 
-
-__all__ = ["form_plotter_proxy",
-           "topology_plotter_proxy"]
+__all__ = ["form_plotter_proxy", "topology_plotter_proxy"]
 
 
 def form_plotter_proxy(**kwargs):
-    """
-    """
+    """ """
     from compas_cem.plotters import FormPlotter
 
     # unpack kwargs
@@ -30,7 +27,9 @@ def form_plotter_proxy(**kwargs):
     reaction_gap = kwargs.get("reaction_gap", 0.1)
 
     segment = kwargs.get("segment", [])
-    segment_color = kwargs.get("segment_color") or iterable_like(segment, [], (50, 50, 50))
+    segment_color = kwargs.get("segment_color") or iterable_like(
+        segment, [], (50, 50, 50)
+    )
     segment_width = kwargs.get("segment_width") or iterable_like(segment, [], 0.5)
     segment_ls = kwargs.get("segment_ls") or iterable_like(segment, [], "--")
 
@@ -61,8 +60,7 @@ def form_plotter_proxy(**kwargs):
 
 
 def topology_plotter_proxy(**kwargs):
-    """
-    """
+    """ """
     from compas_cem.plotters import TopologyPlotter
 
     # unpack kwargs
@@ -78,7 +76,9 @@ def topology_plotter_proxy(**kwargs):
     load_width = kwargs.get("load_width", 1.0)
 
     segment = kwargs.get("segment", [])
-    segment_color = kwargs.get("segment_color") or iterable_like(segment, [], (50, 50, 50))
+    segment_color = kwargs.get("segment_color") or iterable_like(
+        segment, [], (50, 50, 50)
+    )
     segment_width = kwargs.get("segment_width") or iterable_like(segment, [], 0.5)
     segment_ls = kwargs.get("segment_ls") or iterable_like(segment, [], "--")
 

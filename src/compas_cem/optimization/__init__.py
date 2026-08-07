@@ -56,6 +56,7 @@ from .parameters import *  # noqa F403
 from .proxy import *  # noqa F403
 
 import compas
+
 if not compas.IPY:
     from .nlopt import *  # noqa F403
     from .objective_func import *  # noqa F403
@@ -63,4 +64,4 @@ if not compas.IPY:
     from .optimizer import *  # noqa F403
 
 
-__all__ = [name for name in dir() if not name.startswith('_')]
+__all__ = [name for name in dir() if not name.startswith("_")]

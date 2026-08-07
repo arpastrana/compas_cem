@@ -1,18 +1,16 @@
 from math import copysign
-from math import pi
 from math import fabs
-
-from compas_cem import COLORS
+from math import pi
 
 from compas.colors import Color
 from compas.colors import ColorMap
-from compas.geometry import add_vectors
 from compas.geometry import Line
 from compas.geometry import Rotation
+from compas.geometry import add_vectors
 from compas.utilities import geometric_key
-
 from compas_plotters.artists import NetworkArtist
 
+from compas_cem import COLORS
 
 __all__ = ["TopologyArtist"]
 
@@ -26,38 +24,48 @@ class TopologyArtist(NetworkArtist):
     topology_diagram : :class:`compas_cem.diagrams.TopologyDiagram`
         The topology diagram to plot.
     """
-    def __init__(self,
-                 topology_diagram,
-                 nodesize=0.1,
-                 edgewidth=1.0,
-                 nodetext=None,  # must be a dict, or 'key', or 'index'
-                 edgetext=None,  # must be a dict, or 'key', or 'index'
-                 nodecolor=None,  # must be a string, 'type' or 'sequence'
-                 edgecolor=None,  # must be a string, 'state' or 'type'
-                 show_loads=True,
-                 show_nodetext=False,
-                 show_edgetext=False,
-                 **kwargs):
-        super(TopologyArtist, self).__init__(topology_diagram,
-                                             nodesize=nodesize,
-                                             edgewidth=edgewidth,
-                                             **kwargs)
 
-        self.node_typecolors = {"support": COLORS["node_support"],
-                                "_origin": COLORS["node_origin"],
-                                "default": COLORS["node"]}
+    def __init__(
+        self,
+        topology_diagram,
+        nodesize=0.1,
+        edgewidth=1.0,
+        nodetext=None,  # must be a dict, or 'key', or 'index'
+        edgetext=None,  # must be a dict, or 'key', or 'index'
+        nodecolor=None,  # must be a string, 'type' or 'sequence'
+        edgecolor=None,  # must be a string, 'state' or 'type'
+        show_loads=True,
+        show_nodetext=False,
+        show_edgetext=False,
+        **kwargs,
+    ):
+        super(TopologyArtist, self).__init__(
+            topology_diagram, nodesize=nodesize, edgewidth=edgewidth, **kwargs
+        )
 
-        self.node_sequencecolors = ColorMap.from_color(Color.from_rgb255(*COLORS["trail"]), "light")
+        self.node_typecolors = {
+            "support": COLORS["node_support"],
+            "_origin": COLORS["node_origin"],
+            "default": COLORS["node"],
+        }
 
-        self.edge_statecolors = {-1.0: COLORS["compression"],
-                                 1.0: COLORS["tension"],
-                                 0.0: COLORS["edge"],
-                                 "auxiliary_trail": COLORS["auxiliary_trail"]}
+        self.node_sequencecolors = ColorMap.from_color(
+            Color.from_rgb255(*COLORS["trail"]), "light"
+        )
+
+        self.edge_statecolors = {
+            -1.0: COLORS["compression"],
+            1.0: COLORS["tension"],
+            0.0: COLORS["edge"],
+            "auxiliary_trail": COLORS["auxiliary_trail"],
+        }
 
         self.edge_typecolors = COLORS
 
-        self.edge_linestyles = {"trail": "-",  # solid
-                                "deviation": "--"}  # dashed
+        self.edge_linestyles = {
+            "trail": "-",  # solid
+            "deviation": "--",
+        }  # dashed
 
         self.float_precision = "2f"
 
@@ -158,7 +166,6 @@ class TopologyArtist(NetworkArtist):
         axis = [0.0, 0.0, 1.0]
 
         for node in self.topology.loaded_nodes():
-
             if node not in self.nodes:
                 continue
 
@@ -166,15 +173,15 @@ class TopologyArtist(NetworkArtist):
             nodesize = self.node_size[node]
 
             for f in flips:
-
-                line = Line(*[add_vectors(xyz, [nodesize * f, 0.0, 0.0]) for f in flips])
-                R = Rotation.from_axis_and_angle(axis=axis, angle=f*angle, point=xyz)
+                line = Line(
+                    *[add_vectors(xyz, [nodesize * f, 0.0, 0.0]) for f in flips]
+                )
+                R = Rotation.from_axis_and_angle(axis=axis, angle=f * angle, point=xyz)
                 line.transform(R)
 
-                self.plotter.add(line,
-                                 draw_as_segment=True,
-                                 zorder=4000,
-                                 linewidth=0.3)  # hardcoded, following value from COMPAS
+                self.plotter.add(
+                    line, draw_as_segment=True, zorder=4000, linewidth=0.3
+                )  # hardcoded, following value from COMPAS
 
     def draw(self):
         """
@@ -208,6 +215,7 @@ class TopologyArtist(NetworkArtist):
         text_labels : ``dict``
             A dictionary of text labels
         """
+
         def gkey_format(x):
             return geometric_key(self.topology.node_coordinates(x), precision)
 
@@ -225,11 +233,13 @@ class TopologyArtist(NetworkArtist):
 
         precision = self.float_precision
 
-        tags_formatter = {"xyz": gkey_format,
-                          "keyxyz": key_gkey_format,
-                          "type": type_format,
-                          "sequence": sequence_format,
-                          "keysequence": key_sequence_format}
+        tags_formatter = {
+            "xyz": gkey_format,
+            "keyxyz": key_gkey_format,
+            "type": type_format,
+            "sequence": sequence_format,
+            "keysequence": key_sequence_format,
+        }
 
         if text_tag not in tags_formatter:
             return None
@@ -258,6 +268,7 @@ class TopologyArtist(NetworkArtist):
         text_labels : ``dict``
             A dictionary of text labels
         """
+
         def force_format(x):
             return "{0:.{1}}".format(fabs(self.topology.edge_force(x)), precision)
 
@@ -279,16 +290,20 @@ class TopologyArtist(NetworkArtist):
             return "{}".format(self.topology.edge_attribute(x, "type"))
 
         def force_length_state_format(x):
-            return "f: {}\nl: {}\ns: {}".format(force_format(x), length_format(x), state_format(x))
+            return "f: {}\nl: {}\ns: {}".format(
+                force_format(x), length_format(x), state_format(x)
+            )
 
         precision = self.float_precision
 
-        tags_formatter = {"force": force_format,
-                          "length": length_format,
-                          "state": state_format,
-                          "forcelength": force_length_format,
-                          "forcelengthstate": force_length_state_format,
-                          "type": type_format}
+        tags_formatter = {
+            "force": force_format,
+            "length": length_format,
+            "state": state_format,
+            "forcelength": force_length_format,
+            "forcelengthstate": force_length_state_format,
+            "type": type_format,
+        }
 
         if text_tag not in tags_formatter:
             return None

@@ -1,10 +1,8 @@
 from compas.geometry import closest_point_on_segment
 from compas.geometry._core.distance import closest_points_in_cloud_numpy
-
 from compas.utilities import pairwise
 
 from compas_cem.optimization.constraints import VectorConstraint
-
 
 __all__ = ["PolylineConstraint"]
 
@@ -13,6 +11,7 @@ class PolylineConstraint(VectorConstraint):
     """
     Pulls the xyz position of a node to a target polyline.
     """
+
     def __init__(self, node=None, polyline=None, weight=1.0):
         super(PolylineConstraint, self).__init__(node, polyline, weight)
 
@@ -50,36 +49,28 @@ class PolylineConstraint(VectorConstraint):
 
 
 if __name__ == "__main__":
-
+    from math import cos
     from math import fabs
     from math import pi
     from math import sin
-    from math import cos
-
     from random import choice
     from random import random
     from random import seed
 
-    from compas.geometry import add_vectors
     from compas.geometry import Point
     from compas.geometry import Polyline
+    from compas.geometry import add_vectors
 
     from compas_cem.diagrams import TopologyDiagram
-
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
-
     from compas_cem.loads import NodeLoad
-
-    from compas_cem.supports import NodeSupport
-
-    from compas_cem.optimization import Optimizer
-
-    from compas_cem.optimization import PointConstraint
     from compas_cem.optimization import NodeLoadXParameter
     from compas_cem.optimization import NodeLoadYParameter
-
+    from compas_cem.optimization import Optimizer
+    from compas_cem.optimization import PointConstraint
     from compas_cem.plotters import Plotter
+    from compas_cem.supports import NodeSupport
 
     # set random seed
     seed(0)
@@ -112,13 +103,13 @@ if __name__ == "__main__":
 
     # create point constraints at random
     radius = fabs(length)
-    pt = [0., 0., 0.]
+    pt = [0.0, 0.0, 0.0]
     points = []
     for i in range(1, num_nodes):
         theta = 0.5 * pi * random()
         x = radius * cos(theta)
-        y = radius * sin(theta * choice([-1., 1.]))
-        pt = Point(*add_vectors(pt, [x, y, 0.]))
+        y = radius * sin(theta * choice([-1.0, 1.0]))
+        pt = Point(*add_vectors(pt, [x, y, 0.0]))
         points.append(pt)
 
     polyline = Polyline(points)

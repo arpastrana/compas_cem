@@ -1,6 +1,7 @@
 """
 Search a node key in a topology or a form diagram using a point.
 """
+
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas.utilities import geometric_key

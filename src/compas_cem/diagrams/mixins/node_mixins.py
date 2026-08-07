@@ -1,7 +1,6 @@
-from compas_cem.elements import Node
-
 from compas.utilities import geometric_key
 
+from compas_cem.elements import Node
 
 __all__ = ["NodeMixins"]
 
@@ -11,8 +10,8 @@ __all__ = ["NodeMixins"]
 
 
 class NodeMixins(object):
-    """
-    """
+    """ """
+
     def add_node(self, node):
         """
         Adds double
@@ -63,6 +62,7 @@ class NodeMixins(object):
         Gets
         """
         return geometric_key(xyz, self.tol)
+
 
 # ==============================================================================
 # Main
