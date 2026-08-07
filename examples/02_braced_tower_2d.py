@@ -1,37 +1,30 @@
 from compas.geometry import Translation
 
 from compas_cem.diagrams import TopologyDiagram
-
+from compas_cem.elements import DeviationEdge
 from compas_cem.elements import Node
 from compas_cem.elements import TrailEdge
-from compas_cem.elements import DeviationEdge
-
-from compas_cem.loads import NodeLoad
-from compas_cem.supports import NodeSupport
-
 from compas_cem.equilibrium import static_equilibrium
-
+from compas_cem.loads import NodeLoad
 from compas_cem.plotters import Plotter
-
+from compas_cem.supports import NodeSupport
 
 # -------------------------------------------------------------------------------
 # Data
 # -------------------------------------------------------------------------------
 
-points = [(0, [0.0, 0.0, 0.0]),
-          (1, [0.0, 1.0, 0.0]),
-          (2, [0.0, 2.0, 0.0]),
-          (3, [1.0, 0.0, 0.0]),
-          (4, [1.0, 1.0, 0.0]),
-          (5, [1.0, 2.0, 0.0])]
+points = [
+    (0, [0.0, 0.0, 0.0]),
+    (1, [0.0, 1.0, 0.0]),
+    (2, [0.0, 2.0, 0.0]),
+    (3, [1.0, 0.0, 0.0]),
+    (4, [1.0, 1.0, 0.0]),
+    (5, [1.0, 2.0, 0.0]),
+]
 
-trail_edges = [(0, 1),
-               (1, 2),
-               (3, 4),
-               (4, 5)]
+trail_edges = [(0, 1), (1, 2), (3, 4), (4, 5)]
 
-deviation_edges = [(1, 4),
-                   (2, 5)]
+deviation_edges = [(1, 4), (2, 5)]
 
 # ------------------------------------------------------------------------------
 # Topology Diagram
@@ -106,12 +99,14 @@ plotter.add(topology, nodesize=0.2)
 # Plot translated form diagram
 # ------------------------------------------------------------------------------
 
-plotter.add(form.transformed(Translation.from_vector([2.0, 0.0, 0.0])),
-            nodesize=0.2,
-            loadscale=0.5,
-            reactionscale=0.5,
-            edgetext="force",
-            show_edgetext=True)
+plotter.add(
+    form.transformed(Translation.from_vector([2.0, 0.0, 0.0])),
+    nodesize=0.2,
+    loadscale=0.5,
+    reactionscale=0.5,
+    edgetext="force",
+    show_edgetext=True,
+)
 
 # ------------------------------------------------------------------------------
 # Plot scene

@@ -1,26 +1,17 @@
 import os
 
-from time import time
-
 from compas.geometry import Point
 from compas.geometry import Translation
 
 from compas_cem.diagrams import TopologyDiagram
-
-from compas_cem.loads import NodeLoad
-from compas_cem.supports import NodeSupport
-
 from compas_cem.equilibrium import static_equilibrium
-
-from compas_cem.optimization import Optimizer
-
-from compas_cem.optimization import PointConstraint
-
-from compas_cem.optimization import TrailEdgeParameter
+from compas_cem.loads import NodeLoad
 from compas_cem.optimization import DeviationEdgeParameter
-
+from compas_cem.optimization import Optimizer
+from compas_cem.optimization import PointGoal
+from compas_cem.optimization import TrailEdgeParameter
 from compas_cem.plotters import Plotter
-
+from compas_cem.supports import NodeSupport
 
 # ------------------------------------------------------------------------------
 # Data
@@ -68,13 +59,13 @@ form = static_equilibrium(topology)
 opt = Optimizer()
 
 # ------------------------------------------------------------------------------
-# Define constraints
+# Define goals
 # ------------------------------------------------------------------------------
 
 nodes_opt = [1, 5]
 target_points = [(-20.67, 42.7, 0.0), (15.7, 28.84, 0.0)]
 for node, target_point in zip(nodes_opt, target_points):
-    opt.add_constraint(PointConstraint(node, target_point))
+    opt.add_goal(PointGoal(node, target_point))
 
 # ------------------------------------------------------------------------------
 # Define optimization parameters
@@ -91,11 +82,9 @@ for edge in topology.deviation_edges():
 # ------------------------------------------------------------------------------
 
 # optimize
-form_opt = opt.solve(topology=topology,
-                     algorithm="SLSQP",
-                     iters=100,
-                     eps=1e-6,
-                     verbose=True)
+form_opt = opt.solve(
+    topology=topology, algorithm="SLSQP", iters=100, eps=1e-6, verbose=True
+)
 
 # ------------------------------------------------------------------------------
 # Plotter
@@ -116,9 +105,7 @@ plotter.add(topology, nodesize=nodesize)
 # ------------------------------------------------------------------------------
 
 T = Translation.from_vector([40.0, 0.0, 0.0])
-plotter.add(form.transformed(T),
-            loadscale=loadscale,
-            nodesize=nodesize)
+plotter.add(form.transformed(T), loadscale=loadscale, nodesize=nodesize)
 
 # add target points
 for target_point in target_points:
@@ -130,10 +117,9 @@ for target_point in target_points:
 # ------------------------------------------------------------------------------
 
 T = Translation.from_vector([90.0, 0.0, 0.0])
-plotter.add(form_opt.transformed(T),
-            loadscale=loadscale,
-            reactionscale=5.0,
-            nodesize=nodesize)
+plotter.add(
+    form_opt.transformed(T), loadscale=loadscale, reactionscale=5.0, nodesize=nodesize
+)
 
 # add target points
 for target_point in target_points:

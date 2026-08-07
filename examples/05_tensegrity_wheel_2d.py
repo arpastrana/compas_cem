@@ -1,28 +1,19 @@
-from time import time
-from math import pi
 from math import cos
+from math import pi
 from math import sin
 
 import numpy as np
-
 from compas.geometry import Translation
-
-from compas.utilities import pairwise
+from compas.itertools import pairwise
 
 from compas_cem.diagrams import TopologyDiagram
-
-from compas_cem.elements import Node
 from compas_cem.elements import DeviationEdge
-
+from compas_cem.elements import Node
 from compas_cem.equilibrium import static_equilibrium
-
-from compas_cem.optimization import Optimizer
-
-from compas_cem.optimization import TrailEdgeForceConstraint
 from compas_cem.optimization import DeviationEdgeParameter
-
+from compas_cem.optimization import Optimizer
+from compas_cem.optimization import TrailEdgeForceGoal
 from compas_cem.plotters import Plotter
-
 
 # ------------------------------------------------------------------------------
 # Create a topology diagram
@@ -44,11 +35,10 @@ assert num_sides % 2 == 0
 topology = TopologyDiagram()
 
 # create nodes, removing last
-thetas = np.linspace(0.0, 2*pi, num_sides + 1)[:-1]
+thetas = np.linspace(0.0, 2 * pi, num_sides + 1)[:-1]
 radius = diameter / 2.0
 
 for i, theta in enumerate(thetas):
-
     x = radius * cos(theta)
     y = radius * sin(theta)
 
@@ -86,9 +76,9 @@ form = static_equilibrium(topology, eta=1e-6, tmax=100)
 # create optimizer
 opt = Optimizer()
 
-# add constraint: force in axiliary trail edges should be zero
+# add goal: force in axiliary trail edges should be zero
 for edge in topology.auxiliary_trail_edges():
-    opt.add_constraint(TrailEdgeForceConstraint(edge, force=0.0))
+    opt.add_goal(TrailEdgeForceGoal(edge, force=0.0))
 
 # add optimization parameters
 # the forces in all the deviation edges are allowed to change
@@ -96,10 +86,7 @@ for edge in topology.deviation_edges():
     opt.add_parameter(DeviationEdgeParameter(edge, bound, bound))
 
 # optimize
-form_opt = opt.solve(topology,
-                     algorithm="LBFGS",
-                     grad=grad_method,
-                     verbose=True)
+form_opt = opt.solve(topology, algorithm="LBFGS", grad=grad_method, verbose=True)
 
 # ------------------------------------------------------------------------------
 # Plot results

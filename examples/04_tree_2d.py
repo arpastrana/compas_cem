@@ -3,21 +3,16 @@ from math import sqrt
 from compas.geometry import Translation
 
 from compas_cem.diagrams import TopologyDiagram
-
+from compas_cem.elements import DeviationEdge
 from compas_cem.elements import Node
 from compas_cem.elements import TrailEdge
-from compas_cem.elements import DeviationEdge
-from compas_cem.loads import NodeLoad
-from compas_cem.supports import NodeSupport
-
 from compas_cem.equilibrium import static_equilibrium
-
-from compas_cem.optimization import Optimizer
-from compas_cem.optimization import TrailEdgeForceConstraint
+from compas_cem.loads import NodeLoad
 from compas_cem.optimization import DeviationEdgeParameter
-
+from compas_cem.optimization import Optimizer
+from compas_cem.optimization import TrailEdgeForceGoal
 from compas_cem.plotters import Plotter
-
+from compas_cem.supports import NodeSupport
 
 # ------------------------------------------------------------------------------
 # Instantiate a topology diagram
@@ -41,7 +36,7 @@ topology.add_node(Node(4, [0.0, 0.0, 0.0]))
 # Add edges
 # ------------------------------------------------------------------------------
 
-topology.add_edge(TrailEdge(3, 4, length=-height/2))
+topology.add_edge(TrailEdge(3, 4, length=-height / 2))
 topology.add_edge(DeviationEdge(1, 3, force=-sqrt(4.0)))
 topology.add_edge(DeviationEdge(2, 3, force=-sqrt(2.0)))
 topology.add_edge(DeviationEdge(1, 2, force=2.0))
@@ -77,10 +72,10 @@ form = static_equilibrium(topology, eta=1e-5, tmax=100)
 
 optimizer = Optimizer()
 
-# add goal constraints
+# add goal goals
 for edge in topology.auxiliary_trail_edges():
-    optimizer.add_constraint(TrailEdgeForceConstraint(edge, force=0.0))
-    optimizer.add_constraint(TrailEdgeForceConstraint(edge, force=0.0))
+    optimizer.add_goal(TrailEdgeForceGoal(edge, force=0.0))
+    optimizer.add_goal(TrailEdgeForceGoal(edge, force=0.0))
 
 # add parameters
 optimizer.add_parameter(DeviationEdgeParameter((1, 2), 1.0, 10.0))
@@ -99,28 +94,29 @@ shift = width * 1.2
 plotter = Plotter(figsize=(16.0, 9.0))
 
 # plot topology diagram
-plotter.add(topology,
-            nodesize=ns,
-            show_nodetext=True,
-            nodetext="key")
+plotter.add(topology, nodesize=ns, show_nodetext=True, nodetext="key")
 
 # plot translated form diagram
 T = Translation.from_vector([shift, 0.0, 0.0])
-plotter.add(form.transformed(T),
-            nodesize=ns,
-            show_nodetext=True,
-            nodetext="key",
-            show_edgetext=True,
-            edgetext="force")
+plotter.add(
+    form.transformed(T),
+    nodesize=ns,
+    show_nodetext=True,
+    nodetext="key",
+    show_edgetext=True,
+    edgetext="force",
+)
 
 # plot translated optimized form diagram
 T = Translation.from_vector([shift * 2.0, 0.0, 0.0])
-plotter.add(form_opt.transformed(T),
-            nodesize=ns,
-            show_nodetext=True,
-            nodetext="key",
-            show_edgetext=True,
-            edgetext="force")
+plotter.add(
+    form_opt.transformed(T),
+    nodesize=ns,
+    show_nodetext=True,
+    nodetext="key",
+    show_edgetext=True,
+    edgetext="force",
+)
 
 # show scene
 plotter.zoom_extents(padding=-1.2)
