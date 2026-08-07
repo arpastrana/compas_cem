@@ -8,7 +8,7 @@ __all__ = ["solve_proxy"]
 
 def solve_proxy(
     topology,
-    constraints,
+    goals,
     parameters,
     algorithm,
     iters,
@@ -24,8 +24,8 @@ def solve_proxy(
     ----------
     topology : :class:`compas_cem.diagrams.TopologyDiagram`
         A topology diagram.
-    constraints : ``list``
-        A list with the constraints to optimize for.
+    goals : ``list``
+        A list with the goals to optimize for.
     parameters : ``list``
         A list of optimization parameters.
 
@@ -82,9 +82,9 @@ def solve_proxy(
 
     optimizer = Optimizer()
 
-    # add constraints
-    for constraint in constraints:
-        optimizer.add_constraint(constraint)
+    # add goals
+    for goal in goals:
+        optimizer.add_goal(goal)
 
     # add parameters
     for parameter in parameters:

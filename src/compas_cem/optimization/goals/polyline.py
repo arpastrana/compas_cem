@@ -1,50 +1,51 @@
-from compas_cem.optimization.parameters import NodeParameter
+from compas.geometry import closest_point_on_segment
+from compas.geometry._core.distance import closest_points_in_cloud_numpy
+from compas.itertools import pairwise
 
-__all__ = ["NodeLoadXParameter", "NodeLoadYParameter", "NodeLoadZParameter"]
+from compas_cem.optimization.goals import VectorGoal
 
-# ------------------------------------------------------------------------------
-# Node Load Parameter - X component
-# ------------------------------------------------------------------------------
+__all__ = ["PolylineGoal"]
 
 
-class NodeLoadXParameter(NodeParameter):
+class PolylineGoal(VectorGoal):
     """
-    Sets the X component of a node load as an optimization parameter.
-    """
-
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(NodeLoadXParameter, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "qx"
-
-
-# ------------------------------------------------------------------------------
-# Node Load Parameter - Y component
-# ------------------------------------------------------------------------------
-
-
-class NodeLoadYParameter(NodeParameter):
-    """
-    Sets the Y component of an node load as an optimization parameter.
+    Pulls the xyz position of a node to a target polyline.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(NodeLoadYParameter, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "qy"
+    def __init__(self, node=None, polyline=None, weight=1.0):
+        super(PolylineGoal, self).__init__(node, polyline, weight)
 
+    def reference(self, data):
+        """
+        The current xyz coordinates of the node.
+        """
+        return data["node_xyz"][self.key()]
 
-# ------------------------------------------------------------------------------
-# Node Load Parameter - Z component
-# ------------------------------------------------------------------------------
+    def target(self, reference):
+        """
+        The closest point on the target polyline.
+        """
+        polyline = self._target
+        return self._closest_point_on_polyline(reference, polyline)
 
+    @staticmethod
+    def _closest_point_on_polyline(point, polyline):
+        """
+        The closest point on a polyline.
 
-class NodeLoadZParameter(NodeParameter):
-    """
-    Sets the Z component of a node load as an optimization parameter.
-    """
+        Notes
+        -----
+        This is a reimplementation of a compas method.
+        The compas method did not support autograd transforms.
+        """
+        cloud = []
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(NodeLoadZParameter, self).__init__(key, bound_low, bound_up)
-        self._attr_name = "qz"
+        for segment in pairwise(polyline):
+            cloud.append(closest_point_on_segment(point, segment))
+
+        indices = closest_points_in_cloud_numpy([point], cloud, distances=False)
+
+        return cloud[indices[0]]
 
 
 if __name__ == "__main__":
@@ -54,18 +55,25 @@ if __name__ == "__main__":
     from math import sin
     from random import choice
     from random import random
+    from random import seed
 
     from compas.geometry import Point
+    from compas.geometry import Polyline
     from compas.geometry import add_vectors
-    from compas.itertools import pairwise
 
     from compas_cem.diagrams import TopologyDiagram
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
+    from compas_cem.loads import NodeLoad
+    from compas_cem.optimization import NodeLoadXParameter
+    from compas_cem.optimization import NodeLoadYParameter
     from compas_cem.optimization import Optimizer
     from compas_cem.optimization import PointGoal
     from compas_cem.plotters import Plotter
     from compas_cem.supports import NodeSupport
+
+    # set random seed
+    seed(0)
 
     # create a topology diagram
     topology = TopologyDiagram()
@@ -83,6 +91,10 @@ if __name__ == "__main__":
     # add supports
     topology.add_support(NodeSupport(int(num_nodes - 1)))
 
+    # add initial load
+    for i in range(1, num_nodes - 1):
+        topology.add_load(NodeLoad(i, [-0.1, 0.0, 0.0]))
+
     # calculate trails
     topology.build_trails()
 
@@ -93,14 +105,18 @@ if __name__ == "__main__":
     radius = fabs(length)
     pt = [0.0, 0.0, 0.0]
     points = []
-
     for i in range(1, num_nodes):
         theta = 0.5 * pi * random()
         x = radius * cos(theta)
         y = radius * sin(theta * choice([-1.0, 1.0]))
         pt = Point(*add_vectors(pt, [x, y, 0.0]))
-        optimizer.add_goal(PointGoal(i, pt))
         points.append(pt)
+
+    polyline = Polyline(points)
+    for i in range(1, num_nodes - 1):
+        optimizer.add_goal(PolylineGoal(i, polyline))
+
+    optimizer.add_goal(PointGoal(num_nodes - 1, points[-1]))
 
     for i in range(num_nodes - 1):
         optimizer.add_parameter(NodeLoadXParameter(i, 0.5, 0.5))
@@ -112,7 +128,8 @@ if __name__ == "__main__":
     # plot
     plotter = Plotter(figsize=(16.0, 9.0))
 
-    # plotter.add(form)
+    plotter.add(polyline, linewidth=0.5, show_points=False)
+
     for point in points:
         plotter.add(point, facecolor=(1, 0.5, 0.05))
 

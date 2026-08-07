@@ -14,7 +14,7 @@ class EdgeParameter(Parameter):
     Parametrize and edge to solve an optimization problem.
     """
 
-    def __init__(self, key, bound_low, bound_up, **kwargs):
+    def __init__(self, key=None, bound_low=None, bound_up=None, **kwargs):
         super(EdgeParameter, self).__init__(key, bound_low, bound_up, **kwargs)
 
     def start_value(self, topology):
@@ -29,26 +29,14 @@ class EdgeParameter(Parameter):
     # ------------------------------------------------------------------------------
 
     @property
-    def data(self):
+    def __data__(self):
         """
-        A data dictionary that represents an ``EdgeParameter`` object.
-
-        Returns
-        -------
-            data : ``dict``
-            A dictionary that contains the following key-value pairs:
-
-            * "key" : ``tuple``
-            * "bound up" : ``float``
-            * "bound low" : ``float``
-            * "attr name" : ``str``
-            * "datatype" : ``str``
+        A data dictionary that represents an edge parameter.
 
         Notes
         -----
-        All dictionary keys are converted to their representation value
-        (``repr(key)``) to ensure compatibility of all allowed key types with
-        the JSON serialization format, which only allows for dict keys that are strings.
+        The edge key is stored as its representation, because JSON allows only
+        strings as dictionary keys and the key here is a pair of node keys.
         """
         data = {}
 
@@ -59,21 +47,29 @@ class EdgeParameter(Parameter):
 
         return data
 
-    @data.setter
-    def data(self, data):
+    @classmethod
+    def __from_data__(cls, data):
         """
-        Overwrites this object's attributes with a data dictionary.
+        Construct an edge parameter from a data dictionary.
 
         Parameters
         ----------
-        data : ``dict``
+        data :
             A data dictionary.
+
+        Returns
+        -------
+        parameter :
+            An edge parameter object.
         """
-        self._key = tuple(literal_eval(data["_key"]))
-        self._attr_name = str(data["_attr_name"])
+        parameter = cls()
+        parameter._key = tuple(literal_eval(data["_key"]))
+        parameter._attr_name = str(data["_attr_name"])
 
         for bound_name in ["_bound_up", "_bound_low"]:
             bound = data[bound_name]
             if bound is not None:
                 bound = float(bound)
-            setattr(self, bound_name, bound)
+            setattr(parameter, bound_name, bound)
+
+        return parameter

@@ -3,7 +3,7 @@
     "nickname": "ConstrainedFormFinding",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Generate a form in equilibrium such that it meets user-defined constraints.\nStart a proxy server before running this component to accelerate the optimization time.",
+    "description": "Generate a form in equilibrium such that it meets user-defined goals.\nStart a proxy server before running this component to accelerate the optimization time.",
     "exposure": 2,
 
     "ghpython": {
@@ -20,8 +20,8 @@
                 "description": "A COMPAS CEM topology diagram."
             },
             {
-                "name": "constraints",
-                "description": "A list of COMPAS CEM optimization constraints.",
+                "name": "goals",
+                "description": "A list of COMPAS CEM optimization goals.",
                 "scriptParamAccess": "list"
             },
             {

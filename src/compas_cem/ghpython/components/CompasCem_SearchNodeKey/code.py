@@ -4,7 +4,7 @@ Search a node key in a topology or a form diagram using a point.
 
 from ghpythonlib.componentbase import executingcomponent as component
 
-from compas.utilities import geometric_key
+from compas.tolerance import TOL
 from compas_rhino.geometry import RhinoPoint
 
 
@@ -14,6 +14,6 @@ class SearchNodeKeyComponent(component):
             return
 
         pt = RhinoPoint.from_geometry(point).to_compas()
-        gkey = geometric_key(pt, diagram.tol)
+        gkey = TOL.geometric_key(pt, diagram.tol)
 
         return diagram.gkey_node[gkey]

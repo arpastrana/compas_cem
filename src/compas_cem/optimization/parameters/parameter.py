@@ -14,7 +14,7 @@ class Parameter(Data):
     Parametrizer.
     """
 
-    def __init__(self, key, bound_low, bound_up, **kwargs):
+    def __init__(self, key=None, bound_low=None, bound_up=None, **kwargs):
         super(Parameter, self).__init__(**kwargs)
         self._key = key
         self._bound_up = bound_up

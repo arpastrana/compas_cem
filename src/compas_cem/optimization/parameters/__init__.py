@@ -1,25 +1,5 @@
 """
-compas_cem.optimization
-****************************
-
-.. currentmodule:: compas_cem.optimization.parameters
-
-
-Classes
-=======
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
+The diagram attributes a constrained form-finding problem can optimize.
 """
 
 from __future__ import absolute_import

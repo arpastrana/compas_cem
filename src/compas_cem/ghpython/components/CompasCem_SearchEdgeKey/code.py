@@ -5,7 +5,7 @@ Search for an edge key in a topology or a form diagram using a line.
 from ghpythonlib.componentbase import executingcomponent as component
 
 from compas_rhino.geometry import RhinoLine
-from compas.utilities import geometric_key
+from compas.tolerance import TOL
 
 
 class SearchEdgeKeyComponent(component):
@@ -17,7 +17,7 @@ class SearchEdgeKeyComponent(component):
 
         eg = []
         for point in (line.start, line.end):
-            gkey = geometric_key(point, diagram.tol)
+            gkey = TOL.geometric_key(point, diagram.tol)
             node = diagram.gkey_node[gkey]
             eg.append(node)
 

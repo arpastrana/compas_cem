@@ -1,0 +1,24 @@
+"""
+The goals a constrained form-finding problem is optimized against.
+"""
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+
+# from .<module> import *
+from .goal import *  # noqa F403
+from .point import *  # noqa F403
+from .plane import *  # noqa F403
+from .line import *  # noqa F403
+from .force import *  # noqa F403
+from .length import *  # noqa F403
+from .direction import *  # noqa F403
+from .polyline import *  # noqa F403
+
+# import compas
+# if not compas.IPY:
+#     from .mesh import *
+
+__all__ = [name for name in dir() if not name.startswith("_")]

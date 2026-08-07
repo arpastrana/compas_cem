@@ -63,7 +63,7 @@ if __name__ == "__main__":
     from compas_cem.loads import NodeLoad
     from compas_cem.optimization import DeviationEdgeParameter
     from compas_cem.optimization import Optimizer
-    from compas_cem.optimization import PointConstraint
+    from compas_cem.optimization import PointGoal
     from compas_cem.optimization import TrailEdgeParameter
     from compas_cem.plotters import Plotter
     from compas_cem.supports import NodeSupport
@@ -102,10 +102,10 @@ if __name__ == "__main__":
     optimizer.add_parameter(TrailEdgeParameter((2, 3), 1.0, 1.0))
 
     point_a = Point(1.0, -0.5, 0.0)
-    optimizer.add_constraint((PointConstraint(1, point_a)))
+    optimizer.add_goal((PointGoal(1, point_a)))
 
     point_b = Point(3.0, -0.707, 0.0)
-    optimizer.add_constraint((PointConstraint(3, point_b)))
+    optimizer.add_goal((PointGoal(3, point_b)))
 
     # optimize
     eps = 1e-6

@@ -1,48 +1,5 @@
 """
-compas_cem.optimization
-****************************
-
-.. currentmodule:: compas_cem.optimization
-
-Optimizers
-==========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    Optimizer
-    solve_proxy
-
-Optimization Constraints
-========================
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    PointConstraint
-    LineConstraint
-    PlaneConstraint
-    DeviationEdgeLengthConstraint
-    TrailEdgeForceConstraint
-    ReactionForceConstraint
-
-Optimization Parameters
-=======================
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    TrailEdgeParameter
-    DeviationEdgeParameter
-    OriginNodeXParameter
-    OriginNodeYParameter
-    OriginNodeZParameter
-    NodeLoadXParameter
-    NodeLoadYParameter
-    NodeLoadZParameter
+The constrained form-finding solver, its goals and its optimization parameters.
 """
 
 from __future__ import absolute_import
@@ -51,7 +8,7 @@ from __future__ import print_function
 
 
 # from .<module> import *
-from .constraints import *  # noqa F403
+from .goals import *  # noqa F403
 from .parameters import *  # noqa F403
 from .proxy import *  # noqa F403
 

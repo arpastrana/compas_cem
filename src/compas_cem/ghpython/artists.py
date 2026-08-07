@@ -296,7 +296,7 @@ class FormArtist(DiagramArtist):
         shift = {}
         for node in nodes:
             s = False
-            forces = [diagram.edge_force(e) for e in diagram.connected_edges(node)]
+            forces = [diagram.edge_force(e) for e in diagram.node_connected_edges(node)]
             max_force = max(forces, key=lambda f: fabs(f))
             if max_force < 0.0:
                 s = True
