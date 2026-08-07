@@ -1,0 +1,125 @@
+[build-system]
+requires = ["setuptools>=66.0"]
+build-backend = "setuptools.build_meta"
+
+# ============================================================================
+# project info
+# ============================================================================
+
+[project]
+name = "compas_cem"
+description = "The Combinatorial Equilibrium Modeling framework for COMPAS"
+keywords = ["form-finding", "structural-design", "architecture", "equilibrium"]
+authors = [{ name = "Rafael Pastrana", email = "arpj@princeton.edu" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+# compas 1.17.10 imports distutils, which was removed in Python 3.12.
+# Phase 1 lifts this ceiling along with the move to COMPAS 2.
+requires-python = ">=3.9,<3.12"
+dynamic = ['dependencies', 'optional-dependencies', 'version']
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Topic :: Scientific/Engineering",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Unix",
+    "Operating System :: POSIX",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+
+[project.urls]
+Homepage = "https://arpastrana.github.io/compas_cem"
+Documentation = "https://arpastrana.github.io/compas_cem"
+Repository = "https://github.com/arpastrana/compas_cem"
+Changelog = "https://github.com/arpastrana/compas_cem/blob/main/CHANGELOG.md"
+Issues = "https://github.com/arpastrana/compas_cem/issues"
+Forum = "https://forum.compas-framework.org/"
+
+# ============================================================================
+# setuptools config
+# ============================================================================
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = { attr = "compas_cem.__version__" }
+dependencies = { file = "requirements.txt" }
+optional-dependencies = { dev = { file = "requirements-dev.txt" } }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ============================================================================
+# replaces pytest.ini
+# ============================================================================
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py", "test.py"]
+addopts = ["-ra", "--strict-markers", "--tb=short", "--import-mode=importlib"]
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "IGNORE_EXCEPTION_DETAIL",
+    "ALLOW_UNICODE",
+    "ALLOW_BYTES",
+]
+
+# ============================================================================
+# replaces .bumpversion.cfg
+# ============================================================================
+
+[tool.bumpversion]
+current_version = "0.8.6"
+message = "Bump version to {new_version}"
+commit = true
+tag = true
+
+[[tool.bumpversion.files]]
+filename = "src/compas_cem/__init__.py"
+search = "{current_version}"
+replace = "{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "CHANGELOG.md"
+search = "Unreleased"
+replace = "[{new_version}] {now:%Y-%m-%d}"
+
+# ============================================================================
+# replaces setup.cfg
+# ============================================================================
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["D202", "D300", "E", "F", "I", "W"]
+# ruff-format owns line length; long legacy docstrings are not reflowed by it.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["I001", "F401", "F403"]
+"tasks.py" = ["I001"]
+"tests/*" = ["I001", "E712"]
+"src/compas_cem/ghpython/components/*/code.py" = ["F821", "F401", "I001"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+known-first-party = ["compas_cem"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
