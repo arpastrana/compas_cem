@@ -5,7 +5,7 @@ compas_invocations2[mkdocs]
 invoke>=0.14
 matplotlib
 pytest
-pytest-lazy-fixtures
+pytest-lazy-fixtures>=1.1.0
 ruff
 twine
 wheel

@@ -1,5 +1,7 @@
 import pytest
 
+from pytest_lazy_fixtures import lf
+
 import numpy as np
 
 from compas.geometry import Plane
@@ -73,10 +75,10 @@ def test_edge_length_from_plane_numpy():
 
 
 @pytest.mark.parametrize("topology, node, resultant",
-                         [(pytest.lazy_fixture("compression_strut"), 0, [0.0, 0.0, 0.0]),
-                          (pytest.lazy_fixture("threebar_funicular"), 1, [-1.0, 0.0, 0.0]),
-                          (pytest.lazy_fixture("threebar_funicular"), 2, [1.0, 0.0, 0.0]),
-                          (pytest.lazy_fixture("braced_tower_2d"), 3, [-0.5*2**0.5, 0.5*2**0.5, 0.0])
+                         [(lf("compression_strut"), 0, [0.0, 0.0, 0.0]),
+                          (lf("threebar_funicular"), 1, [-1.0, 0.0, 0.0]),
+                          (lf("threebar_funicular"), 2, [1.0, 0.0, 0.0]),
+                          (lf("braced_tower_2d"), 3, [-0.5*2**0.5, 0.5*2**0.5, 0.0])
                           ])
 def test_deviation_edges_resultant_vector(topology, node, resultant):
     """
@@ -91,8 +93,8 @@ def test_deviation_edges_resultant_vector(topology, node, resultant):
 
 
 @pytest.mark.parametrize("topology, node, resultant",
-                         [(pytest.lazy_fixture("braced_tower_2d"), 1, [-1.0, 0.0, 0.0]),
-                          (pytest.lazy_fixture("braced_tower_2d"), 5, [1.0, 0.0, 0.0])])
+                         [(lf("braced_tower_2d"), 1, [-1.0, 0.0, 0.0]),
+                          (lf("braced_tower_2d"), 5, [1.0, 0.0, 0.0])])
 def test_direct_deviation_edges_resultant_vector(topology, node, resultant):
     """
     Verifies that the output vector is correct.
@@ -106,9 +108,9 @@ def test_direct_deviation_edges_resultant_vector(topology, node, resultant):
 
 
 @pytest.mark.parametrize("topology, node, resultant",
-                         [(pytest.lazy_fixture("braced_tower_2d"), 4, [-0.5*2**0.5, 0.5*2**0.5, 0.0]),
-                          (pytest.lazy_fixture("braced_tower_2d"), 1, [2**0.5, 0.0, 0.0]),
-                          (pytest.lazy_fixture("braced_tower_2d"), 0, [0.0, 0.0, 0.0])
+                         [(lf("braced_tower_2d"), 4, [-0.5*2**0.5, 0.5*2**0.5, 0.0]),
+                          (lf("braced_tower_2d"), 1, [2**0.5, 0.0, 0.0]),
+                          (lf("braced_tower_2d"), 0, [0.0, 0.0, 0.0])
                            ])
 def test_indirect_deviation_edges_resultant_vector(topology, node, resultant):
     """
@@ -123,9 +125,9 @@ def test_indirect_deviation_edges_resultant_vector(topology, node, resultant):
 
 
 @pytest.mark.parametrize("topology, node, result",
-                         [(pytest.lazy_fixture("compression_strut"), 1, [0.0, 1.0, 0.0]),
-                          (pytest.lazy_fixture("threebar_funicular"), 2, [-1.0, 1.0, 0.0]),
-                          (pytest.lazy_fixture("braced_tower_2d"), 5, [-1.0, 1.0, 0.0])
+                         [(lf("compression_strut"), 1, [0.0, 1.0, 0.0]),
+                          (lf("threebar_funicular"), 2, [-1.0, 1.0, 0.0]),
+                          (lf("braced_tower_2d"), 5, [-1.0, 1.0, 0.0])
                            ])
 def test_node_equilibrium_no_indirect_root_nodes(topology, node, result):
     """
@@ -140,9 +142,9 @@ def test_node_equilibrium_no_indirect_root_nodes(topology, node, result):
 
 
 @pytest.mark.parametrize("topology, node, result",
-                         [(pytest.lazy_fixture("compression_strut"), 1, [0.0, 1.0, 0.0]),
-                          (pytest.lazy_fixture("threebar_funicular"), 2, [-1.0, 1.0, 0.0]),
-                          (pytest.lazy_fixture("braced_tower_2d"), 5,
+                         [(lf("compression_strut"), 1, [0.0, 1.0, 0.0]),
+                          (lf("threebar_funicular"), 2, [-1.0, 1.0, 0.0]),
+                          (lf("braced_tower_2d"), 5,
                            [-1.0 * (1.0 - 0.5*2**0.5), -1 * (-1.0 - 0.5*2**0.5), 0.0])
                            ])
 def test_node_equilibrium_with_indirect_root_nodes(topology, node, result):

@@ -1,14 +1,16 @@
 import pytest
 
+from pytest_lazy_fixtures import lf
+
 
 # ==============================================================================
 # Tests - Edges
 # ==============================================================================
 
 @pytest.mark.parametrize("topology, edges",
-                         [(pytest.lazy_fixture("compression_strut"), [(0, 1)]),
-                          (pytest.lazy_fixture("threebar_funicular"), [(0, 1), (2, 3)]),
-                          (pytest.lazy_fixture("braced_tower_2d"), [(0, 1), (1, 2), (3, 4), (4, 5)])])
+                         [(lf("compression_strut"), [(0, 1)]),
+                          (lf("threebar_funicular"), [(0, 1), (2, 3)]),
+                          (lf("braced_tower_2d"), [(0, 1), (1, 2), (3, 4), (4, 5)])])
 def test_num_keys_trail_edges(topology, edges):
     """
     Checks that the returned trail edge keys are correct.
@@ -20,9 +22,9 @@ def test_num_keys_trail_edges(topology, edges):
 
 
 @pytest.mark.parametrize("topology, edges",
-                         [(pytest.lazy_fixture("compression_strut"), []),
-                          (pytest.lazy_fixture("threebar_funicular"), [(1, 2)]),
-                          (pytest.lazy_fixture("braced_tower_2d"), [(1, 4), (2, 5), (1, 5), (1, 3), (2, 4)])])
+                         [(lf("compression_strut"), []),
+                          (lf("threebar_funicular"), [(1, 2)]),
+                          (lf("braced_tower_2d"), [(1, 4), (2, 5), (1, 5), (1, 3), (2, 4)])])
 def test_num_keys_deviation_edges(topology, edges):
     """
     Checks that the returned trail edge keys are correct.
@@ -38,8 +40,8 @@ def test_num_keys_deviation_edges(topology, edges):
 # ==============================================================================
 
 @pytest.mark.parametrize("topology, num_origin",
-                         [(pytest.lazy_fixture("compression_strut"), 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 2)])
+                         [(lf("compression_strut"), 1),
+                          (lf("threebar_funicular"), 2)])
 def test_num_origin_nodes(topology, num_origin):
     """
     Verifies that the number of origin nodes pre and post calling topology.build_trails().
@@ -50,9 +52,9 @@ def test_num_origin_nodes(topology, num_origin):
 
 
 @pytest.mark.parametrize("topology, num_supports",
-                         [(pytest.lazy_fixture("compression_strut"), 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 2),
-                          (pytest.lazy_fixture("unsupported_topology"), 0)])
+                         [(lf("compression_strut"), 1),
+                          (lf("threebar_funicular"), 2),
+                          (lf("unsupported_topology"), 0)])
 def test_num_support_nodes(topology, num_supports):
     """
     Verifies that the number of support nodes is correct.
@@ -65,13 +67,13 @@ def test_num_support_nodes(topology, num_supports):
 # ==============================================================================
 
 @pytest.mark.parametrize("topology, node_key, num_edges",
-                         [(pytest.lazy_fixture("compression_strut"), 0, 0),
-                          (pytest.lazy_fixture("compression_strut"), 1, 0),
-                          (pytest.lazy_fixture("threebar_funicular"), 0, 0),
-                          (pytest.lazy_fixture("threebar_funicular"), 1, 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 2, 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 3, 0),
-                          (pytest.lazy_fixture("braced_tower_2d"), 1, 3)])
+                         [(lf("compression_strut"), 0, 0),
+                          (lf("compression_strut"), 1, 0),
+                          (lf("threebar_funicular"), 0, 0),
+                          (lf("threebar_funicular"), 1, 1),
+                          (lf("threebar_funicular"), 2, 1),
+                          (lf("threebar_funicular"), 3, 0),
+                          (lf("braced_tower_2d"), 1, 3)])
 def test_num_connected_deviation_edges(topology, node_key, num_edges):
     """
     Checks that the number of deviation edges for a specific node is correct.
@@ -80,10 +82,10 @@ def test_num_connected_deviation_edges(topology, node_key, num_edges):
 
 
 @pytest.mark.parametrize("topology, node_key, edge_keys",
-                          [(pytest.lazy_fixture("compression_strut"), 0, []),
-                           (pytest.lazy_fixture("threebar_funicular"), 1, [(1, 2)]),
-                           (pytest.lazy_fixture("threebar_funicular"), 2, [(1, 2)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 5, [(1, 5), (2, 5)])])
+                          [(lf("compression_strut"), 0, []),
+                           (lf("threebar_funicular"), 1, [(1, 2)]),
+                           (lf("threebar_funicular"), 2, [(1, 2)]),
+                           (lf("braced_tower_2d"), 5, [(1, 5), (2, 5)])])
 def test_keys_connected_deviation_edges(topology, node_key, edge_keys):
     """
     Checks for the keys of the deviation edges connected to a node are correct.
@@ -92,14 +94,14 @@ def test_keys_connected_deviation_edges(topology, node_key, edge_keys):
 
 
 @pytest.mark.parametrize("topology, node_key, num_edges",
-                         [(pytest.lazy_fixture("compression_strut"), 0, 1),
-                          (pytest.lazy_fixture("compression_strut"), 1, 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 0, 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 1, 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 2, 1),
-                          (pytest.lazy_fixture("threebar_funicular"), 3, 1),
-                          (pytest.lazy_fixture("braced_tower_2d"), 4, 2),
-                          (pytest.lazy_fixture("braced_tower_2d"), 2, 1)])
+                         [(lf("compression_strut"), 0, 1),
+                          (lf("compression_strut"), 1, 1),
+                          (lf("threebar_funicular"), 0, 1),
+                          (lf("threebar_funicular"), 1, 1),
+                          (lf("threebar_funicular"), 2, 1),
+                          (lf("threebar_funicular"), 3, 1),
+                          (lf("braced_tower_2d"), 4, 2),
+                          (lf("braced_tower_2d"), 2, 1)])
 def test_num_connected_trail_edges(topology, node_key, num_edges):
     """
     Checks that the number of trail edges for a specific node is correct.
@@ -108,10 +110,10 @@ def test_num_connected_trail_edges(topology, node_key, num_edges):
 
 
 @pytest.mark.parametrize("topology, node_key, edge_keys",
-                          [(pytest.lazy_fixture("compression_strut"), 0, [(0, 1)]),
-                           (pytest.lazy_fixture("threebar_funicular"), 1, [(0, 1)]),
-                           (pytest.lazy_fixture("threebar_funicular"), 2, [(2, 3)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 1, [(0, 1), (1, 2)])])
+                          [(lf("compression_strut"), 0, [(0, 1)]),
+                           (lf("threebar_funicular"), 1, [(0, 1)]),
+                           (lf("threebar_funicular"), 2, [(2, 3)]),
+                           (lf("braced_tower_2d"), 1, [(0, 1), (1, 2)])])
 def test_keys_connected_trail_edges(topology, node_key, edge_keys):
     """
     Checks for the keys of the trail edges connected to a node are correct.
@@ -121,8 +123,8 @@ def test_keys_connected_trail_edges(topology, node_key, edge_keys):
 
 
 @pytest.mark.parametrize("topology, node_key, edge_keys",
-                          [(pytest.lazy_fixture("compression_strut"), 0, [(1, 2)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 1, [(1, 0), (2, 2)])])
+                          [(lf("compression_strut"), 0, [(1, 2)]),
+                           (lf("braced_tower_2d"), 1, [(1, 0), (2, 2)])])
 def test_fails_keys_connected_trail_edges(topology, node_key, edge_keys):
     """
     Checks for the keys of the trail edges connected to a node are incorrect.
@@ -133,12 +135,12 @@ def test_fails_keys_connected_trail_edges(topology, node_key, edge_keys):
 
 
 @pytest.mark.parametrize("topology, node_key, edge_keys",
-                          [(pytest.lazy_fixture("compression_strut"), 0, []),
-                           (pytest.lazy_fixture("braced_tower_2d"), 0, []),
-                           (pytest.lazy_fixture("braced_tower_2d"), 1, [(1, 4)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 2, [(2, 5)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 5, [(2, 5)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 4, [(1, 4)])])
+                          [(lf("compression_strut"), 0, []),
+                           (lf("braced_tower_2d"), 0, []),
+                           (lf("braced_tower_2d"), 1, [(1, 4)]),
+                           (lf("braced_tower_2d"), 2, [(2, 5)]),
+                           (lf("braced_tower_2d"), 5, [(2, 5)]),
+                           (lf("braced_tower_2d"), 4, [(1, 4)])])
 def test_num_keys_direct_deviation_edges(topology, node_key, edge_keys):
     """
     Tests the number and the keys of direct deviation edges coming into a node.
@@ -150,13 +152,13 @@ def test_num_keys_direct_deviation_edges(topology, node_key, edge_keys):
 
 
 @pytest.mark.parametrize("topology, node_key, edge_keys",
-                          [(pytest.lazy_fixture("compression_strut"), 0, []),
-                           (pytest.lazy_fixture("braced_tower_2d"), 0, []),
-                           (pytest.lazy_fixture("braced_tower_2d"), 1, [(1, 3), (1, 5)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 2, [(2, 4)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 3, [(1, 3)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 4, [(2, 4)]),
-                           (pytest.lazy_fixture("braced_tower_2d"), 5, [(1, 5)])])
+                          [(lf("compression_strut"), 0, []),
+                           (lf("braced_tower_2d"), 0, []),
+                           (lf("braced_tower_2d"), 1, [(1, 3), (1, 5)]),
+                           (lf("braced_tower_2d"), 2, [(2, 4)]),
+                           (lf("braced_tower_2d"), 3, [(1, 3)]),
+                           (lf("braced_tower_2d"), 4, [(2, 4)]),
+                           (lf("braced_tower_2d"), 5, [(1, 5)])])
 def test_num_keys_indirect_deviation_edges(topology, node_key, edge_keys):
     """
     Tests the number and the keys of indirect deviation edges coming into a node.
@@ -168,10 +170,10 @@ def test_num_keys_indirect_deviation_edges(topology, node_key, edge_keys):
 
 
 @pytest.mark.parametrize("topology, node_key, num_deviation",
-                          [(pytest.lazy_fixture("compression_strut"), 0, 0),
-                           (pytest.lazy_fixture("braced_tower_2d"), 1, 3),
-                           (pytest.lazy_fixture("braced_tower_2d"), 3, 1),
-                           (pytest.lazy_fixture("braced_tower_2d"), 5, 2)])
+                          [(lf("compression_strut"), 0, 0),
+                           (lf("braced_tower_2d"), 1, 3),
+                           (lf("braced_tower_2d"), 3, 1),
+                           (lf("braced_tower_2d"), 5, 2)])
 def test_num_direct_indirect_deviation_edges(topology, node_key, num_deviation):
     """
     Checks that the sum of direct and indirect deviation edges is correct.

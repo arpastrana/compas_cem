@@ -2,6 +2,8 @@ from math import sqrt
 
 import pytest
 
+from pytest_lazy_fixtures import lf
+
 import numpy as np
 
 from compas_cem.equilibrium import static_equilibrium
@@ -126,11 +128,11 @@ def bt2_out():
 
 
 @pytest.mark.parametrize("topology, output",
-                         [(pytest.lazy_fixture("compression_strut"), cs_out()),
-                          (pytest.lazy_fixture("threebar_funicular"), tf_out()),
-                          (pytest.lazy_fixture("braced_tower_2d"), bt2_out()),
-                          (pytest.lazy_fixture("tension_chain"), tc_out()),
-                          (pytest.lazy_fixture("compression_chain"), cc_out())
+                         [(lf("compression_strut"), cs_out()),
+                          (lf("threebar_funicular"), tf_out()),
+                          (lf("braced_tower_2d"), bt2_out()),
+                          (lf("tension_chain"), tc_out()),
+                          (lf("compression_chain"), cc_out())
                           ])
 def test_force_equilibrium_output(topology, output):
     """
@@ -151,11 +153,11 @@ def test_force_equilibrium_output(topology, output):
 
 
 @pytest.mark.parametrize("topology, output",
-                         [(pytest.lazy_fixture("compression_strut"), cs_out()),
-                          (pytest.lazy_fixture("threebar_funicular"), tf_out()),
-                          (pytest.lazy_fixture("braced_tower_2d"), bt2_out()),
-                          (pytest.lazy_fixture("tension_chain"), tc_out()),
-                          (pytest.lazy_fixture("compression_chain"), cc_out())
+                         [(lf("compression_strut"), cs_out()),
+                          (lf("threebar_funicular"), tf_out()),
+                          (lf("braced_tower_2d"), bt2_out()),
+                          (lf("tension_chain"), tc_out()),
+                          (lf("compression_chain"), cc_out())
                           ])
 def test_force_equilibrium_numpy_output(topology, output):
     """
