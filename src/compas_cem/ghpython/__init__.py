@@ -1,24 +1,5 @@
 """
-compas_cem.ghpython
-****************************
-
-.. currentmodule:: compas_cem.ghpython
-
-
-Artists
-========
-
-In **COMPAS CEM**, the `artists` are classes that assist with the visualization
-of diagrams, in a way that maintains the data separated from the specific CAD
-interfaces, while providing a way to leverage native performance of the CAD
-environment.
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    TopologyArtist
-    FormArtist
+Grasshopper components and artists that draw diagrams inside Rhino.
 """
 
 from __future__ import absolute_import

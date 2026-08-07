@@ -57,13 +57,13 @@ if __name__ == "__main__":
 
     from compas.geometry import Point
     from compas.geometry import add_vectors
-    from compas.utilities import pairwise
+    from compas.itertools import pairwise
 
     from compas_cem.diagrams import TopologyDiagram
     from compas_cem.elements import Node
     from compas_cem.elements import TrailEdge
     from compas_cem.optimization import Optimizer
-    from compas_cem.optimization import PointConstraint
+    from compas_cem.optimization import PointGoal
     from compas_cem.plotters import Plotter
     from compas_cem.supports import NodeSupport
 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     # optimization
     optimizer = Optimizer()
 
-    # create point constraints at random
+    # create point goals at random
     radius = fabs(length)
     pt = [0.0, 0.0, 0.0]
     points = []
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         x = radius * cos(theta)
         y = radius * sin(theta * choice([-1.0, 1.0]))
         pt = Point(*add_vectors(pt, [x, y, 0.0]))
-        optimizer.add_constraint(PointConstraint(i, pt))
+        optimizer.add_goal(PointGoal(i, pt))
         points.append(pt)
 
     for i in range(num_nodes - 1):

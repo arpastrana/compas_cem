@@ -13,8 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `mkdocs.yml` and a mkdocs-material documentation site.
 - Added `.github/workflows/pr-checks.yml`.
 - Added regression baselines for every example under `tests/baseline`, captured from 0.8.6 behaviour.
+- Added regression tests that `add_node` and `add_edge` accept both vocabularies, reject a mismatched element, and survive a JSON round trip and a `copy()`.
+- Added `Diagram.node_connected_edges`, which returns the edges incident to a node.
+- Added `TopologyDiagram.__from_data__`, which restores the integer keys of the trail bookkeeping after a round trip.
+- Added regression tests that trails and auxiliary trails survive a JSON round trip.
 
 ### Changed
+
+- Migrated from COMPAS 1.17.10 to `compas>=2.15,<3.0`.
+- Renamed `Constraint` to `Goal` throughout, a clean break with no deprecation aliases. The nine concrete classes, the `VectorConstraint` and `FloatConstraint` bases, the `constraints` module, `Optimizer.add_constraint` and `remove_constraint`, the `solve_proxy` wire signature and the eight Grasshopper component directories all follow. This frees the name `Constraint` for genuine hard constraints, which nlopt supports and the package does not yet use.
+- Made `Diagram.add_node` and `Diagram.add_edge` accept either a node or edge element, or a key with attributes. COMPAS 2 deserializes a graph by replaying `add_node(key=, attr_dict=)` and `add_edge(u, v, attr_dict=)`, which the object-taking overrides shadowed, breaking `copy()` and `from_json()`. Both entry points now dispatch on the argument, so the authoring API is unchanged and deserialization reaches the base graph.
+- Made the entry points reject a mismatched element rather than silently treating it as a node key: `add_node` refuses an edge element, `add_edge` refuses a node element, and a key given both positionally and by name raises.
+- Folded `NodeMixins` and `EdgeMixins` into `Diagram` and dropped `compas_cem.data.Data` from its bases. `Datastructure.__inheritance__` walks the MRO up to `Datastructure` calling `__clstype__()` on every class in between, so a plain `object` mixin made `to_json()` raise.
+- Changed the `tol` diagram attribute from a format string to an integer count of decimal places, following `compas.tolerance.TOL.geometric_key`.
+- Ported serialization from the `data` property pair to `__data__` and `__from_data__` on goals and on edge and node parameters.
+- Gave `Goal`, `Parameter`, `EdgeParameter` and `NodeParameter` default constructor arguments, so `__from_data__` can build one without knowing the concrete signature.
+- Regenerated `examples/03_bridge_2d.json`, which was COMPAS 1.7.1 JSON and unreadable by COMPAS 2. Node and edge insertion order is preserved, because it sets the order of the optimizer's parameter vector.
+- Widened `requires-python` to `>=3.10,<3.14` and both CI matrices to 3.10 through 3.13, now that the `distutils` ceiling is gone.
+- Replaced the reStructuredText module docstrings and inline markup with Markdown, and moved parameter and return types out of docstrings and into the signature position that mkdocstrings renders.
 
 - Moved the documentation from Sphinx and reStructuredText to mkdocs-material with mkdocstrings.
 - Converted `README`, `CHANGELOG` and `AUTHORS` from reStructuredText to Markdown.
@@ -27,8 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Removed the dependency on `trimesh`. It was never imported: its only reference is `optimization/constraints/mesh.py`, which is commented out of the package.
+- Removed the dependency on `trimesh`. It was never imported: its only reference is `optimization/goals/mesh.py`, which is commented out of the package.
 - Removed `.travis.yml`, which targeted Python 2.7.
+- Removed the `compas_cem.diagrams.mixins` package, folded into `Diagram`.
+- Removed `Diagram.connected_edges`, superseded by `node_connected_edges`. COMPAS 2 gives the inherited name a different meaning: it takes no node and returns edge groups per connected component.
 
 ## [0.8.6] 2025-02-24
 

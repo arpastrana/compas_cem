@@ -6,14 +6,27 @@ from compas_cem.elements import Edge
 
 class TrailEdge(Edge):
     """
-    A trail edge.
+    An edge that advances a trail by a prescribed length.
+
+    Parameters
+    ----------
+    u :
+        The key of the first node of the edge.
+    v :
+        The key of the second node of the edge.
+    length :
+        The signed length of the edge. A negative value puts the edge in
+        compression, and a positive value in tension.
+    plane :
+        A plane to intersect the trail with instead of advancing it by a fixed
+        length.
 
     Notes
     -----
-    If a plane is defined, it will override the absolute length of the trail edge.
-    However, the sign of the length (e.g. the combinatorial state) is preserved.
+    A plane overrides the absolute length of the edge, but the sign of the
+    length is preserved, so the combinatorial state survives the intersection.
 
-    TODO: addexplicit combinatorial state to the signature of the constructor.
+    TODO: add an explicit combinatorial state to the signature of the constructor.
     """
 
     def __init__(self, u, v, length, plane=None, **kwargs):
@@ -23,7 +36,6 @@ class TrailEdge(Edge):
         # self.attributes = {"length": length, "state": state, type": "trail", "plane": plane}
 
     def __repr__(self):
-        """ """
         length = self.attributes["length"]
         msg = "{name}(length={length!r}, state={state!r}, plane={plane!r})"
         info = {

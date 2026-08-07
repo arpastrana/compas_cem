@@ -13,9 +13,7 @@ keywords = ["form-finding", "structural-design", "architecture", "equilibrium"]
 authors = [{ name = "Rafael Pastrana", email = "arpj@princeton.edu" }]
 license = { file = "LICENSE" }
 readme = "README.md"
-# compas 1.17.10 imports distutils, which was removed in Python 3.12.
-# Phase 1 lifts this ceiling along with the move to COMPAS 2.
-requires-python = ">=3.9,<3.12"
+requires-python = ">=3.10,<3.14"
 dynamic = ['dependencies', 'optional-dependencies', 'version']
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -26,9 +24,10 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
 ]
 
@@ -100,7 +99,7 @@ replace = "[{new_version}] {now:%Y-%m-%d}"
 [tool.ruff]
 line-length = 88
 indent-width = 4
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["D202", "D300", "E", "F", "I", "W"]

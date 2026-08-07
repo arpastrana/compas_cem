@@ -1,5 +1,5 @@
 from compas.geometry import distance_point_point
-from compas.utilities import pairwise
+from compas.itertools import pairwise
 
 from compas_cem.elements import DeviationEdge
 from compas_cem.elements import Node
@@ -15,6 +15,10 @@ __all__ = ["MeshMixins"]
 
 
 class MeshMixins(object):
+    """
+    Constructors that build a topology diagram out of a mesh.
+    """
+
     @classmethod
     def from_dualquadmesh(
         cls,

@@ -25,14 +25,14 @@ __all__ = ["Optimizer"]
 
 class Optimizer(Data):
     """
-    An object that modifies a form diagram to meet multiple constraints.
+    An object that modifies a form diagram to meet multiple goals.
     """
 
     def __init__(self, **kwargs):
         super(Optimizer, self).__init__(**kwargs)
 
         self.parameters = {}
-        self.constraints = {}
+        self.goals = {}
 
         self.x_opt = None
         self.time_opt = None
@@ -41,7 +41,7 @@ class Optimizer(Data):
         self.gradient_norm = None
         self.status = None
 
-        self._ckey = -1
+        self._gkey = -1
         self._pkey = -1
 
     # ------------------------------------------------------------------------------
@@ -54,11 +54,11 @@ class Optimizer(Data):
         """
         return len(self.parameters)
 
-    def number_of_constraints(self):
+    def number_of_goals(self):
         """
-        The number of constraints added to the optimizer.
+        The number of goals added to the optimizer.
         """
-        return len(self.constraints)
+        return len(self.goals)
 
     # ------------------------------------------------------------------------------
     # Parameters
@@ -80,23 +80,23 @@ class Optimizer(Data):
         del self.parameters[pkey]
 
     # ------------------------------------------------------------------------------
-    # Constraints
+    # Goals
     # ------------------------------------------------------------------------------
 
-    def add_constraint(self, constraint):
+    def add_goal(self, goal):
         """
-        Adds a goal constraint.
+        Adds a goal goal.
         """
-        self._ckey += 1
-        self.constraints[self._ckey] = constraint
+        self._gkey += 1
+        self.goals[self._gkey] = goal
 
-    def remove_constraint(self, ckey):
+    def remove_goal(self, gkey):
         """
-        Removes a constraint from the optimizer.
+        Removes a goal from the optimizer.
         """
-        if ckey not in self.constraints:
-            raise KeyError("Constraints not found on object key: {}".format(ckey))
-        del self.constraints[ckey]
+        if gkey not in self.goals:
+            raise KeyError("Goals not found on object key: {}".format(gkey))
+        del self.goals[gkey]
 
     # ------------------------------------------------------------------------------
     # Objective Function
@@ -200,7 +200,7 @@ class Optimizer(Data):
             print("----------")
             print("Optimization with {} started!".format(algorithm))
             print(
-                f"# Parameters: {self.number_of_parameters()}, # Constraints {self.number_of_constraints()}"
+                f"# Parameters: {self.number_of_parameters()}, # Goals {self.number_of_goals()}"
             )
 
         # test for bad stuff before going any further
@@ -306,7 +306,7 @@ class Optimizer(Data):
     def optimization_parameters(self, topology):
         """
         Creates optimization paremeters array.
-        Only one entry in the array per constraint.
+        Only one entry in the array per goal.
         Takes care of keeping the ordering.
         """
         parameters = np.zeros(self.number_of_parameters())
@@ -319,7 +319,7 @@ class Optimizer(Data):
     def optimization_bounds(self, topology):
         """
         Creates optimization bounds array.
-        Only one entry in the array per constraint.
+        Only one entry in the array per goal.
         """
         bounds_low = np.zeros(self.number_of_parameters())
         bounds_up = np.zeros(self.number_of_parameters())
@@ -358,8 +358,8 @@ class Optimizer(Data):
     def _calculate_penalty(self, eq_state):
         """ """
         penalty = 0.0
-        for constraint in self.constraints.values():
-            penalty += constraint.penalty(eq_state)
+        for goal in self.goals.values():
+            penalty += goal.penalty(eq_state)
 
         return penalty
 
@@ -387,8 +387,8 @@ class Optimizer(Data):
             msg = "No parameters defined. Optimization not possible."
             raise ValueError(msg)
 
-        if len(self.constraints) == 0:
-            msg = "No constraints defined. Optimization not possible."
+        if len(self.goals) == 0:
+            msg = "No goals defined. Optimization not possible."
             raise ValueError(msg)
 
     # ------------------------------------------------------------------------------
@@ -397,11 +397,11 @@ class Optimizer(Data):
 
     def __repr__(self):
         """ """
-        tpl = "{} with {} parameters and {} constraints. Status: {}"
+        tpl = "{} with {} parameters and {} goals. Status: {}"
         return tpl.format(
             self.__class__.__name__,
             self.number_of_parameters(),
-            self.number_of_constraints(),
+            self.number_of_goals(),
             self.status,
         )
 

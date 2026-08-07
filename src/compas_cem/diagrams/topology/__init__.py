@@ -1,25 +1,5 @@
 """
-compas_cem.diagrams.topology
-****************************
-
-.. currentmodule:: compas_cem.diagrams.topology
-
-
-Classes
-=======
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-
-Functions
-=========
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
+The topology diagram, the input to the form-finding algorithm.
 """
 
 from __future__ import absolute_import

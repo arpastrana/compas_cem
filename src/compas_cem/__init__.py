@@ -1,22 +1,5 @@
 """
-********************************************************************************
-compas_cem
-********************************************************************************
-
-.. currentmodule:: compas_cem
-
-
-.. toctree::
-    :maxdepth: 1
-
-    compas_cem.diagrams
-    compas_cem.elements
-    compas_cem.loads
-    compas_cem.supports
-    compas_cem.equilibrium
-    compas_cem.optimization
-    compas_cem.plotters
-    compas_cem.viewers
+The Combinatorial Equilibrium Modeling framework for COMPAS.
 """
 
 from __future__ import print_function

@@ -9,17 +9,17 @@ __all__ = ["NodeSupport"]
 
 class NodeSupport(Data):
     """
-    A support assigned to a node.
+    A support that anchors one node of a diagram.
 
     Parameters
     ----------
-    node : ``int``
-        The key of the node where to apply the support to.
+    node :
+        The key of the node to support.
 
-    Returns
-    -------
-    node_support : ``NodeSupport``
-        A node support.
+    Notes
+    -----
+    Supports are where the trails of a topology diagram end. The form-finding
+    algorithm walks back from every support to an origin node to build them.
     """
 
     def __init__(self, node, **kwargs):
@@ -30,30 +30,28 @@ class NodeSupport(Data):
     @classmethod
     def from_point(cls, point):
         """
-        Create a NodeSupport from a point.
+        Create a support from a point.
 
         Parameters
         ----------
-        point : ``list`` of ``float``
-            The xyz coordinates of the positions where to assign a support.
+        point :
+            The coordinates of the position to support.
 
         Returns
         -------
-        support : ``NodeSupport``
-            A support object.
+        support :
+            A support with no node key, positioned at the given point.
 
         Notes
         -----
-        The support will be assigned to a ``FormDiagram`` only if it has a node
-        whose xyz coordinates matches defined by the ``NodeSupport``.
-        Otherwise, the support will not be assigned to the diagram.
+        The support binds to a diagram node whose coordinates match the point.
+        If no node sits there, the support is not assigned.
         """
         support = cls(node=None)
         support.xyz = point
         return support
 
     def __repr__(self):
-        """ """
         return "{0}(xyz={1!r})".format(self.__class__.__name__, self.xyz)
 
 

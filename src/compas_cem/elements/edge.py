@@ -9,7 +9,21 @@ __all__ = ["Edge"]
 
 class Edge(Data):
     """
-    The edge base class.
+    The base class shared by trail and deviation edges.
+
+    Parameters
+    ----------
+    u :
+        The key of the first node of the edge.
+    v :
+        The key of the second node of the edge.
+    attrs :
+        The attributes to store on the edge.
+
+    Notes
+    -----
+    A node key here may also be a set of coordinates. A diagram resolves those
+    to an existing node, or creates one, when the edge is added.
     """
 
     def __init__(self, u, v, attrs, **kwargs):
@@ -29,15 +43,15 @@ class Edge(Data):
 
         Parameters
         ----------
-        line : ``tuple`` or ``list``
-            The xyz coordinates of the line's two end points.
-        **kwargs : ``dict``
-            Extra keyword arguments.
+        line :
+            The two end points of the line.
+        **kwargs :
+            Extra keyword arguments passed to the constructor.
 
         Returns
         -------
-        edge : ``Edge``
-            An edge object.
+        edge :
+            An edge whose two nodes are the end points of the line.
         """
         edge = cls(line[0], line[1], **kwargs)
         return edge
@@ -48,7 +62,7 @@ class Edge(Data):
 
         Yields
         ------
-        key : ``int``
+        key :
             The next node key.
         """
         for node in (self.u, self.v):

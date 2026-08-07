@@ -11,7 +11,7 @@ framework for [COMPAS](https://compas.dev/).
 The [CEM framework](https://doi.org/10.1016/j.cad.2022.103435) is a numerical
 form-finding approach to generate forms in static equilibrium for spatial bar
 structures subjected to combinations of tension-compression forces and design
-constraints.
+goals.
 **COMPAS CEM** encapsulates the CEM framework into an open-source structural design
 tool that enables the formulation and the solution of constrained form-finding
 problems in plain and simple [Python](https://www.python.org/) code.
@@ -25,7 +25,7 @@ problems in plain and simple [Python](https://www.python.org/) code.
 
 * **Solve constrained form-finding problems efficiently via automatic
   differentiation:** Generate forms in static equilibrium that simultaneously meet a
-  priori design constraints such as best-fitting a global target shape, restraining
+  priori design goals such as best-fitting a global target shape, restraining
   bar lengths, and controlling the reaction forces at the supports of a structure.
 
 * **Usable across different 3D modeling software and operating systems:** COMPAS CEM

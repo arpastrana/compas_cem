@@ -1,29 +1,5 @@
 """
-compas_cem.viewers
-****************************
-
-.. currentmodule:: compas_cem.viewers
-
-
-Visualization objects
-=====================
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    DiagramObject
-    FormDiagramObject
-    TopologyDiagramObject
-
-Viewers
-=======
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    Viewer
+Three-dimensional viewing of topology and form diagrams.
 """
 
 from __future__ import absolute_import

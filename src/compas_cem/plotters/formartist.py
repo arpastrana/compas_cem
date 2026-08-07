@@ -8,7 +8,7 @@ from compas.geometry import length_vector
 from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
 from compas.geometry import translate_points
-from compas.utilities import geometric_key
+from compas.tolerance import TOL
 from compas_plotters.artists import NetworkArtist
 
 from compas_cem import COLORS
@@ -168,7 +168,7 @@ class FormArtist(NetworkArtist):
                 # every support must connect to only one trail edge
                 s = False
                 forces = [
-                    self.form.edge_force(e) for e in self.form.connected_edges(key)
+                    self.form.edge_force(e) for e in self.form.node_connected_edges(key)
                 ]
                 max_force = max(forces, key=lambda f: fabs(f))
                 if max_force < 0.0:
@@ -246,7 +246,7 @@ class FormArtist(NetworkArtist):
         """
 
         def gkey_format(x):
-            return geometric_key(self.form.node_coordinates(x), precision)
+            return TOL.geometric_key(self.form.node_coordinates(x), precision)
 
         def key_gkey_format(x):
             return "{}\n{}".format(x, gkey_format(x))

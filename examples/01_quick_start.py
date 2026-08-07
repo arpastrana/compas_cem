@@ -1,18 +1,13 @@
 from compas.geometry import Translation
 
 from compas_cem.diagrams import TopologyDiagram
-
+from compas_cem.elements import DeviationEdge
 from compas_cem.elements import Node
 from compas_cem.elements import TrailEdge
-from compas_cem.elements import DeviationEdge
-
-from compas_cem.loads import NodeLoad
-from compas_cem.supports import NodeSupport
-
 from compas_cem.equilibrium import static_equilibrium
-
+from compas_cem.loads import NodeLoad
 from compas_cem.plotters import Plotter
-
+from compas_cem.supports import NodeSupport
 
 # ------------------------------------------------------------------------------
 # Instantiate a topology diagram

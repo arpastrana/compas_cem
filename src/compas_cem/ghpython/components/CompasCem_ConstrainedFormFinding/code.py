@@ -1,5 +1,5 @@
 """
-Generate a form diagram in static equilibrium such that it meets user-defined constraints.
+Generate a form diagram in static equilibrium such that it meets user-defined goals.
 """
 
 from ghpythonlib.componentbase import executingcomponent as component
@@ -13,7 +13,7 @@ class ConstrainedFormFindingComponent(component):
         self,
         solve,
         topology,
-        constraints,
+        goals,
         parameters,
         algorithm,
         iters_max,
@@ -29,13 +29,13 @@ class ConstrainedFormFindingComponent(component):
         tmax = tmax or 100
         eta = eta or 1e-6
 
-        if not (solve and topology and constraints and parameters):
+        if not (solve and topology and goals and parameters):
             return
 
         topology = topology.copy()
 
-        # clean constraints and parameters from None
-        constraints = [c for c in constraints if c is not None]
+        # clean goals and parameters from None
+        goals = [c for c in goals if c is not None]
         parameters = [p for p in parameters if p is not None]
 
         # fetch optimization proxy from scriptcontext
@@ -49,7 +49,7 @@ class ConstrainedFormFindingComponent(component):
         # solve constrained form-finding problem
         solution = opt.solve_proxy(
             topology=topology,
-            constraints=constraints,
+            goals=goals,
             parameters=parameters,
             algorithm=algorithm,
             iters=iters_max,

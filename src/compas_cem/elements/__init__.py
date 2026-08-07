@@ -1,28 +1,5 @@
 """
-compas_cem.elements
-****************************
-
-.. currentmodule:: compas_cem.elements
-
-
-Edges
-======
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    TrailEdge
-    DeviationEdge
-
-Node
-=====
-
-.. autosummary::
-    :toctree: generated/
-    :nosignatures:
-
-    Node
+The nodes and the trail and deviation edges a topology diagram is built from.
 """
 
 from __future__ import absolute_import
