@@ -1,9 +1,14 @@
 # compas_cem modernization plan
 
-Status: **planned, not started.** Target release **0.9.0**, deliberately breaking.
+Status: **Phase 0 complete.** Phases 1–5 not started. Target release **0.9.0**,
+deliberately breaking.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
+
+§1 and §2 describe the **pre-migration** state and are deliberately left as a
+snapshot — Phase 0 has since changed the packaging, docs, CI, and dependency
+pins described there. §9 records what Phase 0 actually found and changed.
 
 ---
 
@@ -296,3 +301,73 @@ are **not preserved**. Recreate if needed:
 `proto_jax_cem.py` in this folder *is* preserved — it is the §4.3 validation and
 runs standalone against any env with `jax` + `optimistix` (verified on JAX 0.10.2,
 optimistix 0.1.0).
+
+## 9. Phase 0 outcome
+
+Delivered on branch `phase-0-tooling`. Gate at completion: `ruff check` clean,
+`ruff format --check` clean, **92/92 tests pass**, `uv build` produces both sdist
+and wheel with all 39 Grasshopper components' assets intact, and re-capturing
+every example baseline after the 105-file reformat produced **byte-identical**
+JSON — proving the reformat behaviour-preserving.
+
+The baseline environment is `.venv-legacy` (gitignored, built with `uv`):
+Python 3.10 + compas 1.17.10 + numpy 2.2.6 + autograd + nlopt 2.11.
+
+### 9.1 Four findings about the 0.8.6 dependency set
+
+1. **`numpy<2` was never necessary.** The full suite passes on numpy 2.2.6.
+2. **The documented 0.8.6 stack is uninstallable on Apple Silicon.** `numpy<2`
+   forces `nlopt==2.7.1` (2.8.0 onward all require `numpy>=2`), and 2.7.1 ships
+   no arm64 macOS wheel — only `macosx_10_9_x86_64`, manylinux, and win_amd64.
+3. **`compas==1.17.10` caps Python at 3.11.** It imports
+   `distutils.version.LooseVersion`; `distutils` was removed in Python 3.12.
+   Hence `requires-python = ">=3.9,<3.12"` and a 3.9–3.11 CI matrix until Phase 1
+   moves to COMPAS 2 and lifts both together.
+4. **`trimesh` was an unused hard dependency**, referenced only by the
+   commented-out `optimization/constraints/mesh.py`, which never imports it.
+
+### 9.2 Examples 04 and 05 do not actually optimize
+
+This changes Phase 4's success criterion and is the most important Phase 0
+finding. With nlopt's `stopval` at its default `eps=1e-6`, both examples report
+success — but their objective is *already* ~1e-31 at the starting point, because
+`TrailEdgeForceConstraint(force=0.0)` on freshly built auxiliary trails is
+satisfied from the outset. nlopt exits after 3–9 evaluations having done nothing.
+
+Disabling `stopval` exposes the real behaviour:
+
+| example | evals | penalty | NaN gradient components | status |
+| --- | --- | --- | --- | --- |
+| 03 bridge | 35 | 1.94e-12 | 0/9 | `FTOL_REACHED` |
+| 04 tree | 100 (max) | 9.86e-32, unchanged | 2/3 | `ITERSMAX_REACHED` |
+| 05 tensegrity | — | — | — | `nlopt.runtime_error` |
+
+Cause: `nrvec = rvec / trail_force` at `force_numpy.py:157` with
+`trail_force == 0` on a zero-force auxiliary trail edge. The `if np.isnan(...)`
+guard on the next line repairs the *value* but autograd still propagates NaN
+through the *derivative*, so the NaN poisons the gradient vector and LBFGS cannot
+move. Example 03, which has no auxiliary trails, is unaffected.
+
+Consequences:
+
+- `tests/baseline/0{4,5}_*.json` are a bar to **beat**, not to reproduce. The
+  `*_forced.json` companions record the broken state for comparison.
+- Example 03 is currently the only trustworthy optimizer regression target.
+- §4.3's double-`where` safe-normalize is the fix, so Phase 3/4 should *repair*
+  these two examples rather than preserve their behaviour. Add a regression test
+  that a zero-force auxiliary trail yields a finite gradient.
+
+### 9.3 Carried forward
+
+- `mkdocs build --strict` fails on 8 griffe warnings from source docstrings
+  (`ghpython/artists.py:282`, `viewers/diagramobject.py:60`,
+  `viewers/topologyobject.py:19` document parameters absent from their
+  signatures). Phase 1/2.
+- Every `src/compas_cem/*/__init__.py` module docstring still contains
+  `.. currentmodule::` / `.. autosummary::` rST, which mkdocstrings renders
+  verbatim on each API page. Phase 1.
+- `docs/installation.md` and `README.md` still document `compas==1.17.10`,
+  `compas_view2`, Rhino 6/7 and `compas_rhino.install`. Phase 2/5.
+- `gh-pages` needs a one-time migration from the Sphinx layout (`latest/`,
+  `doc_versions.txt`) to mike's `versions.json`. Note that `compas-actions.docs@v5`
+  publishes only on tag pushes, so `main` no longer updates `latest/`.

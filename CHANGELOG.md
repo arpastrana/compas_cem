@@ -9,9 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `pyproject.toml`, replacing `setup.py`, `setup.cfg`, `pytest.ini` and `.bumpversion.cfg`.
+- Added `mkdocs.yml` and a mkdocs-material documentation site.
+- Added `.github/workflows/pr-checks.yml`.
+- Added regression baselines for every example under `tests/baseline`, captured from 0.8.6 behaviour.
+
 ### Changed
 
+- Moved the documentation from Sphinx and reStructuredText to mkdocs-material with mkdocstrings.
+- Converted `README`, `CHANGELOG` and `AUTHORS` from reStructuredText to Markdown.
+- Replaced the abandoned `pytest-lazy-fixture` with `pytest-lazy-fixtures`, which lifts the `pytest<8` ceiling.
+- Rewrote `tasks.py` to compose `compas_invocations2` tasks.
+- Updated CI to `compas-actions.build@v5`, `compas-actions.docs@v5` and `compas-actions.publish@v3`.
+- Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.
+- Loosened dependency version from `numpy<2` to `numpy>=1.26`. The upper bound was never necessary; the test suite passes on numpy 2.
+- Declared `requires-python = ">=3.9,<3.12"`. `compas==1.17.10` imports `distutils`, which was removed in Python 3.12.
+
 ### Removed
+
+- Removed the dependency on `trimesh`. It was never imported: its only reference is `optimization/constraints/mesh.py`, which is commented out of the package.
+- Removed `.travis.yml`, which targeted Python 2.7.
 
 ## [0.8.6] 2025-02-24
 
