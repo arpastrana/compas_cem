@@ -371,3 +371,139 @@ Consequences:
 - `gh-pages` needs a one-time migration from the Sphinx layout (`latest/`,
   `doc_versions.txt`) to mike's `versions.json`. Note that `compas-actions.docs@v5`
   publishes only on tag pushes, so `main` no longer updates `latest/`.
+
+## 10. Handover: state and the Phase 1–2 execution order
+
+### 10.1 Where things stand
+
+Phase 0 is on branch `phase-0-tooling`, pushed, and open as **PR #16** against
+`main`. Five commits: the plan, the template adoption, the test migration, the
+ruff migration, and the Phase 0 write-up.
+
+CI ran for the first time on that PR and is **green** — all nine `build` cells
+(3.9/3.10/3.11 × ubuntu/macos/windows), `docs`, and the changelog checker.
+
+Two corrections to earlier sections, both learned from that run:
+
+- **`mkdocs.docs` does not pass `--strict`.** The 8 griffe warnings in §9.3 do
+  *not* red the docs job. They are still worth fixing, but they are not blocking.
+- **`compas-actions.build@v5` does not skip macOS + Python 3.9.** An earlier note
+  claimed it did; that cell ran and passed.
+
+> **Line numbers in §1–§9 predate the 88-column reformat.** The reformat rewrote
+> 105 files after that research was done, so `file:line` citations in those
+> sections are approximate. Symbol names, call shapes, and file paths are all
+> still accurate — re-grep for the symbol rather than trusting the line.
+
+### 10.2 Environments
+
+Neither environment is checked in; both must be built in a fresh clone.
+
+**Legacy baseline env** (`.venv-legacy`, gitignored) — the only environment that
+can run pre-Phase-1 code:
+
+```bash
+uv venv --python 3.10 .venv-legacy
+uv pip install --python .venv-legacy/bin/python --only-binary :all: \
+    "compas==1.17.10" "numpy>=2" "trimesh==3.20.0" autograd nlopt \
+    "pytest==7.2.1" pytest-lazy-fixtures matplotlib
+```
+
+Note `numpy>=2`, not the historical `numpy<2` — see §9.1, items 1 and 2. Do not
+install `pytest-lazy-fixture` (singular): merely having it importable breaks
+collection on pytest 9.
+
+**Phase 1 needs a second, COMPAS 2 environment.** `.venv-legacy` cannot run
+migrated code. Build it as `.venv` (already gitignored) on Python 3.12 with
+`compas>=2.15,<3`, `numpy`, `autograd`, `nlopt`, and the `dev` extra.
+
+**Regression harness:** `tests/baseline/capture.py`, verified to reproduce all
+five committed fixtures byte-for-byte. Usage, including the `COMPAS_CEM_SUFFIX`
+and `COMPAS_CEM_FORCE_EPS` comparison modes, is in its module docstring.
+
+### 10.3 Phase 1 — COMPAS 2 core and the `Goal` rename
+
+Branch off `main` once PR #16 merges. Suggested order, because the dependencies
+are real:
+
+1. **Build the COMPAS 2 env** and confirm the package fails the way §4.1 predicts.
+2. **Regenerate `examples/03_bridge_2d.json`** and `examples/data/*.json`. COMPAS 1
+   JSON is unreadable by COMPAS 2, and example 03 is the *only* trustworthy
+   optimizer regression target (§9.2) — losing it costs the phase its safety net.
+   Regenerate from the legacy env, then confirm it loads under COMPAS 2.
+3. **Apply the §4.1 fix list.** Nine items; all verified.
+4. **Fold `NodeMixins` and `EdgeMixins` into `Diagram`.** Fixes the `__clstype__`
+   serialization break *and* the fragile `super().__init__` chain in one move.
+   Serial work — it changes the MRO, so do not fan this out.
+5. **Rename the object-taking `add_node`/`add_edge`** so `Graph.__from_data__`
+   stops colliding with them.
+6. **Port serialization to `__data__` / `__from_data__`.** Sites: both `data`
+   property pairs in `optimization/constraints/constraint.py`, plus
+   `optimization/parameters/edge.py` and `optimization/parameters/node.py`. Also
+   `Constraint`'s use of `to_data`/`from_data`/`dtype` on its target geometry.
+7. **Fix the `_trails` JSON key round-trip** (§4.2) and add a regression test that
+   `trail(key)` works on a deserialized diagram.
+8. **`Constraint` → `Goal`, clean break.** 9 concrete classes, the
+   `VectorConstraint`/`FloatConstraint` bases → `VectorGoal`/`FloatGoal`, the
+   `constraints/` module → `goals/`, `Optimizer.add_constraint` → `add_goal`, and
+   the `solve_proxy(constraints=...)` wire signature. Also the 8
+   `CompasCem_Constraint*` Grasshopper component directories — **preserve each
+   `instanceGuid`** so existing `.gh` files still resolve. This step fans out well.
+9. **Flip `compas>=2.15,<3`**, widen `requires-python` to `>=3.10,<3.14`, and
+   widen both CI matrices to 3.10–3.13 — one commit, since §9.1 item 3 ties them
+   together.
+
+Acceptance: 92/92 tests pass; `tests/baseline/capture.py` reproduces the
+committed fixtures for examples 01, 02 and 03; `ruff check`/`format --check`
+clean; `uv build` still ships the Grasshopper assets; docs build.
+
+Expect examples 04 and 05 to keep failing their baselines — that is §9.2, not a
+regression. Do not chase it in Phase 1.
+
+### 10.4 Phase 2 — visualization
+
+`compas.artists` no longer exists. Target `compas_plotter>=1.0.1` and
+`compas_viewer>=2.0`, and use `jax_fdm/visualization/{plotters,viewers}/scene_objects.py`
+as the pattern — that package is already on COMPAS 2 and solves the same problem.
+
+- **`plotters/`**: `plotter.py` is a pure passthrough wrapper; `formartist.py` and
+  `topologyartist.py` are the real work. **Delete `plotters/proxy.py`** — it is
+  dead code calling a `FormPlotter`/`TopologyPlotter` that no longer exists.
+- **`viewers/`**: `diagramobject.py` is the bulk of the phase and reaches into
+  private compas_view2 hooks (`_points_data`, `_lines_data`). Confirm
+  `compas_viewer` exposes equivalents before committing to the estimate — this is
+  the highest-variance item in the whole plan.
+- **Colours**: `compas_cem.COLORS` holds 0–255 int tuples; COMPAS 2 wants
+  `compas.colors.Color`. The viewers layer already normalizes via `.rgb`; the
+  plotters layer does not.
+- **`__all_plugins__`** must point at scene modules, and the two `register.py`
+  files move from `Artist.register(..., context=)` to `compas.scene.register`.
+- **Geometry constructors**: `Circle(plane, radius)` and
+  `Cylinder(circle, height=)` were both reworked in COMPAS 2.
+
+Four latent bugs to fix while in these files, all found during research:
+undefined `edge` inside `state_format` in both `viewers/diagramobject.py` and
+`plotters/topologyartist.py`; `self.topology` referenced on `DiagramObject`,
+which only defines `self.diagram`; and a `show_nodes` setter that writes
+`_show_edges`. Also clear the 8 griffe docstring warnings from §9.3 here, since
+they live in `ghpython/artists.py`, `viewers/diagramobject.py` and
+`viewers/topologyobject.py`.
+
+Acceptance is **human and visual** — there are no tests for this layer and none
+are worth inventing. Run examples 01–05 and look at the output. Plan for a
+review round rather than a green check.
+
+### 10.5 Open decisions
+
+Neither blocks Phase 1 or 2, but Phase 3 stalls without the first:
+
+1. **Who decouples `jax_cem` from `compas_cem` and publishes it to PyPI** — see
+   §5 and the cycle-breaking note. The two `from_topology_diagram` constructors
+   move down into this repo; the kernel then depends on `compas` only.
+2. **Grasshopper componentizer for Phase 5** — keep `componentize_cpy.py`
+   producing `.ghuser` for yak to wrap (what `compas_fab` and `compas_timber` do),
+   or ship script components inside a `.gh` library instead.
+
+Also owed before tagging 0.9.0: the `gh-pages` → mike migration, and a throwaway
+`v0.9.0-rc1` tag to exercise `release.yml`, which is tag-triggered and therefore
+still unverified.
