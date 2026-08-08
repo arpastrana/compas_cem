@@ -122,3 +122,6 @@ convention = "numpy"
 [tool.ruff.format]
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
+# A pymdownx snippet marker is valid python, so formatting a fenced block
+# rewrites `--8<-- "f"` into `--8 < --"f"` and the include silently stops working.
+exclude = ["*.md"]

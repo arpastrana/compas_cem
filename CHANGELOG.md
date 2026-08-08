@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a `typeHinID` misspelling in the topology artist component's `metadata.json`, which left two of its inputs without a type hint.
 - Replaced `rs.AddPoint` in the support node results component with `point_to_rhino`. The `rhinoscriptsyntax` call bakes a point into the Rhino document instead of returning geometry to the component output.
 - Returned an empty list rather than `None` from the topology draw methods when a selection is empty.
+- Fixed the five Python example pages showing `--8 < --"examples/…"` instead of the example source. A pymdownx snippet marker is valid python, so `ruff format` reformatted it as an expression inside the fenced block and the include stopped resolving. Markdown is now excluded from the formatter.
 - Moved the documentation from Sphinx and reStructuredText to mkdocs-material with mkdocstrings.
 - Converted `README`, `CHANGELOG` and `AUTHORS` from reStructuredText to Markdown.
 - Replaced the abandoned `pytest-lazy-fixture` with `pytest-lazy-fixtures`, which lifts the `pytest<8` ceiling.

@@ -18,29 +18,30 @@ jax.config.update("jax_enable_x64", True)
 # Static structure (numpy) -- derived by hand from the braced_tower_2d fixture
 # ------------------------------------------------------------------------------
 
-XYZ0 = np.array([[0.0, 0.0, 0.0],
-                 [0.0, 1.0, 0.0],
-                 [0.0, 2.0, 0.0],
-                 [1.0, 0.0, 0.0],
-                 [1.0, 1.0, 0.0],
-                 [1.0, 2.0, 0.0]])
+XYZ0 = np.array(
+    [
+        [0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [0.0, 2.0, 0.0],
+        [1.0, 0.0, 0.0],
+        [1.0, 1.0, 0.0],
+        [1.0, 2.0, 0.0],
+    ]
+)
 
 LOADS = np.zeros((6, 3))
 LOADS[2] = [0.0, -1.0, 0.0]
 LOADS[5] = [0.0, -1.0, 0.0]
 
 # trail edges, in insertion order, then deviation edges
-EDGES = [(0, 1), (1, 2), (3, 4), (4, 5),
-         (1, 4), (2, 5), (1, 5), (1, 3), (2, 4)]
+EDGES = [(0, 1), (1, 2), (3, 4), (4, 5), (1, 4), (2, 5), (1, 5), (1, 3), (2, 4)]
 IS_TRAIL = np.array([1, 1, 1, 1, 0, 0, 0, 0, 0], dtype=bool)
 LENGTHS = np.array([-1.0, -1.0, -1.0, -1.0, 0, 0, 0, 0, 0])
 FORCES = np.array([0, 0, 0, 0, -1.0, -1.0, 1.0, 1.0, 1.0])
 
 # build_trails() from supports {0, 3} yields trails (2,1,0) and (5,4,3),
 # so _k is 2->0 1->1 0->2 and 5->0 4->1 3->2
-SEQUENCES = np.array([[2, 5],
-                      [1, 4],
-                      [0, 3]])
+SEQUENCES = np.array([[2, 5], [1, 4], [0, 3]])
 SUPPORTS = np.array([1, 0, 0, 1, 0, 0], dtype=bool)
 
 NODES = XYZ0.shape[0]
@@ -80,14 +81,16 @@ def build_structure():
     indirect = node_sequence[dev_u] != node_sequence[dev_v]
     incidence_indirect = np.concatenate([indirect, indirect])
 
-    return {"sequences": jnp.asarray(SEQUENCES),
-            "trail_edge": jnp.asarray(trail_edge),
-            "active": jnp.asarray(active),
-            "supports_at": jnp.asarray(SUPPORTS[SEQUENCES]),
-            "incidence_node": jnp.asarray(incidence_node),
-            "incidence_other": jnp.asarray(incidence_other),
-            "incidence_edge": jnp.asarray(incidence_edge),
-            "incidence_indirect": jnp.asarray(incidence_indirect)}
+    return {
+        "sequences": jnp.asarray(SEQUENCES),
+        "trail_edge": jnp.asarray(trail_edge),
+        "active": jnp.asarray(active),
+        "supports_at": jnp.asarray(SUPPORTS[SEQUENCES]),
+        "incidence_node": jnp.asarray(incidence_node),
+        "incidence_other": jnp.asarray(incidence_other),
+        "incidence_edge": jnp.asarray(incidence_edge),
+        "incidence_indirect": jnp.asarray(incidence_indirect),
+    }
 
 
 # ------------------------------------------------------------------------------
@@ -139,7 +142,8 @@ def sequence_step(carry, k, lengths, forces, loads, structure, use_indirect):
     residual_out = residuals[nodes] - loads[nodes] - resultants[nodes]
 
     reactions = reactions.at[nodes].set(
-        jnp.where(is_support[:, None], residual_out, reactions[nodes]))
+        jnp.where(is_support[:, None], residual_out, reactions[nodes])
+    )
 
     length = lengths[edge]
     norm = jnp.linalg.norm(residual_out, axis=-1)
@@ -147,11 +151,14 @@ def sequence_step(carry, k, lengths, forces, loads, structure, use_indirect):
     position_next = xyz[nodes] + length[:, None] * direction
 
     xyz = xyz.at[nodes_next].set(
-        jnp.where(active[:, None], position_next, xyz[nodes_next]))
+        jnp.where(active[:, None], position_next, xyz[nodes_next])
+    )
     residuals = residuals.at[nodes_next].set(
-        jnp.where(active[:, None], residual_out, residuals[nodes_next]))
+        jnp.where(active[:, None], residual_out, residuals[nodes_next])
+    )
     trail_forces = trail_forces.at[edge].set(
-        jnp.where(active, jnp.sign(length) * norm, trail_forces[edge]))
+        jnp.where(active, jnp.sign(length) * norm, trail_forces[edge])
+    )
 
     return (xyz, residuals, reactions, trail_forces), None
 
@@ -160,6 +167,7 @@ def equilibrium_pass(state, lengths, forces, loads, structure, use_indirect):
     """
     One sweep over all sequences.
     """
+
     def step(carry, k):
         return sequence_step(carry, k, lengths, forces, loads, structure, use_indirect)
 
@@ -181,7 +189,9 @@ def sweep(xyz, lengths, forces, loads, structure, use_indirect=True):
     return equilibrium_pass(state, lengths, forces, loads, structure, use_indirect)
 
 
-def static_equilibrium_whileloop(lengths, forces, loads, xyz, structure, tmax=100, eta=1e-6):
+def static_equilibrium_whileloop(
+    lengths, forces, loads, xyz, structure, tmax=100, eta=1e-6
+):
     """
     Faithful port of force_numpy.py: convergence-terminated, NOT reverse-differentiable.
     """
@@ -195,7 +205,9 @@ def static_equilibrium_whileloop(lengths, forces, loads, xyz, structure, tmax=10
     def body(loop):
         t, _, state = loop
         use_indirect = t > 0
-        state_next = equilibrium_pass(state, lengths, forces, loads, structure, use_indirect)
+        state_next = equilibrium_pass(
+            state, lengths, forces, loads, structure, use_indirect
+        )
         residual = jnp.linalg.norm(state_next[0] - state[0])
 
         return t + 1, residual, state_next
@@ -203,10 +215,12 @@ def static_equilibrium_whileloop(lengths, forces, loads, xyz, structure, tmax=10
     _, residual, state = jax.lax.while_loop(condition, body, (0, jnp.inf, init))
     xyz, _, reactions, trail_forces = state
 
-    return {"xyz": xyz,
-            "reactions": reactions,
-            "trail_forces": trail_forces,
-            "residual": residual}
+    return {
+        "xyz": xyz,
+        "reactions": reactions,
+        "trail_forces": trail_forces,
+        "residual": residual,
+    }
 
 
 def static_equilibrium(lengths, forces, loads, xyz, structure, tmax=100, eta=1e-6):
@@ -230,48 +244,61 @@ def static_equilibrium(lengths, forces, loads, xyz, structure, tmax=100, eta=1e-
         return sweep(coordinates, lengths, forces, loads, structure)[0]
 
     solver = optimistix.FixedPointIteration(rtol=eta, atol=eta)
-    solution = optimistix.fixed_point(fixed_point_map,
-                                      solver,
-                                      xyz,
-                                      max_steps=tmax,
-                                      throw=False)
+    solution = optimistix.fixed_point(
+        fixed_point_map, solver, xyz, max_steps=tmax, throw=False
+    )
 
-    converged, _, reactions, trail_forces = sweep(solution.value, lengths, forces,
-                                                 loads, structure)
+    converged, _, reactions, trail_forces = sweep(
+        solution.value, lengths, forces, loads, structure
+    )
 
-    return {"xyz": converged,
-            "reactions": reactions,
-            "trail_forces": trail_forces,
-            "residual": jnp.linalg.norm(converged - solution.value)}
+    return {
+        "xyz": converged,
+        "reactions": reactions,
+        "trail_forces": trail_forces,
+        "residual": jnp.linalg.norm(converged - solution.value),
+    }
 
 
 # ------------------------------------------------------------------------------
 # Validation against tests/equilibrium/test_force.py::bt2_out
 # ------------------------------------------------------------------------------
 
-EXPECTED_XYZ = np.array([[0.11891271935545733, 0.04623304043571308, 0.0],
-                         [-0.14550216351451895, 1.0106420665842952, 0.0],
-                         [0.0, 2.0, 0.0],
-                         [1.5829003695589805, 0.11137412111377487, 0.0],
-                         [1.1455022100524879, 1.010642073428508, 0.0],
-                         [1.0, 2.0, 0.0]])
+EXPECTED_XYZ = np.array(
+    [
+        [0.11891271935545733, 0.04623304043571308, 0.0],
+        [-0.14550216351451895, 1.0106420665842952, 0.0],
+        [0.0, 2.0, 0.0],
+        [1.5829003695589805, 0.11137412111377487, 0.0],
+        [1.1455022100524879, 1.010642073428508, 0.0],
+        [1.0, 2.0, 0.0],
+    ]
+)
 
-EXPECTED_FORCE = {(0, 1): -1.5154917766302523,
-                  (1, 2): -1.6714301665432025,
-                  (3, 4): -1.1120156232900127,
-                  (4, 5): -1.6714302901903129}
+EXPECTED_FORCE = {
+    (0, 1): -1.5154917766302523,
+    (1, 2): -1.6714301665432025,
+    (3, 4): -1.1120156232900127,
+    (4, 5): -1.6714302901903129,
+}
 
-EXPECTED_REACTION = {0: [-0.4007185806081004, 1.4615539484361662, -0.0],
-                     3: [0.40071844900288345, 0.5384458270605735, -0.0]}
+EXPECTED_REACTION = {
+    0: [-0.4007185806081004, 1.4615539484361662, -0.0],
+    3: [0.40071844900288345, 0.5384458270605735, -0.0],
+}
 
 
 def main():
     structure = build_structure()
-    solve = jax.jit(lambda lengths, forces, loads, xyz:
-                    static_equilibrium(lengths, forces, loads, xyz, structure, eta=1e-5))
+    solve = jax.jit(
+        lambda lengths, forces, loads, xyz: static_equilibrium(
+            lengths, forces, loads, xyz, structure, eta=1e-5
+        )
+    )
 
-    result = solve(jnp.asarray(LENGTHS), jnp.asarray(FORCES),
-                   jnp.asarray(LOADS), jnp.asarray(XYZ0))
+    result = solve(
+        jnp.asarray(LENGTHS), jnp.asarray(FORCES), jnp.asarray(LOADS), jnp.asarray(XYZ0)
+    )
 
     print("residual:", float(result["residual"]))
 
@@ -289,7 +316,9 @@ def main():
         got = float(result["trail_forces"][EDGES.index(edge)])
         match = np.allclose(got, want, rtol=1e-5)
         ok &= match
-        print(f"  {edge}  {'ok ' if match else 'BAD'}  {got:.16f}  expected {want:.16f}")
+        print(
+            f"  {edge}  {'ok ' if match else 'BAD'}  {got:.16f}  expected {want:.16f}"
+        )
 
     print("\nreaction forces")
     for node, want in EXPECTED_REACTION.items():
@@ -302,8 +331,14 @@ def main():
 
     # gradient of a toy loss through the whole fixed point
     def loss(forces):
-        state = static_equilibrium(jnp.asarray(LENGTHS), forces, jnp.asarray(LOADS),
-                                   jnp.asarray(XYZ0), structure, eta=1e-5)
+        state = static_equilibrium(
+            jnp.asarray(LENGTHS),
+            forces,
+            jnp.asarray(LOADS),
+            jnp.asarray(XYZ0),
+            structure,
+            eta=1e-5,
+        )
         return jnp.sum(jnp.square(state["xyz"][0] - jnp.array([0.5, 0.0, 0.0])))
 
     value, gradient = jax.value_and_grad(loss)(jnp.asarray(FORCES))
