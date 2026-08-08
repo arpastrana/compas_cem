@@ -4183,6 +4183,8 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Added the <code>build_cpython_ghuser_components</code>, <code>update_gh_header</code>, <code>yakerize</code> and <code>publish_yak</code> tasks to <code>tasks.py</code>, together with the <code>ghuser_cpython</code> and <code>yak</code> configuration blocks they read.</li>
 <li>Added a static <code>instanceGuid</code> to all 39 component <code>metadata.json</code> files. The componentizer mints a fresh random GUID whenever the field is absent, so every build emitted different GUIDs and broke the components already placed in a <code>.gh</code> file.</li>
 <li>Added a <code>dev-docs</code> job that publishes the documentation built from <code>main</code> as the <code>dev</code> version. <code>compas-actions.docs</code> deploys mkdocs on a version tag only, so between releases the site would otherwise show the last release and nothing newer.</li>
+<li>Added a concurrency group to the build, docs and pull request workflows, so pushing to a pull request cancels its own in-flight run instead of queueing a second one. Pushes and tags keep a run-unique group, so a stuck run cannot hold up a deploy.</li>
+<li>Added <code>workflow_dispatch</code> to the build and docs workflows, so either can be run by hand.</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
