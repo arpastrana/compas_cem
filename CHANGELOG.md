@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the `build_cpython_ghuser_components`, `update_gh_header`, `yakerize` and `publish_yak` tasks to `tasks.py`, together with the `ghuser_cpython` and `yak` configuration blocks they read.
 - Added a static `instanceGuid` to all 39 component `metadata.json` files. The componentizer mints a fresh random GUID whenever the field is absent, so every build emitted different GUIDs and broke the components already placed in a `.gh` file.
 - Added a `dev-docs` job that publishes the documentation built from `main` as the `dev` version. `compas-actions.docs` deploys mkdocs on a version tag only, so between releases the site would otherwise show the last release and nothing newer.
+- Added a concurrency group to the build, docs and pull request workflows, so pushing to a pull request cancels its own in-flight run instead of queueing a second one. Pushes and tags keep a run-unique group, so a stuck run cannot hold up a deploy.
+- Added `workflow_dispatch` to the build and docs workflows, so either can be run by hand.
 
 ### Changed
 
