@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added regression tests that trails and auxiliary trails survive a JSON round trip.
 - Added `plotters/scene_objects.py` and `viewers/scene_objects.py`, replacing the artist and object modules of both visualization backends.
 - Added `tests/baseline/render.py`, which renders every example headless for visual review of the plotters.
+- Added `ghpython/scene_objects.py`, replacing `ghpython/artists.py` with `compas.scene` scene objects that register themselves in the `Grasshopper` context.
+- Added `src/compas_cem/ghpython/yak_template/`, holding the `manifest.yml` and the package icon that `yakerize` wraps the built components with.
+- Added the `build_cpython_ghuser_components`, `update_gh_header`, `yakerize` and `publish_yak` tasks to `tasks.py`, together with the `ghuser_cpython` and `yak` configuration blocks they read.
+- Added a static `instanceGuid` to all 39 component `metadata.json` files. The componentizer mints a fresh random GUID whenever the field is absent, so every build emitted different GUIDs and broke the components already placed in a `.gh` file.
 
 ### Changed
 
@@ -43,6 +47,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `DiagramObject` referring to `self.topology`, which it never defined.
 - Fixed a `show_nodes` setter that assigned to `_show_edges`.
 - Fixed `DiagramArtist.draw_reactions` documenting a `min_load` parameter that its signature calls `min_force`, and `TopologyDiagramObject` documenting its argument as `form_diagram`.
+- Renamed `ghpython/components/` to `ghpython/components_cpython/`, matching `compas_fab` and the CPython-only component format that Rhino 8 loads.
+- Ported all 39 Grasshopper components to Rhino 8 CPython: a `# r: compas_cem>=0.9.0` requirements header, `Grasshopper.Kernel.GH_ScriptInstance` in place of `ghpythonlib.componentbase.executingcomponent`, PEP 484 annotations on `RunScript`, and the injected `ghenv.Component` in place of `self`, which is no longer the component.
+- Ported the 13 components that read Rhino geometry from the removed `compas_rhino.geometry.Rhino*` wrappers to the `compas_rhino.conversions` functions that replaced them.
+- Annotated component inputs as optional where Grasshopper passes `None` for an unconnected input, under `from __future__ import annotations` so that Rhino 8, which is CPython 3.9, does not evaluate the unions at definition time.
+- Read node positions in the Grasshopper scene objects from the scene object rather than from the diagram, so a transformation set on the object applies to everything it draws.
+- Moved the release publish job from `ubuntu-latest` to `windows-latest` and gave it the component-building inputs, because the componentizer loads `GH_IO.dll`.
+- Fixed `_draw_forces` normalizing a force vector before testing its magnitude, which divided by a zero length at a node carrying no load or reaction.
+- Fixed `draw_reactions` raising on a node with no connected edge, where it searched an empty sequence for the strongest edge force.
+- Fixed the topology JSON import component declaring a class named `FormDiagramFromJSON` and documenting itself as importing a form diagram.
+- Fixed a `typeHinID` misspelling in the topology artist component's `metadata.json`, which left two of its inputs without a type hint.
+- Replaced `rs.AddPoint` in the support node results component with `point_to_rhino`. The `rhinoscriptsyntax` call bakes a point into the Rhino document instead of returning geometry to the component output.
+- Returned an empty list rather than `None` from the topology draw methods when a selection is empty.
 - Moved the documentation from Sphinx and reStructuredText to mkdocs-material with mkdocstrings.
 - Converted `README`, `CHANGELOG` and `AUTHORS` from reStructuredText to Markdown.
 - Replaced the abandoned `pytest-lazy-fixture` with `pytest-lazy-fixtures`, which lifts the `pytest<8` ceiling.
@@ -59,6 +75,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `Diagram.connected_edges`, superseded by `node_connected_edges`. COMPAS 2 gives the inherited name a different meaning: it takes no node and returns edge groups per connected component.
 - Removed `plotters/proxy.py`. It was dead code calling a `FormPlotter` and a `TopologyPlotter` that no longer exist.
 - Removed the `FormArtist`, `TopologyArtist` and `DiagramArtist` plotter classes and the `register_artists` plugin, superseded by the plotter scene objects.
+- Removed `ghpython/install.py` and `ghpython/uninstall.py`, and with them the `installable_rhino_packages` and `after_rhino_install` plugin hooks. Grasshopper components ship through yak only.
+- Removed `ghpython/artists.py` and `ghpython/register.py`, superseded by the Grasshopper scene objects, which register on import as the plotter and viewer ones do.
+- Removed the `__all_plugins__` declaration from `compas_cem/__init__.py`, which named the three deleted modules.
+- Removed `isAdvancedMode` from all 39 component `metadata.json` files. It only meant anything to the Rhino 7 IronPython component format.
 
 ## [0.8.6] 2025-02-24
 

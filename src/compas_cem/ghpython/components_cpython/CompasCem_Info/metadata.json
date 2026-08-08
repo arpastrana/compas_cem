@@ -1,0 +1,19 @@
+{
+    "name": "Info",
+    "nickname": "Info",
+    "category": "COMPAS CEM",
+    "subcategory": "01_Info",
+    "description": "Displays info about the active version of COMPAS CEM",
+    "exposure": 2,
+    "instanceGuid": "17d9b79c-59ec-44b5-aa85-4b1c1b8463c9",
+
+    "ghpython": {
+        "inputParameters": [],
+        "outputParameters": [
+            {
+                "name": "info",
+                "description": "COMPAS CEM info"
+            }
+        ]
+    }
+}

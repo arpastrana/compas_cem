@@ -1,0 +1,35 @@
+{
+    "name": "Edge Forces and Lengths",
+    "nickname": "EdgeForcesLengths",
+    "category": "COMPAS CEM",
+    "subcategory": "07_Results",
+    "description": "Get the lengths and the forces of the edges in a form diagram.",
+    "exposure": 4,
+    "instanceGuid": "f26015fd-0131-4864-b670-89edb8dbb85a",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram."
+            },
+            {
+                "name": "edge_keys",
+                "description": "A selection of edge keys to query the results on. Defaults to all the edge keys.",
+                "scriptParamAccess": "list"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "lengths",
+                "description": "The edge lengths.",
+                "optional": false
+            },
+            {
+                "name": "forces",
+                "description": "The edge forces.",
+                "optional": false
+            }
+        ]
+    }
+}

@@ -110,7 +110,7 @@ ignore = ["E501"]
 "__init__.py" = ["I001", "F401", "F403"]
 "tasks.py" = ["I001"]
 "tests/*" = ["I001", "E712"]
-"src/compas_cem/ghpython/components/*/code.py" = ["F821", "F401", "I001"]
+"src/compas_cem/ghpython/components_cpython/*/code.py" = ["F821", "F401", "I001"]
 
 [tool.ruff.lint.isort]
 force-single-line = true

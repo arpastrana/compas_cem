@@ -1,0 +1,35 @@
+ {
+    "name": "Trail Edge Length Parameter",
+    "nickname": "TrailEdgeLengthParameter",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Set the length of a trail edge as an optimization parameter.",
+    "exposure": 8,
+    "instanceGuid": "9b17371f-0f08-4f87-8d51-4b37dd92e759",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "edge_key",
+                "description": "The key of a COMPAS CEM trail edge."
+            },
+            {
+                "name": "bound_low",
+                "description": "The lower bound of the edge optimization parameter. Its value is calculated as the initial edge parameter minus the absolute value of this bound. Defaults to '-inf'.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "bound_up",
+                "description": "The upper bound of the edge optimization parameter. Its value is calculated as the initial edge parameter plus the absolute value of this bound. Defaults to '+inf'.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "parameter",
+                "description": "A COMPAS CEM trail edge length parameter.",
+                "optional": false
+            }
+        ]
+    }
+}

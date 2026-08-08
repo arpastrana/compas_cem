@@ -1,0 +1,36 @@
+{
+    "name": "Line Goal",
+    "nickname": "LineGoal",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Pull the position of a node to a target line ray.",
+    "exposure": 4,
+    "instanceGuid": "1f4e6c41-1cc2-42f8-81b7-b962df62c12b",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "node_key",
+                "description": "The key of a COMPAS CEM node.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "line",
+                "description": "The target line ray.",
+                "typeHintID": "line"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the goal in the optimization problem. The weight of the goal in the optimization problem. Defaults to one",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "goal",
+                "description": "A COMPAS CEM line goal.",
+                "optional": false
+            }
+        ]
+    }
+}

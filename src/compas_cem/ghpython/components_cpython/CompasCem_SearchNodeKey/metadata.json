@@ -1,0 +1,30 @@
+{
+    "name": "Search Node Key",
+    "nickname": "SearchNodeKey",
+    "category": "COMPAS CEM",
+    "subcategory": "02_Elements",
+    "description": "Search a node key in a topology or a form diagram with a point.",
+    "exposure": 8,
+    "instanceGuid": "e2a81576-e35e-4d12-82a0-6da4cfe52909",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "diagram",
+                "description": "A COMPAS CEM topology or form diagram."
+            },
+            {
+                "name": "point",
+                "description": "The point to search for in the diagram.",
+                "typeHintID": "point"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "node_key",
+                "description": "The found node key.",
+                "optional": false
+            }
+        ]
+    }
+}

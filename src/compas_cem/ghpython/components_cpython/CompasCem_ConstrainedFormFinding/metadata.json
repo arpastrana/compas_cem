@@ -1,0 +1,103 @@
+{
+    "name": "Constrained Form-Finding",
+    "nickname": "ConstrainedFormFinding",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Generate a form in equilibrium such that it meets user-defined goals.\nStart a proxy server before running this component to accelerate the optimization time.",
+    "exposure": 2,
+    "instanceGuid": "554e6c72-ba4d-40e2-9d18-a7355b954908",
+
+    "ghpython": {
+        "hideOutput": false,
+        "inputParameters": [
+            {
+                "name": "solve",
+                "description": "Kickstarts the solution of the constrained form-finding problem.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "goals",
+                "description": "A list of COMPAS CEM optimization goals.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "parameters",
+                "description": "A list of COMPAS CEM optimization parameters.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "algorithm",
+                "description": "The name of the gradient-based local optimization algorithm to use. Defaults to SLSQP.\nCurrently supported algorithms are:\n\n- SLSQP: Sequential Least Squares Programming\n- LBFGS: Low-Storage Broyden-Fletcher-Goldfarb-Shanno\n- MMA: Method of Moving Asymptotes\n- TNEWTON: Preconditioned Truncated Newton\n- AUGLAG: Augmented Lagrangian\n -VAR: Limited-Memory Variable-Metric Algorithm\n",
+                "typeHintID": "str"
+            },
+            {
+                "name": "iters_max",
+                "description": "The maximum number of iterations to run the optimization algorithm for.\nIf it is equal to -1, then there is no iteration limit.\nDefaults to 100.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "eps",
+                "description": "The convergence threshold for the output value of the objective function. Defaults to 1e-6.",
+                "typeHintID": "float"
+
+            },
+            {
+                "name": "kappa",
+                "description": " The convergence threshold for the norm of the gradient of the objective function. Defaults to 1e-8.",
+                "typeHintID": "float"
+
+            },
+            {
+                "name": "tmax",
+                "description": "The maximum number of iterations to run the form-finding algorithm for. Defaults to 100.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "eta",
+                "description": "The convergence threshold of the form-finding algorithm. Defaults to 1e-6.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram with optimized parameters.",
+                "optional": false
+            },
+            {
+                "name": "form",
+                "description": "A COMPAS CEM form diagram in static equilibrium.",
+                "optional": false
+            },
+            {
+                "name": "objective",
+                "description": "The resulting output value of the objective function.",
+                "optional": false
+            },
+            {
+                "name": "grad_norm",
+                "description": "The norm of the gradient of the objective function.",
+                "optional": false
+            },
+            {
+                "name": "iters",
+                "description": "The elapsed number of optimization iterations.",
+                "optional": false
+            },
+            {
+                "name": "time",
+                "description": "The total optimization runtime in seconds.",
+                "optional": false
+            },
+            {
+                "name": "status",
+                "description": "The final status of the optimization process.",
+                "optional": false
+            }
+        ]
+    }
+}

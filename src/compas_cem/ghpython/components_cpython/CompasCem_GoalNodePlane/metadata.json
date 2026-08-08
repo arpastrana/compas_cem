@@ -1,0 +1,36 @@
+{
+    "name": "Plane Goal",
+    "nickname": "PlaneGoal",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Pull the position of a node to a target plane.",
+    "exposure": 4,
+    "instanceGuid": "0ab3b53a-f5cc-494d-a346-4ae81d0112db",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "node_key",
+                "description": "The key of a COMPAS CEM node.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "plane",
+                "description": "The target plane.",
+                "typeHintID": "plane"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the goal in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "goal",
+                "description": "A COMPAS CEM node plane goal.",
+                "optional": false
+            }
+        ]
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "name": "Point Goal",
+    "nickname": "PointGoal",
+    "category": "COMPAS CEM",
+    "subcategory": "06_Optimization",
+    "description": "Pull the position of a node to a target point.",
+    "exposure": 4,
+    "instanceGuid": "d1884466-6e73-4060-87b4-eb4d5f5ffb88",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "node_key",
+                "description": "The key of a COMPAS CEM node.",
+                "typeHintID": "int"
+            },
+            {
+                "name": "point",
+                "description": "The target point.",
+                "typeHintID": "point"
+            },
+            {
+                "name": "weight",
+                "description": "The weight of the goal in the optimization problem. Defaults to one.",
+                "typeHintID": "float"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "goal",
+                "description": "A COMPAS CEM node point goal.",
+                "optional": false
+            }
+        ]
+    }
+}

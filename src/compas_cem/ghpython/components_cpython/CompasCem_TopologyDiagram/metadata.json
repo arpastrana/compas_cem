@@ -1,0 +1,46 @@
+{
+    "name": "Assemble Topology Diagram",
+    "nickname": "AssembleTopologyDiagram",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Assemble a topology diagram.",
+    "exposure": 2,
+    "instanceGuid": "c67df2e2-7bf1-4f78-82d9-6bf2561d9a01",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "trail_edges",
+                "description": "The COMPAS CEM trail edges to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "deviation_edges",
+                "description": "The COMPAS CEM deviation edges to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "loads",
+                "description": "The COMPAS CEM loads to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "supports",
+                "description": "The COMPAS CEM supports to add to the diagram.",
+                "scriptParamAccess": "list"
+            },
+            {
+                "name": "add_auxiliary_trails",
+                "description": "Append auxiliary trails to the free nodes of the topology diagram. Defaults to False.",
+                "typeHintID": "bool"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "topology",
+                "description": "A COMPAS CEM topology diagram.",
+                "optional": false
+            }
+        ]
+    }
+}
