@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `src/compas_cem/ghpython/yak_template/`, holding the `manifest.yml` and the package icon that `yakerize` wraps the built components with.
 - Added the `build_cpython_ghuser_components`, `update_gh_header`, `yakerize` and `publish_yak` tasks to `tasks.py`, together with the `ghuser_cpython` and `yak` configuration blocks they read.
 - Added a static `instanceGuid` to all 39 component `metadata.json` files. The componentizer mints a fresh random GUID whenever the field is absent, so every build emitted different GUIDs and broke the components already placed in a `.gh` file.
+- Added a `dev-docs` job that publishes the documentation built from `main` as the `dev` version. `compas-actions.docs` deploys mkdocs on a version tag only, so between releases the site would otherwise show the last release and nothing newer.
 
 ### Changed
 
