@@ -1321,14 +1321,38 @@ Stale branches were pruned at the end of the run: local `phase-1` and
 `phase-0-tooling`, and remote `origin/phase-1`. `phase-0-tooling` was checked
 first — its §10.6 content reached `main` by cherry-pick, so nothing was lost.
 
-Six pre-migration remote branches were deliberately **left alone**, since they
-predate this work:
+Six pre-migration remote branches predate this work. Five were pruned on
+2026-08-07, after re-verifying that each was fully merged into `main` with zero
+unique commits; two were kept:
 
 | branch | last commit | state |
 | --- | --- | --- |
-| `cad`, `polyline`, `sequences`, `singular`, `vectorize` | 2022–2023 | merged into `main`, no unique commits — safe to delete whenever |
-| `autograd` | 2022-08-15 | **not merged**, 3 commits not on `main` — read before deleting |
-| `gh-pages` | — | the published docs site, must not be deleted |
+| `cad` | 2022-08-24 | **deleted** 2026-08-07, tip was `dfd61dd3` |
+| `singular` | 2022-08-26 | **deleted** 2026-08-07, tip was `fda5b7f7` |
+| `polyline` | 2022-11-17 | **deleted** 2026-08-07, tip was `6aea47db` |
+| `sequences` | 2022-11-17 | **deleted** 2026-08-07, tip was `9a889097` |
+| `vectorize` | 2023-04-06 | **deleted** 2026-08-07, tip was `af5a435a` |
+| `autograd` | 2022-08-15 | **kept as a legacy branch**, decided 2026-08-07. Tip `0d5c6552` |
+| `gh-pages` | — | **kept.** The published docs site, must not be deleted |
+
+The five deletions are recoverable from the recorded tip SHAs while the objects
+survive on the remote. `origin` now holds `main`, `autograd` and `gh-pages` only.
+
+`autograd` is kept for the historical record only — it is the first
+differentiation attempt, the one Phases 3 and 4 replace with JAX. Nothing on it
+is salvageable, and this was checked rather than assumed:
+
+- Its three commits touch **two files**. `examples/06_edge_chain.py` is a
+  three-node `autograd.grad` check harness that never existed on `main` under
+  either name; the other is a five-line `literal_eval` guard on linestyles in
+  `plotters/proxy.py`, a file Phase 2 deleted outright.
+- The example imports `force_equilibrium`, `form_equilibrate_numpy`,
+  `FormPlotter` and `TrailEdgeConstraint`, and authors on a `FormDiagram`. All
+  of those are gone or renamed, so it cannot run against the current tree.
+- A raw `git diff` against `main` returns ~122 KB and is misleading. The branch
+  forked in July 2021 and still carries the whole pre-`f0bbe26d` examples
+  folder that `main` deliberately replaced with the curated five, so the diff is
+  mostly `main`'s own progress reported in reverse.
 
 ### 14.2 The governing objective
 
@@ -1355,10 +1379,10 @@ resolved: keep it, and follow `compas_fab`. **§15 is the blueprint** — the ex
 `tasks.py` config, the `yak_template` layout, and the four `release.yml` inputs,
 including that the publish job must move to `windows-latest`.
 
-One prerequisite remains inside that work: §15.3, establishing how
-`componentize_cpy.py` assigns GUIDs. If it derives them from component names,
-the Phase 1 `Constraint` → `Goal` renames changed them and existing `.gh` files
-will not resolve. Most likely a migration note rather than a code change.
+The one prerequisite inside that work, §15.3, is now **resolved**: GUIDs are not
+name-derived, so the Phase 1 renames broke nothing. What it uncovered instead is
+that GUIDs are random per build, which leaves a decision — pin them or accept
+the ecosystem default — to be taken during Phase 5.
 
 ### 14.4 Ready to start now, in parallel
 
@@ -1493,17 +1517,164 @@ because the componentizer loads `GH_IO.dll`:
 `yakerize` and `publish_yak` remain available from `tasks.py` for local and
 manual publishing, which is also how `compas_fab` arranges it.
 
-### 15.3 Prerequisite: settle how GUIDs are assigned
+### 15.3 Resolved: GUIDs are random per build, not name-derived
 
-**Unresolved, and it must be checked before Phase 5 ships.** §11.1 found that no
-`instanceGuid` appears anywhere in this repository, and `compas_ghpython` ships
-no `metadata.json` in its wheel, so the schema could not be read from the
-installed packages.
+Settled 2026-08-07 by reading `componentize_cpy.py` in
+`compas-dev/compas-actions.ghpython_components`.
 
-If `componentize_cpy.py` derives a component's GUID **deterministically from its
-name**, then renaming the eight `CompasCem_Constraint*` directories to
-`CompasCem_Goal*` in Phase 1 changed those GUIDs, and existing `.gh` files that
-reference them will not resolve after an upgrade. Verify against
-`compas-dev/compas-actions.ghpython_components` before publishing. The remedy is
-most likely a documented migration note for 0.9.0 rather than any code change,
-since `Constraint` → `Goal` is a deliberate break (§5).
+GUIDs are **not** derived from the component name. `metadata.json` may carry an
+optional `instanceGuid`, and when it is absent the componentizer mints a fresh
+random one:
+
+```python
+instance_guid = data.get("instanceGuid")
+if not instance_guid:
+    instance_guid = System.Guid.NewGuid()
+else:
+    instance_guid = System.Guid.Parse(instance_guid)
+```
+
+The componentizer README confirms it: *"`instanceGuid`: **(optional)**
+Statically define a GUID for this instance. Defaults to a new Guid."*
+
+**The Phase 1 renames are therefore harmless here.** `CompasCem_Constraint*` →
+`CompasCem_Goal*` changed no GUID, because the directory name never fed one.
+
+The real finding is larger and predates this work. No `instanceGuid` appears in
+any of the 39 `metadata.json` files, so **every build emits a fresh random GUID
+for every component**, and no `.ghuser` has ever been committed to this
+repository. Consequently §5's line — *"`instanceGuid`s preserved so existing
+`.gh` files still resolve"* — describes something the current setup cannot
+deliver, and never could.
+
+This is not a `compas_cem` defect. A code search across `compas-dev` returns
+`instanceGuid` in exactly three files, all of them fixtures in the
+componentizer's own `examples/`; no production COMPAS package pins GUIDs.
+
+**Decision owed in Phase 5**, and it is a genuine fork:
+
+- **Accept the ecosystem default.** Ship random GUIDs as `compas_fab` and
+  `compas_timber` do, and document in the 0.9.0 notes that components must be
+  re-placed in existing `.gh` files. Cheap, conventional, and consistent with
+  `Constraint` → `Goal` already being a deliberate break.
+- **Pin them.** Add a static `instanceGuid` to all 39 `metadata.json` files so
+  every future release is stable. Backward compatibility with 0.8.6 additionally
+  requires recovering the GUIDs from the published 0.8.6 yak package's `.ghuser`
+  files — they exist nowhere in this repository.
+
+Pinning is worth doing regardless for *future* stability; whether to also
+reconstruct the 0.8.6 values depends on how many users hold live `.gh` files,
+which is a judgement call rather than a technical one.
+
+---
+
+## 16. Phase 5 outcome
+
+Written 2026-08-07, at the end of the session that ported the `ghpython` layer.
+The work sits **uncommitted in the working tree**; nothing was committed.
+
+With this, **no module of the package is on COMPAS 1 APIs**, which is what
+§14.3 set as the definition of a complete COMPAS 2 migration.
+
+### 16.1 What changed
+
+| item | outcome |
+| --- | --- |
+| `components/` → `components_cpython/` | renamed with `git mv`, so the rename is recorded rather than a delete plus add |
+| the 39 `code.py` | all ported: `# r: compas_cem>=0.9.0` header, `Grasshopper.Kernel.GH_ScriptInstance`, PEP 484 on `RunScript`, `ghenv.Component` for the two components that touch it |
+| the 13 geometry components | on `compas_rhino.conversions`; the counts match §4.5 exactly — point ×5, line ×4, vector ×3, plane ×2, polyline ×1 |
+| the 39 `metadata.json` | `isAdvancedMode` dropped, a static `instanceGuid` pinned in each, all 39 unique |
+| `artists.py` (397 lines) | replaced by `scene_objects.py`, registering `FormDiagramObject` and `TopologyDiagramObject` in the `Grasshopper` context |
+| `install.py`, `uninstall.py`, `register.py` | deleted, along with `__all_plugins__` |
+| `tasks.py`, `release.yml`, `yak_template/` | wired per §15.2, with the correction in §16.3 |
+
+Class names follow the viewer port rather than the plotter one —
+`DiagramObject`, `FormDiagramObject`, `TopologyDiagramObject` — because the
+Grasshopper objects carry no backend name in the way `FormPlotterObject` does.
+
+### 16.2 Resolved: §15.3, pin fresh GUIDs
+
+Decided by Rafael during this session. A static `instanceGuid` is now pinned in
+all 39 `metadata.json` files, minted fresh rather than recovered from the
+published 0.8.6 yak package.
+
+The consequence to carry into the 0.9.0 notes: components in a `.gh` file built
+against **0.8.6 must be re-placed once**, on the upgrade. Every release after
+0.9.0 is stable, which is what the old §5 line about preserving `instanceGuid`s
+promised and could never deliver.
+
+### 16.3 Corrections to the plan, learned by doing
+
+- **§4.5's `marshalOutGuids` → `marshalGuids` swap is a no-op here.** No
+  `metadata.json` in this repository carries either key, so only the
+  `isAdvancedMode` half of that instruction applied.
+- **§15.2's `tasks.py` snippet is incomplete.** `yakerize` in the installed
+  `compas_invocations2` does not find `yak_template/` by convention: it resolves
+  `ctx.yak.manifest_path` and `ctx.yak.logo_path` by config key and exits if
+  either is missing. A `yak` block was added alongside `ghuser_cpython`. Taken
+  as given, the blueprint would have failed at run time.
+- **`yakerize` accepts `rh6`, `rh7` or `rh8` only** for `target_rhino`, and
+  defaults to `rh8`. There is no `rh9` value to pass, so the Rhino 8 package is
+  what a Rhino 9 install loads.
+- **Rhino 8 being CPython 3.9 constrains the annotations.** Grasshopper passes
+  `None` for an unconnected input, so the honest annotation is `int | None`,
+  which 3.9 evaluates at definition time and rejects. Every component therefore
+  carries `from __future__ import annotations`.
+
+### 16.4 Latent bugs fixed in passing
+
+- `_draw_forces` normalized a force vector *before* testing its magnitude, so
+  any node carrying no load or reaction divided by a zero length. Same class as
+  the §12.7 warnings.
+- `draw_reactions` searched an empty sequence for the strongest edge force at a
+  node with no connected edge. The Phase 2 plotter already guarded this; the
+  Grasshopper artist did not.
+- The topology JSON import component declared a class named
+  `FormDiagramFromJSON` and documented itself as importing a form diagram.
+- `CompasCem_ArtistTopology/metadata.json` misspelled `typeHintID` as
+  `typeHinID` twice, leaving two inputs without a type hint.
+- `CompasCem_ResultsSupportNodes` built its output with `rs.AddPoint`, which
+  bakes a point into the Rhino document instead of returning geometry. Now
+  `point_to_rhino`.
+- The topology draw methods returned `None` instead of an empty list when a
+  selection came back empty.
+
+Two Rhino 7 leftovers were also repaired: `.gitignore` and the ruff
+`per-file-ignores` both still pointed at `ghpython/components/`.
+
+### 16.5 What is not verified
+
+**The componentizer was never run.** It needs `GH_IO.dll`, and this machine has
+neither Mono nor Rhino installed, so no `.ghuser` was built and no `.yak` was
+packaged. That verification belongs to CI on `windows-latest`, and
+`release.yml` is still tag-triggered and completely unrun (§14.5).
+
+What *was* verified: `ruff check` clean; `ruff format --check` clean over `src`
+and `tests`; all 39 `code.py` plus `scene_objects.py` and `tasks.py`
+compile; 107/107 tests pass; `compas_cem`, `.ghpython`, `.plotters` and
+`.viewers` all import outside Rhino; `mkdocs build --strict` succeeds; and
+`invoke --list` shows all fifteen tasks with the new configuration loaded.
+
+The two `ruff format --check` failures under `docs/` are code blocks in this
+file and predate the phase. CI's lint runs `ruff check --fix src tests` only, so
+they were never a gate.
+
+Nothing in this phase can be exercised without Rhino, so **the acceptance test
+is opening Grasshopper**: load the built package, drop each component, and
+confirm the two artist components draw. That is the one thing still outstanding.
+
+### 16.6 Left alone deliberately
+
+`CompasCem_ResultsSupportNodes/metadata.json` names its second input `node`
+while `RunScript` calls the parameter `support_node_keys`. Grasshopper binds
+positionally, so it works. Renaming the metadata entry would change a visible
+component input, which is not something a port should do; renaming the code
+parameter would make it less clear. Recorded rather than changed.
+
+### 16.7 Owed before tagging 0.9.0
+
+§14.5 still stands in full, and the version bump is now load-bearing: the
+component headers read `compas_cem>=0.9.0` while `pyproject.toml` reads 0.8.6.
+`grasshopper.update_gh_header` rewrites those headers from the `bumpversion`
+version, so bumping first makes them consistent; running it before the bump
+would walk them back to 0.8.6.
