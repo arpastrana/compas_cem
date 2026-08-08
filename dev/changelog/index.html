@@ -4221,6 +4221,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Fixed a <code>typeHinID</code> misspelling in the topology artist component's <code>metadata.json</code>, which left two of its inputs without a type hint.</li>
 <li>Replaced <code>rs.AddPoint</code> in the support node results component with <code>point_to_rhino</code>. The <code>rhinoscriptsyntax</code> call bakes a point into the Rhino document instead of returning geometry to the component output.</li>
 <li>Returned an empty list rather than <code>None</code> from the topology draw methods when a selection is empty.</li>
+<li>Fixed the five Python example pages showing <code>--8 &lt; --"examples/…"</code> instead of the example source. A pymdownx snippet marker is valid python, so <code>ruff format</code> reformatted it as an expression inside the fenced block and the include stopped resolving. Markdown is now excluded from the formatter.</li>
 <li>Moved the documentation from Sphinx and reStructuredText to mkdocs-material with mkdocstrings.</li>
 <li>Converted <code>README</code>, <code>CHANGELOG</code> and <code>AUTHORS</code> from reStructuredText to Markdown.</li>
 <li>Replaced the abandoned <code>pytest-lazy-fixture</code> with <code>pytest-lazy-fixtures</code>, which lifts the <code>pytest&lt;8</code> ceiling.</li>
