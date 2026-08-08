@@ -123,7 +123,7 @@ conda.recipe/
 
 .obsidian
 
-src/compas_cem/ghpython/components/ghuser/
+src/compas_cem/ghpython/components_cpython/ghuser/
 
 # throwaway legacy baseline env (Phase 0)
 .venv-legacy/
