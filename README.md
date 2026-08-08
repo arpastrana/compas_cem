@@ -4,8 +4,10 @@
 [![License](https://img.shields.io/github/license/arpastrana/compas_cem.svg)](https://github.com/arpastrana/compas_cem/blob/main/LICENSE)
 [![PyPI Package latest release](https://img.shields.io/pypi/v/compas-cem.svg)](https://pypi.python.org/pypi/compas-cem)
 [![Python versions](https://img.shields.io/pypi/pyversions/compas-cem)](https://pypi.org/project/compas-cem)
+[![Made with COMPAS](https://compas.dev/badge.svg)](https://compas.dev/mission-control/#compas_cem)
+[![CAD paper](https://img.shields.io/badge/CAD-10.1016%2Fj.cad.2022.103435-ff6c00.svg)](https://doi.org/10.1016/j.cad.2022.103435)
 [![ArXiv paper](https://img.shields.io/badge/arXiv-2111.02607-b31b1b.svg)](https://arxiv.org/abs/2111.02607)
-[![Zenodo DOI](https://zenodo.org/badge/278780552.svg)](https://zenodo.org/badge/latestdoi/278780552)
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5705740-1682d4.svg)](https://doi.org/10.5281/zenodo.5705740)
 
 ![](docs/images/staircase_24_fps_128_colors.gif)
 

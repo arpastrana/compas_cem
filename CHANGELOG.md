@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a `dev-docs` job that publishes the documentation built from `main` as the `dev` version. `compas-actions.docs` deploys mkdocs on a version tag only, so between releases the site would otherwise show the last release and nothing newer.
 - Added a concurrency group to the build, docs and pull request workflows, so pushing to a pull request cancels its own in-flight run instead of queueing a second one. Pushes and tags keep a run-unique group, so a stuck run cannot hold up a deploy.
 - Added `workflow_dispatch` to the build and docs workflows, so either can be run by hand.
+- Added a Made with COMPAS badge and a badge linking to the Computer-Aided Design article underpinning the framework to `README.md`.
 
 ### Changed
 
@@ -68,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced the abandoned `pytest-lazy-fixture` with `pytest-lazy-fixtures`, which lifts the `pytest<8` ceiling.
 - Rewrote `tasks.py` to compose `compas_invocations2` tasks.
 - Updated CI to `compas-actions.build@v5`, `compas-actions.docs@v5` and `compas-actions.publish@v3`.
+- Replaced the Zenodo badge in `README.md` with a static shields.io badge on the concept DOI `10.5281/zenodo.5705740`, which always resolves to the latest deposit. The badge Zenodo generates is rendered on request and frequently times out behind the GitHub image proxy, so it showed up broken.
 - Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.
 - Loosened dependency version from `numpy<2` to `numpy>=1.26`. The upper bound was never necessary; the test suite passes on numpy 2.
 
