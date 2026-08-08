@@ -4185,6 +4185,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Added a <code>dev-docs</code> job that publishes the documentation built from <code>main</code> as the <code>dev</code> version. <code>compas-actions.docs</code> deploys mkdocs on a version tag only, so between releases the site would otherwise show the last release and nothing newer.</li>
 <li>Added a concurrency group to the build, docs and pull request workflows, so pushing to a pull request cancels its own in-flight run instead of queueing a second one. Pushes and tags keep a run-unique group, so a stuck run cannot hold up a deploy.</li>
 <li>Added <code>workflow_dispatch</code> to the build and docs workflows, so either can be run by hand.</li>
+<li>Added a Made with COMPAS badge and a badge linking to the Computer-Aided Design article underpinning the framework to <code>README.md</code>.</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
@@ -4227,6 +4228,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Replaced the abandoned <code>pytest-lazy-fixture</code> with <code>pytest-lazy-fixtures</code>, which lifts the <code>pytest&lt;8</code> ceiling.</li>
 <li>Rewrote <code>tasks.py</code> to compose <code>compas_invocations2</code> tasks.</li>
 <li>Updated CI to <code>compas-actions.build@v5</code>, <code>compas-actions.docs@v5</code> and <code>compas-actions.publish@v3</code>.</li>
+<li>Replaced the Zenodo badge in <code>README.md</code> with a static shields.io badge on the concept DOI <code>10.5281/zenodo.5705740</code>, which always resolves to the latest deposit. The badge Zenodo generates is rendered on request and frequently times out behind the GitHub image proxy, so it showed up broken.</li>
 <li>Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.</li>
 <li>Loosened dependency version from <code>numpy&lt;2</code> to <code>numpy&gt;=1.26</code>. The upper bound was never necessary; the test suite passes on numpy 2.</li>
 </ul>
