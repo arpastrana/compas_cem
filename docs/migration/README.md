@@ -1678,3 +1678,49 @@ component headers read `compas_cem>=0.9.0` while `pyproject.toml` reads 0.8.6.
 `grasshopper.update_gh_header` rewrites those headers from the `bumpversion`
 version, so bumping first makes them consistent; running it before the bump
 would walk them back to 0.8.6.
+
+### 16.8 The Grasshopper examples are still COMPAS 1
+
+Found after Phase 5 merged, tracked in **issue #21**.
+
+§16 opens by saying no module of *the package* is on COMPAS 1 APIs. That holds,
+and it is what §14.3 asked for. It is not true of the *repository*: the five
+Grasshopper definitions under `examples/ghpython/` were never in scope and will
+not open in Rhino 8.
+
+§14.3 counted "16 files" on COMPAS 1 — exactly the 13 geometry components plus
+`artists.py`, `register.py` and `install.py`, all under `src/`. The definitions
+were not counted, so the phase was scoped to the package rather than to
+everything shipped.
+
+| file | CEM components | GhPython instances | `compas_rhino.geometry` | renamed / removed |
+| --- | --- | --- | --- | --- |
+| `bridge_2d.ghx` | 49 | 54 | 13 | `PointConstraint` x4 |
+| `bridge_3d.ghx` | 50 | 56 | 20 | — |
+| `dome.ghx` | 40 | 46 | 6 | — |
+| `spiral_staircase.ghx` | 57 | 62 | 19 | `PointConstraint` x8 |
+| `tensegrity_jessen.ghx` | 49 | 55 | 6 | `MeshArtist` x1, `TrailEdgeForceConstraint` x3 |
+
+**Rewriting the embedded Python would not fix them.** A `.ghx` stores each
+component's script body rather than a reference to the installed component, and
+the embedded components carry GUID `410755b1-…`, the legacy GhPython IronPython
+script component. The ported plugin builds on `c9b2d725-…`, the Rhino 8 CPython
+script component that `componentize_cpy.py` sets as `SCRIPT_COMPONENT_GUID`.
+Those are different component types, so a text substitution would leave every
+definition pointing at a class the new plugin does not ship. Rhino 8 does still
+load legacy GhPython, but under IronPython 2.7, and COMPAS 2 is Python 3 only.
+
+Each definition has to be rebuilt by hand in Grasshopper.
+
+**This is blocked on the first release tag.** Rebuilding needs the components
+installed in Rhino *and* `compas_cem>=0.9.0` resolvable from PyPI, because that
+is what every `# r:` header requests, against a latest published version of
+0.8.6. §14.5's `v0.9.0-rc1` is therefore a prerequisite, not a formality.
+
+Start with `bridge_2d.ghx`: it is the smallest and it exercises assembly,
+form-finding and both artist components, so rebuilding it also serves as the
+Rhino acceptance test §16.5 says the phase never received.
+
+`docs/examples/grasshopper/*.md` link to each file on `main` for download, so
+0.9.0 would otherwise ship documentation pointing at definitions that do not
+open.
