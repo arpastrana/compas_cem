@@ -5,9 +5,9 @@
     "subcategory": "02_Elements",
     "description": "Create a deviation edge from a line.",
     "exposure": 2,
+    "instanceGuid": "e75d9886-2bb1-4136-974a-eb3216289d74",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "line",

@@ -5,9 +5,9 @@
     "subcategory": "06_Optimization",
     "description": "Set the Z coordinate of an origin node as an optimization parameter.",
     "exposure": 8,
+    "instanceGuid": "0b9b5a6e-c086-46a4-8c62-8ed602e0428e",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "node_key",

@@ -1,21 +1,35 @@
+# r: compas_cem>=0.9.0
 """
 Create a trail edge from a rhino line.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
 
-from compas_rhino.geometry import RhinoLine
-from compas_rhino.geometry import RhinoPlane
+from typing import Any
+
+import Grasshopper
+import Rhino
+
+from compas_rhino.conversions import line_to_compas
+from compas_rhino.conversions import plane_to_compas
 
 from compas_cem.elements import TrailEdge
 
 
-class TrailEdgeComponent(component):
-    def RunScript(self, line, length, plane):
+class TrailEdgeComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(
+        self,
+        line: Rhino.Geometry.Line | None,
+        length: float | None,
+        plane: Rhino.Geometry.Plane | None,
+    ) -> Any:
         if not line or length is None:
             return
 
+        target_plane = None
         if plane is not None:
-            plane = RhinoPlane.from_geometry(plane).to_compas()
-        line = RhinoLine.from_geometry(line).to_compas()
-        return TrailEdge.from_line(line, length=length, plane=plane)
+            target_plane = plane_to_compas(plane)
+
+        return TrailEdge.from_line(
+            line_to_compas(line), length=length, plane=target_plane
+        )

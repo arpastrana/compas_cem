@@ -1,12 +1,17 @@
+# r: compas_cem>=0.9.0
 """
 Disassemble a form diagram into its constituent parts.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
+
+from typing import Any
+
+import Grasshopper
 
 
-class FormDisassemblyComponent(component):
-    def RunScript(self, form):
+class FormDisassemblyComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(self, form: Any) -> Any:
         if not form:
             return
 

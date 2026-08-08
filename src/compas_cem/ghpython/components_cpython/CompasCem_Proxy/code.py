@@ -1,18 +1,22 @@
+# r: compas_cem>=0.9.0
 """
 Create an RPC proxy server to solve a constrained form-finding problem via CPython
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
 
+from typing import Any
+
+import Grasshopper
 from scriptcontext import sticky
 
 from compas.rpc import Proxy
+
 from compas_cem import PROXY_PORT
 
 
-class CEMProxyComponent(component):
-    def RunScript(self, start, stop):
-
+class CEMProxyComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(self, start: bool | None, stop: bool | None) -> Any:
         if not (start or stop):
             return
 

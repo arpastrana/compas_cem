@@ -1,30 +1,43 @@
+# r: compas_cem>=0.9.0
 """
 Draw a form diagram.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
 
-from compas_cem.ghpython import FormArtist
+from typing import Any
+
+import Grasshopper
+import System
+
+from compas_cem.ghpython import FormDiagramObject
 
 
-class FormArtistComponent(component):
-    def RunScript(self, form, node_keys, edge_keys, force_min, force_scale):
+class FormArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(
+        self,
+        form: Any,
+        node_keys: System.Collections.Generic.List[int],
+        edge_keys: System.Collections.Generic.List[object],
+        force_min: float | None,
+        force_scale: float | None,
+    ) -> Any:
         node_keys = node_keys or None
         edge_keys = edge_keys or None
         force_min = force_min or 1e-3
-        force_scale = force_scale or 1
+        force_scale = force_scale or 1.0
 
         if not form:
             return
 
-        artist = FormArtist(form, artist_type=FormArtist)
+        obj = FormDiagramObject(form)
 
-        nodes = artist.draw_nodes(node_keys)
-        edges = artist.draw_edges(edge_keys)
-        support_nodes = artist.draw_nodes_support(node_keys)
+        nodes = obj.draw_nodes(node_keys)
+        edges = obj.draw_edges(edge_keys)
+        support_nodes = obj.draw_nodes_support(node_keys)
 
-        loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
-        reactions = artist.draw_reactions(
+        loads = obj.draw_loads(node_keys, min_load=force_min, scale=force_scale)
+        reactions = obj.draw_reactions(
             node_keys, min_force=force_min, scale=force_scale
         )
 

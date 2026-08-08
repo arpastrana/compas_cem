@@ -5,9 +5,9 @@
     "subcategory": "06_Optimization",
     "description": "Set the force of a deviation edge as an optimization parameter.",
     "exposure": 8,
+    "instanceGuid": "545ebb69-18b7-453b-9105-06911b2c9067",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "edge_key",

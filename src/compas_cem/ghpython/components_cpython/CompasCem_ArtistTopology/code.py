@@ -1,14 +1,27 @@
+# r: compas_cem>=0.9.0
 """
 Draw a topology diagram.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
 
-from compas_cem.ghpython import TopologyArtist
+from typing import Any
+
+import Grasshopper
+import System
+
+from compas_cem.ghpython import TopologyDiagramObject
 
 
-class TopologyArtistComponent(component):
-    def RunScript(self, topology, node_keys, edge_keys, force_min, force_scale):
+class TopologyArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(
+        self,
+        topology: Any,
+        node_keys: System.Collections.Generic.List[int],
+        edge_keys: System.Collections.Generic.List[object],
+        force_min: float | None,
+        force_scale: float | None,
+    ) -> Any:
         node_keys = node_keys or None
         edge_keys = edge_keys or None
         force_min = force_min or 1e-3
@@ -17,19 +30,19 @@ class TopologyArtistComponent(component):
         if not topology:
             return
 
-        artist = TopologyArtist(topology, artist_type=TopologyArtist)
+        obj = TopologyDiagramObject(topology)
 
-        nodes = artist.draw_nodes(node_keys)
-        origin_nodes = artist.draw_nodes_origin(node_keys)
-        support_nodes = artist.draw_nodes_support(node_keys)
+        nodes = obj.draw_nodes(node_keys)
+        origin_nodes = obj.draw_nodes_origin(node_keys)
+        support_nodes = obj.draw_nodes_support(node_keys)
 
-        edges = artist.draw_edges(edge_keys)
-        trail_edges = artist.draw_edges_trail(edge_keys)
-        deviation_edges = artist.draw_edges_deviation(edge_keys)
+        edges = obj.draw_edges(edge_keys)
+        trail_edges = obj.draw_edges_trail(edge_keys)
+        deviation_edges = obj.draw_edges_deviation(edge_keys)
 
-        trails = artist.draw_trails()
+        trails = obj.draw_trails()
 
-        loads = artist.draw_loads(node_keys, min_load=force_min, scale=force_scale)
+        loads = obj.draw_loads(node_keys, min_load=force_min, scale=force_scale)
 
         return (
             nodes,

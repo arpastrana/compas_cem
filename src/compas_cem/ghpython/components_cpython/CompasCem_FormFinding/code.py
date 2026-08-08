@@ -1,14 +1,25 @@
+# r: compas_cem>=0.9.0
 """
 Generate a form diagram in static equilibrium.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
+
+from typing import Any
+
+import Grasshopper
 
 from compas_cem.equilibrium import static_equilibrium
 
 
-class FormFindingComponent(component):
-    def RunScript(self, topology, kmax, tmax, eta):
+class FormFindingComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(
+        self,
+        topology: Any,
+        kmax: int | None,
+        tmax: int | None,
+        eta: float | None,
+    ) -> Any:
         eta = eta or 1e-6
         tmax = tmax or 100
 

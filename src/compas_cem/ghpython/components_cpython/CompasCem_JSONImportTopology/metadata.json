@@ -5,9 +5,9 @@
     "subcategory": "09_Serialization",
     "description": "Create a COMPAS CEM topology diagram from JSON file.",
     "exposure": 4,
+    "instanceGuid": "6aaafb0f-8a01-4ae5-874b-a1fbac4071ef",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
              {
                 "name": "filepath",

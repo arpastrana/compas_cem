@@ -5,9 +5,9 @@
     "subcategory": "04_Diagrams",
     "description": "Disassemble a topology diagram into its constituent parts.",
     "exposure": 8,
+    "instanceGuid": "0f1679be-df27-45fa-91d7-d6f93824e080",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "topology",

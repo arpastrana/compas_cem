@@ -1,19 +1,21 @@
+# r: compas_cem>=0.9.0
 """
-Import a COMPAS CEM form diagram from a JSON file.
+Import a COMPAS CEM topology diagram from a JSON file.
 """
+
+from __future__ import annotations
 
 import os
+from typing import Any
 
-from ghpythonlib.componentbase import executingcomponent as component
+import Grasshopper
 
 from compas_cem.diagrams import TopologyDiagram
 
 
-class FormDiagramFromJSON(component):
-    def RunScript(self, filepath):
+class TopologyDiagramFromJSON(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(self, filepath: str | None) -> Any:
         if not filepath:
             return
 
-        filepath = os.path.abspath(filepath)
-        topology = TopologyDiagram.from_json(filepath)
-        return topology
+        return TopologyDiagram.from_json(os.path.abspath(filepath))

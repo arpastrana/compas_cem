@@ -1,17 +1,23 @@
+# r: compas_cem>=0.9.0
 """
 Create a deviation edge from a line.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
+
+from typing import Any
+
+import Grasshopper
+import Rhino
+
+from compas_rhino.conversions import line_to_compas
 
 from compas_cem.elements import DeviationEdge
 
-from compas_rhino.geometry import RhinoLine
 
-
-class DeviationEdgeComponent(component):
-    def RunScript(self, line, force):
+class DeviationEdgeComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(self, line: Rhino.Geometry.Line | None, force: float | None) -> Any:
         if not line or force is None:
             return
-        line = RhinoLine.from_geometry(line).to_compas()
-        return DeviationEdge.from_line(line, force=force)
+
+        return DeviationEdge.from_line(line_to_compas(line), force=force)

@@ -1,27 +1,33 @@
+# r: compas_cem>=0.9.0
 """
 Generate a form diagram in static equilibrium such that it meets user-defined goals.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
+
+from typing import Any
+
+import Grasshopper
+import System
 from scriptcontext import sticky
 
 from compas.rpc import Proxy
 
 
-class ConstrainedFormFindingComponent(component):
+class ConstrainedFormFindingComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(
         self,
-        solve,
-        topology,
-        goals,
-        parameters,
-        algorithm,
-        iters_max,
-        eps,
-        kappa,
-        tmax,
-        eta,
-    ):
+        solve: bool | None,
+        topology: Any,
+        goals: System.Collections.Generic.List[object],
+        parameters: System.Collections.Generic.List[object],
+        algorithm: str | None,
+        iters_max: int | None,
+        eps: float | None,
+        kappa: float | None,
+        tmax: int | None,
+        eta: float | None,
+    ) -> Any:
         algorithm = algorithm or "SLSQP"
         iters_max = iters_max or 100
         eps = eps or 1e-6
@@ -35,8 +41,8 @@ class ConstrainedFormFindingComponent(component):
         topology = topology.copy()
 
         # clean goals and parameters from None
-        goals = [c for c in goals if c is not None]
-        parameters = [p for p in parameters if p is not None]
+        goals = [goal for goal in goals if goal is not None]
+        parameters = [parameter for parameter in parameters if parameter is not None]
 
         # fetch optimization proxy from scriptcontext
         opt = sticky.get("proxy_cem")

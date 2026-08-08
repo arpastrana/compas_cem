@@ -1,19 +1,21 @@
+# r: compas_cem>=0.9.0
 """
 Import a COMPAS CEM form diagram from a JSON file.
 """
 
-import os
+from __future__ import annotations
 
-from ghpythonlib.componentbase import executingcomponent as component
+import os
+from typing import Any
+
+import Grasshopper
 
 from compas_cem.diagrams import FormDiagram
 
 
-class FormDiagramFromJSON(component):
-    def RunScript(self, filepath):
+class FormDiagramFromJSON(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(self, filepath: str | None) -> Any:
         if not filepath:
             return
 
-        filepath = os.path.abspath(filepath)
-        form = FormDiagram.from_json(filepath)
-        return form
+        return FormDiagram.from_json(os.path.abspath(filepath))

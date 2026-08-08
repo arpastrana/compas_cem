@@ -5,9 +5,9 @@
     "subcategory": "06_Optimization",
     "description": "Pull the position of a node to a target polyline.",
     "exposure": 4,
+    "instanceGuid": "3629a8e0-d94d-41b5-a2e5-e43a5766061d",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "node_key",

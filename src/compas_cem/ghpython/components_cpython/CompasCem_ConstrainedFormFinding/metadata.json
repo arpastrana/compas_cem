@@ -5,10 +5,10 @@
     "subcategory": "06_Optimization",
     "description": "Generate a form in equilibrium such that it meets user-defined goals.\nStart a proxy server before running this component to accelerate the optimization time.",
     "exposure": 2,
+    "instanceGuid": "554e6c72-ba4d-40e2-9d18-a7355b954908",
 
     "ghpython": {
         "hideOutput": false,
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "solve",

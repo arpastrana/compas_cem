@@ -5,9 +5,9 @@
     "subcategory": "04_Diagrams",
     "description": "Move the origin nodes of a topology diagram to a new location.",
     "exposure": 16,
+    "instanceGuid": "78d73dab-bd5c-4f03-bb1b-798348dc5022",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "topology",

@@ -5,9 +5,9 @@
     "subcategory": "06_Optimization",
     "description": "Set the X coordinate of an origin node as an optimization parameter.",
     "exposure": 8,
+    "instanceGuid": "b8ca3f63-72a2-4799-a44e-d50d5aff6993",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "node_key",

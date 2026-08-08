@@ -5,9 +5,9 @@
     "subcategory": "05_Equilibrium",
     "description": "Find a form in static equilibrium.",
     "exposure": 2,
+    "instanceGuid": "1c508eee-e3e1-4010-abb4-796703f89cb0",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "topology",

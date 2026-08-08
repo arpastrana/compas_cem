@@ -5,9 +5,9 @@
     "subcategory": "02_Elements",
     "description": "Create a trail edge from a line.",
     "exposure": 2,
+    "instanceGuid": "d3df0d9a-0316-43a6-ad1f-84a9034680a8",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "line",

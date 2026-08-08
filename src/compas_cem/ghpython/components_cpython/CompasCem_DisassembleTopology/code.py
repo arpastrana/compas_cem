@@ -1,12 +1,17 @@
+# r: compas_cem>=0.9.0
 """
 Disassemble a topology diagram into its constituent parts.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
+
+from typing import Any
+
+import Grasshopper
 
 
-class TopologyDisassemblyComponent(component):
-    def RunScript(self, topology):
+class TopologyDisassemblyComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(self, topology: Any) -> Any:
         if not topology:
             return
 

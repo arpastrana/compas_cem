@@ -1,17 +1,30 @@
+# r: compas_cem>=0.9.0
 """
 Pull the position of a node to a target plane.
 """
 
-from ghpythonlib.componentbase import executingcomponent as component
+from __future__ import annotations
 
-from compas_rhino.geometry import RhinoPlane
+from typing import Any
+
+import Grasshopper
+import Rhino
+
+from compas_rhino.conversions import plane_to_compas
+
 from compas_cem.optimization import PlaneGoal
 
 
-class PlaneGoalComponent(component):
-    def RunScript(self, node_key, plane, weight):
+class PlaneGoalComponent(Grasshopper.Kernel.GH_ScriptInstance):
+    def RunScript(
+        self,
+        node_key: int | None,
+        plane: Rhino.Geometry.Plane | None,
+        weight: float | None,
+    ) -> Any:
         weight = weight or 1.0
+
         if node_key is None or plane is None:
             return
-        plane = RhinoPlane.from_geometry(plane).to_compas()
-        return PlaneGoal(node_key, plane, weight)
+
+        return PlaneGoal(node_key, plane_to_compas(plane), weight)

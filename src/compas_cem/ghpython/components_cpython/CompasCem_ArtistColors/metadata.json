@@ -5,9 +5,9 @@
     "subcategory": "08_Artists",
     "description": "Get the artist color scheme for the objects of the CEM framework.",
     "exposure": 4,
+    "instanceGuid": "fc1898b8-ce64-4a0f-8a29-c7fd171e8915",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
         ],
         "outputParameters": [

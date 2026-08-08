@@ -5,9 +5,9 @@
     "subcategory": "02_Elements",
     "description": "Search a node key in a topology or a form diagram with a point.",
     "exposure": 8,
+    "instanceGuid": "e2a81576-e35e-4d12-82a0-6da4cfe52909",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "diagram",

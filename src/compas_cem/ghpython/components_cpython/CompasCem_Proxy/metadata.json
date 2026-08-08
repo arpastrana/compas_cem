@@ -5,9 +5,9 @@
     "subcategory": "06_Optimization",
     "description": "Create an RPC proxy server to solve a constrained form-finding problem outside of Rhino using CPython.",
     "exposure": 2,
+    "instanceGuid": "64f13f05-0842-418f-8312-d9938d148122",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "start",

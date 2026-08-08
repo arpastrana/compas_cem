@@ -5,9 +5,9 @@
     "subcategory": "04_Diagrams",
     "description": "Shift the starting sequence of a selection of trails in a topology diagram.",
     "exposure": 16,
+    "instanceGuid": "a36161fe-4bb4-4f13-83f4-d9bc8c4d4a08",
 
     "ghpython": {
-        "isAdvancedMode": true,
         "inputParameters": [
             {
                 "name": "topology",
