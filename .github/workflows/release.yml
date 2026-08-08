@@ -23,11 +23,16 @@ jobs:
 
   publish:
     needs: build
-    runs-on: ubuntu-latest
+    # windows-latest, not ubuntu: the componentizer loads GH_IO.dll.
+    runs-on: windows-latest
     steps:
-      # Rhino 8 yak packaging and CPython Grasshopper components attach here (Phase 5).
       - uses: compas-dev/compas-actions.publish@v3
         with:
           pypi_token: ${{ secrets.PYPI }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          build_ghpython_components: true
+          gh_source: src/compas_cem/ghpython/components_cpython
+          gh_target: src/compas_cem/ghpython/components_cpython/ghuser
+          gh_prefix: "COMPAS CEM: "
+          gh_interpreter: "cpython"
           release_name_prefix: COMPAS CEM
