@@ -1,9 +1,9 @@
 # COMPAS CEM
 
-[![Github Actions Build Status](https://github.com/arpastrana/compas_cem/workflows/build/badge.svg)](https://github.com/arpastrana/compas_cem/actions)
+[![Github Actions Build Status](https://github.com/arpastrana/compas_cem/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/arpastrana/compas_cem/actions/workflows/build.yml)
 [![License](https://img.shields.io/github/license/arpastrana/compas_cem.svg)](https://github.com/arpastrana/compas_cem/blob/main/LICENSE)
-[![PyPI Package latest release](https://img.shields.io/pypi/v/compas-cem.svg)](https://pypi.python.org/pypi/compas-cem)
-[![Python versions](https://img.shields.io/pypi/pyversions/compas-cem)](https://pypi.org/project/compas-cem)
+[![PyPI Package latest release](https://img.shields.io/pypi/v/compas-cem.svg)](https://pypi.org/project/compas-cem/)
+[![Python versions](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Farpastrana%2Fcompas_cem%2Fmain%2Fpyproject.toml)](https://pypi.org/project/compas-cem/)
 [![Made with COMPAS](https://compas.dev/badge.svg)](https://compas.dev/mission-control/#compas_cem)
 [![CAD paper](https://img.shields.io/badge/CAD-10.1016%2Fj.cad.2022.103435-ff6c00.svg)](https://doi.org/10.1016/j.cad.2022.103435)
 [![ArXiv paper](https://img.shields.io/badge/arXiv-2111.02607-b31b1b.svg)](https://arxiv.org/abs/2111.02607)
@@ -29,7 +29,7 @@ The [CEM framework](https://doi.org/10.1016/j.cad.2022.103435) is a numerical fo
 ## Installation
 
 These are succint instructions to install **COMPAS CEM** and its [Grasshopper](https://grasshopper3d.com/) plugin.
-For detailed guidance, please refer to the [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/latest/index.html).
+For detailed guidance, please refer to the [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/).
 
 Install **COMPAS CEM** with `pip`. It requires Python 3.9 or newer, and pulls in `compas` for you:
 
@@ -58,11 +58,11 @@ If no errors show up, celebrate 🎉! You have a working installation of **COMPA
 
 ## First steps
 
-- [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/latest/index.html)
-- [COMPAS CEM Examples](https://arpastrana.github.io/compas_cem/latest/examples.html)
-- [COMPAS CEM API Reference](https://arpastrana.github.io/compas_cem/latest/api.html)
-- [COMPAS Tutorials](https://compas.dev/compas/latest/tutorial.html)
-- [COMPAS API Reference](https://compas.dev/compas/latest/api.html)
+- [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/)
+- [COMPAS CEM Examples](https://arpastrana.github.io/compas_cem/dev/examples/)
+- [COMPAS CEM API Reference](https://arpastrana.github.io/compas_cem/dev/api/compas_cem/)
+- [COMPAS User Guide](https://compas.dev/compas/latest/userguide/index.html)
+- [COMPAS API Reference](https://compas.dev/compas/latest/api/index.html)
 
 ## Are you a bug hunter?
 
@@ -80,7 +80,7 @@ for more details.
 
 ## Citing
 
-If you use **COMPAS CEM** for a project or research, please cite us using these [references](https://arpastrana.github.io/compas_cem/latest/citing.html).
+If you use **COMPAS CEM** for a project or research, please cite us using these [references](https://arpastrana.github.io/compas_cem/dev/citing/).
 
 ## Acknowledgements
 
