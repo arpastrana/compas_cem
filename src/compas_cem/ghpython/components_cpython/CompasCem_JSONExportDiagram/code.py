@@ -17,5 +17,6 @@ class DiagramToJSON(Grasshopper.Kernel.GH_ScriptInstance):
             return
 
         diagram.to_json(os.path.abspath(filepath), pretty=True)
+        json_string = diagram.to_jsonstring(pretty=True)
 
-        return diagram.data
+        return json_string

@@ -37,6 +37,5 @@ jobs:
           build_ghpython_components: true
           gh_source: src/compas_cem/ghpython/components_cpython
           gh_target: src/compas_cem/ghpython/components_cpython/ghuser
-          gh_prefix: "COMPAS CEM: "
           gh_interpreter: "cpython"
           release_name_prefix: COMPAS CEM

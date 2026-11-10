@@ -1,5 +1,5 @@
  {
-    "name": "Trail Edge Length Parameter",
+    "name": "Trail Edge Length Parameter (COMPAS CEM)",
     "nickname": "TrailEdgeLengthParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

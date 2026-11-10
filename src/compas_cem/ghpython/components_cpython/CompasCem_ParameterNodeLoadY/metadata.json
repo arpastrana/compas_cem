@@ -1,5 +1,5 @@
 {
-    "name": "Node Load Y Parameter",
+    "name": "Node Load Y Parameter (COMPAS CEM)",
     "nickname": "NodeLoadYParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

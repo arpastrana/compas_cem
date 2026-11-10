@@ -65,7 +65,7 @@ form = static_equilibrium(topology, eta=1e-6, tmax=100, verbose=True)
 plotter = Plotter()
 
 # add topology diagram to scene
-artist = plotter.add(topology, nodesize=0.2, show_nodetext=True, show_edgetext=True)
+plotter.add(topology, nodesize=0.2, show_nodetext=True, show_edgetext=True)
 
 
 # add shifted form diagram to the scene

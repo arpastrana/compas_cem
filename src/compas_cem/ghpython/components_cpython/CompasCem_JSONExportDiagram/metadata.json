@@ -1,5 +1,5 @@
 {
-    "name": "Export Diagram",
+    "name": "Export Diagram (COMPAS CEM)",
     "nickname": "DiagramToJSON",
     "category": "COMPAS CEM",
     "subcategory": "09_Serialization",

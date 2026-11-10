@@ -1,5 +1,5 @@
 {
-    "name": "Deviation Edge Length Goal",
+    "name": "Deviation Edge Length Goal (COMPAS CEM)",
     "nickname": "DeviationEdgeLengthGoal",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

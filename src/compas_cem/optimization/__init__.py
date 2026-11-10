@@ -10,7 +10,6 @@ from __future__ import print_function
 # from .<module> import *
 from .goals import *  # noqa F403
 from .parameters import *  # noqa F403
-from .proxy import *  # noqa F403
 
 import compas
 

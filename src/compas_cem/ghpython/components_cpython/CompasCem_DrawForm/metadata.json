@@ -1,8 +1,8 @@
 {
-    "name": "Form Artist",
-    "nickname": "FormArtist",
+    "name": "Draw Form (COMPAS CEM)",
+    "nickname": "DrawForm",
     "category": "COMPAS CEM",
-    "subcategory": "08_Artists",
+    "subcategory": "08_Visualization",
     "description": "Draw a form diagram.",
     "exposure": 2,
     "instanceGuid": "90db8c7c-c4d3-4f55-9c8e-1f81b3a9c15e",

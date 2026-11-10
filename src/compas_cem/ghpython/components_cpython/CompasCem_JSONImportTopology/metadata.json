@@ -1,5 +1,5 @@
 {
-    "name": "Import Topology Diagram",
+    "name": "Import Topology Diagram (COMPAS CEM)",
     "nickname": "TopologyDiagramFromJSON",
     "category": "COMPAS CEM",
     "subcategory": "09_Serialization",

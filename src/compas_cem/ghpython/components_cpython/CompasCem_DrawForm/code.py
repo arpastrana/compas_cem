@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.0
 """
-Draw a topology diagram.
+Draw a form diagram.
 """
 
 from __future__ import annotations
@@ -10,13 +10,13 @@ from typing import Any
 import Grasshopper
 import System
 
-from compas_cem.ghpython import TopologyDiagramObject
+from compas_cem.ghpython import FormDiagramObject
 
 
-class TopologyArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
+class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(
         self,
-        topology: Any,
+        form: Any,
         node_keys: System.Collections.Generic.List[int],
         edge_keys: System.Collections.Generic.List[object],
         force_min: float | None,
@@ -27,30 +27,18 @@ class TopologyArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
         force_min = force_min or 1e-3
         force_scale = force_scale or 1.0
 
-        if not topology:
+        if not form:
             return
 
-        obj = TopologyDiagramObject(topology)
+        obj = FormDiagramObject(item=form)
 
         nodes = obj.draw_nodes(node_keys)
-        origin_nodes = obj.draw_nodes_origin(node_keys)
+        edges = obj.draw_edges(edge_keys)
         support_nodes = obj.draw_nodes_support(node_keys)
 
-        edges = obj.draw_edges(edge_keys)
-        trail_edges = obj.draw_edges_trail(edge_keys)
-        deviation_edges = obj.draw_edges_deviation(edge_keys)
-
-        trails = obj.draw_trails()
-
         loads = obj.draw_loads(node_keys, min_load=force_min, scale=force_scale)
-
-        return (
-            nodes,
-            origin_nodes,
-            support_nodes,
-            edges,
-            trail_edges,
-            deviation_edges,
-            trails,
-            loads,
+        reactions = obj.draw_reactions(
+            node_keys, min_force=force_min, scale=force_scale
         )
+
+        return nodes, support_nodes, edges, loads, reactions

@@ -1,5 +1,5 @@
 {
-    "name": "Import Form Diagram",
+    "name": "Import Form Diagram (COMPAS CEM)",
     "nickname": "FormDiagramFromJSON",
     "category": "COMPAS CEM",
     "subcategory": "09_Serialization",

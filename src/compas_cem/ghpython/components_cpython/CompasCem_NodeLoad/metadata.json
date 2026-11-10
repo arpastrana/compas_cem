@@ -1,5 +1,5 @@
 {
-    "name": "Node Load",
+    "name": "Node Load (COMPAS CEM)",
     "nickname": "NodeLoad",
     "category": "COMPAS CEM",
     "subcategory": "03_BoundaryConditions",
