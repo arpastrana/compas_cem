@@ -4187,6 +4187,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Added <code>workflow_dispatch</code> to the build and docs workflows, so either can be run by hand.</li>
 <li>Added a <code>viz</code> extra, read from <code>requirements-viz.txt</code>, holding <code>compas_plotter&gt;=1.0.1</code> and <code>compas_viewer&gt;=2.0</code>, the backends of <code>compas_cem.plotters</code> and <code>compas_cem.viewers</code>. They stay out of the core install so that <code>compas_cem</code> stays lean inside Rhino 8, where the viewer would otherwise pull in PySide6 and PyOpenGL for nothing. The <code>dev</code> extra includes them. Importing either module without them raises an <code>ImportError</code> that names the extra.</li>
 <li>Added a Made with COMPAS badge and a badge linking to the Computer-Aided Design article underpinning the framework to <code>README.md</code>.</li>
+<li>Added a pre-commit configuration with ruff check and format, whitespace, end-of-file, YAML, TOML, JSON and merge-conflict checks, and a check that fails when a personal name appears in project prose outside the authorship files, or in a commit message. <code>invoke lint</code> runs <code>ruff check --fix</code> on <code>src</code> and <code>tests</code> only and never checks formatting, so the hook is the only check on formatting, <code>examples</code> and <code>tasks.py</code>. A <code>pre-commit</code> job in the pull request checks runs every hook on every file, so these checks also gate merges; commit messages are checked locally only.</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
@@ -4238,6 +4239,8 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Fixed the badges and links in <code>README.md</code>. The Python badge read the classifiers of the latest PyPI release, so it showed 3.8 and 3.9; it now reads <code>requires-python</code> from <code>pyproject.toml</code> on <code>main</code>. The documentation links pointed at Sphinx pages the mkdocs site does not have, and the COMPAS tutorial and API links at pages COMPAS 2 moved. The build badge uses the current workflow badge URL.</li>
 <li>Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.</li>
 <li>Loosened dependency version from <code>numpy&lt;2</code> to <code>numpy&gt;=1.26</code>. The upper bound was never necessary; the test suite passes on numpy 2.</li>
+<li>Pinned ruff to 0.16.1 in <code>requirements-dev.txt</code>, matching the pre-commit hook, so the hook, <code>invoke lint</code> and CI run the same ruff.</li>
+<li>Replaced the stale <code>master</code> branch with <code>main</code> in <code>CONTRIBUTING.md</code> and dropped it from the pull request checks trigger.</li>
 </ul>
 <h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">¤</a></h3>
 <ul>
