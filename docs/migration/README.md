@@ -1821,6 +1821,7 @@ helpers, networkx, nlopt, numpy, rpds-py, scipy, typing_extensions and watchdog.
 Left alone deliberately: nlopt and autograd stay in the core. Importing
 `compas_cem.optimization` loads both, and 18 components import it inside
 Rhino, even though the form-finding component solves over `compas.rpc.Proxy`.
+*(2026-11-10: it no longer does; see §17.8.)*
 
 ### 17.4 CI: the macOS 3.9 cell is excluded
 
@@ -1887,6 +1888,21 @@ kernel side.
 
 Annotated in place rather than rewritten: the status line at the top, §10.1 on
 the macOS 3.9 cell, §10.5, §12.5, §14.5, the opening of §16, §16.5 on the
-componentizer, and §16.8 on `v0.9.0-rc1`.
+componentizer, §16.8 on `v0.9.0-rc1`, and §17.3 on the proxy.
+
+### 17.8 The Grasshopper solve runs in-process
+
+Decided 2026-11-10. The Constrained Form-Finding component solved over
+`compas.rpc.Proxy`, which finds its interpreter through the `compas_bootstrapper`
+module that only the COMPAS 1 Rhino installer wrote. Under COMPAS 2 it launched
+whatever `python` was on Rhino's path, which has no `compas_cem`. Rhino 8 runs
+CPython, so nlopt and autograd import inside Rhino and the component now builds
+an `Optimizer` directly. Run inside Rhino on the bridge example, that path
+matched the reference result exactly.
+
+Removed with it: the Proxy Server component, `optimization.solve_proxy` and
+`compas_cem.PROXY_PORT`. §4.4 and Phase 5 still keep the proxy for the JAX
+path, because jax cannot install on Rhino's Python 3.9. That path calls a JAX
+solver, so it needs a new entry point when it lands, not the deleted nlopt one.
 
 Next: once this lands, §17.5 step 1.

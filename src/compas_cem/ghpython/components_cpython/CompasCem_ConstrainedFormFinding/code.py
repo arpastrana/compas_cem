@@ -9,9 +9,8 @@ from typing import Any
 
 import Grasshopper
 import System
-from scriptcontext import sticky
 
-from compas.rpc import Proxy
+from compas_cem.optimization import Optimizer
 
 
 class ConstrainedFormFindingComponent(Grasshopper.Kernel.GH_ScriptInstance):
@@ -44,19 +43,14 @@ class ConstrainedFormFindingComponent(Grasshopper.Kernel.GH_ScriptInstance):
         goals = [goal for goal in goals if goal is not None]
         parameters = [parameter for parameter in parameters if parameter is not None]
 
-        # fetch optimization proxy from scriptcontext
-        opt = sticky.get("proxy_cem")
-        proxy_temp_exists = opt is not None
+        optimizer = Optimizer()
+        for goal in goals:
+            optimizer.add_goal(goal)
+        for parameter in parameters:
+            optimizer.add_parameter(parameter)
 
-        # create temporary proxy server if unavailable from scriptcontext
-        if not proxy_temp_exists:
-            opt = Proxy("compas_cem.optimization")
-
-        # solve constrained form-finding problem
-        solution = opt.solve_proxy(
+        form = optimizer.solve(
             topology=topology,
-            goals=goals,
-            parameters=parameters,
             algorithm=algorithm,
             iters=iters_max,
             eps=eps,
@@ -65,11 +59,10 @@ class ConstrainedFormFindingComponent(Grasshopper.Kernel.GH_ScriptInstance):
             eta=eta,
         )
 
-        # shut down temporary proxy
-        if not proxy_temp_exists:
-            opt.stop_server()
-
-        # unpack solution
-        topology, form, objective, grad_norm, iters, time, status = solution
+        objective = optimizer.penalty
+        grad_norm = optimizer.gradient_norm
+        iters = optimizer.evals
+        time = optimizer.time_opt
+        status = optimizer.status
 
         return topology, form, objective, grad_norm, iters, time, status

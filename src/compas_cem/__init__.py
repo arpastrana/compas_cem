@@ -39,8 +39,6 @@ COLORS = {
     "auxiliary_trail": (255, 155, 15),  # orange
 }
 
-PROXY_PORT = 7123
-
 # TODO: add static equilibrium plugin
 # The plotter, viewer and Grasshopper scene objects register themselves when
 # their package is imported, so no plugin module is declared here.
