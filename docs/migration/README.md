@@ -685,10 +685,10 @@ step it does take is decided by floating-point noise. Repairing this is Phase
 say what to. Phase 1 first shipped a single `Diagram.add_element(element)`
 dispatching on `Node` versus `Edge`.
 
-That was **reconsidered before this branch was merged.** An audit of the two
-sibling libraries, `jax_fdm` and `smax`, led on 2026-08-07 to keeping
-`add_node` and `add_edge` and dispatching on the type of the argument, so that the authoring API,
-the tutorials and every existing `.gh` file survive untouched. Phase 1 was
+That was **reconsidered before this branch was merged.** After an audit of the
+two sibling libraries, `jax_fdm` and `smax`, it was decided on 2026-08-07 to
+keep `add_node` and `add_edge` and dispatch on the type of the argument, so that
+the authoring API, the tutorials and every existing `.gh` file survive untouched. Phase 1 was
 rewritten to ship that directly, so `main` never carried `add_element`.
 
 What landed:

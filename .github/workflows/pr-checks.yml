@@ -4,7 +4,6 @@ on:
     types: [assigned, opened, synchronize, reopened, labeled, unlabeled]
     branches:
       - main
-      - master
 
 # Cancel a PR's in-flight checks when new commits are pushed to it. This
 # workflow is pull_request-only, so cancelling is always safe.

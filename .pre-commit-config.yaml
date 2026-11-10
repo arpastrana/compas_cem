@@ -1,3 +1,7 @@
+default_install_hook_types: [pre-commit, commit-msg]
+# Without this, every hook would also run, and skip, on the commit message.
+default_stages: [pre-commit]
+
 repos:
   # Keep rev in step with the ruff pin in requirements-dev.txt.
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -10,11 +14,11 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
-      # Example definitions, their data and the test baselines stay byte-stable.
+      # Example definitions and their data stay byte-stable.
       - id: trailing-whitespace
-        exclude: ^(examples/ghpython/|examples/data/|examples/03_bridge_2d\.json$|tests/baseline/)
+        exclude: &stable_files ^examples/.*\.(json|ghx)$
       - id: end-of-file-fixer
-        exclude: ^(examples/ghpython/|examples/data/|examples/03_bridge_2d\.json$|tests/baseline/)
+        exclude: *stable_files
       # mkdocs.yml carries !!python/name tags that only --unsafe parses.
       - id: check-yaml
         args: [--unsafe]
@@ -27,7 +31,12 @@ repos:
       # Authorship files are the one legitimate place for a name.
       - id: check-docs
         name: no personal names in project prose
-        entry: python check_docs.py
-        language: python
+        entry: &banned_names Rafael|Pastrana|arpj
+        language: pygrep
         files: \.(md|py)$
         exclude: ^(AUTHORS\.md|docs/index\.md|src/compas_cem/__init__\.py)$
+      - id: check-commit-message
+        name: no personal names in the commit message
+        entry: *banned_names
+        language: pygrep
+        stages: [commit-msg]
