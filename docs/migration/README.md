@@ -1848,6 +1848,10 @@ should wait for proof that the components work.
    round trip. Then rebuild `bridge_2d.ghx`: it is the smallest, and it
    exercises assembly, form-finding and both draw components. Rhino 8 is
    installed and §17.2 is fixed, so this is now unblocked.
+   *(2026-11-10: the component half is done. Installed from a local package
+   source, every component group ran in Grasshopper on Rhino 8, including
+   drawing, the in-process constrained solve and the JSON round trip. Rebuilding
+   `bridge_2d.ghx` is still open.)*
 3. **Push the tag.** That is the first `release.yml` run: the PyPI publish and the
    yak build on `windows-latest`, which has only run locally on macOS. Expect to
    iterate. First confirm the `PYPI` secret, dated 2021-07-04, still works.
