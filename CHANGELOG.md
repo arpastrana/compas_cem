@@ -59,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Built the documentation on Python 3.12 instead of the `compas-actions.docs` default of 3.10. On 3.10 the resolver pairs `pymdown-extensions` 12, whose highlighter gained a required argument, with `mkdocstrings` 1.0.6, the last release for 3.10, which does not pass it, so every API page fails to render.
 - Moved the release publish job from `ubuntu-latest` to `windows-latest` and gave it the component-building inputs, because the componentizer loads `GH_IO.dll`.
 - Fixed `_draw_forces` normalizing a force vector before testing its magnitude, which divided by a zero length at a node carrying no load or reaction.
+- Fixed the Form Artist and Topology Artist components passing their diagram positionally to the scene object. The first parameter of a COMPAS 2 graph scene object is `show_nodes`, so the diagram never reached the object and every draw failed on a `None` graph. Both now pass it as `item`.
+- Fixed the Export Diagram component returning `diagram.data`, which COMPAS 2 replaced with `__data__`, so it raised after writing the file. It now returns the JSON string it wrote, from `to_jsonstring`, which `from_jsonstring` can read back.
 - Fixed `draw_reactions` raising on a node with no connected edge, where it searched an empty sequence for the strongest edge force.
 - Fixed the topology JSON import component declaring a class named `FormDiagramFromJSON` and documenting itself as importing a form diagram.
 - Fixed a `typeHinID` misspelling in the topology artist component's `metadata.json`, which left two of its inputs without a type hint.

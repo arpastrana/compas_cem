@@ -30,7 +30,7 @@ class TopologyArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if not topology:
             return
 
-        obj = TopologyDiagramObject(topology)
+        obj = TopologyDiagramObject(item=topology)
 
         nodes = obj.draw_nodes(node_keys)
         origin_nodes = obj.draw_nodes_origin(node_keys)

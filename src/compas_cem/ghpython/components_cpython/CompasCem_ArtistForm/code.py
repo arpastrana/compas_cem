@@ -30,7 +30,7 @@ class FormArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if not form:
             return
 
-        obj = FormDiagramObject(form)
+        obj = FormDiagramObject(item=form)
 
         nodes = obj.draw_nodes(node_keys)
         edges = obj.draw_edges(edge_keys)
