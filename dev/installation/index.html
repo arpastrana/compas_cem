@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.8.1">
     
     
       
@@ -33,10 +33,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1443,17 +1443,24 @@
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¤</a></h1>
 <h2 id="install-compas-cem">Install COMPAS CEM<a class="headerlink" href="#install-compas-cem" title="Permanent link">¤</a></h2>
-<p><code>compas_cem</code> is on PyPI, and it pulls in everything it needs — <code>compas</code>, the
-plotter and the viewer among them. Install it with a one-liner:</p>
+<p><code>compas_cem</code> is on PyPI, and it pulls in everything it needs to model,
+form-find and optimize, <code>compas</code> among them. Install it with a one-liner:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>compas-cem
 </span></code></pre></div>
+<p>To draw diagrams with <code>compas_cem.plotters</code> or <code>compas_cem.viewers</code>, as the
+examples do, install the <code>viz</code> extra instead:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"compas-cem[viz]"</span>
+</span></code></pre></div>
+<p>The plotter and the viewer are optional so that <code>compas_cem</code> stays lean inside
+Rhino, which needs neither of them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code>compas_cem</code> requires Python 3.10 or newer.</p>
+<p><code>compas_cem</code> requires Python 3.9 or newer. The floor is 3.9 because that is
+the Python that Rhino 8 runs.</p>
 </div>
 <p>To double-check that everything is up and running, type the following in the
 command line and hit enter:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import compas_cem&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import compas_cem"</span>
 </span></code></pre></div>
 <p>If no errors show up, celebrate 🎉! You have a working installation of
 <code>compas_cem</code>.</p>
@@ -1474,11 +1481,11 @@ use <code>compas_cem</code> from Python.</p>
 <h2 id="update-compas-cem">Update COMPAS CEM<a class="headerlink" href="#update-compas-cem" title="Permanent link">¤</a></h2>
 <p>If you installed <code>compas_cem</code> one day in the past and you want to update it to
 the latest available version, the update command is the following:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>compas-cem
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>compas-cem
 </span></code></pre></div>
 <p>Alternatively, if you want to switch to a specific version, for example version
 <code>0.8.6</code>, type this:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span>compas-cem<span class="o">==</span><span class="m">0</span>.8.6
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>compas-cem<span class="o">==</span><span class="m">0</span>.8.6
 </span></code></pre></div>
 
 
@@ -1579,10 +1586,10 @@ the latest available version, the update command is the following:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.footnote.tooltips", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.footnote.tooltips", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>

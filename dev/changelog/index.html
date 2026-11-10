@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.8.1">
     
     
       
@@ -33,10 +33,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4185,12 +4185,12 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Added a <code>dev-docs</code> job that publishes the documentation built from <code>main</code> as the <code>dev</code> version. <code>compas-actions.docs</code> deploys mkdocs on a version tag only, so between releases the site would otherwise show the last release and nothing newer.</li>
 <li>Added a concurrency group to the build, docs and pull request workflows, so pushing to a pull request cancels its own in-flight run instead of queueing a second one. Pushes and tags keep a run-unique group, so a stuck run cannot hold up a deploy.</li>
 <li>Added <code>workflow_dispatch</code> to the build and docs workflows, so either can be run by hand.</li>
+<li>Added a <code>viz</code> extra, read from <code>requirements-viz.txt</code>, holding <code>compas_plotter&gt;=1.0.1</code> and <code>compas_viewer&gt;=2.0</code>, the backends of <code>compas_cem.plotters</code> and <code>compas_cem.viewers</code>. They stay out of the core install so that <code>compas_cem</code> stays lean inside Rhino 8, where the viewer would otherwise pull in PySide6 and PyOpenGL for nothing. The <code>dev</code> extra includes them. Importing either module without them raises an <code>ImportError</code> that names the extra.</li>
 <li>Added a Made with COMPAS badge and a badge linking to the Computer-Aided Design article underpinning the framework to <code>README.md</code>.</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
 <li>Migrated from COMPAS 1.17.10 to <code>compas&gt;=2.15,&lt;3.0</code>.</li>
-<li>Promoted <code>compas_plotter&gt;=1.0.1</code> and <code>compas_viewer&gt;=2.0</code> to runtime dependencies. Drawing a diagram is not an optional extra of this package, so installing it installs both backends.</li>
 <li>Rewrote the installation instructions around <code>pip</code> and <code>venv</code>. conda is being phased out across the COMPAS ecosystem, and <code>compas</code> no longer needs installing separately because <code>compas_cem</code> declares it.</li>
 <li>Marked the Grasshopper plugin as not installable in this release. It linked into Rhino 6 and 7 through <code>compas_rhino.install</code>, which COMPAS 2 removed.</li>
 <li>Renamed <code>Constraint</code> to <code>Goal</code> throughout, a clean break with no deprecation aliases. The nine concrete classes, the <code>VectorConstraint</code> and <code>FloatConstraint</code> bases, the <code>constraints</code> module, <code>Optimizer.add_constraint</code> and <code>remove_constraint</code>, the <code>solve_proxy</code> wire signature and the eight Grasshopper component directories all follow. This frees the name <code>Constraint</code> for genuine hard constraints, which nlopt supports and the package does not yet use.</li>
@@ -4201,7 +4201,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Ported serialization from the <code>data</code> property pair to <code>__data__</code> and <code>__from_data__</code> on goals and on edge and node parameters.</li>
 <li>Gave <code>Goal</code>, <code>Parameter</code>, <code>EdgeParameter</code> and <code>NodeParameter</code> default constructor arguments, so <code>__from_data__</code> can build one without knowing the concrete signature.</li>
 <li>Regenerated <code>examples/03_bridge_2d.json</code>, which was COMPAS 1.7.1 JSON and unreadable by COMPAS 2. Node and edge insertion order is preserved, because it sets the order of the optimizer's parameter vector.</li>
-<li>Widened <code>requires-python</code> to <code>&gt;=3.10,&lt;3.14</code> and both CI matrices to 3.10 through 3.13, now that the <code>distutils</code> ceiling is gone.</li>
+<li>Changed <code>requires-python</code> from <code>&gt;=3.8</code> to <code>&gt;=3.9,&lt;3.14</code>, and both CI matrices to 3.9 through 3.13, now that the <code>distutils</code> ceiling is gone. The floor is 3.9 because Rhino 8 runs CPython 3.9 and every Grasshopper component installs this package into it; a 3.10 floor made that install fail. The macOS cell for 3.9 is left out because <code>compas-actions.build</code> skips it without running anything.</li>
 <li>Replaced the reStructuredText module docstrings and inline markup with Markdown, and moved parameter and return types out of docstrings and into the signature position that mkdocstrings renders.</li>
 <li>Migrated the plotters from <code>compas_plotters</code> artists to <code>compas_plotter&gt;=1.0.1</code> scene objects, and the viewers from <code>compas_view2</code> objects to <code>compas_viewer&gt;=2.0</code> scene objects. Both register through <code>compas.scene.register</code> on import, because compas discovers scene object plugins in <code>compas*</code> packages only.</li>
 <li>Pinned the plotter node size policy to <code>relative</code>. The upstream scene object defaults to <code>absolute</code>, which divides the node size by the plotter resolution instead of the node count and draws markers two orders of magnitude smaller.</li>
@@ -4215,6 +4215,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Ported the 13 components that read Rhino geometry from the removed <code>compas_rhino.geometry.Rhino*</code> wrappers to the <code>compas_rhino.conversions</code> functions that replaced them.</li>
 <li>Annotated component inputs as optional where Grasshopper passes <code>None</code> for an unconnected input, under <code>from __future__ import annotations</code> so that Rhino 8, which is CPython 3.9, does not evaluate the unions at definition time.</li>
 <li>Read node positions in the Grasshopper scene objects from the scene object rather than from the diagram, so a transformation set on the object applies to everything it draws.</li>
+<li>Built the documentation on Python 3.12 instead of the <code>compas-actions.docs</code> default of 3.10. On 3.10 the resolver pairs <code>pymdown-extensions</code> 12, whose highlighter gained a required argument, with <code>mkdocstrings</code> 1.0.6, the last release for 3.10, which does not pass it, so every API page fails to render.</li>
 <li>Moved the release publish job from <code>ubuntu-latest</code> to <code>windows-latest</code> and gave it the component-building inputs, because the componentizer loads <code>GH_IO.dll</code>.</li>
 <li>Fixed <code>_draw_forces</code> normalizing a force vector before testing its magnitude, which divided by a zero length at a node carrying no load or reaction.</li>
 <li>Fixed <code>draw_reactions</code> raising on a node with no connected edge, where it searched an empty sequence for the strongest edge force.</li>
@@ -4715,10 +4716,10 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.footnote.tooltips", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.footnote.tooltips", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
