@@ -9,10 +9,10 @@ In short, this is how that works.
 
 1. Fork [the repository](https://github.com/arpastrana/compas_cem) and clone the fork.
 2. Create a virtual environment using your tool of choice (e.g. `virtualenv`, `conda`, etc).
-3. Install development dependencies:
+3. Install the package in editable mode with its development dependencies:
 
    ```bash
-   pip install -r requirements-dev.txt
+   pip install -e ".[dev]"
    ```
 
 4. Make sure all tests pass:

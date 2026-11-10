@@ -26,12 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a `dev-docs` job that publishes the documentation built from `main` as the `dev` version. `compas-actions.docs` deploys mkdocs on a version tag only, so between releases the site would otherwise show the last release and nothing newer.
 - Added a concurrency group to the build, docs and pull request workflows, so pushing to a pull request cancels its own in-flight run instead of queueing a second one. Pushes and tags keep a run-unique group, so a stuck run cannot hold up a deploy.
 - Added `workflow_dispatch` to the build and docs workflows, so either can be run by hand.
+- Added a `viz` extra, read from `requirements-viz.txt`, holding `compas_plotter>=1.0.1` and `compas_viewer>=2.0`, the backends of `compas_cem.plotters` and `compas_cem.viewers`. They stay out of the core install so that `compas_cem` stays lean inside Rhino 8, where the viewer would otherwise pull in PySide6 and PyOpenGL for nothing. The `dev` extra includes them. Importing either module without them raises an `ImportError` that names the extra.
 - Added a Made with COMPAS badge and a badge linking to the Computer-Aided Design article underpinning the framework to `README.md`.
 
 ### Changed
 
 - Migrated from COMPAS 1.17.10 to `compas>=2.15,<3.0`.
-- Promoted `compas_plotter>=1.0.1` and `compas_viewer>=2.0` to runtime dependencies. Drawing a diagram is not an optional extra of this package, so installing it installs both backends.
 - Rewrote the installation instructions around `pip` and `venv`. conda is being phased out across the COMPAS ecosystem, and `compas` no longer needs installing separately because `compas_cem` declares it.
 - Marked the Grasshopper plugin as not installable in this release. It linked into Rhino 6 and 7 through `compas_rhino.install`, which COMPAS 2 removed.
 - Renamed `Constraint` to `Goal` throughout, a clean break with no deprecation aliases. The nine concrete classes, the `VectorConstraint` and `FloatConstraint` bases, the `constraints` module, `Optimizer.add_constraint` and `remove_constraint`, the `solve_proxy` wire signature and the eight Grasshopper component directories all follow. This frees the name `Constraint` for genuine hard constraints, which nlopt supports and the package does not yet use.
@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ported serialization from the `data` property pair to `__data__` and `__from_data__` on goals and on edge and node parameters.
 - Gave `Goal`, `Parameter`, `EdgeParameter` and `NodeParameter` default constructor arguments, so `__from_data__` can build one without knowing the concrete signature.
 - Regenerated `examples/03_bridge_2d.json`, which was COMPAS 1.7.1 JSON and unreadable by COMPAS 2. Node and edge insertion order is preserved, because it sets the order of the optimizer's parameter vector.
-- Widened `requires-python` to `>=3.10,<3.14` and both CI matrices to 3.10 through 3.13, now that the `distutils` ceiling is gone.
+- Changed `requires-python` from `>=3.8` to `>=3.9,<3.14`, and both CI matrices to 3.9 through 3.13, now that the `distutils` ceiling is gone. The floor is 3.9 because Rhino 8 runs CPython 3.9 and every Grasshopper component installs this package into it; a 3.10 floor made that install fail. The macOS cell for 3.9 is left out because `compas-actions.build` skips it without running anything.
 - Replaced the reStructuredText module docstrings and inline markup with Markdown, and moved parameter and return types out of docstrings and into the signature position that mkdocstrings renders.
 - Migrated the plotters from `compas_plotters` artists to `compas_plotter>=1.0.1` scene objects, and the viewers from `compas_view2` objects to `compas_viewer>=2.0` scene objects. Both register through `compas.scene.register` on import, because compas discovers scene object plugins in `compas*` packages only.
 - Pinned the plotter node size policy to `relative`. The upstream scene object defaults to `absolute`, which divides the node size by the plotter resolution instead of the node count and draws markers two orders of magnitude smaller.

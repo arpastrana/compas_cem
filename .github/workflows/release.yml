@@ -11,7 +11,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python: ["3.10", "3.11", "3.12", "3.13"]
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        # compas-actions.build skips macOS with Python 3.9, so that cell would pass untested.
+        exclude:
+          - os: macos-latest
+            python: "3.9"
 
     steps:
       - uses: compas-dev/compas-actions.build@v5

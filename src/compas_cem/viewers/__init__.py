@@ -6,6 +6,12 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+try:
+    import compas_viewer as _compas_viewer  # noqa F401
+except ImportError as error:
+    message = "compas_cem.viewers needs the viz extra: pip install 'compas-cem[viz]'"
+    raise ImportError(message) from error
+
 from compas.scene.context import register_scene_objects
 
 from .viewer import *  # noqa F403

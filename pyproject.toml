@@ -13,7 +13,7 @@ keywords = ["form-finding", "structural-design", "architecture", "equilibrium"]
 authors = [{ name = "Rafael Pastrana", email = "arpj@princeton.edu" }]
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.9,<3.14"
 dynamic = ['dependencies', 'optional-dependencies', 'version']
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -24,6 +24,7 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -51,7 +52,7 @@ zip-safe = false
 [tool.setuptools.dynamic]
 version = { attr = "compas_cem.__version__" }
 dependencies = { file = "requirements.txt" }
-optional-dependencies = { dev = { file = "requirements-dev.txt" } }
+optional-dependencies = { viz = { file = "requirements-viz.txt" }, dev = { file = ["requirements-dev.txt", "requirements-viz.txt"] } }
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -99,7 +100,7 @@ replace = "[{new_version}] {now:%Y-%m-%d}"
 [tool.ruff]
 line-length = 88
 indent-width = 4
-target-version = "py310"
+target-version = "py39"
 
 [tool.ruff.lint]
 select = ["D202", "D300", "E", "F", "I", "W"]
