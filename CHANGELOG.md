@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ported the 13 components that read Rhino geometry from the removed `compas_rhino.geometry.Rhino*` wrappers to the `compas_rhino.conversions` functions that replaced them.
 - Annotated component inputs as optional where Grasshopper passes `None` for an unconnected input, under `from __future__ import annotations` so that Rhino 8, which is CPython 3.9, does not evaluate the unions at definition time.
 - Read node positions in the Grasshopper scene objects from the scene object rather than from the diagram, so a transformation set on the object applies to everything it draws.
+- Built the documentation on Python 3.12 instead of the `compas-actions.docs` default of 3.10. On 3.10 the resolver pairs `pymdown-extensions` 12, whose highlighter gained a required argument, with `mkdocstrings` 1.0.6, the last release for 3.10, which does not pass it, so every API page fails to render.
 - Moved the release publish job from `ubuntu-latest` to `windows-latest` and gave it the component-building inputs, because the componentizer loads `GH_IO.dll`.
 - Fixed `_draw_forces` normalizing a force vector before testing its magnitude, which divided by a zero length at a node carrying no load or reaction.
 - Fixed `draw_reactions` raising on a node with no connected edge, where it searched an empty sequence for the strongest edge force.

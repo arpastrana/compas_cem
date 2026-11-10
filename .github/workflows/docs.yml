@@ -23,6 +23,8 @@ jobs:
     steps:
       - uses: compas-dev/compas-actions.docs@v5
         with:
+          # On the action's default 3.10, mkdocstrings 1.0.6 breaks on pymdown-extensions 12.
+          python: "3.12"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           generator: mkdocs
           extras: dev
