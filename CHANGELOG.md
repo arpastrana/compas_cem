@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rewrote `tasks.py` to compose `compas_invocations2` tasks.
 - Updated CI to `compas-actions.build@v5`, `compas-actions.docs@v5` and `compas-actions.publish@v3`.
 - Replaced the Zenodo badge in `README.md` with a static shields.io badge on the concept DOI `10.5281/zenodo.5705740`, which always resolves to the latest deposit. The badge Zenodo generates is rendered on request and frequently times out behind the GitHub image proxy, so it showed up broken.
+- Fixed the badges and links in `README.md`. The Python badge read the classifiers of the latest PyPI release, so it showed 3.8 and 3.9; it now reads `requires-python` from `pyproject.toml` on `main`. The documentation links pointed at Sphinx pages the mkdocs site does not have, and the COMPAS tutorial and API links at pages COMPAS 2 moved. The build badge uses the current workflow badge URL.
 - Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.
 - Loosened dependency version from `numpy<2` to `numpy>=1.26`. The upper bound was never necessary; the test suite passes on numpy 2.
 
