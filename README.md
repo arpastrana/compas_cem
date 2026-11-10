@@ -9,7 +9,7 @@
 [![ArXiv paper](https://img.shields.io/badge/arXiv-2111.02607-b31b1b.svg)](https://arxiv.org/abs/2111.02607)
 [![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5705740-1682d4.svg)](https://doi.org/10.5281/zenodo.5705740)
 
-![](docs/images/staircase_24_fps_128_colors.gif)
+![Constrained form-finding of a spiral staircase](https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/images/staircase.gif)
 
 The [Combinatorial Equilibrium Modeling (CEM)](https://doi.org/10.1016/j.cad.2022.103435) framework for [COMPAS](https://compas.dev/).
 

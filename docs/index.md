@@ -4,7 +4,7 @@ The [Combinatorial Equilibrium Modeling (CEM)](https://doi.org/10.1016/j.cad.202
 framework for [COMPAS](https://compas.dev/).
 
 <figure markdown="span">
-  ![Constrained form-finding of a spiral staircase](images/staircase_24_fps_128_colors.gif)
+  ![Constrained form-finding of a spiral staircase](images/staircase.gif)
   <figcaption>Constrained form-finding of a spiral staircase.</figcaption>
 </figure>
 
