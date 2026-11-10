@@ -1,9 +1,9 @@
 # compas_cem modernization plan
 
-Status: **Phases 0, 1 and 2 are complete and merged into `main`** (PRs #16, #17
-and #18). Phases 3 to 5 not started; **Phase 5 is next.** Target release
-**0.9.0**, deliberately breaking. §14 is the current handover and §15 the
-Phase 5 blueprint.
+Status, 2026-11-10: **Phases 0, 1, 2 and 5 are complete and merged into `main`**
+(PRs #16 to #19). Phases 3 and 4 not started. Target release **0.9.0**,
+deliberately breaking and not yet tagged. **§17 is the current handover**, and
+§17.5 the release sequence.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
@@ -390,7 +390,8 @@ Two corrections to earlier sections, both learned from that run:
 - **`mkdocs.docs` does not pass `--strict`.** The 8 griffe warnings in §9.3 do
   *not* red the docs job. They are still worth fixing, but they are not blocking.
 - **`compas-actions.build@v5` does not skip macOS + Python 3.9.** An earlier note
-  claimed it did; that cell ran and passed.
+  claimed it did; that cell ran and passed. *Wrong from the start: the action
+  has skipped that cell since 2024-04-25 and reports it green; see §17.4.*
 
 > **Line numbers in §1–§9 predate the 88-column reformat.** The reformat rewrote
 > 105 files after that research was done, so `file:line` citations in those
@@ -502,12 +503,13 @@ Neither blocks Phase 1 or 2, but Phase 3 stalls without the first:
 1. **Who decouples `jax_cem` from `compas_cem` and publishes it to PyPI** — see
    §5 and the cycle-breaking note. The two `from_topology_diagram` constructors
    move down into this repo; the kernel then depends on `compas` only.
+   *Decoupled 2026-08-12, still unpublished; see §17.6.*
 2. ~~**Grasshopper componentizer for Phase 5**~~ — **resolved 2026-08-07: keep
    the componentizer and follow `compas_fab`.** See §15.
 
 Also owed before tagging 0.9.0: the `gh-pages` → mike migration, and a throwaway
 `v0.9.0-rc1` tag to exercise `release.yml`, which is tag-triggered and therefore
-still unverified.
+still unverified. *The migration is done, and the rc1 tag was dropped; see §17.5.*
 
 ### 10.6 Docstring pass
 
@@ -849,6 +851,9 @@ import.
 That collapsed the installation instructions from four steps to two, and they
 now use `pip` and `venv` rather than conda, which is being phased out across the
 COMPAS ecosystem.
+
+**Reversed 2026-11-10.** Both backends are now the `viz` extra, so that Rhino
+does not install them; see §17.3.
 
 ### 12.6 The four latent bugs are fixed
 
@@ -1392,9 +1397,10 @@ entirely and blocks nothing else, so it should not wait for Phase 5.
 ### 14.5 Owed before tagging 0.9.0
 
 - the `gh-pages` migration from the Sphinx layout to mike's `versions.json`;
+  *done 2026-08-08*;
 - a throwaway `v0.9.0-rc1` tag to exercise `release.yml`, which is tag-triggered
-  and still completely unrun;
-- the version bump; `pyproject.toml` still reads 0.8.6.
+  and still completely unrun; *dropped, see §17.5*;
+- the version bump; `pyproject.toml` still reads 0.8.6. *Still owed, §17.5 step 1.*
 
 A suggestion the plan does not settle: **scope 0.9.0 as "runs on COMPAS 2"** and
 leave JAX to the next release. Phase 5 is the natural boundary, and it puts a
@@ -1572,6 +1578,7 @@ which is a judgement call rather than a technical one.
 
 Written 2026-08-07, at the end of the session that ported the `ghpython` layer.
 The work sits **uncommitted in the working tree**; nothing was committed.
+*Merged 2026-08-08 as PR #19.*
 
 With this, **no module of the package is on COMPAS 1 APIs**, which is what
 §14.3 set as the definition of a complete COMPAS 2 migration.
@@ -1647,7 +1654,8 @@ Two Rhino 7 leftovers were also repaired: `.gitignore` and the ruff
 **The componentizer was never run.** It needs `GH_IO.dll`, and this machine has
 neither Mono nor Rhino installed, so no `.ghuser` was built and no `.yak` was
 packaged. That verification belongs to CI on `windows-latest`, and
-`release.yml` is still tag-triggered and completely unrun (§14.5).
+`release.yml` is still tag-triggered and completely unrun (§14.5). *Superseded
+2026-08-08: the componentizer and `yakerize` were run locally; see §17.5.*
 
 What *was* verified: `ruff check` clean; `ruff format --check` clean over `src`
 and `tests`; all 39 `code.py` plus `scene_objects.py` and `tasks.py`
@@ -1716,6 +1724,8 @@ Each definition has to be rebuilt by hand in Grasshopper.
 installed in Rhino *and* `compas_cem>=0.9.0` resolvable from PyPI, because that
 is what every `# r:` header requests, against a latest published version of
 0.8.6. §14.5's `v0.9.0-rc1` is therefore a prerequisite, not a formality.
+*Superseded: a release candidate cannot satisfy that header, and a local install
+of the bumped package can. See §17.5.*
 
 Start with `bridge_2d.ghx`: it is the smallest and it exercises assembly,
 form-finding and both artist components, so rebuilding it also serves as the
@@ -1724,3 +1734,159 @@ Rhino acceptance test §16.5 says the phase never received.
 `docs/examples/grasshopper/*.md` link to each file on `main` for download, so
 0.9.0 would otherwise ship documentation pointing at definitions that do not
 open.
+
+## 17. Resumed 2026-11-10: the Python floor and optional visualization
+
+Written 2026-11-10, when work resumed. Nothing had been committed since
+2026-08-08, and the release sequence agreed that day (§17.5) had not started.
+This section is the current handover.
+
+### 17.1 Where things stand
+
+| item | state |
+| --- | --- |
+| `main` | clean at `0964b764`, with PRs #16 to #24 merged |
+| version | 0.8.6, in the repository and on PyPI |
+| open issues | #21, the Grasshopper examples, and #1, from 2020 |
+| open pull requests | none |
+| Rhino | 8.34 installed, CPython 3.9.10, `compas` 2.15.1 already in its default site-env |
+| kernel | `jax_cem` decoupled, merged to its `main`, unpublished (§17.6) |
+
+Two branches remain besides `main` and `gh-pages`. `autograd` is stale since
+2022-08-15: its three unmerged commits touch an example that `main` deleted long
+ago and `plotters/proxy.py`, which Phase 2 deleted, so nothing on it is worth
+keeping. `gh-pages-sphinx-backup` is kept on purpose until the 0.9.0 docs deploy
+and check out.
+
+### 17.2 The Python floor blocked Rhino 8
+
+Phase 1 step 9 (§10.3) lifted the ceiling and, in the same commit, raised the
+floor from 3.9 to 3.10. §9.1 item 3 justifies the ceiling only, and no reason
+was recorded for the floor. Rhino 8 runs CPython 3.9 (§4.4) and every component
+requests `compas_cem>=0.9.0`, so pip inside Rhino refused the package. A wheel
+built from `main` and dry-run through Rhino's own interpreter:
+
+```text
+ERROR: Package 'compas-cem' requires a different Python: 3.9.10 not in '<3.14,>=3.10'
+```
+
+§17.5 step 2 would have failed, and so would every user's plugin install.
+
+The floor is now `>=3.9,<3.14`, with a 3.9 classifier and 3.9 in the build and
+release matrices. ruff's `target-version` drops to `py39` with it, so the
+formatter cannot emit syntax that 3.9 rejects, such as parenthesized context
+managers.
+
+Verified in a fresh Python 3.9 environment with the `dev` extra:
+
+- the three steps CI runs pass: `invoke lint`, `invoke test` at 107/107, and
+  `python -m compas`;
+- `capture.py` reproduces fixtures 01 to 04 exactly; 05 drifts by 6.65e-3, the
+  same amount it drifts on the 3.12 environment, which is the §11.2 drift and
+  not a 3.9 effect;
+- `render.py` renders all five examples;
+- every module outside `components_cpython/` compiles under Rhino's own 3.9.10
+  interpreter, with no PEP 604 union evaluated at run time.
+
+The 3.9 resolution lands on the §4.4 ceilings: numpy 2.0.2, scipy 1.13.1, nlopt
+2.9.1, autograd 1.8.0 and compas 2.15.1.
+
+### 17.3 Reversed: the visualization backends are the `viz` extra
+
+Decided 2026-11-10, reversing §12.5. `compas_plotter` and `compas_viewer` move
+from `requirements.txt` to `requirements-viz.txt`, published as the `viz` extra,
+the name `jax_fdm` uses. Rhino installs the core package, and the viewer alone
+would drag PySide6, PyOpenGL and freetype-py into Rhino's Python for modules no
+component imports.
+
+- **`dev` reads both files**, as `{ file = ["requirements-dev.txt",
+  "requirements-viz.txt"] }`. `compas-actions.build` installs `.[dev]`, and the
+  docs build imports both modules for mkdocstrings. The `dev-docs` job now
+  installs `.[dev]` in one step instead of the package and the dev file
+  separately.
+- **Both modules fail loudly without their backend.** `compas_cem.plotters` and
+  `compas_cem.viewers` import it first and re-raise the `ImportError` with the
+  extra's name. The import binds a private name, because both modules build
+  `__all__` from `dir()`. This differs from `jax_fdm`'s `has_backend` guard,
+  which leaves the module importable but empty; a user who imports a plotter
+  wants one.
+
+Verified in a core-only Python 3.9 environment built from the wheel: no PySide6,
+PyOpenGL, matplotlib or backend package is installed; `compas_cem`,
+`.ghpython`, `.optimization` and `.equilibrium` import; both visualization
+modules raise the hint; and the suite passes against the installed wheel. The
+Rhino dry run now resolves, to attrs, autograd, compas, jsonschema and its two
+helpers, networkx, nlopt, numpy, rpds-py, scipy, typing_extensions and watchdog.
+
+Left alone deliberately: nlopt and autograd stay in the core. Importing
+`compas_cem.optimization` loads both, and 18 components import it inside
+Rhino, even though the form-finding component solves over `compas.rpc.Proxy`.
+
+### 17.4 CI: the macOS 3.9 cell is excluded
+
+§10.1 records that `compas-actions.build@v5` ran the macOS 3.9 cell. It did
+not. The action has skipped checkout, install and tests for exactly that
+combination since 2024-04-25, so the cell reported success having run nothing,
+in Phase 0 as now. Both matrices therefore exclude it rather than carry a green
+cell that tests nothing.
+3.9 is still tested on Ubuntu and Windows, and macOS on 3.10 to 3.13.
+
+### 17.5 The release sequence
+
+Agreed 2026-08-08 and not written down here until now. Steps 1 and 2 break a
+circular dependency: the components need a 0.9.0 to install, and publishing one
+should wait for proof that the components work.
+
+1. **Bump to 0.9.0 locally, and do not push the tag.** `invoke release minor`
+   runs format and tests, then `bump-my-version` updates the version and turns
+   the changelog's `Unreleased` into a dated `[0.9.0]`, commits, tags `v0.9.0`
+   locally, and builds. The unpushed tag is the safety valve. §16.7 applies to
+   the component headers.
+2. **Prove a component runs in Rhino 8.** Install the built wheel into Rhino's
+   Python so that `# r: compas_cem>=0.9.0` is satisfied locally, with no PyPI
+   round trip. Then rebuild `bridge_2d.ghx`: it is the smallest, and it
+   exercises assembly, form-finding and both artist components. Rhino 8 is
+   installed and §17.2 is fixed, so this is now unblocked.
+3. **Push the tag.** That is the first `release.yml` run: the PyPI publish and the
+   yak build on `windows-latest`, which has only run locally on macOS. Expect to
+   iterate. First confirm the `PYPI` secret, dated 2021-07-04, still works.
+   `docs.yml` then deploys `0.9.0`, aliases `latest` and moves the site default
+   off `dev`.
+4. **Rebuild the remaining four `.ghx` files** and close #21.
+
+**No release candidate.** It was proposed repeatedly and is wrong twice over.
+`bump-my-version` has no `[tool.bumpversion.parts]`, so pre-release bumps are
+unconfigured. And pip excludes pre-releases from a specifier that names none, so
+`0.9.0rc1` would leave `compas_cem>=0.9.0` unsatisfied, which defeats the only
+reason to want one. This supersedes §10.5, §14.5 and §16.8 on `v0.9.0-rc1`.
+
+**The yak toolchain works locally**, proven 2026-08-08 after §16.5 was written.
+`brew install mono mono-libgdiplus` was all it needed; `pythonnet` was already
+installed and `GH_IO.dll` downloads itself from NuGet. `invoke
+build-cpython-ghuser-components` and then `invoke yakerize` produce 39 `.ghuser`
+files and a `.yak`. Reading the archives back through
+`GH_IO.Serialization.GH_LooseChunk` confirmed that the pinned `instanceGuid`
+matches `metadata.json` in 39 of 39. Do not grep a `.ghuser` for a GUID: the
+archive is compressed, so a byte search finds nothing and looks like a failure.
+What remains unverified is whether `RunScript` runs, because the componentizer
+never executes it.
+
+### 17.6 The kernel is decoupled but unpublished
+
+`arpastrana/jax_cem` merged its refactor into `main` on 2026-08-12, and the
+`refactor` branch is gone. Its runtime dependencies are jax, numpy, equinox and
+jaxtyping, with no COMPAS and no `compas_cem`, which settles the decoupling half
+of §10.5 item 1. It has no tags and is not on PyPI, so Phase 3 stays gated on
+publishing it. It is now Apache-2.0.
+
+Its roadmap pins `compas_cem` from git and plans a version pin "once 0.8.7
+ships". The next release here is 0.9.0, so that line wants updating on the
+kernel side.
+
+### 17.7 Corrections made to earlier sections
+
+Annotated in place rather than rewritten: the status line at the top, §10.1 on
+the macOS 3.9 cell, §10.5, §12.5, §14.5, the opening of §16, §16.5 on the
+componentizer, and §16.8 on `v0.9.0-rc1`.
+
+Next: once this lands, §17.5 step 1.
