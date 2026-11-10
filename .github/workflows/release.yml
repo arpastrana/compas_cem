@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+  # A manual run rehearses the yak push against the test server, with no PyPI upload or release.
+  workflow_dispatch:
 
 jobs:
   build:
@@ -39,3 +41,14 @@ jobs:
           gh_target: src/compas_cem/ghpython/components_cpython/ghuser
           gh_interpreter: "cpython"
           release_name_prefix: COMPAS CEM
+          publish_to_pypi: ${{ github.event_name == 'push' }}
+          create_release: ${{ github.event_name == 'push' }}
+      # The action has already built the components and uploaded to PyPI, which the components' header needs.
+      - name: Build the yak package
+        shell: bash
+        run: invoke yakerize
+      - name: Push the yak package
+        shell: bash
+        run: invoke publish-yak --yak-file dist/yak_package/*.yak ${{ github.event_name != 'push' && '--test-server' || '' }}
+        env:
+          YAK_TOKEN: ${{ secrets.YAK_TOKEN }}
