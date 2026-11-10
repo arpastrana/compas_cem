@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `workflow_dispatch` to the build and docs workflows, so either can be run by hand.
 - Added a `viz` extra, read from `requirements-viz.txt`, holding `compas_plotter>=1.0.1` and `compas_viewer>=2.0`, the backends of `compas_cem.plotters` and `compas_cem.viewers`. They stay out of the core install so that `compas_cem` stays lean inside Rhino 8, where the viewer would otherwise pull in PySide6 and PyOpenGL for nothing. The `dev` extra includes them. Importing either module without them raises an `ImportError` that names the extra.
 - Added a Made with COMPAS badge and a badge linking to the Computer-Aided Design article underpinning the framework to `README.md`.
+- Added a pre-commit configuration with ruff check and format, whitespace, end-of-file, YAML, TOML, JSON and merge-conflict checks, and `check_docs.py`, which fails when a personal name appears in project prose outside the authorship files. `invoke lint` runs `ruff check --fix` on `src` and `tests` only and never checks formatting, so the hook is what keeps `examples`, `tasks.py` and the formatting in line. Install it with `pre-commit install`.
 
 ### Changed
 
@@ -79,6 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the badges and links in `README.md`. The Python badge read the classifiers of the latest PyPI release, so it showed 3.8 and 3.9; it now reads `requires-python` from `pyproject.toml` on `main`. The documentation links pointed at Sphinx pages the mkdocs site does not have, and the COMPAS tutorial and API links at pages COMPAS 2 moved. The build badge uses the current workflow badge URL.
 - Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.
 - Loosened dependency version from `numpy<2` to `numpy>=1.26`. The upper bound was never necessary; the test suite passes on numpy 2.
+- Pinned ruff to 0.16.1 in `requirements-dev.txt`, matching the pre-commit hook, so the hook, `invoke lint` and CI run the same ruff.
 
 ### Removed
 

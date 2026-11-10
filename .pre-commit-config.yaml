@@ -1,0 +1,33 @@
+repos:
+  # Keep rev in step with the ruff pin in requirements-dev.txt.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.1
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # Example definitions, their data and the test baselines stay byte-stable.
+      - id: trailing-whitespace
+        exclude: ^(examples/ghpython/|examples/data/|examples/03_bridge_2d\.json$|tests/baseline/)
+      - id: end-of-file-fixer
+        exclude: ^(examples/ghpython/|examples/data/|examples/03_bridge_2d\.json$|tests/baseline/)
+      # mkdocs.yml carries !!python/name tags that only --unsafe parses.
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      # Authorship files are the one legitimate place for a name.
+      - id: check-docs
+        name: no personal names in project prose
+        entry: python check_docs.py
+        language: python
+        files: \.(md|py)$
+        exclude: ^(AUTHORS\.md|docs/index\.md|src/compas_cem/__init__\.py)$
