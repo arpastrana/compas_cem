@@ -1,5 +1,5 @@
 {
-    "name": "Reaction Force Goal",
+    "name": "Reaction Force Goal (COMPAS CEM)",
     "nickname": "ReactionForceGoal",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

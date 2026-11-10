@@ -13,7 +13,7 @@ import System
 from compas_cem.ghpython import TopologyDiagramObject
 
 
-class TopologyArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
+class DrawTopologyComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(
         self,
         topology: Any,

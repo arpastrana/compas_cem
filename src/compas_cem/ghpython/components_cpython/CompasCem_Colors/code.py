@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.0
 """
-Get the artists color scheme for the objects of the CEM framework.
+Get the color scheme for the objects of the CEM framework.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ import System
 from compas_cem import COLORS
 
 
-class ArtistColorsComponent(Grasshopper.Kernel.GH_ScriptInstance):
+class ColorsComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(self) -> Any:
         colors = {
             name: System.Drawing.Color.FromArgb(*rgb) for name, rgb in COLORS.items()

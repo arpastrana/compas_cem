@@ -1,5 +1,5 @@
 {
-    "name": "Node Load Z Parameter",
+    "name": "Node Load Z Parameter (COMPAS CEM)",
     "nickname": "NodeLoadZParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

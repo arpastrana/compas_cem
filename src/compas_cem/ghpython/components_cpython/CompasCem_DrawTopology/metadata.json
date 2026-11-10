@@ -1,8 +1,8 @@
 {
-    "name": "Topology Artist",
-    "nickname": "TopologyArtist",
+    "name": "Draw Topology (COMPAS CEM)",
+    "nickname": "DrawTopology",
     "category": "COMPAS CEM",
-    "subcategory": "08_Artists",
+    "subcategory": "08_Visualization",
     "description": "Draw a topology diagram.",
     "exposure": 2,
     "instanceGuid": "811239b8-4d26-41d6-80ba-953e2e2a7593",

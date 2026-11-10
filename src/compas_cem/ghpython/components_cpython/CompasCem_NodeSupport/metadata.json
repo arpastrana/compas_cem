@@ -1,5 +1,5 @@
 {
-    "name": "Node Support",
+    "name": "Node Support (COMPAS CEM)",
     "nickname": "NodeSupport",
     "category": "COMPAS CEM",
     "subcategory": "03_BoundaryConditions",

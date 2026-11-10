@@ -1,5 +1,5 @@
 {
-    "name": "Node Load X Parameter",
+    "name": "Node Load X Parameter (COMPAS CEM)",
     "nickname": "NodeLoadXParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

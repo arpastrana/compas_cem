@@ -1,5 +1,5 @@
 {
-    "name": "Deviation Edge Force Parameter",
+    "name": "Deviation Edge Force Parameter (COMPAS CEM)",
     "nickname": "DeviationEdgeForceParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",

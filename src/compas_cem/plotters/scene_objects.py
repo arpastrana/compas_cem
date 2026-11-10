@@ -65,10 +65,9 @@ class DiagramPlotterObject(GraphObject):
 
     Notes
     -----
-    The size policy defaults to `relative`, which is what the diagram artists
-    of the 1.x plotter used. The upstream scene object defaults to `absolute`
-    instead, which makes the same node size read two orders of magnitude
-    smaller.
+    The size policy defaults to `relative`, which is what the 1.x plotter
+    used. The upstream scene object defaults to `absolute` instead, which
+    makes the same node size read two orders of magnitude smaller.
     """
 
     def __init__(

@@ -1845,7 +1845,7 @@ should wait for proof that the components work.
 2. **Prove a component runs in Rhino 8.** Install the built wheel into Rhino's
    Python so that `# r: compas_cem>=0.9.0` is satisfied locally, with no PyPI
    round trip. Then rebuild `bridge_2d.ghx`: it is the smallest, and it
-   exercises assembly, form-finding and both artist components. Rhino 8 is
+   exercises assembly, form-finding and both draw components. Rhino 8 is
    installed and §17.2 is fixed, so this is now unblocked.
 3. **Push the tag.** That is the first `release.yml` run: the PyPI publish and the
    yak build on `windows-latest`, which has only run locally on macOS. Expect to

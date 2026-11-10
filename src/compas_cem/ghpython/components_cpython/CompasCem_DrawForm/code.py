@@ -13,7 +13,7 @@ import System
 from compas_cem.ghpython import FormDiagramObject
 
 
-class FormArtistComponent(Grasshopper.Kernel.GH_ScriptInstance):
+class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(
         self,
         form: Any,

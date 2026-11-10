@@ -1,5 +1,5 @@
 {
-    "name": "Disassemble Topology Diagram",
+    "name": "Disassemble Topology Diagram (COMPAS CEM)",
     "nickname": "TopologyDisassembly",
     "category": "COMPAS CEM",
     "subcategory": "04_Diagrams",

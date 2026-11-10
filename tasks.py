@@ -32,7 +32,6 @@ ns.configure(
         "ghuser_cpython": {
             "source_dir": "{}/components_cpython".format(GHPYTHON),
             "target_dir": "{}/components_cpython/ghuser".format(GHPYTHON),
-            "prefix": "COMPAS CEM: ",
         },
         # yakerize resolves these two by config key, not by folder convention.
         "yak": {
