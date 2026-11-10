@@ -5,6 +5,9 @@ get started.
 
 ## Python
 
+The Python examples draw their results, so they need the `viz` extra:
+`pip install "compas-cem[viz]"`.
+
 * [01. Simple Compression Structure](examples/python/01_simple_compression_structure.md)
 * [02. Braced Tower in 2D](examples/python/02_braced_tower_2d.md)
 * [03. Bridge Optimization in 2D](examples/python/03_bridge_2d.md)

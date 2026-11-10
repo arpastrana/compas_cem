@@ -2,16 +2,27 @@
 
 ## Install COMPAS CEM
 
-`compas_cem` is on PyPI, and it pulls in everything it needs — `compas`, the
-plotter and the viewer among them. Install it with a one-liner:
+`compas_cem` is on PyPI, and it pulls in everything it needs to model,
+form-find and optimize, `compas` among them. Install it with a one-liner:
 
 ```bash
 pip install compas-cem
 ```
 
+To draw diagrams with `compas_cem.plotters` or `compas_cem.viewers`, as the
+examples do, install the `viz` extra instead:
+
+```bash
+pip install "compas-cem[viz]"
+```
+
+The plotter and the viewer are optional so that `compas_cem` stays lean inside
+Rhino, which needs neither of them.
+
 !!! note
 
-    `compas_cem` requires Python 3.10 or newer.
+    `compas_cem` requires Python 3.9 or newer. The floor is 3.9 because that is
+    the Python that Rhino 8 runs.
 
 To double-check that everything is up and running, type the following in the
 command line and hit enter:

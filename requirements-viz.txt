@@ -1,0 +1,2 @@
+compas_plotter>=1.0.1
+compas_viewer>=2.0

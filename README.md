@@ -31,10 +31,16 @@ The [CEM framework](https://doi.org/10.1016/j.cad.2022.103435) is a numerical fo
 These are succint instructions to install **COMPAS CEM** and its [Grasshopper](https://grasshopper3d.com/) plugin.
 For detailed guidance, please refer to the [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/latest/index.html).
 
-Install **COMPAS CEM** with `pip`. It requires Python 3.10 or newer, and pulls in `compas` and the plotter and viewer backends for you:
+Install **COMPAS CEM** with `pip`. It requires Python 3.9 or newer, and pulls in `compas` for you:
 
 ```bash
 pip install compas-cem
+```
+
+To draw diagrams with the plotter or the viewer, as the examples do, install the `viz` extra instead:
+
+```bash
+pip install "compas-cem[viz]"
 ```
 
 To double-check that everything is up and running, type the following in the
