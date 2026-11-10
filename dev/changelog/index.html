@@ -4230,6 +4230,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <li>Rewrote <code>tasks.py</code> to compose <code>compas_invocations2</code> tasks.</li>
 <li>Updated CI to <code>compas-actions.build@v5</code>, <code>compas-actions.docs@v5</code> and <code>compas-actions.publish@v3</code>.</li>
 <li>Replaced the Zenodo badge in <code>README.md</code> with a static shields.io badge on the concept DOI <code>10.5281/zenodo.5705740</code>, which always resolves to the latest deposit. The badge Zenodo generates is rendered on request and frequently times out behind the GitHub image proxy, so it showed up broken.</li>
+<li>Fixed the badges and links in <code>README.md</code>. The Python badge read the classifiers of the latest PyPI release, so it showed 3.8 and 3.9; it now reads <code>requires-python</code> from <code>pyproject.toml</code> on <code>main</code>. The documentation links pointed at Sphinx pages the mkdocs site does not have, and the COMPAS tutorial and API links at pages COMPAS 2 moved. The build badge uses the current workflow badge URL.</li>
 <li>Replaced flake8, isort, doc8 and pydocstyle with ruff, and reformatted the code base to 88 columns.</li>
 <li>Loosened dependency version from <code>numpy&lt;2</code> to <code>numpy&gt;=1.26</code>. The upper bound was never necessary; the test suite passes on numpy 2.</li>
 </ul>
