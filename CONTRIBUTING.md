@@ -9,10 +9,11 @@ In short, this is how that works.
 
 1. Fork [the repository](https://github.com/arpastrana/compas_cem) and clone the fork.
 2. Create a virtual environment using your tool of choice (e.g. `virtualenv`, `conda`, etc).
-3. Install the package in editable mode with its development dependencies:
+3. Install the package in editable mode with its development dependencies, then the pre-commit hooks:
 
    ```bash
    pip install -e ".[dev]"
+   pre-commit install
    ```
 
 4. Make sure all tests pass:
@@ -21,7 +22,7 @@ In short, this is how that works.
    invoke test
    ```
 
-5. Start making your changes to the **master** branch (or branch off of it).
+5. Start making your changes to the **main** branch (or branch off of it).
 6. Make sure all tests still pass:
 
    ```bash

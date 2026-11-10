@@ -685,10 +685,10 @@ step it does take is decided by floating-point noise. Repairing this is Phase
 say what to. Phase 1 first shipped a single `Diagram.add_element(element)`
 dispatching on `Node` versus `Edge`.
 
-That was **reconsidered before this branch was merged.** An audit of the two
-sibling libraries, `jax_fdm` and `smax`, led Rafael to keep `add_node` and
-`add_edge` and dispatch on the type of the argument, so that the authoring API,
-the tutorials and every existing `.gh` file survive untouched. Phase 1 was
+That was **reconsidered before this branch was merged.** After an audit of the
+two sibling libraries, `jax_fdm` and `smax`, it was decided on 2026-08-07 to
+keep `add_node` and `add_edge` and dispatch on the type of the argument, so that
+the authoring API, the tutorials and every existing `.gh` file survive untouched. Phase 1 was
 rewritten to ship that directly, so `main` never carried `add_element`.
 
 What landed:
@@ -749,8 +749,8 @@ verbatim. Also fixed on the way past:
 
 ## 12. Phase 2 outcome
 
-Delivered on branch `phase-2`, branched off `phase-1`. **Signed off**: Rafael ran
-all five examples and the viewer check by hand on 2026-08-07 and confirmed both
+Delivered on branch `phase-2`, branched off `phase-1`. **Signed off** 2026-08-07,
+after all five examples and the viewer check were run by hand, confirming both
 backends draw correctly. §12.4 records what was checked and how to rerun it.
 
 | gate | result |
@@ -834,8 +834,8 @@ and the two renders match.
 ### 12.5 Resolved: the visualization backends are runtime dependencies
 
 `compas_plotter>=1.0.1` and `compas_viewer>=2.0` were briefly parked in
-`requirements-dev.txt`, because the docs build imports those modules. Rafael
-settled it on 2026-08-07: **both are ordinary runtime dependencies**, in
+`requirements-dev.txt`, because the docs build imports those modules. It was
+settled on 2026-08-07: **both are ordinary runtime dependencies**, in
 `requirements.txt`. Unlike `jax_fdm`, which treats its backends as optional and
 guards them with `has_backend`, drawing a diagram is not an optional extra of
 this package.
@@ -1251,7 +1251,7 @@ already contemplates.
 
 ### 13.11 Decision: option C, implemented
 
-Chosen by Rafael on 2026-08-07. Option A had been built during Phase 1's
+Chosen 2026-08-07. Option A had been built during Phase 1's
 development; after this audit, **Phase 1 was rewritten before it was merged**, so
 `main` never carried `add_element` (§11.3). The reasoning: C respects the API
 that the examples, the documentation, the tutorials and every existing `.gh`
@@ -1361,7 +1361,7 @@ is salvageable, and this was checked rather than assumed:
 
 ### 14.2 The governing objective
 
-Set by Rafael and recorded here because it decides what comes next: **complete
+Set 2026-08-07 and recorded here because it decides what comes next: **complete
 the COMPAS 2 migration first.** Only afterwards tighten or change API contracts
 to align with `jax_fdm` or `smax`. The §13 audit stands as the record for when
 that time comes; §13.6's naming work is deferred, not cancelled.
@@ -1601,7 +1601,7 @@ Grasshopper objects carry no backend name in the way `FormPlotterObject` does.
 
 ### 16.2 Resolved: §15.3, pin fresh GUIDs
 
-Decided by Rafael during this session. A static `instanceGuid` is now pinned in
+Decided 2026-08-07. A static `instanceGuid` is now pinned in
 all 39 `metadata.json` files, minted fresh rather than recovered from the
 published 0.8.6 yak package.
 

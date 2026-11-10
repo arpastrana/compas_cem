@@ -4,8 +4,10 @@ bump-my-version
 compas_invocations2[mkdocs]
 invoke>=0.14
 matplotlib
+pre-commit
 pytest
 pytest-lazy-fixtures>=1.1.0
-ruff
+# Keep in step with the ruff-pre-commit rev in .pre-commit-config.yaml.
+ruff==0.16.1
 twine
 wheel
