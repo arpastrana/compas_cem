@@ -4272,6 +4272,8 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
+<li>Limited <code>uv.lock</code> to Python 3.11 and newer through <code>[tool.uv] environments</code>. Resolved for 3.9 and 3.10 too, the lock pinned releases of Pillow, filelock, urllib3, cryptography and other development and plotting dependencies that have no security fix for those Pythons, which opened about a hundred Dependabot alerts. The package still supports Python 3.9, CI still tests 3.9 to 3.13 with pip, and work on 3.9 or 3.10 uses the pip route.</li>
+<li>Extended the copyright years in <code>LICENSE</code> from 2020-2021 to 2020-2026, and set <code>compas_cem.__copyright__</code> to the license's holder with no year, as <code>jax_fdm</code> does. It read <code>Copyright 2020 - Princeton University</code>.</li>
 <li>Moved every workflow to <code>actions/checkout@v7</code> and <code>actions/setup-python@v7</code>. The <code>dev-docs</code> job still ran the deprecated Node 20 releases <code>checkout@v4</code> and <code>setup-python@v5</code>.</li>
 <li>Replaced the <code>Zomzog/changelog-checker</code> action, unmaintained since 2022 and declaring the retired <code>node12</code> runtime, with a shell step that lists the pull request's changed files with <code>gh pr diff --name-only</code>. The <code>no changelog</code> label still skips it.</li>
 <li>Replaced the warning that the Grasshopper plugin is not installable with Package Manager instructions for Rhino 8 in the README and the installation guide. 0.9.0 ships the plugin on the Rhino package server, so the 0.9.0 README on PyPI still carries the outdated warning.</li>

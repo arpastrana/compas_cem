@@ -1528,8 +1528,9 @@ plotter, the viewer and every development tool, pinned by the committed
 <p>Prefix commands with <code>uv run</code> and they execute inside the project environment,
 with no activation step. A bare <code>uv sync</code> installs only the runtime
 dependencies, the same as <code>pip install -e .</code>.</p>
-<p>If you prefer <code>pip</code>, create and activate a virtual environment on Python 3.9 to
-3.13 and install the same extra:</p>
+<p>The lock covers Python 3.11 to 3.13. To work on Python 3.9 or 3.10, the Python
+that Rhino 8 runs, or if you prefer <code>pip</code>, create and activate a virtual
+environment and install the same extra:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
 </span></code></pre></div>
 <p>See the
