@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Limited `uv.lock` to Python 3.11 and newer through `[tool.uv] environments`. Resolved for 3.9 and 3.10 too, the lock pinned releases of Pillow, filelock, urllib3, cryptography and other development and plotting dependencies that have no security fix for those Pythons, which opened about a hundred Dependabot alerts. The package still supports Python 3.9, CI still tests 3.9 to 3.13 with pip, and work on 3.9 or 3.10 uses the pip route.
 - Extended the copyright years in `LICENSE` from 2020-2021 to 2020-2026, and set `compas_cem.__copyright__` to the license's holder with no year, as `jax_fdm` does. It read `Copyright 2020 - Princeton University`.
 - Moved every workflow to `actions/checkout@v7` and `actions/setup-python@v7`. The `dev-docs` job still ran the deprecated Node 20 releases `checkout@v4` and `setup-python@v5`.
 - Replaced the `Zomzog/changelog-checker` action, unmaintained since 2022 and declaring the retired `node12` runtime, with a shell step that lists the pull request's changed files with `gh pr diff --name-only`. The `no changelog` label still skips it.

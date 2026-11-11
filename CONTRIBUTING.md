@@ -16,7 +16,7 @@ In short, this is how that works.
    ```
 
    Prefix commands with `uv run` to execute them inside that environment, no activation needed.
-   If you prefer `pip`, create a virtual environment on Python 3.9 to 3.13 and run `pip install -e ".[dev]"`.
+   The lock covers Python 3.11 to 3.13. To work on Python 3.9 or 3.10, as Rhino 8 runs 3.9, or if you prefer `pip`, create a virtual environment and run `pip install -e ".[dev]"`.
 
 4. Install the pre-commit hooks (they run `ruff` and basic file checks on each commit, and check its message):
 

@@ -90,8 +90,9 @@ Prefix commands with `uv run` and they execute inside the project environment,
 with no activation step. A bare `uv sync` installs only the runtime
 dependencies, the same as `pip install -e .`.
 
-If you prefer `pip`, create and activate a virtual environment on Python 3.9 to
-3.13 and install the same extra:
+The lock covers Python 3.11 to 3.13. To work on Python 3.9 or 3.10, the Python
+that Rhino 8 runs, or if you prefer `pip`, create and activate a virtual
+environment and install the same extra:
 
 ```bash
 pip install -e ".[dev]"

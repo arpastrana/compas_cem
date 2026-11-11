@@ -77,6 +77,10 @@ doctest_optionflags = [
 # replaces .bumpversion.cfg
 # ============================================================================
 
+[tool.uv]
+# The dev lock covers 3.11+, where every pin has its security fixes; the package still supports 3.9.
+environments = ["python_version >= '3.11'"]
+
 [tool.bumpversion]
 current_version = "0.9.0"
 message = "Bump version to {new_version}"
