@@ -1,0 +1,14 @@
+% Deviation Edge icon: a dashed edge between two nodes.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\elementstile
+\coordinate (d0) at (9.12,14.88);
+\coordinate (d1) at (14.88,9.12);
+\foreach \a/\b in {0.0816/0.4163, 0.5837/0.9184} {\draw[edge] ($(d0)!\a!(d1)$) -- ($(d0)!\b!(d1)$);}
+\path[cem node] (7,17) circle (2.25);
+\path[cem node] (17,7) circle (2.25);
+\end{tikzpicture}
+\end{document}

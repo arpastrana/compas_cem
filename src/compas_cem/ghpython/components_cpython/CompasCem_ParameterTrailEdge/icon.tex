@@ -1,0 +1,16 @@
+% Trail Edge Length Parameter icon: a trail edge beside a slider for its length.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\parametertile
+\draw[track] (10.26,4.88) -- (19.12,13.74);
+\trackstop{10.26,4.88}{-1.41,1.41}
+\trackstop{19.12,13.74}{-1.41,1.41}
+\fill[knob] (16.5,11.1) circle (1.25);
+\draw[edge] (7,7) -- (17,17);
+\path[cem node] (7,7) circle (2.25);
+\path[cem node] (17,17) circle (2.25);
+\end{tikzpicture}
+\end{document}

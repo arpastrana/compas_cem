@@ -4,6 +4,7 @@ bump-my-version
 compas_invocations2[mkdocs]
 invoke>=0.14
 matplotlib
+pillow
 pre-commit
 pytest
 pytest-lazy-fixtures>=1.1.0

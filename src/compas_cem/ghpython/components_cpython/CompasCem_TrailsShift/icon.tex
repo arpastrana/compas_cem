@@ -1,0 +1,16 @@
+% Shift Trails icon: two trails starting one sequence apart.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\diagramstile
+\foreach \y in {18,12,6} {\draw[sequence line] (4,\y) -- (20,\y);}
+\draw[edge] (7,18) -- (7,12);
+\draw[edge] (17,12) -- (17,6);
+\originnode{7}{18}{1.75}
+\path[cem support] (7,12) circle (1.75);
+\originnode{17}{12}{1.75}
+\path[cem support] (17,6) circle (1.75);
+\end{tikzpicture}
+\end{document}

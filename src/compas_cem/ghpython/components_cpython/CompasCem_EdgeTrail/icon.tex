@@ -1,0 +1,12 @@
+% Trail Edge icon: a solid edge between two nodes.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\elementstile
+\draw[edge] (7,7) -- (17,17);
+\path[cem node] (7,7) circle (2.25);
+\path[cem node] (17,17) circle (2.25);
+\end{tikzpicture}
+\end{document}

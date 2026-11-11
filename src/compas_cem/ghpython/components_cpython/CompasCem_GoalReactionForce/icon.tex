@@ -1,0 +1,13 @@
+% Reaction Force Goal icon: a support with a target reaction off its trail and the trail it calls for.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\goaltile
+\draw[ghost trail] (13.94,13.08) -- (18.5,18);
+\draw[edge] (12,21) -- (12,13);
+\draw[target arrow] (4.75,3.75) -- (10.06,8.92);
+\path[cem support] (12,11) circle (2.25);
+\end{tikzpicture}
+\end{document}

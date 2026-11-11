@@ -1,0 +1,16 @@
+% Disassemble Form Diagram icon: a compression edge crossing over a tension edge.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\diagramstile
+\draw[form tension] (7,17) -- (17,7);
+\draw[cem-node-origin!12, line width=4bp] (10.23,10.23) -- (13.77,13.77);
+\draw[form compression] (7,7) -- (17,17);
+\path[cem node] (7,17) circle (1.75);
+\path[cem node] (17,17) circle (1.75);
+\path[cem support] (7,7) circle (1.75);
+\path[cem support] (17,7) circle (1.75);
+\end{tikzpicture}
+\end{document}

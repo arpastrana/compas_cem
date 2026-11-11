@@ -1,0 +1,17 @@
+% Edge Forces and Lengths icon: a tension and a compression edge over bands whose width is their force.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\resultstile
+\draw[compression band] (16.5,13) -- (11,7.5);
+\draw[tension band] (12.96,16.54) -- (7.46,11.04);
+\draw[form compression] (18,14.5) -- (9.5,6);
+\draw[form tension] (14.46,18.04) -- (5.96,9.54);
+\path[cem node] (18,14.5) circle (1.75);
+\path[cem node] (9.5,6) circle (1.75);
+\path[cem node] (14.46,18.04) circle (1.75);
+\path[cem node] (5.96,9.54) circle (1.75);
+\end{tikzpicture}
+\end{document}
