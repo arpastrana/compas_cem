@@ -65,20 +65,21 @@
 
 % One icon is a 24 by 24 px canvas at one unit per pixel.
 \newcommand{\iconcanvas}{\useasboundingbox (0,0) rectangle (24,24);}
-% The tile spans pixels 2 to 21, lit from the upper left; the 2 px margin holds the drop shadow.
+% The tile spans pixels 2 to 21, lit from the upper left, framed dark with a light inner edge.
 \newcommand{\ctile}[4]{
-  \shade[upper left=#1, upper right=#2, lower left=#2, lower right=#3, rounded corners=3.5bp] (2.5,2.5) rectangle (21.5,21.5);
-  \draw[#4, line width=1bp, rounded corners=3.5bp] (2.5,2.5) rectangle (21.5,21.5);
+  \shade[upper left=#1, upper right=#2, lower left=#2, lower right=#3, rounded corners=2.5bp] (2.5,2.5) rectangle (21.5,21.5);
+  \draw[white, opacity=0.6, line width=1bp, rounded corners=1.5bp] (3.5,3.5) rectangle (20.5,20.5);
+  \draw[#4, line width=1bp, rounded corners=2.5bp] (2.5,2.5) rectangle (21.5,21.5);
 }
-\newcommand{\elementstile}{\ctile{cem-edge!3}{cem-edge!9}{cem-edge!18}{cem-edge!40}}
-\newcommand{\supporttile}{\ctile{cem-node-support!5}{cem-node-support!13}{cem-node-support!24}{cem-node-support!50}}
-\newcommand{\diagramstile}{\ctile{cem-node-origin!5}{cem-node-origin!12}{cem-node-origin!20}{cem-node-origin!45}}
-\newcommand{\formfindingtile}{\ctile{cem-compression!6}{cem-compression!12}{cem-compression!20}{cem-compression!50}}
-\newcommand{\goaltile}{\ctile{cem-trail!6}{cem-trail!12}{cem-trail!20}{cem-trail!55}}
-\newcommand{\parametertile}{\ctile{cem-auxiliary-trail!6}{cem-auxiliary-trail!13}{cem-auxiliary-trail!22}{cem-auxiliary-trail!55}}
-\newcommand{\resultstile}{\ctile{tile-khaki!6}{tile-khaki!13}{tile-khaki!22}{tile-khaki!55}}
-\newcommand{\visualizationtile}{\ctile{cem-tension!5}{cem-tension!10}{cem-tension!17}{cem-tension!45}}
-\newcommand{\neutraltile}{\ctile{cem-edge!1}{cem-edge!5}{cem-edge!10}{cem-edge!30}}
+\newcommand{\elementstile}{\ctile{cem-edge!3}{cem-edge!9}{cem-edge!18}{cem-edge!65!black}}
+\newcommand{\supporttile}{\ctile{cem-node-support!5}{cem-node-support!13}{cem-node-support!24}{cem-node-support!65!black}}
+\newcommand{\diagramstile}{\ctile{cem-node-origin!5}{cem-node-origin!12}{cem-node-origin!20}{cem-node-origin!65!black}}
+\newcommand{\formfindingtile}{\ctile{cem-compression!6}{cem-compression!12}{cem-compression!20}{cem-compression!65!black}}
+\newcommand{\goaltile}{\ctile{cem-trail!6}{cem-trail!12}{cem-trail!20}{cem-trail!65!black}}
+\newcommand{\parametertile}{\ctile{cem-auxiliary-trail!6}{cem-auxiliary-trail!13}{cem-auxiliary-trail!22}{cem-auxiliary-trail!65!black}}
+\newcommand{\resultstile}{\ctile{tile-khaki!6}{tile-khaki!13}{tile-khaki!22}{tile-khaki!65!black}}
+\newcommand{\visualizationtile}{\ctile{cem-tension!5}{cem-tension!10}{cem-tension!17}{cem-tension!65!black}}
+\newcommand{\neutraltile}{\ctile{cem-edge!1}{cem-edge!5}{cem-edge!10}{cem-edge!65!black}}
 
 % An origin node of radius #3 at (#1,#2).
 \newcommand{\originnode}[3]{\path[cem origin] (#1,#2) circle (#3);}
