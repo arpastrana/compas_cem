@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Shrank the header animation to 960 by 540 pixels at 12 frames per second, 4.4 MB, from 1280 by 720 at 24 frames per second and 13.5 MB. PyPI loads README images through an image proxy, so the 0.9.0 page shows a broken image: GitHub's raw file host labels a file that large `application/octet-stream`, and such proxies refuse non-image types and files over about 5 MB, as GitHub's own proxy does for the larger file.
+
 ### Removed
 
 ## [0.9.0] 2026-11-10
