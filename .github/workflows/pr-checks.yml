@@ -16,20 +16,23 @@ jobs:
     name: Check Actions
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      # The `no changelog` label skips the check, as the third-party checker this replaces did.
       - name: Changelog check
-        uses: Zomzog/changelog-checker@v1.3.0
-        with:
-          fileName: CHANGELOG.md
-          checkNotification: Simple
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'no changelog') }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename')
+          if ! grep -qx CHANGELOG.md <<< "$files"; then
+            echo "::error::Add an entry to CHANGELOG.md, or label the pull request 'no changelog'."
+            exit 1
+          fi
 
   pre-commit:
     name: Pre-commit hooks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
