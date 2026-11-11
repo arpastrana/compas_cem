@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+### Changed
+
+- Loaded the README's header animation from the documentation site instead of `raw.githubusercontent.com`. GitHub serves files that large as `application/octet-stream`, so the image proxy on PyPI refused it and the 0.9.0 page showed a broken image; GitHub Pages serves it as `image/gif`.
+
+### Removed
+
 ## [0.9.0] 2026-11-10
 
 ### Added
