@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Moved every workflow to `actions/checkout@v7` and `actions/setup-python@v7`. The `dev-docs` job still ran the deprecated Node 20 releases `checkout@v4` and `setup-python@v5`.
-- Replaced the `Zomzog/changelog-checker` action, unmaintained since 2022 and declaring the retired `node12` runtime, with a shell step that asks the GitHub API for the pull request's changed files. The `no changelog` label still skips it.
+- Replaced the `Zomzog/changelog-checker` action, unmaintained since 2022 and declaring the retired `node12` runtime, with a shell step that lists the pull request's changed files with `gh pr diff --name-only`. The `no changelog` label still skips it.
 - Replaced the warning that the Grasshopper plugin is not installable with Package Manager instructions for Rhino 8 in the README and the installation guide. 0.9.0 ships the plugin on the Rhino package server, so the 0.9.0 README on PyPI still carries the outdated warning.
 - Pointed the README's links to the examples, the API reference and the citing page at the `latest` documentation instead of `dev`, now that 0.9.0 is published.
 - Shrank the header animation to 960 by 540 pixels at 12 frames per second, 4.4 MB, from 1280 by 720 at 24 frames per second and 13.5 MB. PyPI loads README images through an image proxy, so the 0.9.0 page shows a broken image: GitHub's raw file host labels a file that large `application/octet-stream`, and such proxies refuse non-image types and files over about 5 MB, as GitHub's own proxy does for the larger file.

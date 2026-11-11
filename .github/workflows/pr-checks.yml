@@ -21,9 +21,10 @@ jobs:
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'no changelog') }}
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          files=$(gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename')
-          if ! grep -qx CHANGELOG.md <<< "$files"; then
+          if ! gh pr diff "$PR_NUMBER" --name-only | grep -qx CHANGELOG.md; then
             echo "::error::Add an entry to CHANGELOG.md, or label the pull request 'no changelog'."
             exit 1
           fi
