@@ -381,6 +381,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#set-up-a-development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set up a development environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#update-compas-cem" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1411,6 +1422,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#set-up-a-development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set up a development environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#update-compas-cem" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1453,14 +1475,22 @@ examples do, install the <code>viz</code> extra instead:</p>
 </span></code></pre></div>
 <p>The plotter and the viewer are optional so that <code>compas_cem</code> stays lean inside
 Rhino, which needs neither of them.</p>
+<p>If you manage your project with <a href="https://docs.astral.sh/uv/">uv</a>, declare it as
+a dependency of that project instead:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>add<span class="w"> </span><span class="s2">"compas-cem[viz]"</span>
+</span></code></pre></div>
+<p>To install it into an existing virtual environment without a project, use uv's
+pip interface:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"compas-cem[viz]"</span>
+</span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code>compas_cem</code> requires Python 3.9 or newer. The floor is 3.9 because that is
+<p><code>compas_cem</code> supports Python 3.9 to 3.13. The floor is 3.9 because that is
 the Python that Rhino 8 runs.</p>
 </div>
 <p>To double-check that everything is up and running, type the following in the
 command line and hit enter:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import compas_cem"</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import compas_cem"</span>
 </span></code></pre></div>
 <p>If no errors show up, celebrate 🎉! You have a working installation of
 <code>compas_cem</code>.</p>
@@ -1470,22 +1500,52 @@ mouse-clicks instead of a hundred lines of code. The
 <a href="https://www.grasshopper3d.com/">Grasshopper</a> (GH) version of <code>compas_cem</code> lets
 you use all the important bits of our constrained form-finding engine in a
 (familiar) visual programming environment.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The Grasshopper plugin is <strong>not installable in this release.</strong> It targeted
-Rhino 6 and 7 through <code>compas_rhino.install</code>, which does not exist in COMPAS
-2, and it is being reworked for Rhino 8 and 9 with
-<a href="https://developer.rhino3d.com/guides/yak/">yak</a> packaging. Until that lands,
-use <code>compas_cem</code> from Python.</p>
+<p>The plugin runs in Rhino 8 and ships on the Rhino package server:</p>
+<ol>
+<li>In Rhino 8, run the <code>PackageManager</code> command.</li>
+<li>Search for <code>compas_cem</code> and install it.</li>
+<li>Restart Rhino. The components appear under the <strong>COMPAS CEM</strong> tab in
+   Grasshopper.</li>
+</ol>
+<p>The first component you run installs the <code>compas-cem</code> Python package and its
+dependencies into Rhino's own Python, so that first run needs an internet
+connection and can take a minute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Rhino 6 and 7 are no longer supported. Their last compatible release is
+<code>0.8.6</code>, which installs through COMPAS 1.</p>
 </div>
+<h2 id="set-up-a-development-environment">Set up a development environment<a class="headerlink" href="#set-up-a-development-environment" title="Permanent link">¤</a></h2>
+<p>To work on <code>compas_cem</code> itself, clone the repository and let <code>uv</code> set up the
+environment. It installs a matching Python, the package in editable mode, the
+plotter, the viewer and every development tool, pinned by the committed
+<code>uv.lock</code>, in one step:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/arpastrana/compas_cem.git
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">cd</span><span class="w"> </span>compas_cem
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>uv<span class="w"> </span>run<span class="w"> </span>invoke<span class="w"> </span><span class="nb">test</span>
+</span></code></pre></div>
+<p>Prefix commands with <code>uv run</code> and they execute inside the project environment,
+with no activation step. A bare <code>uv sync</code> installs only the runtime
+dependencies, the same as <code>pip install -e .</code>.</p>
+<p>If you prefer <code>pip</code>, create and activate a virtual environment on Python 3.9 to
+3.13 and install the same extra:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
+</span></code></pre></div>
+<p>See the
+<a href="https://github.com/arpastrana/compas_cem/blob/main/CONTRIBUTING.md">contributing guide</a>
+for the rest of the workflow.</p>
 <h2 id="update-compas-cem">Update COMPAS CEM<a class="headerlink" href="#update-compas-cem" title="Permanent link">¤</a></h2>
 <p>If you installed <code>compas_cem</code> one day in the past and you want to update it to
 the latest available version, the update command is the following:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>compas-cem
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>compas-cem
 </span></code></pre></div>
+<p>With uv, <code>uv pip install --upgrade compas-cem</code> does the same in a plain virtual
+environment, and <code>uv lock --upgrade-package compas-cem</code> followed by <code>uv sync</code>
+does it in a uv project.</p>
 <p>Alternatively, if you want to switch to a specific version, for example version
 <code>0.8.6</code>, type this:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>compas-cem<span class="o">==</span><span class="m">0</span>.8.6
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>pip<span class="w"> </span>install<span class="w"> </span>compas-cem<span class="o">==</span><span class="m">0</span>.8.6
 </span></code></pre></div>
 
 

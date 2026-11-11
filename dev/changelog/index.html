@@ -4267,11 +4267,19 @@
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">¤</a></h2>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">¤</a></h3>
+<ul>
+<li>Added uv instructions following <code>jax_fdm</code>: <code>uv add</code> and <code>uv pip install</code> in the installation guide and the README, and <code>uv sync --extra dev</code> with <code>uv run</code> for contributors, pinned by a committed <code>uv.lock</code>. <code>.gitignore</code> excluded the lock on the belief that it would pin every CI job, but CI installs with pip, and uv's pip interface ignores a lock anyway. The pip commands stay as the fallback, and CI still installs with pip. The development tools stay in the <code>dev</code> extra rather than dependency groups, because <code>compas-actions</code> installs <code>.[dev]</code>.</li>
+</ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
+<li>Replaced the warning that the Grasshopper plugin is not installable with Package Manager instructions for Rhino 8 in the README and the installation guide. 0.9.0 ships the plugin on the Rhino package server, so the 0.9.0 README on PyPI still carries the outdated warning.</li>
+<li>Pointed the README's links to the examples, the API reference and the citing page at the <code>latest</code> documentation instead of <code>dev</code>, now that 0.9.0 is published.</li>
 <li>Shrank the header animation to 960 by 540 pixels at 12 frames per second, 4.4 MB, from 1280 by 720 at 24 frames per second and 13.5 MB. PyPI loads README images through an image proxy, so the 0.9.0 page shows a broken image: GitHub's raw file host labels a file that large <code>application/octet-stream</code>, and such proxies refuse non-image types and files over about 5 MB, as GitHub's own proxy does for the larger file.</li>
 </ul>
 <h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">¤</a></h3>
+<ul>
+<li>Removed the last conda references: the <code>conda.recipe/</code> line in <code>.gitignore</code> and conda as a virtual environment example in <code>CONTRIBUTING.md</code>. Every dependency installs with pip.</li>
+</ul>
 <h2 id="090-2026-11-10">[0.9.0] 2026-11-10<a class="headerlink" href="#090-2026-11-10" title="Permanent link">¤</a></h2>
 <h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">¤</a></h3>
 <ul>
