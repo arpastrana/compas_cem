@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Extended the copyright years in `LICENSE` from 2020-2021 to 2020-2026, and set `compas_cem.__copyright__` to the license's holder with no year, as `jax_fdm` does. It read `Copyright 2020 - Princeton University`.
 - Moved every workflow to `actions/checkout@v7` and `actions/setup-python@v7`. The `dev-docs` job still ran the deprecated Node 20 releases `checkout@v4` and `setup-python@v5`.
 - Replaced the `Zomzog/changelog-checker` action, unmaintained since 2022 and declaring the retired `node12` runtime, with a shell step that lists the pull request's changed files with `gh pr diff --name-only`. The `no changelog` label still skips it.
 - Replaced the warning that the Grasshopper plugin is not installable with Package Manager instructions for Rhino 8 in the README and the installation guide. 0.9.0 ships the plugin on the Rhino package server, so the 0.9.0 README on PyPI still carries the outdated warning.
