@@ -8,33 +8,41 @@ We accept code contributions through pull requests.
 In short, this is how that works.
 
 1. Fork [the repository](https://github.com/arpastrana/compas_cem) and clone the fork.
-2. Create a virtual environment using your tool of choice (e.g. `virtualenv`, `conda`, etc).
-3. Install the package in editable mode with its development dependencies, then the pre-commit hooks:
+2. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if you do not have it.
+3. Create the development environment. This installs a supported Python, the package in editable mode, the plotter, the viewer and every development tool, pinned by `uv.lock`:
 
    ```bash
-   pip install -e ".[dev]"
-   pre-commit install
+   uv sync --extra dev
    ```
 
-4. Make sure all tests pass:
+   Prefix commands with `uv run` to execute them inside that environment, no activation needed.
+   If you prefer `pip`, create a virtual environment on Python 3.9 to 3.13 and run `pip install -e ".[dev]"`.
+
+4. Install the pre-commit hooks (they run `ruff` and basic file checks on each commit, and check its message):
 
    ```bash
-   invoke test
+   uv run pre-commit install
    ```
 
-5. Start making your changes to the **main** branch (or branch off of it).
-6. Make sure all tests still pass:
+5. Make sure all tests pass:
 
    ```bash
-   invoke test
+   uv run invoke test
    ```
 
-7. Add yourself to the *Contributors* section of `AUTHORS.md`.
-8. Commit your changes and push your branch to GitHub.
-9. Create a [pull request](https://help.github.com/articles/about-pull-requests/) through the GitHub website.
+6. Start making your changes to the **main** branch (or branch off of it).
+7. Make sure all tests still pass:
+
+   ```bash
+   uv run invoke test
+   ```
+
+8. Add yourself to the *Contributors* section of `AUTHORS.md`.
+9. Commit your changes and push your branch to GitHub.
+10. Create a [pull request](https://help.github.com/articles/about-pull-requests/) through the GitHub website.
 
 During development, use [pyinvoke](http://docs.pyinvoke.org/) tasks on the
-command line to ease recurring operations:
+command line to ease recurring operations (prefix each with `uv run`):
 
 * `invoke clean`: Clean all generated artifacts.
 * `invoke check`: Run various code and documentation style checks.

@@ -117,8 +117,6 @@ temp/**
 
 docs/api/generated/
 
-conda.recipe/
-
 *.code-workspace
 
 .obsidian
@@ -130,6 +128,3 @@ src/compas_cem/ghpython/components_cpython/ghuser/
 
 # headless renders for visual review of the visualization layer
 renders/
-
-# uv resolves fresh per CI cell; a committed lock would pin all of them
-uv.lock

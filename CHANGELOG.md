@@ -9,11 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added uv instructions following `jax_fdm`: `uv add` and `uv pip install` in the installation guide and the README, and `uv sync --extra dev` with `uv run` for contributors, pinned by a committed `uv.lock`. `.gitignore` excluded the lock on the belief that it would pin every CI job, but CI installs with pip, and uv's pip interface ignores a lock anyway. The pip commands stay as the fallback, and CI still installs with pip. The development tools stay in the `dev` extra rather than dependency groups, because `compas-actions` installs `.[dev]`.
+
 ### Changed
 
+- Replaced the warning that the Grasshopper plugin is not installable with Package Manager instructions for Rhino 8 in the README and the installation guide. 0.9.0 ships the plugin on the Rhino package server, so the 0.9.0 README on PyPI still carries the outdated warning.
+- Pointed the README's links to the examples, the API reference and the citing page at the `latest` documentation instead of `dev`, now that 0.9.0 is published.
 - Shrank the header animation to 960 by 540 pixels at 12 frames per second, 4.4 MB, from 1280 by 720 at 24 frames per second and 13.5 MB. PyPI loads README images through an image proxy, so the 0.9.0 page shows a broken image: GitHub's raw file host labels a file that large `application/octet-stream`, and such proxies refuse non-image types and files over about 5 MB, as GitHub's own proxy does for the larger file.
 
 ### Removed
+
+- Removed the last conda references: the `conda.recipe/` line in `.gitignore` and conda as a virtual environment example in `CONTRIBUTING.md`. Every dependency installs with pip.
 
 ## [0.9.0] 2026-11-10
 

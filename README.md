@@ -28,39 +28,34 @@ The [CEM framework](https://doi.org/10.1016/j.cad.2022.103435) is a numerical fo
 
 ## Installation
 
-These are succint instructions to install **COMPAS CEM** and its [Grasshopper](https://grasshopper3d.com/) plugin.
-For detailed guidance, please refer to the [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/).
-
-Install **COMPAS CEM** with `pip`. It requires Python 3.9 or newer, and pulls in `compas` for you:
+Install **COMPAS CEM** with a one-liner via `pip`:
 
 ```bash
 pip install compas-cem
 ```
 
-To draw diagrams with the plotter or the viewer, as the examples do, install the `viz` extra instead:
+Alternatively, add it to a [uv](https://docs.astral.sh/uv/) project:
 
 ```bash
-pip install "compas-cem[viz]"
+uv add compas-cem
 ```
 
-To double-check that everything is up and running, type the following in the
-command line and hit enter:
-
-```bash
-python -c "import compas_cem"
-```
-
-If no errors show up, celebrate 🎉! You have a working installation of **COMPAS CEM**.
+Either pulls in COMPAS 2.x and the other core dependencies automatically.
+**COMPAS CEM** supports Python 3.9 to 3.13.
+To draw diagrams with the plotter or the viewer, as the examples do, install the `viz` extra instead, for example `pip install "compas-cem[viz]"`.
+For other ways to install and the `uv sync` development setup, see the [installation guide](https://arpastrana.github.io/compas_cem/latest/installation/).
 
 ### Grasshopper plugin
 
-**Warning**: The [Grasshopper](https://grasshopper3d.com/) plugin is **not installable in this release**. It targeted Rhino 6 and 7 through `compas_rhino.install`, which does not exist in COMPAS 2, and it is being reworked for Rhino 8 and 9 with [yak](https://developer.rhino3d.com/guides/yak/) packaging. Until that lands, use **COMPAS CEM** from Python.
+The [Grasshopper](https://grasshopper3d.com/) plugin runs in Rhino 8.
+Install it from Rhino's Package Manager: search for `compas_cem`, install it and restart Rhino.
+The first component you run installs the `compas-cem` Python package into Rhino.
 
 ## First steps
 
 - [COMPAS CEM Docs](https://arpastrana.github.io/compas_cem/)
-- [COMPAS CEM Examples](https://arpastrana.github.io/compas_cem/dev/examples/)
-- [COMPAS CEM API Reference](https://arpastrana.github.io/compas_cem/dev/api/compas_cem/)
+- [COMPAS CEM Examples](https://arpastrana.github.io/compas_cem/latest/examples/)
+- [COMPAS CEM API Reference](https://arpastrana.github.io/compas_cem/latest/api/compas_cem/)
 - [COMPAS User Guide](https://compas.dev/compas/latest/userguide/index.html)
 - [COMPAS API Reference](https://compas.dev/compas/latest/api/index.html)
 
@@ -80,7 +75,7 @@ for more details.
 
 ## Citing
 
-If you use **COMPAS CEM** for a project or research, please cite us using these [references](https://arpastrana.github.io/compas_cem/dev/citing/).
+If you use **COMPAS CEM** for a project or research, please cite us using these [references](https://arpastrana.github.io/compas_cem/latest/citing/).
 
 ## Acknowledgements
 
