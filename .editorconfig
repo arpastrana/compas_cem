@@ -1,4 +1,4 @@
-# EditorConfig is awesome: http://EditorConfig.org
+# Editor defaults that agree with the pre-commit hooks and with ruff's line length.
 
 root = true
 
@@ -11,19 +11,8 @@ indent_size = 4
 charset = utf-8
 max_line_length = 180
 
-[*.{bat,cmd,ps1}]
-end_of_line = crlf
+[*.py]
+max_line_length = 88
 
-[*.md]
-trim_trailing_whitespace = false
-
-[Makefile]
-indent_style = tab
-indent_size = 4
-
-[*.yml]
-indent_style = space
+[*.{yml,yaml}]
 indent_size = 2
-
-[LICENSE]
-insert_final_newline = false
