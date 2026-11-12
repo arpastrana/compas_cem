@@ -27,6 +27,7 @@ __all__ = [
     "StyledPolyline",
     "TextLabel",
     "TopologyDrawing",
+    "cross_lines",
     "edge_radii",
     "edge_widths",
     "form_drawing",
@@ -84,8 +85,9 @@ class FormDisplaySettings:
         }
         for name, (low, high) in bounds.items():
             if not 0.0 < low <= high:
-                message = "The edge {0}s need 0 < {0}_min <= {0}_max, got {1} and {2}."
-                raise ValueError(message.format(name, low, high))
+                template = "The edge {0}s need 0 < {0}_min <= {0}_max, got {1} and {2}."
+                message = template.format(name, low, high)
+                raise ValueError(message)
 
 
 class StyledPoint(NamedTuple):
@@ -202,8 +204,9 @@ def form_drawing(form, node_keys, edge_keys, settings):
     node_points = [_styled_node(form, node, sphere_radius) for node in nodes]
     support_points = [_styled_node(form, node, sphere_radius) for node in supports]
 
-    widths = edge_widths(form, settings.width_min, settings.width_max)
-    radii = edge_radii(form, settings.radius_min, settings.radius_max)
+    ratios = _force_ratios(form)
+    widths = _spread_ratios(ratios, settings.width_min, settings.width_max)
+    radii = _spread_ratios(ratios, settings.radius_min, settings.radius_max)
     edge_lines = []
     for edge in edges:
         key = tuple(edge)
@@ -256,7 +259,10 @@ def edge_widths(form, width_min, width_max):
     drawing. When every force has the same magnitude, every edge takes the
     largest width, as the plotter does.
     """
-    return _spread_by_force(form, width_min, width_max)
+    ratios = _force_ratios(form)
+    widths = _spread_ratios(ratios, width_min, width_max)
+
+    return widths
 
 
 def edge_radii(form, radius_min, radius_max):
@@ -282,23 +288,41 @@ def edge_radii(form, radius_min, radius_max):
     The radii follow the same linear spread over the absolute edge forces as
     the widths do.
     """
-    return _spread_by_force(form, radius_min, radius_max)
+    ratios = _force_ratios(form)
+    radii = _spread_ratios(ratios, radius_min, radius_max)
+
+    return radii
 
 
-def _spread_by_force(form, value_min, value_max):
+def _force_ratios(form):
     """
-    Spread two bounds linearly over the absolute edge forces of a diagram.
+    Where the absolute force of every edge lies between the smallest and the
+    largest, from zero to one, or one everywhere if they are all equal.
     """
     forces = {edge: fabs(form.edge_force(edge)) for edge in form.edges()}
+    if not forces:
+        return {}
+
     force_low = min(forces.values())
     force_high = max(forces.values())
     force_range = force_high - force_low
 
-    values = {}
+    ratios = {}
     for edge, force in forces.items():
         ratio = 1.0
         if force_range > 0.0:
             ratio = (force - force_low) / force_range
+        ratios[edge] = ratio
+
+    return ratios
+
+
+def _spread_ratios(ratios, value_min, value_max):
+    """
+    Spread two bounds linearly over the force ratios of the edges.
+    """
+    values = {}
+    for edge, ratio in ratios.items():
         values[edge] = (1.0 - ratio) * value_min + ratio * value_max
 
     return values
@@ -347,8 +371,9 @@ def _styled_node(form, node, radius):
     """
     color_name = "node_support" if form.is_node_support(node) else "node"
     point = form.node_coordinates(node)
+    styled_point = StyledPoint(point=point, color=COLORS[color_name], radius=radius)
 
-    return StyledPoint(point=point, color=COLORS[color_name], radius=radius)
+    return styled_point
 
 
 def _styled_edge(form, edge, width, radius):
@@ -365,8 +390,7 @@ def _styled_edge(form, edge, width, radius):
     u, v = edge
     start = form.node_coordinates(u)
     end = form.node_coordinates(v)
-
-    return StyledLine(
+    styled_line = StyledLine(
         start=start,
         end=end,
         color=COLORS[color_name],
@@ -374,6 +398,8 @@ def _styled_edge(form, edge, width, radius):
         radius=radius,
         is_arrow=False,
     )
+
+    return styled_line
 
 
 def _force_lines(form, nodes, color_name, shifts, settings):
@@ -453,8 +479,9 @@ def _force_label(form, edge):
     end = form.node_coordinates(v)
     point = midpoint_point_point(start, end)
     text = "{:.2f}".format(form.edge_force(edge))
+    label = TextLabel(point=point, text=text)
 
-    return TextLabel(point=point, text=text)
+    return label
 
 
 def topology_drawing(topology, node_keys, edge_keys, show_labels):
@@ -500,13 +527,14 @@ def topology_drawing(topology, node_keys, edge_keys, show_labels):
         point for node, point in node_styles if topology.is_node_support(node)
     ]
 
-    edge_lines = [_topology_edge(topology, edge) for edge in edges]
+    auxiliary_trails = {tuple(trail) for trail in topology.auxiliary_trails()}
+    edge_lines = [_topology_edge(topology, edge, auxiliary_trails) for edge in edges]
     edge_styles = list(zip(edges, edge_lines))
     trail_lines = [line for edge, line in edge_styles if topology.is_trail_edge(edge)]
     deviation_lines = [
         line for edge, line in edge_styles if topology.is_deviation_edge(edge)
     ]
-    trails = _topology_trails(topology)
+    trails = _topology_trails(topology, auxiliary_trails)
 
     loaded_nodes = set(topology.loaded_nodes())
     crossed_nodes = [node for node in nodes if node in loaded_nodes]
@@ -541,11 +569,12 @@ def _topology_node(topology, node):
     elif topology.is_node_origin(node):
         color_name = "node_origin"
     point = topology.node_coordinates(node)
+    styled_point = StyledPoint(point=point, color=COLORS[color_name], radius=0.0)
 
-    return StyledPoint(point=point, color=COLORS[color_name], radius=0.0)
+    return styled_point
 
 
-def _topology_edge(topology, edge):
+def _topology_edge(topology, edge, auxiliary_trails):
     """
     Style a topology edge, colored by its state and dashed if it deviates.
 
@@ -553,10 +582,11 @@ def _topology_edge(topology, edge):
     -----
     A trail edge takes its state from the sign of its length and a deviation
     edge from the sign of its force; an edge with neither sign is gray, and an
-    auxiliary trail edge orange, as the topology plotter draws them.
+    auxiliary trail edge orange, as the topology plotter draws them. An
+    auxiliary trail has two nodes, so its node tuple names its one edge.
     """
     color_name = "edge"
-    if topology.is_auxiliary_trail_edge(edge):
+    if tuple(edge) in auxiliary_trails:
         color_name = "auxiliary_trail"
     else:
         name = "length" if topology.is_trail_edge(edge) else "force"
@@ -567,28 +597,28 @@ def _topology_edge(topology, edge):
     u, v = edge
     start = topology.node_coordinates(u)
     end = topology.node_coordinates(v)
-
-    return StyledLine(
+    is_dashed = topology.is_deviation_edge(edge)
+    styled_line = StyledLine(
         start=start,
         end=end,
         color=COLORS[color_name],
         width=TOPOLOGY_WIDTH,
         radius=0.0,
         is_arrow=False,
-        is_dashed=topology.is_deviation_edge(edge),
+        is_dashed=is_dashed,
     )
 
+    return styled_line
 
-def _topology_trails(topology):
+
+def _topology_trails(topology, auxiliary_trails):
     """
     Style every trail as a polyline, the auxiliary trails apart.
     """
-    auxiliary_trails = [list(trail) for trail in topology.auxiliary_trails()]
-
     polylines = []
     for trail in topology.trails():
         points = [topology.node_coordinates(node) for node in trail]
-        is_auxiliary = list(trail) in auxiliary_trails
+        is_auxiliary = tuple(trail) in auxiliary_trails
         color_name = "auxiliary_trail" if is_auxiliary else "trail"
         polyline = StyledPolyline(
             points=points,
@@ -600,28 +630,60 @@ def _topology_trails(topology):
     return polylines
 
 
+def cross_lines(diagram, nodes):
+    """
+    The two lines of the cross that marks every given node.
+
+    Parameters
+    ----------
+    diagram :
+        The diagram the nodes belong to, whose extent sizes the crosses.
+    nodes :
+        The nodes to mark.
+
+    Returns
+    -------
+    lines :
+        Two start and end point pairs per node, at right angles in the XY
+        plane, each reaching `LOAD_CROSS_SIZE` of the diagram's bounding-box
+        diagonal from the node.
+
+    Notes
+    -----
+    Every engine that crosses the loaded nodes of a topology draws these lines,
+    so the crosses match across them.
+    """
+    diagonal = _diagram_diagonal(diagram)
+    reach = LOAD_CROSS_SIZE * diagonal / sqrt(2.0)
+
+    lines = []
+    for node in nodes:
+        x, y, z = diagram.node_coordinates(node)
+        for sign in (1.0, -1.0):
+            start = [x - reach, y - sign * reach, z]
+            end = [x + reach, y + sign * reach, z]
+            lines.append((start, end))
+
+    return lines
+
+
 def _load_crosses(topology, nodes):
     """
     Style the cross that marks every loaded node, as two lines each.
     """
-    reach = LOAD_CROSS_SIZE * _diagram_diagonal(topology) / sqrt(2.0)
     color = COLORS["node_black"]
 
     crosses = []
-    for node in nodes:
-        x, y, z = topology.node_coordinates(node)
-        for sign in (1.0, -1.0):
-            start = [x - reach, y - sign * reach, z]
-            end = [x + reach, y + sign * reach, z]
-            line = StyledLine(
-                start=start,
-                end=end,
-                color=color,
-                width=TOPOLOGY_WIDTH,
-                radius=0.0,
-                is_arrow=False,
-            )
-            crosses.append(line)
+    for start, end in cross_lines(topology, nodes):
+        line = StyledLine(
+            start=start,
+            end=end,
+            color=color,
+            width=TOPOLOGY_WIDTH,
+            radius=0.0,
+            is_arrow=False,
+        )
+        crosses.append(line)
 
     return crosses
 
@@ -638,8 +700,10 @@ def _diagram_diagonal(diagram):
     corner_low = [min(point[axis] for point in points) for axis in range(3)]
     corner_high = [max(point[axis] for point in points) for axis in range(3)]
     diagonal = distance_point_point(corner_low, corner_high)
+    if not diagonal:
+        return 1.0
 
-    return diagonal or 1.0
+    return diagonal
 
 
 def _key_labels(topology, nodes, edges):
@@ -649,13 +713,16 @@ def _key_labels(topology, nodes, edges):
     labels = []
     for node in nodes:
         point = topology.node_coordinates(node)
-        labels.append(TextLabel(point=point, text=str(node)))
+        label = TextLabel(point=point, text=str(node))
+        labels.append(label)
 
     for edge in edges:
         u, v = edge
         start = topology.node_coordinates(u)
         end = topology.node_coordinates(v)
         point = midpoint_point_point(start, end)
-        labels.append(TextLabel(point=point, text="{}-{}".format(u, v)))
+        text = "{}-{}".format(u, v)
+        label = TextLabel(point=point, text=text)
+        labels.append(label)
 
     return labels

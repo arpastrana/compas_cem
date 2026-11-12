@@ -1,6 +1,5 @@
 from math import copysign
 from math import fabs
-from math import sqrt
 
 from compas.colors import Color
 from compas.geometry import Cone
@@ -9,7 +8,6 @@ from compas.geometry import Frame
 from compas.geometry import Line
 from compas.geometry import Plane
 from compas.geometry import add_vectors
-from compas.geometry import distance_point_point
 from compas.geometry import length_vector
 from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
@@ -24,9 +22,9 @@ from compas_cem import ARROW_BODYWIDTH
 from compas_cem import ARROW_HEADPORTION
 from compas_cem import ARROW_HEADWIDTH
 from compas_cem import COLORS
-from compas_cem import LOAD_CROSS_SIZE
 from compas_cem.diagrams import FormDiagram
 from compas_cem.diagrams import TopologyDiagram
+from compas_cem.ghpython.diagram_display import cross_lines
 
 __all__ = [
     "DiagramObject",
@@ -347,7 +345,8 @@ class DiagramObject(GraphObject):
         Notes
         -----
         Every arrow is a cylinder body and a cone head with the 3D proportions
-        of jax_fdm, as fractions of the arrow's length.
+        of jax_fdm, as fractions of the arrow's length. An arrow without length,
+        from a zero scale or a zero force, is skipped, since it has no axis.
         """
         diagram = self.diagram
 
@@ -357,6 +356,9 @@ class DiagramObject(GraphObject):
                 continue
 
             scaled = scale_vector(vector, scale)
+            if TOL.is_zero(length_vector(scaled)):
+                continue
+
             start = diagram.node_coordinates(node)
             end = add_vectors(start, scaled)
 
@@ -612,25 +614,16 @@ class TopologyDiagramObject(DiagramObject):
 
         Notes
         -----
-        A cross is two lines at right angles in the XY plane, each reaching
-        `LOAD_CROSS_SIZE` of the diagram's bounding-box diagonal from the node,
-        as Draw Topology draws it in Grasshopper.
+        The crosses come from `compas_cem.ghpython.cross_lines`, which Draw
+        Topology draws in Grasshopper too.
         """
         topology = self.topology
-        points = [topology.node_coordinates(node) for node in topology.nodes()]
-        corner_low = [min(point[axis] for point in points) for axis in range(3)]
-        corner_high = [max(point[axis] for point in points) for axis in range(3)]
-        diagonal = distance_point_point(corner_low, corner_high) or 1.0
-        reach = LOAD_CROSS_SIZE * diagonal / sqrt(2.0)
+        loaded_nodes = list(topology.loaded_nodes())
         color = _color("node_black")
 
-        for node in topology.loaded_nodes():
-            x, y, z = topology.node_coordinates(node)
-            for sign in (1.0, -1.0):
-                start = [x - reach, y - sign * reach, z]
-                end = [x + reach, y + sign * reach, z]
-                line = Line(start, end)
-                self.add(line, linecolor=color)
+        for start, end in cross_lines(topology, loaded_nodes):
+            line = Line(start, end)
+            self.add(line, linecolor=color)
 
     def edge_textlabel_formatters(self):
         """

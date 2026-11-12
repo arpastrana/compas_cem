@@ -325,7 +325,9 @@ def _bounding_box(lines, meshes, points, labels):
     if corners.Count == 0:
         return Rhino.Geometry.BoundingBox.Empty
 
-    return Rhino.Geometry.BoundingBox(corners)
+    clipping_box = Rhino.Geometry.BoundingBox(corners)
+
+    return clipping_box
 
 
 def _arrow_head(line):
@@ -359,8 +361,11 @@ def _sphere_mesh(item):
     """
     center = point_to_rhino(item.point)
     sphere = Rhino.Geometry.Sphere(center, item.radius)
+    sphere_mesh = Rhino.Geometry.Mesh.CreateFromSphere(
+        sphere, PIPE_SIDES, PIPE_SIDES // 2
+    )
 
-    return Rhino.Geometry.Mesh.CreateFromSphere(sphere, PIPE_SIDES, PIPE_SIDES // 2)
+    return sphere_mesh
 
 
 def _pipe_mesh(item):
@@ -382,8 +387,11 @@ def _pipe_mesh(item):
     plane = Rhino.Geometry.Plane(start, line.Direction)
     circle = Rhino.Geometry.Circle(plane, item.radius)
     cylinder = Rhino.Geometry.Cylinder(circle, line.Length)
+    pipe_mesh = Rhino.Geometry.Mesh.CreateFromCylinder(
+        cylinder, 1, PIPE_SIDES, True, True
+    )
 
-    return Rhino.Geometry.Mesh.CreateFromCylinder(cylinder, 1, PIPE_SIDES, True, True)
+    return pipe_mesh
 
 
 def _arrow_mesh(item):
@@ -447,7 +455,9 @@ def _system_color(rgb):
     """
     Convert an RGB triple into a .NET color.
     """
-    return System.Drawing.Color.FromArgb(*rgb)
+    color = System.Drawing.Color.FromArgb(*rgb)
+
+    return color
 
 
 def _preview_line(item):
@@ -468,7 +478,7 @@ def _preview_line(item):
         line = Rhino.Geometry.Line(start, base)
         material = Rhino.Display.DisplayMaterial(color)
 
-    return PreviewLine(
+    preview_line = PreviewLine(
         line=line,
         color=color,
         width=width,
@@ -477,19 +487,26 @@ def _preview_line(item):
         material=material,
     )
 
+    return preview_line
+
 
 def _preview_point(item):
     """
     Convert a styled point into a Rhino point and its color.
     """
-    return point_to_rhino(item.point), _system_color(item.color)
+    location = point_to_rhino(item.point)
+    color = _system_color(item.color)
+
+    return location, color
 
 
 def _preview_label(item):
     """
     Convert a text label into a Rhino point and its text.
     """
-    return point_to_rhino(item.point), item.text
+    location = point_to_rhino(item.point)
+
+    return location, item.text
 
 
 def _object_attributes(rgb):
@@ -510,8 +527,9 @@ def _model_point(document, item):
     attributes = _object_attributes(item.color)
     location = point_to_rhino(item.point)
     point = Rhino.Geometry.Point(location)
+    model_object = Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, point)
 
-    return Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, point)
+    return model_object
 
 
 def _model_line(document, item):
@@ -519,17 +537,13 @@ def _model_line(document, item):
     Wrap a styled line as a model object that bakes with its color and its
     plot weight.
     """
-    attributes = _object_attributes(item.color)
-    attributes.PlotWeightSource = (
-        Rhino.DocObjects.ObjectPlotWeightSource.PlotWeightFromObject
-    )
-    attributes.PlotWeight = item.width * PLOT_WEIGHT_PER_PIXEL
-
+    attributes = _weighted_attributes(item.color, item.width)
     start = point_to_rhino(item.start)
     end = point_to_rhino(item.end)
     curve = Rhino.Geometry.LineCurve(start, end)
+    model_object = Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, curve)
 
-    return Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, curve)
+    return model_object
 
 
 def _model_polyline(document, item):
@@ -537,16 +551,26 @@ def _model_polyline(document, item):
     Wrap a styled polyline as a model object that bakes with its color and its
     plot weight.
     """
-    attributes = _object_attributes(item.color)
+    attributes = _weighted_attributes(item.color, item.width)
+    points = [point_to_rhino(point) for point in item.points]
+    curve = Rhino.Geometry.PolylineCurve(points)
+    model_object = Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, curve)
+
+    return model_object
+
+
+def _weighted_attributes(rgb, width):
+    """
+    Rhino object attributes that take their color and their plot weight, the
+    pixel width at 96 dpi, from the object.
+    """
+    attributes = _object_attributes(rgb)
     attributes.PlotWeightSource = (
         Rhino.DocObjects.ObjectPlotWeightSource.PlotWeightFromObject
     )
-    attributes.PlotWeight = item.width * PLOT_WEIGHT_PER_PIXEL
+    attributes.PlotWeight = width * PLOT_WEIGHT_PER_PIXEL
 
-    points = [point_to_rhino(point) for point in item.points]
-    curve = Rhino.Geometry.PolylineCurve(points)
-
-    return Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, curve)
+    return attributes
 
 
 def _model_meshes(document, items, meshes):
