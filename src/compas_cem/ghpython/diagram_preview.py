@@ -1,5 +1,6 @@
 """
-Draw a styled form diagram in the Rhino viewport and output it as model objects.
+Draw styled form and topology diagrams in the Rhino viewport and output them as
+model objects.
 """
 
 from typing import NamedTuple
@@ -13,23 +14,26 @@ from compas_cem import ARROW_HEADPORTION
 from compas_cem import ARROW_HEADWIDTH
 from compas_cem import COLORS
 
-__all__ = ["FormPreview"]
+__all__ = ["FormPreview", "TopologyPreview"]
 
 # Millimeters per pixel at 96 dpi, so Print Display shows baked lines at their preview width.
 PLOT_WEIGHT_PER_PIXEL = 25.4 / 96.0
 NODE_DIAMETER = 8.0
 PIPE_SIDES = 8
+# Five pixels on, three off: Rhino reads only the low byte of a line pattern.
+DASH_PATTERN = 0x1F1F1F1F
 
 
 class PreviewLine(NamedTuple):
     """
-    A Rhino line to draw, with its color and its width in whole pixels, and
-    for a force its arrowhead and the material that shades it.
+    A Rhino line to draw, with its color, its width in whole pixels, whether
+    it is dashed, and for a force its arrowhead and the material that shades it.
     """
 
     line: object
     color: object
     width: int
+    is_dashed: bool
     head_mesh: object
     material: object
 
@@ -118,7 +122,9 @@ class FormPreview:
 
         self._labels = [_preview_label(item) for item in drawing.labels]
 
-        self.clipping_box = self._bounding_box()
+        self.clipping_box = _bounding_box(
+            self._lines, self._meshes, self._points, self._labels
+        )
 
     def draw_wires(self, display, selected_color=None):
         """
@@ -138,39 +144,7 @@ class FormPreview:
         An arrowhead is the cone of a thickened arrow, shaded here rather than
         in the mesh pass so it shows in wireframe views too.
         """
-        stroke_color = System.Drawing.Color.FromArgb(*COLORS["edge"])
-        dot_color = System.Drawing.Color.White
-        style = Rhino.Display.PointStyle.RoundSimple
-        selected_material = None
-        if selected_color is not None:
-            selected_material = Rhino.Display.DisplayMaterial(selected_color)
-
-        for item in self._lines:
-            line_color = item.color if selected_color is None else selected_color
-            display.DrawLine(item.line, line_color, item.width)
-            if item.head_mesh is None:
-                continue
-            shade = item.material if selected_material is None else selected_material
-            display.DrawMeshShaded(item.head_mesh, shade)
-
-        for point, color in self._points:
-            fill_color = color if selected_color is None else selected_color
-            # The size is a diameter in pixels; without that flag it is a radius in model units.
-            display.DrawPoint(
-                point,
-                style,
-                stroke_color,
-                fill_color,
-                NODE_DIAMETER,
-                1.0,
-                0.0,
-                0.0,
-                True,
-                True,
-            )
-
-        for point, text in self._labels:
-            display.DrawDot(point, text, dot_color, stroke_color)
+        _draw_wires(display, self._lines, self._points, self._labels, selected_color)
 
     def draw_meshes(self, display, selected_material=None):
         """
@@ -188,30 +162,170 @@ class FormPreview:
             shade = material if selected_material is None else selected_material
             display.DrawMeshShaded(mesh, shade)
 
-    def _bounding_box(self):
+
+class TopologyPreview:
+    """
+    The Rhino geometry of a styled topology diagram, ready to draw and to
+    output.
+
+    Parameters
+    ----------
+    drawing :
+        The styled topology diagram.
+
+    Attributes
+    ----------
+    node_objects :
+        One model object per node, as a colored point.
+    origin_objects :
+        One model object per origin node, as a colored point.
+    support_objects :
+        One model object per support node, as a colored point.
+    edge_objects :
+        One model object per edge, as a line with its color and plot weight.
+    trail_edge_objects :
+        One model object per trail edge, as a line with its color and plot
+        weight.
+    deviation_edge_objects :
+        One model object per deviation edge, as a line with its color and plot
+        weight.
+    trail_objects :
+        One model object per trail, as a polyline with its color and plot
+        weight.
+    load_objects :
+        Two model objects per loaded node, the lines of its cross.
+    clipping_box :
+        The box that holds everything the preview draws.
+
+    Notes
+    -----
+    The preview draws the nodes, the edges, the load crosses and the labels;
+    the subsets in the other outputs repeat them. Deviation edges are dashed in
+    the viewport only, since baking a dashed linetype would add one to the
+    document.
+    """
+
+    def __init__(self, drawing):
+        document = Rhino.RhinoDoc.ActiveDoc
+
+        self.node_objects = [_model_point(document, item) for item in drawing.nodes]
+        self.origin_objects = [
+            _model_point(document, item) for item in drawing.origin_nodes
+        ]
+        self.support_objects = [
+            _model_point(document, item) for item in drawing.support_nodes
+        ]
+        self.edge_objects = [_model_line(document, item) for item in drawing.edges]
+        self.trail_edge_objects = [
+            _model_line(document, item) for item in drawing.trail_edges
+        ]
+        self.deviation_edge_objects = [
+            _model_line(document, item) for item in drawing.deviation_edges
+        ]
+        self.trail_objects = [
+            _model_polyline(document, item) for item in drawing.trails
+        ]
+        self.load_objects = [_model_line(document, item) for item in drawing.loads]
+
+        self._lines = [_preview_line(item) for item in drawing.edges]
+        self._crosses = [_preview_line(item) for item in drawing.loads]
+        self._points = [_preview_point(item) for item in drawing.nodes]
+        self._labels = [_preview_label(item) for item in drawing.labels]
+
+        box_lines = self._lines + self._crosses
+        self.clipping_box = _bounding_box(box_lines, [], self._points, self._labels)
+
+    def draw_wires(self, display, selected_color=None):
         """
-        The box that holds every line, mesh, node and label of the preview.
+        Draw the edges, the nodes, the labels and the load crosses of the
+        preview in a viewport.
+
+        Parameters
+        ----------
+        display :
+            The display pipeline of the viewport.
+        selected_color :
+            The color that marks a selected component. If `None`, everything
+            is drawn in its own color.
+
+        Notes
+        -----
+        The crosses are drawn last, over the nodes they mark, as the topology
+        plotter draws them over its node markers.
         """
-        meshes = [mesh for mesh, _ in self._meshes]
-        meshes += [item.head_mesh for item in self._lines if item.head_mesh]
+        _draw_wires(display, self._lines, self._points, self._labels, selected_color)
+        for item in self._crosses:
+            line_color = item.color if selected_color is None else selected_color
+            display.DrawLine(item.line, line_color, item.width)
 
-        points = System.Collections.Generic.List[Rhino.Geometry.Point3d]()
-        for item in self._lines:
-            points.Add(item.line.From)
-            points.Add(item.line.To)
-        for mesh in meshes:
-            box = mesh.GetBoundingBox(True)
-            points.Add(box.Min)
-            points.Add(box.Max)
-        for point, _ in self._points:
-            points.Add(point)
-        for point, _ in self._labels:
-            points.Add(point)
 
-        if points.Count == 0:
-            return Rhino.Geometry.BoundingBox.Empty
+def _draw_wires(display, lines, points, labels, selected_color):
+    """
+    Draw preview lines, their arrowheads, nodes and labels in a viewport, all
+    in the selection color when one is given.
+    """
+    stroke_color = System.Drawing.Color.FromArgb(*COLORS["edge"])
+    dot_color = System.Drawing.Color.White
+    style = Rhino.Display.PointStyle.RoundSimple
+    selected_material = None
+    if selected_color is not None:
+        selected_material = Rhino.Display.DisplayMaterial(selected_color)
 
-        return Rhino.Geometry.BoundingBox(points)
+    for item in lines:
+        line_color = item.color if selected_color is None else selected_color
+        if item.is_dashed:
+            display.DrawPatternedLine(item.line, line_color, DASH_PATTERN, item.width)
+        else:
+            display.DrawLine(item.line, line_color, item.width)
+        if item.head_mesh is None:
+            continue
+        shade = item.material if selected_material is None else selected_material
+        display.DrawMeshShaded(item.head_mesh, shade)
+
+    for point, color in points:
+        fill_color = color if selected_color is None else selected_color
+        # The size is a diameter in pixels; without that flag it is a radius in model units.
+        display.DrawPoint(
+            point,
+            style,
+            stroke_color,
+            fill_color,
+            NODE_DIAMETER,
+            1.0,
+            0.0,
+            0.0,
+            True,
+            True,
+        )
+
+    for point, text in labels:
+        display.DrawDot(point, text, dot_color, stroke_color)
+
+
+def _bounding_box(lines, meshes, points, labels):
+    """
+    The box that holds every preview line, mesh, node and label.
+    """
+    box_meshes = [mesh for mesh, _ in meshes]
+    box_meshes += [item.head_mesh for item in lines if item.head_mesh]
+
+    corners = System.Collections.Generic.List[Rhino.Geometry.Point3d]()
+    for item in lines:
+        corners.Add(item.line.From)
+        corners.Add(item.line.To)
+    for mesh in box_meshes:
+        box = mesh.GetBoundingBox(True)
+        corners.Add(box.Min)
+        corners.Add(box.Max)
+    for point, _ in points:
+        corners.Add(point)
+    for point, _ in labels:
+        corners.Add(point)
+
+    if corners.Count == 0:
+        return Rhino.Geometry.BoundingBox.Empty
+
+    return Rhino.Geometry.BoundingBox(corners)
 
 
 def _arrow_head(line):
@@ -358,6 +472,7 @@ def _preview_line(item):
         line=line,
         color=color,
         width=width,
+        is_dashed=item.is_dashed,
         head_mesh=head_mesh,
         material=material,
     )
@@ -413,6 +528,23 @@ def _model_line(document, item):
     start = point_to_rhino(item.start)
     end = point_to_rhino(item.end)
     curve = Rhino.Geometry.LineCurve(start, end)
+
+    return Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, curve)
+
+
+def _model_polyline(document, item):
+    """
+    Wrap a styled polyline as a model object that bakes with its color and its
+    plot weight.
+    """
+    attributes = _object_attributes(item.color)
+    attributes.PlotWeightSource = (
+        Rhino.DocObjects.ObjectPlotWeightSource.PlotWeightFromObject
+    )
+    attributes.PlotWeight = item.width * PLOT_WEIGHT_PER_PIXEL
+
+    points = [point_to_rhino(point) for point in item.points]
+    curve = Rhino.Geometry.PolylineCurve(points)
 
     return Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, curve)
 

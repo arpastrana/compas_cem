@@ -47,6 +47,8 @@ ARROW_BODYWIDTH = 0.012
 ARROW_HEADPORTION_2D = 0.2
 ARROW_HEADWIDTH_2D = 0.08
 ARROW_BODYWIDTH_2D = 0.024
+# The reach of a load cross from its node, as a fraction of the diagram's bounding-box diagonal
+LOAD_CROSS_SIZE = 0.02
 
 # TODO: add static equilibrium plugin
 # The plotter, viewer and Grasshopper scene objects register themselves when
@@ -65,4 +67,5 @@ __all__ = [
     "ARROW_HEADPORTION_2D",
     "ARROW_HEADWIDTH_2D",
     "ARROW_BODYWIDTH_2D",
+    "LOAD_CROSS_SIZE",
 ]

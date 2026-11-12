@@ -11,7 +11,7 @@ from compas_rhino.conversions import polyline_to_rhino_curve
 
 from compas_cem.diagrams import FormDiagram
 from compas_cem.diagrams import TopologyDiagram
-from compas_cem.ghpython.form_display import reaction_shifts
+from compas_cem.ghpython.diagram_display import reaction_shifts
 
 __all__ = [
     "DiagramObject",

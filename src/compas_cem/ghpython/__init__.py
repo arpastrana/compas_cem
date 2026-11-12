@@ -8,14 +8,14 @@ from __future__ import print_function
 
 import compas
 
-from .form_display import *  # noqa F403
+from .diagram_display import *  # noqa F403
 
 # The scene objects and the preview import Rhino, which is importable inside
 # Rhino only, so both the imports and the registration are guarded.
 if compas.is_grasshopper():
     from compas.scene.context import register_scene_objects
 
-    from .form_preview import *  # noqa F403
+    from .diagram_preview import *  # noqa F403
     from .scene_objects import *  # noqa F403
     from .scene_objects import register_ghpython_scene_objects
 

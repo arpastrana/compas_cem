@@ -3,7 +3,7 @@
     "nickname": "DrawTopology",
     "category": "COMPAS CEM",
     "subcategory": "08_Visualization",
-    "description": "Draw a topology diagram.",
+    "description": "Draw a topology diagram in color, with deviation edges dashed, loaded nodes crossed and the keys as optional labels.",
     "exposure": 2,
     "instanceGuid": "811239b8-4d26-41d6-80ba-953e2e2a7593",
 
@@ -15,7 +15,7 @@
             },
             {
                 "name": "node_keys",
-                "description": "A selection of the node keys in the diagram. Defaults to all the node keys.",
+                "description": "A selection of the node keys in the diagram, which also selects the load crosses drawn. Defaults to all the node keys.",
                 "scriptParamAccess": "list",
                 "typeHintID": "int"
             },
@@ -25,58 +25,50 @@
                 "scriptParamAccess": "list"
             },
             {
-                "name": "force_min",
-                "description": "The minimum force magnitude to plot. Defaults to 1e-3.",
-                "typeHintID": "float"
-            },
-            {
-                "name": "force_scale",
-                "description": "The scaling factor of the loads. Defaults to 1.",
-                "typeHintID": "float"
+                "name": "show_labels",
+                "description": "Whether to label the drawn nodes with their keys and the drawn edges with u-v in the viewport. The labels do not bake. Defaults to False.",
+                "typeHintID": "bool"
             }
-
-
         ],
         "outputParameters": [
             {
                 "name": "nodes",
-                "description": "The nodes in the diagram as points.",
+                "description": "The nodes in the diagram as points: green at a support, purple at an origin, white otherwise. Bakes with their colors.",
                 "optional": false
             },
             {
                 "name": "origin_nodes",
-                "description": "The origin nodes in the diagram as points.",
+                "description": "The origin nodes in the diagram as purple points. Bakes with their colors.",
                 "optional": false
             },
             {
                 "name": "support_nodes",
-                "description": "The support nodes in the diagram as points.",
+                "description": "The support nodes in the diagram as green points. Bakes with their colors.",
                 "optional": false
             },
             {
                 "name": "edges",
-                "description": "The edges in the diagram as lines.",
+                "description": "The edges in the diagram as lines, blue in compression and red in tension by their length or force, orange on an auxiliary trail; deviation edges show dashed. Bakes as solid lines with their colors and plot weights.",
                 "optional": false
             },
             {
                 "name": "trail_edges",
-                "description": "The trail edges in the diagram as lines.",
+                "description": "The trail edges in the diagram as lines, colored as in edges. Bakes with their colors and plot weights.",
                 "optional": false
             },
             {
                 "name": "deviation_edges",
-                "description": "The deviation edges in the diagram as lines.",
+                "description": "The deviation edges in the diagram as lines, colored as in edges. Bakes as solid lines with their colors and plot weights.",
                 "optional": false
             },
             {
                 "name": "trails",
-                "description": "The trails in the diagram as polylines.",
+                "description": "The trails in the diagram as pink polylines, orange for an auxiliary trail. Bakes with their colors and plot weights.",
                 "optional": false
             },
-
             {
                 "name": "loads",
-                "description": "The applied node loads as lines.",
+                "description": "A black cross at every loaded node, as two lines each in the XY plane. Bakes with their colors and plot weights.",
                 "optional": false
             }
         ]

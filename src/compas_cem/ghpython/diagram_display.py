@@ -1,12 +1,15 @@
 """
-The style rules for drawing a form diagram in Grasshopper, kept free of Rhino.
+The style rules for drawing form and topology diagrams in Grasshopper, kept
+free of Rhino.
 """
 
 from dataclasses import dataclass
 from math import fabs
+from math import sqrt
 from typing import NamedTuple
 
 from compas.geometry import add_vectors
+from compas.geometry import distance_point_point
 from compas.geometry import length_vector
 from compas.geometry import midpoint_point_point
 from compas.geometry import scale_vector
@@ -14,18 +17,25 @@ from compas.geometry import subtract_vectors
 
 from compas_cem import ARROW_BODYWIDTH
 from compas_cem import COLORS
+from compas_cem import LOAD_CROSS_SIZE
 
 __all__ = [
     "FormDisplaySettings",
     "FormDrawing",
     "StyledLine",
     "StyledPoint",
+    "StyledPolyline",
     "TextLabel",
+    "TopologyDrawing",
     "edge_radii",
     "edge_widths",
     "form_drawing",
     "reaction_shifts",
+    "topology_drawing",
 ]
+
+# The pixel width of every topology edge, trail and load cross.
+TOPOLOGY_WIDTH = 2.0
 
 
 @dataclass(frozen=True)
@@ -92,8 +102,9 @@ class StyledPoint(NamedTuple):
 class StyledLine(NamedTuple):
     """
     A line to draw, with its color, its width in pixels, its pipe radius in
-    model units, whether it ends in an arrowhead, and how far a thickened
-    arrow moves along its own direction to clear the sphere of its node.
+    model units, whether it ends in an arrowhead, how far a thickened arrow
+    moves along its own direction to clear the sphere of its node, and whether
+    it is dashed.
     """
 
     start: list[float]
@@ -103,6 +114,17 @@ class StyledLine(NamedTuple):
     radius: float
     is_arrow: bool
     offset: float = 0.0
+    is_dashed: bool = False
+
+
+class StyledPolyline(NamedTuple):
+    """
+    A polyline to draw, with its color and its width in pixels.
+    """
+
+    points: list[list[float]]
+    color: tuple[int, int, int]
+    width: float
 
 
 class TextLabel(NamedTuple):
@@ -112,6 +134,22 @@ class TextLabel(NamedTuple):
 
     point: list[float]
     text: str
+
+
+class TopologyDrawing(NamedTuple):
+    """
+    A topology diagram styled for drawing.
+    """
+
+    nodes: list[StyledPoint]
+    origin_nodes: list[StyledPoint]
+    support_nodes: list[StyledPoint]
+    edges: list[StyledLine]
+    trail_edges: list[StyledLine]
+    deviation_edges: list[StyledLine]
+    trails: list[StyledPolyline]
+    loads: list[StyledLine]
+    labels: list[TextLabel]
 
 
 class FormDrawing(NamedTuple):
@@ -417,3 +455,207 @@ def _force_label(form, edge):
     text = "{:.2f}".format(form.edge_force(edge))
 
     return TextLabel(point=point, text=text)
+
+
+def topology_drawing(topology, node_keys, edge_keys, show_labels):
+    """
+    Style a selection of a topology diagram for drawing.
+
+    Parameters
+    ----------
+    topology :
+        The topology diagram to draw.
+    node_keys :
+        The nodes to draw, with the crosses of the loaded ones. If `None`,
+        every node is drawn.
+    edge_keys :
+        The edges to draw. If `None`, every edge is drawn.
+    show_labels :
+        Whether to label the drawn nodes and edges with their keys.
+
+    Returns
+    -------
+    drawing :
+        The styled nodes, origin nodes, support nodes, edges, trail edges,
+        deviation edges, trails, load crosses, and the key labels when shown.
+
+    Notes
+    -----
+    The colors follow the topology plotter's defaults: nodes by type, and
+    edges by the state their length or force sets, with auxiliary trails
+    apart. Deviation edges are always dashed. A loaded node is marked with a
+    cross of two lines at right angles in the XY plane, each reaching
+    `LOAD_CROSS_SIZE` of the diagram's bounding-box diagonal from the node.
+    Every trail is drawn whole, whatever the edge selection.
+    """
+    nodes = list(topology.nodes()) if node_keys is None else list(node_keys)
+    edges = list(topology.edges()) if edge_keys is None else list(edge_keys)
+
+    node_points = [_topology_node(topology, node) for node in nodes]
+    node_styles = list(zip(nodes, node_points))
+    origin_points = [
+        point for node, point in node_styles if topology.is_node_origin(node)
+    ]
+    support_points = [
+        point for node, point in node_styles if topology.is_node_support(node)
+    ]
+
+    edge_lines = [_topology_edge(topology, edge) for edge in edges]
+    edge_styles = list(zip(edges, edge_lines))
+    trail_lines = [line for edge, line in edge_styles if topology.is_trail_edge(edge)]
+    deviation_lines = [
+        line for edge, line in edge_styles if topology.is_deviation_edge(edge)
+    ]
+    trails = _topology_trails(topology)
+
+    loaded_nodes = set(topology.loaded_nodes())
+    crossed_nodes = [node for node in nodes if node in loaded_nodes]
+    crosses = _load_crosses(topology, crossed_nodes)
+
+    labels = []
+    if show_labels:
+        labels = _key_labels(topology, nodes, edges)
+
+    drawing = TopologyDrawing(
+        nodes=node_points,
+        origin_nodes=origin_points,
+        support_nodes=support_points,
+        edges=edge_lines,
+        trail_edges=trail_lines,
+        deviation_edges=deviation_lines,
+        trails=trails,
+        loads=crosses,
+        labels=labels,
+    )
+
+    return drawing
+
+
+def _topology_node(topology, node):
+    """
+    Style a topology node, colored by whether it is a support or an origin.
+    """
+    color_name = "node"
+    if topology.is_node_support(node):
+        color_name = "node_support"
+    elif topology.is_node_origin(node):
+        color_name = "node_origin"
+    point = topology.node_coordinates(node)
+
+    return StyledPoint(point=point, color=COLORS[color_name], radius=0.0)
+
+
+def _topology_edge(topology, edge):
+    """
+    Style a topology edge, colored by its state and dashed if it deviates.
+
+    Notes
+    -----
+    A trail edge takes its state from the sign of its length and a deviation
+    edge from the sign of its force; an edge with neither sign is gray, and an
+    auxiliary trail edge orange, as the topology plotter draws them.
+    """
+    color_name = "edge"
+    if topology.is_auxiliary_trail_edge(edge):
+        color_name = "auxiliary_trail"
+    else:
+        name = "length" if topology.is_trail_edge(edge) else "force"
+        value = topology.edge_attribute(edge, name)
+        if value:
+            color_name = "compression" if value < 0.0 else "tension"
+
+    u, v = edge
+    start = topology.node_coordinates(u)
+    end = topology.node_coordinates(v)
+
+    return StyledLine(
+        start=start,
+        end=end,
+        color=COLORS[color_name],
+        width=TOPOLOGY_WIDTH,
+        radius=0.0,
+        is_arrow=False,
+        is_dashed=topology.is_deviation_edge(edge),
+    )
+
+
+def _topology_trails(topology):
+    """
+    Style every trail as a polyline, the auxiliary trails apart.
+    """
+    auxiliary_trails = [list(trail) for trail in topology.auxiliary_trails()]
+
+    polylines = []
+    for trail in topology.trails():
+        points = [topology.node_coordinates(node) for node in trail]
+        is_auxiliary = list(trail) in auxiliary_trails
+        color_name = "auxiliary_trail" if is_auxiliary else "trail"
+        polyline = StyledPolyline(
+            points=points,
+            color=COLORS[color_name],
+            width=TOPOLOGY_WIDTH,
+        )
+        polylines.append(polyline)
+
+    return polylines
+
+
+def _load_crosses(topology, nodes):
+    """
+    Style the cross that marks every loaded node, as two lines each.
+    """
+    reach = LOAD_CROSS_SIZE * _diagram_diagonal(topology) / sqrt(2.0)
+    color = COLORS["node_black"]
+
+    crosses = []
+    for node in nodes:
+        x, y, z = topology.node_coordinates(node)
+        for sign in (1.0, -1.0):
+            start = [x - reach, y - sign * reach, z]
+            end = [x + reach, y + sign * reach, z]
+            line = StyledLine(
+                start=start,
+                end=end,
+                color=color,
+                width=TOPOLOGY_WIDTH,
+                radius=0.0,
+                is_arrow=False,
+            )
+            crosses.append(line)
+
+    return crosses
+
+
+def _diagram_diagonal(diagram):
+    """
+    The length of the diagonal of a diagram's bounding box, or one if it has
+    no extent.
+    """
+    points = [diagram.node_coordinates(node) for node in diagram.nodes()]
+    if not points:
+        return 1.0
+
+    corner_low = [min(point[axis] for point in points) for axis in range(3)]
+    corner_high = [max(point[axis] for point in points) for axis in range(3)]
+    diagonal = distance_point_point(corner_low, corner_high)
+
+    return diagonal or 1.0
+
+
+def _key_labels(topology, nodes, edges):
+    """
+    Label the nodes with their keys and the edges with `u-v` at their midpoints.
+    """
+    labels = []
+    for node in nodes:
+        point = topology.node_coordinates(node)
+        labels.append(TextLabel(point=point, text=str(node)))
+
+    for edge in edges:
+        u, v = edge
+        start = topology.node_coordinates(u)
+        end = topology.node_coordinates(v)
+        point = midpoint_point_point(start, end)
+        labels.append(TextLabel(point=point, text="{}-{}".format(u, v)))
+
+    return labels
