@@ -4,7 +4,7 @@ version: {{ version }}
 authors:
   - Rafael Pastrana
 description: >
-  The Combinatorial Equilibrium Modeling framework for COMPAS. Form-finding and
+  The combinatorial equilibrium method for COMPAS. Form-finding and
   constrained optimization of spatial structures in static equilibrium, for
   Rhino and Grasshopper.
 url: https://github.com/arpastrana/compas_cem

@@ -1,19 +1,20 @@
 # COMPAS CEM
 
-The [Combinatorial Equilibrium Modeling (CEM)](https://doi.org/10.1016/j.cad.2022.103435)
-framework for [COMPAS](https://compas.dev/).
+The [combinatorial equilibrium method (CEM)](https://doi.org/10.1016/j.cad.2022.103435)
+for [COMPAS](https://compas.dev/).
 
 <figure markdown="span">
   ![Constrained form-finding of a spiral staircase](images/staircase.gif)
   <figcaption>Constrained form-finding of a spiral staircase.</figcaption>
 </figure>
 
-The [CEM framework](https://doi.org/10.1016/j.cad.2022.103435) is a numerical
-form-finding approach to generate forms in static equilibrium for spatial bar
-structures subjected to combinations of tension-compression forces and design
-goals.
-**COMPAS CEM** encapsulates the CEM framework into an open-source structural design
-tool that enables the formulation and the solution of constrained form-finding
+The [CEM](https://doi.org/10.1016/j.cad.2022.103435) is a numerical form-finding
+method that automatically generates forms in static equilibrium for spatial
+structures modeled as 3D bar systems.
+These systems resist external loads purely under tensile and compressive axial
+forces, leading to mechanically efficient structural configurations.
+**COMPAS CEM** encapsulates the CEM into an open-source structural design tool
+that enables the formulation and the solution of constrained form-finding
 problems in plain and simple [Python](https://www.python.org/) code.
 
 ## Main features

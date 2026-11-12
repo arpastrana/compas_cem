@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "compas_cem"
-description = "The Combinatorial Equilibrium Modeling framework for COMPAS"
+description = "The combinatorial equilibrium method for COMPAS"
 keywords = ["form-finding", "structural-design", "architecture", "equilibrium"]
 authors = [{ name = "Rafael Pastrana", email = "arpj@princeton.edu" }]
 license = "MIT"

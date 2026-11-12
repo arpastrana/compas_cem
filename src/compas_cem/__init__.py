@@ -1,5 +1,5 @@
 """
-The Combinatorial Equilibrium Modeling framework for COMPAS.
+The combinatorial equilibrium method for COMPAS.
 """
 
 from __future__ import print_function
