@@ -15,8 +15,13 @@
                 "typeHintID": "line"
             },
             {
+                "name": "state",
+                "description": "The force state of the edge: positive for tension, negative for compression. Only its sign is used, and it must be nonzero.",
+                "typeHintID": "float"
+            },
+            {
                 "name": "force",
-                "description": "The desired force on the edge. If negative, the edge is in compression. Otherwise, it is in tension.",
+                "description": "The magnitude of the force on the edge. Only its absolute value is used.",
                 "typeHintID": "float"
             }
         ],
