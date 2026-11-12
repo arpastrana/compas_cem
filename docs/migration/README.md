@@ -77,13 +77,13 @@ bugs, and deleted its own COMPAS bridge in favour of calling `compas_cem`'s
 What it lacks: any optimizer layer (examples hand-roll
 `scipy.optimize.minimize`), `kmax`, `callback`, and implicit differentiation.
 
-**`jax_fdm` is already on `compas>=2.15,<3.0`** with `compas_plotter>=1.0.1` and
+**The sibling force density library is already on `compas>=2.15,<3.0`** with `compas_plotter>=1.0.1` and
 `compas_viewer>=2.0`. It is a working migrated template for every layer needed
 here: `ParameterManager`, `Loss(*Error|Regularizer)`, scipy-backed optimizers with
 fused jitted `value_and_grad`, `visualization/*/scene_objects.py`, and
 `equilibrium/solvers/fixed_point.py` (`custom_vjp` + `lineax` adjoint).
 
-**formax** is the intended future: `jax_fdm` and `jax_cem` consolidating into one
+**formax** is the intended future: the force density library and `jax_cem` consolidating into one
 differentiable form-finding framework. `compas_cem` should therefore become the
 COMPAS-facing modelling + CAD layer over a **pluggable** kernel, and must not let
 kernel types leak into its public API.
@@ -150,7 +150,7 @@ Three findings, the third a trap:
 2. **`lax.while_loop` is not reverse-differentiable.** A faithful port of the
    `eta`-terminated loop gives correct values but `jax.grad` raises. The outer
    relaxation must be posed as a fixed point with implicit differentiation. This
-   is why `jax_cem` uses a checkpointed `while_loop`; `jax_fdm`'s
+   is why `jax_cem` uses a checkpointed `while_loop`; the force density library's
    `equilibrium/solvers/fixed_point.py` is the better template.
 3. **Origin nodes must be pinned to the parameter *inside* the fixed-point map.**
    A sweep never writes them, so as fixed-point variables their rows of `I − J`
@@ -177,7 +177,7 @@ ships CPython 3.13.3. Wheel ceiling on 3.9, verified against PyPI respecting
 | `autograd` | 1.8.0 | 1.9.1 |
 | `compas` | 2.15.1 | 2.15.1 |
 
-**The decisive consequence:** `lineax` caps at 0.0.7 on py3.9, but `jax_fdm`
+**The decisive consequence:** `lineax` caps at 0.0.7 on py3.9, but the force density library
 requires `lineax>=0.1.0` for the `Normal` operator used by its fixed-point
 adjoint. The implicit-differentiation machinery **cannot be installed inside
 Rhino 8 at all.** Keeping `compas.rpc.Proxy` for the JAX path is forced, not
@@ -216,11 +216,11 @@ so `self.Component`/`self.RuntimeMessages` are gone — use the injected
 
 | Decision | Choice |
 | --- | --- |
-| ruff line length | **88** (matching `jax_fdm`/`smax`, not the COMPAS template's 179). Set in `[tool.ruff]`, `[tool.ruff.lint.pycodestyle] max-doc-length`, and `.editorconfig` |
+| ruff line length | **88** (matching the force density library and `smax`, not the COMPAS template's 179). Set in `[tool.ruff]`, `[tool.ruff.lint.pycodestyle] max-doc-length`, and `.editorconfig` |
 | `Constraint` → `Goal` | **Clean break**, no deprecation aliases. Frees the name `Constraint` for genuine hard constraints later (nlopt's `add_inequality_constraint` is unused today) |
 | JAX kernel | **Dependency, not vendored.** Publish the kernel to PyPI, then `compas_cem[jax]` |
 | Dependency direction | Move `ParameterState.from_topology_diagram` and `EquilibriumStructure.from_topology_diagram` **down into `compas_cem`** so the kernel depends on `compas` only, never `compas_cem`. Breaks the cycle |
-| Parameter system | **Not** a copy of `jax_fdm`'s `ParameterManager` (which self-documents as needing refactor). equinox-native: `ravel_pytree` for flat `x` + free inverse, `eqx.partition`/`combine` for optimizable-vs-frozen, `eqx.tree_at` for injection, bounds as a same-shaped pytree |
+| Parameter system | **Not** a copy of the force density library's `ParameterManager` (which self-documents as needing refactor). equinox-native: `ravel_pytree` for flat `x` + free inverse, `eqx.partition`/`combine` for optimizable-vs-frozen, `eqx.tree_at` for injection, bounds as a same-shaped pytree |
 | Optimizer backend | **nlopt retained**, fed fused jitted `value_and_grad` |
 | formax scope | Undecided. Build the parameter system here for now, designed to be liftable |
 | Rhino | **Rhino 8 + 9 only.** Rhino 7 / IronPython dropped |
@@ -247,7 +247,7 @@ regenerate the JSON fixtures. Plus `Constraint` → `Goal` (9 classes,
 `solve_proxy` wire signature). Green against Phase 0 ground truth ends the phase.
 
 **Phase 2 — visualization.** `compas_plotter` 1.0.1 + `compas_viewer` 2.0.2,
-artists → `compas.scene` SceneObjects using `jax_fdm/visualization/*/scene_objects.py`
+artists → `compas.scene` SceneObjects using the force density library's `visualization/*/scene_objects.py`
 as the pattern, colours become `compas.colors.Color`. Fix the latent bugs found en
 route: undefined `edge` in `state_format` (`viewers/diagramobject.py:679`,
 `plotters/topologyartist.py:272`), `self.topology` on `DiagramObject`
@@ -286,7 +286,7 @@ parallel.
    shipping script components inside a `.gh` library?
 2. **Who does the kernel decoupling and PyPI release** — upstream directly, or
    prepared as a branch there once Phases 0–2 land here?
-3. **formax and the optimization layer.** If formax inherits `jax_fdm`'s goals,
+3. **formax and the optimization layer.** If formax inherits the force density library's goals,
    losses, parameters and optimizers, then Phase 4's parameter system is
    building what formax will own, and `compas_cem`'s `Optimizer` should shrink to
    a thin adapter. Currently deferred: build here, designed to be lifted.
@@ -466,7 +466,7 @@ regression. Do not chase it in Phase 1.
 ### 10.4 Phase 2 — visualization
 
 `compas.artists` no longer exists. Target `compas_plotter>=1.0.1` and
-`compas_viewer>=2.0`, and use `jax_fdm/visualization/{plotters,viewers}/scene_objects.py`
+`compas_viewer>=2.0`, and use the force density library's `visualization/{plotters,viewers}/scene_objects.py`
 as the pattern — that package is already on COMPAS 2 and solves the same problem.
 
 - **`plotters/`**: `plotter.py` is a pure passthrough wrapper; `formartist.py` and
@@ -686,7 +686,7 @@ say what to. Phase 1 first shipped a single `Diagram.add_element(element)`
 dispatching on `Node` versus `Edge`.
 
 That was **reconsidered before this branch was merged.** After an audit of the
-two sibling libraries, `jax_fdm` and `smax`, it was decided on 2026-08-07 to
+two sibling libraries, the force density library and `smax`, it was decided on 2026-08-07 to
 keep `add_node` and `add_edge` and dispatch on the type of the argument, so that
 the authoring API, the tutorials and every existing `.gh` file survive untouched. Phase 1 was
 rewritten to ship that directly, so `main` never carried `add_element`.
@@ -785,7 +785,7 @@ which parents the arrows and labels to the diagram so they show and hide with it
   `compas.scene.register`, and call `register_scene_objects()` first. compas
   auto-discovers plugins in `compas*` packages only and discovers into an empty
   registry only, so a plugin module cannot work here — this is the same
-  arrangement `jax_fdm` uses. `__all_plugins__` no longer lists
+  arrangement the force density library uses. `__all_plugins__` no longer lists
   `compas_cem.plotters.register`, which no longer exists.
 - `compas_plotter>=1.0.1` and `compas_viewer>=2.0` are runtime dependencies in
   `requirements.txt`. See §12.5.
@@ -836,7 +836,7 @@ and the two renders match.
 `compas_plotter>=1.0.1` and `compas_viewer>=2.0` were briefly parked in
 `requirements-dev.txt`, because the docs build imports those modules. It was
 settled on 2026-08-07: **both are ordinary runtime dependencies**, in
-`requirements.txt`. Unlike `jax_fdm`, which treats its backends as optional and
+`requirements.txt`. Unlike the force density library, which treats its backends as optional and
 guards them with `has_backend`, drawing a diagram is not an optional extra of
 this package.
 
@@ -944,7 +944,7 @@ thing that will move nodes in anger, and worth a regression test that
 
 ---
 
-## 13. API alignment audit: `jax_fdm`, `smax`, `compas_cem`
+## 13. API alignment audit: the force density library, `smax`, `compas_cem`
 
 Written 2026-08-07, before committing to an authoring API for 0.9.0. Nothing in
 this section is implemented. It exists so the decision is made once, with the
@@ -959,17 +959,17 @@ answer survive wanting **area loads** and **partially fixed supports** later?
 
 | | substrate | authoring | supports | loads |
 | --- | --- | --- | --- | --- |
-| `jax_fdm` | COMPAS `Graph` / `Mesh`, **mutable** | plain `add_node(x=, y=, z=)` and `add_edge(u, v)`. **No element objects, no overrides.** | `node_support(key)`, a boolean `is_support` attribute | `node_load(key, load)`, `face_load(key, load)` |
+| force density library | COMPAS `Graph` / `Mesh`, **mutable** | plain `add_node(x=, y=, z=)` and `add_edge(u, v)`. **No element objects, no overrides.** | `node_support(key)`, a boolean `is_support` attribute | `node_load(key, load)`, `face_load(key, load)` |
 | `smax` | equinox pytree, **immutable** | `Structure(nodes, elements, supports)` from lists of objects. **No `add_*` at all.** | `Support(node_id, fixity)` over `[ux, uy, uz, rx, ry, rz]`, plus `FixedSupport`, `PinnedSupport`, `RollerSupport(axis=)` | `PointLoad`, `PointMoment`, `LineLoad` under `NodeLoad` / `ElementLoad` bases, grouped by `LoadCase` |
 | `compas_cem` | COMPAS `Graph`, **mutable** | `add_node(obj)`, `add_edge(obj)`, `add_support(obj)`, `add_load(obj)` | `type == "support"` attribute | `qx`, `qy`, `qz` attributes |
 
 **`smax` is object-based because equinox pytrees are immutable.** A `Structure`
 cannot be mutated, so it must be handed complete collections at construction.
-That constraint does not exist for `compas_cem` or `jax_fdm`, both of which sit
+That constraint does not exist for `compas_cem` or the force density library, both of which sit
 on mutable COMPAS datastructures. Its constructor-from-lists shape is therefore
 a consequence of JAX and must **not** be imported here.
 
-Which makes `jax_fdm` the only meaningful comparator — and `jax_fdm` is exactly
+Which makes the force density library the only meaningful comparator — and it is exactly
 the "no element objects" design.
 
 ### 13.2 `compas_cem` already unwraps the objects
@@ -1051,9 +1051,9 @@ Note also that the `length` attribute means the **prescribed** length on a
 topology diagram and the **realized** signed length on a form diagram. One name,
 two meanings, depending on which diagram is in hand. Worth separating.
 
-### 13.6 Naming conventions to adopt from `jax_fdm`
+### 13.6 Naming conventions to adopt from the force density library
 
-`jax_fdm` never shadows a COMPAS name — `edge_length` stays geometric and
+The force density library never shadows a COMPAS name — `edge_length` stays geometric and
 untouched — and gives every domain quantity its own noun, with a singular
 get-or-set form and a plural batch form: `edge_forcedensity` / `edges_forcedensities`,
 `edge_force` / `edges_forces`, `edge_loadpath` / `edges_loadpaths`, `edge_load`,
@@ -1062,9 +1062,9 @@ get-or-set form and a plural batch form: `edge_forcedensity` / `edges_forcedensi
 | `compas_cem` today | proposed | reason |
 | --- | --- | --- |
 | `edge_length_2(edge)` | `edge_signed_length(edge, length=None)` | its own noun, no clash, get-or-set |
-| `edge_force(edge)` | `edge_force(edge, force=None)` | add the setter; then identical to `jax_fdm` |
-| `node_load(node)` | `node_load(node, load=None)` | add the setter; then identical to `jax_fdm` |
-| `support_nodes()`, `loaded_nodes()`, `origin_nodes()` | `nodes_supports()`, `nodes_loaded()`, `nodes_origins()` | entity-first plural, as `jax_fdm` does throughout |
+| `edge_force(edge)` | `edge_force(edge, force=None)` | add the setter; then identical to the force density library |
+| `node_load(node)` | `node_load(node, load=None)` | add the setter; then identical to the force density library |
+| `support_nodes()`, `loaded_nodes()`, `origin_nodes()` | `nodes_supports()`, `nodes_loaded()`, `nodes_origins()` | entity-first plural, as the force density library does throughout |
 | — | `edges_forces()`, `edges_lengths()`, `edges_signed_lengths()` | plural batch accessors, which do not exist yet |
 
 Already aligned and to be left alone: `is_node_support(key)` is identical in both.
@@ -1077,7 +1077,7 @@ the load vocabulary ever grows here, prefer `smax`'s split.
 
 They do not, and they mildly favour the object-free design.
 
-**Area loads.** The precedent is `FDMesh.face_load(key, load)` in `jax_fdm`, with
+**Area loads.** The precedent is `FDMesh.face_load(key, load)` in the force density library, with
 `px`/`py`/`pz` per face. `smax` has none yet; one would slot under `ElementLoad`.
 The obstacle here is structural: a topology diagram is a `Graph`, so there are no
 faces to carry an area load. Two routes — a mesh-backed diagram in the `FDMesh`
@@ -1087,7 +1087,7 @@ the solver only ever reads nodal loads. It is also one more attribute-writing
 method, whereas the object design would need an `AreaLoad` class for `Diagram` to
 dispatch on.
 
-**Partially fixed supports.** `jax_fdm` is boolean-only, which is inherent to
+**Partially fixed supports.** The force density library is boolean-only, which is inherent to
 FDM: a node is free or fixed. `smax` carries a full six-degree-of-freedom fixity
 because it is a stiffness solver with a real DOF space. CEM has neither —
 supports *terminate trails*, and the reaction is whatever the trail delivers.
@@ -1115,7 +1115,7 @@ dispatch on. `smax` needs those classes only because its constructor takes a
 
 Leaning, not yet committed, and **not implemented**:
 
-- Adopt the object-free authoring API, aligned to `jax_fdm`, since the two share
+- Adopt the object-free authoring API, aligned to the force density library, since the two share
   a substrate and the query API already matches. CEM's vocabulary is small and
   closed, which is the condition under which "vocabulary on the datastructure"
   stays manageable.
@@ -1363,7 +1363,7 @@ is salvageable, and this was checked rather than assumed:
 
 Set 2026-08-07 and recorded here because it decides what comes next: **complete
 the COMPAS 2 migration first.** Only afterwards tighten or change API contracts
-to align with `jax_fdm` or `smax`. The §13 audit stands as the record for when
+to align with the force density library or `smax`. The §13 audit stands as the record for when
 that time comes; §13.6's naming work is deferred, not cancelled.
 
 ### 14.3 What "complete the COMPAS 2 migration" now means
@@ -1795,7 +1795,7 @@ The 3.9 resolution lands on the §4.4 ceilings: numpy 2.0.2, scipy 1.13.1, nlopt
 
 Decided 2026-11-10, reversing §12.5. `compas_plotter` and `compas_viewer` move
 from `requirements.txt` to `requirements-viz.txt`, published as the `viz` extra,
-the name `jax_fdm` uses. Rhino installs the core package, and the viewer alone
+the name the force density library uses. Rhino installs the core package, and the viewer alone
 would drag PySide6, PyOpenGL and freetype-py into Rhino's Python for modules no
 component imports.
 
@@ -1807,7 +1807,7 @@ component imports.
 - **Both modules fail loudly without their backend.** `compas_cem.plotters` and
   `compas_cem.viewers` import it first and re-raise the `ImportError` with the
   extra's name. The import binds a private name, because both modules build
-  `__all__` from `dir()`. This differs from `jax_fdm`'s `has_backend` guard,
+  `__all__` from `dir()`. This differs from the force density library's `has_backend` guard,
   which leaves the module importable but empty; a user who imports a plotter
   wants one.
 
@@ -2060,8 +2060,8 @@ Draw Form draws its own colored preview, since Grasshopper's preview ignores
 per-item color. Its outputs are Rhino 8 model objects carrying color and plot
 weight, with their default preview switched off on every solve, so baking goes
 through a Data parameter; `thicken` swaps points and lines for sphere, pipe and
-arrow meshes. Every engine draws arrows with jax_fdm's proportions, kept in
-`compas_cem`'s `ARROW_*` constants, and reaction arrows keep jax_fdm's
+arrow meshes. Every engine draws arrows with the same proportions, kept in
+`compas_cem`'s `ARROW_*` constants, and reaction arrows keep the
 strongest-edge rule. Draw Topology follows the topology plotter: state colors,
 dashed deviation edges, load crosses, a `show_labels` toggle and no settings.
 To check a component against unreleased library code without installing it,

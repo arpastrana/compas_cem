@@ -260,7 +260,7 @@ class DiagramPlotterObject(GraphObject):
 
         Notes
         -----
-        The arrows take the 2D proportions of jax_fdm's plotter, as fractions of
+        The arrows take the `ARROW_*_2D` proportions, as fractions of
         each arrow's length in the plane, and clear the node markers by their
         radius. They are batched into one collection drawn above the diagram.
         """

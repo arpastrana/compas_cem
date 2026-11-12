@@ -430,8 +430,7 @@ def _force_lines(form, nodes, color_name, shifts, settings):
     -----
     The arrows are drawn halfway between the edge width bounds, so they stay
     readable next to the edges without following any one force. Thickened,
-    their shaft radius is `ARROW_BODYWIDTH` of their length, as jax_fdm
-    draws them, and they move along their own direction by the radius of the
+    their shaft radius is `ARROW_BODYWIDTH` of their length, and they move along their own direction by the radius of the
     node spheres: back when they end at the node, ahead when they start at it,
     so neither end hides inside the sphere.
     """

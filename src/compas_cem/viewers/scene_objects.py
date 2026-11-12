@@ -344,8 +344,8 @@ class DiagramObject(GraphObject):
 
         Notes
         -----
-        Every arrow is a cylinder body and a cone head with the 3D proportions
-        of jax_fdm, as fractions of the arrow's length. An arrow without length,
+        Every arrow is a cylinder body and a cone head with the `ARROW_*`
+        proportions, as fractions of the arrow's length. An arrow without length,
         from a zero scale or a zero force, is skipped, since it has no axis.
         """
         diagram = self.diagram

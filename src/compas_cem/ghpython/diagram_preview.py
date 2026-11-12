@@ -338,7 +338,7 @@ def _arrow_head(line):
     Notes
     -----
     The head takes `ARROW_HEADPORTION` of the line's length and its radius is
-    `ARROW_HEADWIDTH` of it, as jax_fdm draws an arrow.
+    `ARROW_HEADWIDTH` of it.
     """
     direction = line.Direction
     direction.Unitize()

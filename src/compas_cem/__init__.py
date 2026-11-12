@@ -39,11 +39,11 @@ COLORS = {
     "auxiliary_trail": (255, 155, 15),  # orange
 }
 
-# Arrow proportions as fractions of the arrow length, as jax_fdm draws them in 3D
+# Arrow proportions in 3D, as fractions of the arrow length
 ARROW_HEADPORTION = 0.12
 ARROW_HEADWIDTH = 0.04
 ARROW_BODYWIDTH = 0.012
-# The 2D proportions of jax_fdm's plotter; widths are full widths, as matplotlib takes
+# Arrow proportions in 2D; widths are full widths, as matplotlib takes them
 ARROW_HEADPORTION_2D = 0.2
 ARROW_HEADWIDTH_2D = 0.08
 ARROW_BODYWIDTH_2D = 0.024

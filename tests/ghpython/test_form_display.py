@@ -247,7 +247,7 @@ def test_forces_below_minimum_are_skipped(strut_form):
 def test_force_arrow_sizes(strut_form):
     """
     Checks that the force arrows sit halfway between the width bounds and that
-    their body radius is the jax_fdm fraction of their length.
+    their body radius is `ARROW_BODYWIDTH` of their length.
     """
     settings = FormDisplaySettings(width_min=2.0, width_max=6.0, force_scale=3.0)
     drawing = form_drawing(strut_form, None, None, settings)
