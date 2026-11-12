@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `TopologyDiagram.auxiliary_support_nodes`, which yields the support nodes that end the auxiliary trails, not their origin nodes.
 - Added an `is_absolute` flag to every optimization parameter. With `is_absolute=True`, `bound_low` and `bound_up` are the values the parameter may take instead of distances from its start value, and edge bounds are signed, negative in compression. It defaults to `False` and is saved with the parameter's data, so scripts and files that predate it keep their relative bounds.
 - Added `Optimizer.check_start_bounds`, which `solve` runs first: a parameter whose start value lies outside its bounds raises a `ValueError` naming the parameter, its start value and its bounds, where NLopt raised a bare `invalid_argument`. Absolute bounds can exclude the start value; relative bounds always contain it.
 
 ### Changed
 
+- Added a `filter_auxiliary` input to Disassemble Topology in grasshopper. When `True`, every output leaves out the auxiliary trails, their edges and their support nodes: `auxiliary_trail_keys` comes out empty, `trail_keys` loses only the auxiliary trails, and `sequence_keys` loses the auxiliary support nodes but keeps every sequence, an emptied one as an empty tuple, so a tuple's position stays its sequence number, as the library already does for sequences without nodes. Origin nodes stay, since an auxiliary trail starts at a node of the structure.
 - Added a toggle as the first input of the JSON components: `read` on Import Topology Diagram and Import Form Diagram, `export` on Export Diagram, so a file is read or written only on demand. While it is off, the components output nothing; Export Diagram outputs `data` only on the run that writes the file. `import` is a Python keyword, so it cannot name an input.
 - Made the bounds of the eight Grasshopper parameter components absolute: they now set `is_absolute=True`, since bounds relative to the start value were hard to read. Components already placed in a definition keep their relative bounds. Corrected the node key description of the three load parameter components, which named an origin node where any loaded node applies.
 - Added a `state` input under `line` to the Trail Edge and Deviation Edge components. Its sign sets tension (positive) or compression (negative), the components take only the absolute value of `length` and `force`, and a zero `state` raises a warning. Trail Edge takes either a `length` or a `plane`, with a warning when both are connected; with a plane, `state` is not needed, because the plane's position sets the state.

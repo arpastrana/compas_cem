@@ -466,6 +466,25 @@ class TopologyDiagram(Diagram, MeshMixins):
         """
         return self.nodes_where({"type": "_origin"})
 
+    def auxiliary_support_nodes(self):
+        """
+        Support nodes that end the auxiliary trails.
+
+        Yields
+        ------
+        support_node :
+            The key of the next support node of an auxiliary trail.
+
+        Notes
+        -----
+        The origin node of an auxiliary trail belongs to the structure, so it is
+        not yielded.
+        """
+        for edge in self.auxiliary_trails():
+            for node in edge:
+                if self.is_node_support(node):
+                    yield node
+
     # ==============================================================================
     #  Connected Edges
     # ==============================================================================
