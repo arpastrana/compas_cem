@@ -4269,6 +4269,9 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">¤</a></h3>
 <ul>
 <li>Added uv instructions following <code>jax_fdm</code>: <code>uv add</code> and <code>uv pip install</code> in the installation guide and the README, and <code>uv sync --extra dev</code> with <code>uv run</code> for contributors, pinned by a committed <code>uv.lock</code>. <code>.gitignore</code> excluded the lock on the belief that it would pin every CI job, but CI installs with pip, and uv's pip interface ignores a lock anyway. The pip commands stay as the fallback, and CI still installs with pip. The development tools stay in the <code>dev</code> extra rather than dependency groups, because <code>compas-actions</code> installs <code>.[dev]</code>.</li>
+<li>Added an icon for each Grasshopper component, replacing the CEM logo all 38 shared; Info keeps the logo. Each component folder holds the TikZ source <code>icon.tex</code> beside its <code>icon.png</code>, and <code>components_cpython/icon_style.tex</code> holds the shared palette, group tiles and styles. The icons follow the conventions of the CEM diagrams and the Grasshopper icon guide's empty border and drop shadow. Each tile is framed in a dark shade of its group's color, since a light frame washed out in Grasshopper.</li>
+<li>Added the <code>build-icons</code> task, which renders each <code>icon.tex</code> into a 24 px <code>icon.png</code> with its drop shadow. It needs <code>pdflatex</code> and <code>pdftocairo</code>; the icons are committed, so building the plugin does not.</li>
+<li>Added <code>pillow</code> to the <code>dev</code> extra, which <code>tasks.py</code> imports for the drop shadow.</li>
 </ul>
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
