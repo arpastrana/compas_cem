@@ -1923,7 +1923,7 @@ Written 2026-11-11. This section is the current handover and supersedes §17.1.
 | version | 0.9.0 in the repository, on PyPI, on the yak server, and the docs' `latest` |
 | open issues | #21, the Grasshopper examples, and #1, from 2020 |
 | open pull requests | none |
-| secrets | `PYPI`, a 2021 API token that uploaded 0.9.0; `YAK_TOKEN`, replaced 2026-11-11 |
+| secrets | `PYPI`, a 2021 API token that uploaded 0.9.1; `YAK_TOKEN`, replaced 2026-11-12 and untested |
 | Rhino | a local build of 0.9.0 with the new icons, installed with the yak CLI |
 
 Branches besides `main` and `gh-pages`: `component-icons` is merged and can be
@@ -1940,19 +1940,29 @@ they have, so it can go too.
 2. Every component group ran in Grasshopper on Rhino 8 from a local package
    source. Rebuilding `bridge_2d.ghx` is still open under #21.
 3. The tag published the wheel and sdist to PyPI and the GitHub release, and
-   `docs.yml` deployed 0.9.0 as `latest`. The yak push failed with a 401.
-   `YAK_TOKEN` was regenerated with `yak login --ci` and accepted by `yak owner
-   list compas_cem`, and 0.9.0 was pushed to the yak server by hand from macOS.
-   A clean install from the Package Manager then worked in Rhino 8.
+   `docs.yml` deployed 0.9.0 as `latest`. The yak push failed with a 401, so
+   0.9.0 was pushed to the yak server by hand from macOS. A clean install from
+   the Package Manager then worked in Rhino 8.
 
-The cause of the 401 is unsettled: the old secret's value, or the deprecated
-`yak.exe` URL that `compas_invocations2` 1.3.0 downloads. The upstream fix,
-`compas_invocations2` PR #18, is merged but unreleased; revisit on 2026-12-01
-with `uv lock --upgrade-package compas-invocations2`. The 0.9.1 tag is the first
-CI push with the new secret. If it fails again, do not rerun the release job,
-which would try to recreate the GitHub release and the PyPI upload; build the
-package with `invoke build-cpython-ghuser-components` and `invoke yakerize`,
-then push `dist/yak_package/*.yak` by hand after `yak login`.
+*(Corrected 2026-11-12.)* `YAK_TOKEN` was regenerated with `yak login --ci`
+after that failure, and `yak owner list compas_cem` was taken as proof that it
+worked. It is not: that command needs no authentication and lists the owners
+even with a dummy token. The 0.9.1 tag then failed the same way, and 0.9.1 went
+to the yak server by hand too. The server rejected the secret's value, not the
+binary. The deprecated `yak.exe` that `compas_invocations2` 1.3.0 downloads is
+a Rhino 8.35 build that reads `YAK_TOKEN`, and with a dummy token it gets the
+same `401: Auth token isn't valid` as the yak bundled with Rhino. `--ci` keys
+never expire, so a mangled copy is the likely fault. `YAK_TOKEN` was set again
+on 2026-11-12, and only the 0.9.2 tag can test it: every yak command that
+needs authentication changes the server.
+
+If the push fails again, do not rerun the release job, which would try to
+recreate the GitHub release and the PyPI upload. Build the package with
+`invoke build-cpython-ghuser-components` and `invoke yakerize`, then push
+`dist/yak_package/*.yak` by hand with the yak bundled with Rhino after a
+`yak login`. `compas_invocations2` PR #18, merged but unreleased, pins a
+versioned yak; it silences the deprecation notice but is not the fix. Revisit
+on 2026-12-01 with `uv lock --upgrade-package compas-invocations2`.
 
 The 0.9.0 page on PyPI shows a broken header animation. `f84cad57` shrank it
 under the image proxy's limit, so it should render from 0.9.1 on.
