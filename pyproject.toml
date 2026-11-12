@@ -1,5 +1,6 @@
 [build-system]
-requires = ["setuptools>=66.0"]
+# setuptools 77.0 added the PEP 639 license fields and 77.0.3 fixed their first bugs
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 # ============================================================================
@@ -11,14 +12,14 @@ name = "compas_cem"
 description = "The Combinatorial Equilibrium Modeling framework for COMPAS"
 keywords = ["form-finding", "structural-design", "architecture", "equilibrium"]
 authors = [{ name = "Rafael Pastrana", email = "arpj@princeton.edu" }]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE", "AUTHORS.md"]
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
 dynamic = ['dependencies', 'optional-dependencies', 'version']
 classifiers = [
     "Development Status :: 4 - Beta",
     "Topic :: Scientific/Engineering",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: Unix",
     "Operating System :: POSIX",
     "Operating System :: Microsoft :: Windows",

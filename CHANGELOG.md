@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Switched the license metadata to PEP 639: an SPDX `license = "MIT"` and `license-files = ["LICENSE", "AUTHORS.md"]` replace the `license` table and the `License ::` classifier, which setuptools deprecates and stops supporting in builds from 2027-02-18. The build now requires setuptools 77.0.3, as `jax_fdm` does: 77.0 added the fields, 77.0.0 and 77.0.2 have no files on PyPI, and 77.0.3 fixed their first bugs. The wheel and sdist ship the same two license files as before, which setuptools' default globs already picked up, and their metadata now reads `License-Expression: MIT`.
+
 ### Removed
 
 ## [0.9.1] 2026-11-11
