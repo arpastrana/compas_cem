@@ -23,11 +23,22 @@ class DeviationEdgeComponent(Grasshopper.Kernel.GH_ScriptInstance):
         state: float | None,
         force: float | None,
     ) -> Any:
-        if not line or state is None or force is None:
+        if not line:
+            return
+
+        warning = Grasshopper.Kernel.GH_RuntimeMessageLevel.Warning
+
+        if state is None:
+            message = "Connect a state: positive for tension, negative for compression."
+            ghenv.Component.AddRuntimeMessage(warning, message)
+            return
+
+        if force is None:
+            message = "Connect a force."
+            ghenv.Component.AddRuntimeMessage(warning, message)
             return
 
         if state == 0.0:
-            warning = Grasshopper.Kernel.GH_RuntimeMessageLevel.Warning
             message = "The state must be nonzero: positive for tension, negative for compression."
             ghenv.Component.AddRuntimeMessage(warning, message)
             return

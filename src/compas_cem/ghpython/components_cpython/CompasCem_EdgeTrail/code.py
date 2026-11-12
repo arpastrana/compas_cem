@@ -43,7 +43,14 @@ class TrailEdgeComponent(Grasshopper.Kernel.GH_ScriptInstance):
             trail_edge = TrailEdge.from_line(edge_line, length=1.0, plane=target_plane)
             return trail_edge
 
-        if length is None or state is None:
+        if length is None:
+            message = "Connect a length or a plane."
+            ghenv.Component.AddRuntimeMessage(warning, message)
+            return
+
+        if state is None:
+            message = "Connect a state to sign the length: positive for tension, negative for compression."
+            ghenv.Component.AddRuntimeMessage(warning, message)
             return
 
         if state == 0.0:
