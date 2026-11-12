@@ -9,8 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added an `is_absolute` flag to every optimization parameter. With `is_absolute=True`, `bound_low` and `bound_up` are the values the parameter may take instead of distances from its start value, and edge bounds are signed, negative in compression. It defaults to `False` and is saved with the parameter's data, so scripts and files that predate it keep their relative bounds.
+- Added `Optimizer.check_start_bounds`, which `solve` runs first: a parameter whose start value lies outside its bounds raises a `ValueError` naming the parameter, its start value and its bounds, where NLopt raised a bare `invalid_argument`. Absolute bounds can exclude the start value; relative bounds always contain it.
+
 ### Changed
 
+- Made the bounds of the eight Grasshopper parameter components absolute: they now set `is_absolute=True`, since bounds relative to the start value were hard to read. Components already placed in a definition keep their relative bounds. Corrected the node key description of the three load parameter components, which named an origin node where any loaded node applies.
 - Added a `state` input under `line` to the Trail Edge and Deviation Edge components. Its sign sets tension (positive) or compression (negative), the components take only the absolute value of `length` and `force`, and a zero `state` raises a warning. Trail Edge takes either a `length` or a `plane`, with a warning when both are connected; with a plane, `state` is not needed, because the plane's position sets the state.
 - Corrected the `TrailEdge` docstring and the Trail Edge `plane` description, which said a plane keeps the length's sign. The solver replaces the signed length with the distance to the plane, so the plane's position sets the state, and the length applies only if the trail runs parallel to the plane.
 - Called the CEM the combinatorial equilibrium method instead of the Combinatorial Equilibrium Modeling framework, as the repository description does: in the README and the documentation's home page, which now describe the 3D bar systems it models and their purely axial forces, and in the site description, the PyPI summary, the package docstring, the yak manifest, the software citation and the Colors component's description.

@@ -12,8 +12,10 @@ class OriginNodeXParameter(NodeParameter):
     Sets the X coordinate of an origin node as an optimization parameter.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(OriginNodeXParameter, self).__init__(key, bound_low, bound_up)
+    def __init__(self, key=None, bound_low=None, bound_up=None, is_absolute=False):
+        super(OriginNodeXParameter, self).__init__(
+            key, bound_low, bound_up, is_absolute=is_absolute
+        )
         self._attr_name = "x"
 
 
@@ -27,8 +29,10 @@ class OriginNodeYParameter(NodeParameter):
     Sets the Y coordinate of an origin node as an optimization parameter.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(OriginNodeYParameter, self).__init__(key, bound_low, bound_up)
+    def __init__(self, key=None, bound_low=None, bound_up=None, is_absolute=False):
+        super(OriginNodeYParameter, self).__init__(
+            key, bound_low, bound_up, is_absolute=is_absolute
+        )
         self._attr_name = "y"
 
 
@@ -42,8 +46,10 @@ class OriginNodeZParameter(NodeParameter):
     Sets the Z coordinate of an origin node as an optimization parameter.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(OriginNodeZParameter, self).__init__(key, bound_low, bound_up)
+    def __init__(self, key=None, bound_low=None, bound_up=None, is_absolute=False):
+        super(OriginNodeZParameter, self).__init__(
+            key, bound_low, bound_up, is_absolute=is_absolute
+        )
         self._attr_name = "z"
 
 

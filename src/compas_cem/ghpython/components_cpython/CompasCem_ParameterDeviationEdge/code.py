@@ -22,4 +22,8 @@ class DeviationEdgeParameterComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if not edge_key:
             return
 
-        return DeviationEdgeParameter(edge_key, bound_low, bound_up)
+        parameter = DeviationEdgeParameter(
+            edge_key, bound_low, bound_up, is_absolute=True
+        )
+
+        return parameter

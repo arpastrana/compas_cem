@@ -12,8 +12,10 @@ class NodeLoadXParameter(NodeParameter):
     Sets the X component of a node load as an optimization parameter.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(NodeLoadXParameter, self).__init__(key, bound_low, bound_up)
+    def __init__(self, key=None, bound_low=None, bound_up=None, is_absolute=False):
+        super(NodeLoadXParameter, self).__init__(
+            key, bound_low, bound_up, is_absolute=is_absolute
+        )
         self._attr_name = "qx"
 
 
@@ -27,8 +29,10 @@ class NodeLoadYParameter(NodeParameter):
     Sets the Y component of an node load as an optimization parameter.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(NodeLoadYParameter, self).__init__(key, bound_low, bound_up)
+    def __init__(self, key=None, bound_low=None, bound_up=None, is_absolute=False):
+        super(NodeLoadYParameter, self).__init__(
+            key, bound_low, bound_up, is_absolute=is_absolute
+        )
         self._attr_name = "qy"
 
 
@@ -42,8 +46,10 @@ class NodeLoadZParameter(NodeParameter):
     Sets the Z component of a node load as an optimization parameter.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(NodeLoadZParameter, self).__init__(key, bound_low, bound_up)
+    def __init__(self, key=None, bound_low=None, bound_up=None, is_absolute=False):
+        super(NodeLoadZParameter, self).__init__(
+            key, bound_low, bound_up, is_absolute=is_absolute
+        )
         self._attr_name = "qz"
 
 

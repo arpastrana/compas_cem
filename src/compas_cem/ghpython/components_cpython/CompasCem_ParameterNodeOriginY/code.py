@@ -22,4 +22,8 @@ class OriginNodeYParameterComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if node_key is None:
             return
 
-        return OriginNodeYParameter(node_key, bound_low, bound_up)
+        parameter = OriginNodeYParameter(
+            node_key, bound_low, bound_up, is_absolute=True
+        )
+
+        return parameter

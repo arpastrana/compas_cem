@@ -22,4 +22,6 @@ class NodeLoadYParameterComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if node_key is None:
             return
 
-        return NodeLoadYParameter(node_key, bound_low, bound_up)
+        parameter = NodeLoadYParameter(node_key, bound_low, bound_up, is_absolute=True)
+
+        return parameter
