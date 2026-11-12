@@ -1,0 +1,17 @@
+% Assemble Topology Diagram icon: two trails and a deviation edge between their origins.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\diagramstile
+\draw[edge] (7,17) -- (7,7);
+\draw[edge] (17,17) -- (17,7);
+\draw[edge] (9.5,17) -- (11.5,17);
+\draw[edge] (12.5,17) -- (14.5,17);
+\originnode{7}{17}{1.75}
+\originnode{17}{17}{1.75}
+\path[cem support] (7,7) circle (1.75);
+\path[cem support] (17,7) circle (1.75);
+\end{tikzpicture}
+\end{document}

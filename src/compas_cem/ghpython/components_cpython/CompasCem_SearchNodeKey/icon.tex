@@ -1,0 +1,14 @@
+% Search Node Key icon: a magnifier over the node where two edges meet.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\elementstile
+\draw[edge] (5,6) -- (18,19);
+\draw[handle] (14.68,9.32) -- (18.5,5.5);
+\path[lens] (11.5,12.5) circle (3.75);
+\begin{scope} \clip (11.5,12.5) circle (2.25); \draw[under lens] (5,6) -- (18,19); \end{scope}
+\path[white under lens=cem-edge!40] (11.5,12.5) circle (1.5);
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,18 @@
+% Deviation Edge Length Goal icon: a deviation edge beside a slider setting its target length.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\goaltile
+\draw[goal track] (9.47,18.47) -- (18.47,9.47);
+\draw[goal stop] (8.06,17.06) -- (10.88,19.88);
+\draw[goal stop] (17.06,8.06) -- (19.88,10.88);
+\fill[tether-dark] (15.32,12.62) circle (1.5);
+\coordinate (d0) at (8.09,13.91);
+\coordinate (d1) at (13.91,8.09);
+\foreach \a/\b in {0.06/0.42, 0.58/0.94} {\draw[edge] ($(d0)!\a!(d1)$) -- ($(d0)!\b!(d1)$);}
+\path[cem node] (6.5,15.5) circle (2.25);
+\path[cem node] (15.5,6.5) circle (2.25);
+\end{tikzpicture}
+\end{document}

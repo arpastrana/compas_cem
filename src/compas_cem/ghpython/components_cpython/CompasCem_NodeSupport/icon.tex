@@ -1,0 +1,12 @@
+% Node Support icon: a support node on its pin at the end of a trail.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\supporttile
+\draw[edge] (12,21) -- (12,11.5);
+\path[pin] (12,11.5) -- (16.5,4.5) -- (7.5,4.5) -- cycle;
+\path[cem support] (12,11.5) circle (2.75);
+\end{tikzpicture}
+\end{document}

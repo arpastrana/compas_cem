@@ -1,0 +1,18 @@
+% Disassemble Topology Diagram icon: a trail edge crossing over a deviation edge.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\diagramstile
+\coordinate (d0) at (8.59,15.41);
+\coordinate (d1) at (15.41,8.59);
+\foreach \a/\b in {0.041/0.373, 0.627/0.959} {\draw[edge] ($(d0)!\a!(d1)$) -- ($(d0)!\b!(d1)$);}
+\draw[cem-node-origin!12, line width=4bp] (10.23,10.23) -- (13.77,13.77);
+\draw[edge] (7,7) -- (17,17);
+\path[cem support] (7,7) circle (1.75);
+\originnode{17}{17}{1.75}
+\path[cem node] (7,17) circle (1.75);
+\path[cem node] (17,7) circle (1.75);
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,14 @@
+% Import Form Diagram icon: half a form on a sheet.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\neutraltile
+\sheet
+\draw[form tension] (6.5,14) -- (14,14);
+\draw[form compression] (14,14) -- (10,8);
+\path[cem node] (14,14) circle (1.5);
+\path[cem support] (10,8) circle (1.5);
+\end{tikzpicture}
+\end{document}

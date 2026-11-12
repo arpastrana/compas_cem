@@ -1,0 +1,13 @@
+% Point Goal icon: a node tethered to a target point.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\goaltile
+\fill[tether-dark] (10.5,13.5) circle (1);
+\fill[tether-dark] (13.5,10.5) circle (1);
+\path[cem node] (7,17) circle (2.25);
+\path[cem target] (17,7) circle (2.25);
+\end{tikzpicture}
+\end{document}

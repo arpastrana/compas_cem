@@ -1,0 +1,15 @@
+% Constrained Form-Finding icon: the Form-Finding tree turned half a revolution.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\formfindingtile
+\draw[form compression] (17,7) -- (12,16);
+\draw[form compression] (7,7) -- (12,16);
+\draw[form tension] (17,7) -- (7,7);
+\path[cem node] (17,7) circle (1.75);
+\path[cem node] (7,7) circle (1.75);
+\path[cem support] (12,16) circle (1.75);
+\end{tikzpicture}
+\end{document}

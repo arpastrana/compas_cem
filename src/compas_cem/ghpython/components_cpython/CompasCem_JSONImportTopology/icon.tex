@@ -1,0 +1,15 @@
+% Import Topology Diagram icon: half a topology on a sheet.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\neutraltile
+\sheet
+\draw[edge] (7,14) -- (9,14);
+\draw[edge] (10,14) -- (11.5,14);
+\draw[edge] (14,14) -- (14,8);
+\originnode{14}{14}{1.5}
+\path[cem support] (14,8) circle (1.5);
+\end{tikzpicture}
+\end{document}

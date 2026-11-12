@@ -1,0 +1,13 @@
+% Trail Edge Force Goal icon: a trail edge over a band whose width is the target force.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\goaltile
+\draw[target band] (9.5,9.5) -- (14.5,14.5);
+\draw[edge] (7,7) -- (17,17);
+\path[cem node] (7,7) circle (2.25);
+\path[cem node] (17,17) circle (2.25);
+\end{tikzpicture}
+\end{document}

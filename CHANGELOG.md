@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added uv instructions following `jax_fdm`: `uv add` and `uv pip install` in the installation guide and the README, and `uv sync --extra dev` with `uv run` for contributors, pinned by a committed `uv.lock`. `.gitignore` excluded the lock on the belief that it would pin every CI job, but CI installs with pip, and uv's pip interface ignores a lock anyway. The pip commands stay as the fallback, and CI still installs with pip. The development tools stay in the `dev` extra rather than dependency groups, because `compas-actions` installs `.[dev]`.
+- Added an icon for each Grasshopper component, replacing the CEM logo all 38 shared; Info keeps the logo. Each component folder holds the TikZ source `icon.tex` beside its `icon.png`, and `components_cpython/icon_style.tex` holds the shared palette, group tiles and styles. The icons follow the conventions of the CEM diagrams and the Grasshopper icon guide's empty border and drop shadow. Each tile is framed in a dark shade of its group's color, since a light frame washed out in Grasshopper.
+- Added the `build-icons` task, which renders each `icon.tex` into a 24 px `icon.png` with its drop shadow. It needs `pdflatex` and `pdftocairo`; the icons are committed, so building the plugin does not.
+- Added `pillow` to the `dev` extra, which `tasks.py` imports for the drop shadow.
 
 ### Changed
 

@@ -1,0 +1,16 @@
+% Draw Form icon: the Form-Finding tree with a pencil.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\visualizationtile
+\draw[form compression] (7,16) -- (12,7);
+\draw[form compression] (17,16) -- (12,7);
+\draw[form tension] (7,16) -- (17,16);
+\path[cem node] (7,16) circle (1.75);
+\path[cem node] (17,16) circle (1.75);
+\path[cem support] (12,7) circle (1.75);
+\pencil
+\end{tikzpicture}
+\end{document}

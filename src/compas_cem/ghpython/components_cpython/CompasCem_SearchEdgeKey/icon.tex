@@ -1,0 +1,15 @@
+% Search Edge Key icon: a magnifier over an edge, grayed beneath the lens.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\elementstile
+\draw[edge] (6,7) -- (17,18);
+\draw[handle] (14.68,9.32) -- (18.5,5.5);
+\path[lens] (11.5,12.5) circle (3.75);
+\begin{scope} \clip (11.5,12.5) circle (1.75); \draw[under lens] (6,7) -- (17,18); \end{scope}
+\path[cem node] (6,7) circle (1.75);
+\path[cem node] (17,18) circle (1.75);
+\end{tikzpicture}
+\end{document}

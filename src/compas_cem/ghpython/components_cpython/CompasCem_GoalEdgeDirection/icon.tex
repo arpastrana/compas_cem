@@ -1,0 +1,13 @@
+% Edge Direction Goal icon: an edge over a target direction turned about its midpoint.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\goaltile
+\draw[thin target arrow] (10.52,3.63) -- (13.48,20.37);
+\draw[edge] (7,7) -- (17,17);
+\path[cem node] (7,7) circle (2.25);
+\path[cem node] (17,17) circle (2.25);
+\end{tikzpicture}
+\end{document}

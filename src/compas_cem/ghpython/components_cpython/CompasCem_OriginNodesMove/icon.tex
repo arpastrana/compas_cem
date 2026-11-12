@@ -1,0 +1,15 @@
+% Move Origin Nodes icon: an origin node moved from its ghost, its trail following.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\diagramstile
+\draw[cem-edge!35, line width=1bp] (7,17.5) -- (12,6.5);
+\draw[edge] (16.5,17.5) -- (12,6.5);
+\path[ghost origin] (7,17.5) circle (1.75);
+\draw[move arrow] (9.6,17.5) -- (13.8,17.5);
+\originnode{16.5}{17.5}{1.75}
+\path[cem support] (12,6.5) circle (1.75);
+\end{tikzpicture}
+\end{document}

@@ -48,6 +48,8 @@ command line to ease recurring operations (prefix each with `uv run`):
 * `invoke check`: Run various code and documentation style checks.
 * `invoke docs`: Generate documentation.
 * `invoke test`: Run all tests and checks in one swift command.
+* `invoke build-icons`: Render each Grasshopper component's `icon.tex` into its
+  `icon.png`. Needs `pdflatex` and `pdftocairo`, from a TeX distribution and poppler.
 * `invoke`: Show available tasks.
 
 ## Bug reports

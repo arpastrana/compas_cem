@@ -1,0 +1,13 @@
+% Plane Goal icon: a node tethered to the middle of a target plane.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\goaltile
+\path[target plane] (8,7.75) -- (17,7.75) -- (19.5,11.75) -- (10.5,11.75) -- cycle;
+\fill[tether-dark] (10.5,13.5) circle (1);
+\fill[tether-dark] (13.5,10.5) circle (1);
+\path[cem node] (7,17) circle (2.25);
+\end{tikzpicture}
+\end{document}

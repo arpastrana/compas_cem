@@ -1,0 +1,101 @@
+% Shared style of the component icons; each icon.tex inputs it, and `invoke build-icons` renders them.
+\usetikzlibrary{arrows.meta,calc,shadings}
+
+% The palette of compas_cem.COLORS.
+\definecolor{cem-tension}{RGB}{227,6,75}
+\definecolor{cem-compression}{RGB}{12,119,184}
+\definecolor{cem-edge}{RGB}{50,50,50}
+\definecolor{cem-node}{RGB}{255,255,255}
+\definecolor{cem-node-support}{RGB}{0,150,10}
+\definecolor{cem-node-origin}{RGB}{155,100,255}
+\definecolor{cem-support-force}{RGB}{75,75,75}
+\definecolor{cem-load}{RGB}{0,150,10}
+\definecolor{cem-trail}{RGB}{250,80,210}
+\definecolor{cem-auxiliary-trail}{RGB}{255,155,15}
+
+% Colors derived from the palette, and the Results tile color, which has no counterpart in it.
+\colorlet{lens-glass}{cem-compression!15}
+\colorlet{lens-brown}{cem-auxiliary-trail!55!black}
+\colorlet{tether-dark}{cem-trail!70!black}
+\colorlet{param-dark}{cem-auxiliary-trail!60!black}
+\definecolor{tile-khaki}{RGB}{150,130,70}
+
+\tikzset{
+  icon/.style={x=1bp, y=1bp, line cap=butt, line join=round},
+  edge/.style={cem-edge, line width=#1},
+  edge/.default=2bp,
+  form compression/.style={cem-compression, line width=2bp},
+  form tension/.style={cem-tension, line width=2bp},
+  cem node/.style={fill=cem-node, draw=cem-edge, line width=1bp},
+  cem support/.style={fill=cem-node-support, draw=cem-node-support!60!black, line width=1bp},
+  cem origin/.style={fill=cem-node-origin, draw=cem-node-origin!55!black, line width=1bp},
+  ghost origin/.style={draw=cem-node-origin!80!black, line width=1bp, dash pattern=on 1.2bp off 1bp},
+  pin/.style={fill=cem-node-support, draw=cem-node-support!60!black, line width=1bp, line join=miter},
+  load arrow/.style={cem-load, line width=2bp, -{Triangle[length=4bp, width=5.5bp]}},
+  bold load/.style={cem-load, line width=2bp, -{Triangle[length=3bp, width=5bp]}},
+  bold reaction/.style={cem-support-force, line width=2bp, -{Triangle[length=3bp, width=5bp]}},
+  move arrow/.style={cem-edge, line width=1.5bp, -{Triangle[length=3bp, width=4bp]}},
+  sequence line/.style={cem-node-origin!35, line width=1bp},
+  lens/.style={fill=lens-glass, draw=cem-edge, line width=1.5bp},
+  handle/.style={lens-brown, line width=2.5bp, line cap=round},
+  under lens/.style={cem-edge!40, line width=2bp},
+  white under lens/.style={fill=cem-node, draw=#1, line width=1bp},
+  cem target/.style={fill=cem-trail, draw=cem-trail!60!black, line width=1bp},
+  target line/.style={cem-trail, line width=2bp},
+  target plane/.style={fill=cem-trail, draw=cem-trail!60!black, line width=1bp, line join=round},
+  target band/.style={cem-trail!75, line width=6bp, line cap=round},
+  target arrow/.style={cem-trail, line width=2bp, -{Triangle[length=3.5bp, width=5bp]}},
+  thin target arrow/.style={cem-trail, line width=1.25bp, -{Triangle[length=3bp, width=4bp]}},
+  ghost trail/.style={cem-trail!60, line width=1.25bp, dash pattern=on 1.5bp off 1.25bp},
+  goal track/.style={cem-trail, line width=1.25bp},
+  goal stop/.style={cem-trail, line width=2bp},
+  track/.style={param-dark, line width=1bp},
+  stop/.style={param-dark, line width=1.5bp},
+  knob/.style={fill=param-dark},
+  heavy trajectory/.style={param-dark, line width=1.75bp, dash pattern=on 2bp off 1.5bp},
+  force band/.style={param-dark, opacity=0.4, line width=6bp},
+  compression band/.style={cem-compression, opacity=0.3, line width=6bp},
+  tension band/.style={cem-tension, opacity=0.3, line width=3.5bp},
+  swatch/.style={fill=#1, draw=#1!60!black, line width=1bp, rounded corners=1bp},
+  page/.style={fill=cem-node, draw=cem-edge, line width=1bp, line join=round},
+  brace/.style={cem-edge, line width=1.25bp, line join=round, line cap=round},
+  pencil body/.style={fill=cem-auxiliary-trail, draw=cem-auxiliary-trail!50!black, line width=0.75bp, line join=round},
+  pencil wood/.style={fill=cem-auxiliary-trail!25, draw=cem-auxiliary-trail!50!black, line width=0.75bp, line join=round},
+}
+
+% One icon is a 24 by 24 px canvas at one unit per pixel.
+\newcommand{\iconcanvas}{\useasboundingbox (0,0) rectangle (24,24);}
+% The tile spans pixels 2 to 21, lit from the upper left, framed dark with a light inner edge.
+\newcommand{\ctile}[4]{
+  \shade[upper left=#1, upper right=#2, lower left=#2, lower right=#3, rounded corners=2.5bp] (2.5,2.5) rectangle (21.5,21.5);
+  \draw[white, opacity=0.6, line width=1bp, rounded corners=1.5bp] (3.5,3.5) rectangle (20.5,20.5);
+  \draw[#4, line width=1bp, rounded corners=2.5bp] (2.5,2.5) rectangle (21.5,21.5);
+}
+\newcommand{\elementstile}{\ctile{cem-edge!3}{cem-edge!9}{cem-edge!18}{cem-edge!65!black}}
+\newcommand{\supporttile}{\ctile{cem-node-support!5}{cem-node-support!13}{cem-node-support!24}{cem-node-support!65!black}}
+\newcommand{\diagramstile}{\ctile{cem-node-origin!5}{cem-node-origin!12}{cem-node-origin!20}{cem-node-origin!65!black}}
+\newcommand{\formfindingtile}{\ctile{cem-compression!6}{cem-compression!12}{cem-compression!20}{cem-compression!65!black}}
+\newcommand{\goaltile}{\ctile{cem-trail!6}{cem-trail!12}{cem-trail!20}{cem-trail!65!black}}
+\newcommand{\parametertile}{\ctile{cem-auxiliary-trail!6}{cem-auxiliary-trail!13}{cem-auxiliary-trail!22}{cem-auxiliary-trail!65!black}}
+\newcommand{\resultstile}{\ctile{tile-khaki!6}{tile-khaki!13}{tile-khaki!22}{tile-khaki!65!black}}
+\newcommand{\visualizationtile}{\ctile{cem-tension!5}{cem-tension!10}{cem-tension!17}{cem-tension!65!black}}
+\newcommand{\neutraltile}{\ctile{cem-edge!1}{cem-edge!5}{cem-edge!10}{cem-edge!65!black}}
+
+% An origin node of radius #3 at (#1,#2).
+\newcommand{\originnode}[3]{\path[cem origin] (#1,#2) circle (#3);}
+% A slider's stop at point #1: a bar across the track along direction #2.
+\newcommand{\trackstop}[2]{\draw[stop] ($(#1)+(#2)$) -- ($(#1)-(#2)$);}
+% A pencil writing toward the lower left; its body runs past the tile and is cut at its outer edge.
+\newcommand{\pencil}{
+  \begin{scope}
+    \clip[rounded corners=4bp] (2,2) rectangle (22,22);
+    \path[pencil body] (14.71,7.33) -- (22.13,14.75) -- (24.25,12.63) -- (16.83,5.21) -- cycle;
+  \end{scope}
+  \path[pencil wood] (14,4.5) -- (14.71,7.33) -- (16.83,5.21) -- cycle;
+  \fill[cem-edge] (14,4.5) -- (14.43,5.77) -- (15.27,4.93) -- cycle;
+}
+% A 13 by 13 px sheet with its upper right corner folded, leaving the tile showing around it.
+\newcommand{\sheet}{
+  \path[page] (5.5,5.5) -- (5.5,18.5) -- (16,18.5) -- (18.5,16) -- (18.5,5.5) -- cycle;
+  \draw[cem-edge, line width=1bp, line join=round] (16,18.5) -- (16,16) -- (18.5,16);
+}

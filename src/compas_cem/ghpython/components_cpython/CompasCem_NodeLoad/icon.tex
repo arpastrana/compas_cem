@@ -1,0 +1,11 @@
+% Node Load icon: a load arrow down into a node.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\supporttile
+\draw[load arrow] (12,21) -- (12,12);
+\path[cem node] (12,8.5) circle (2.75);
+\end{tikzpicture}
+\end{document}
