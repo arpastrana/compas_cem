@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Create a trail edge from a rhino line.
 """

@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Set the Z coordinate of an origin node as an optimization parameter.
 """

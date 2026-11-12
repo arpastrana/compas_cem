@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Called the CEM the combinatorial equilibrium method instead of the Combinatorial Equilibrium Modeling framework, as the repository description does: in the README and the documentation's home page, which now describe the 3D bar systems it models and their purely axial forces, and in the site description, the PyPI summary, the package docstring, the yak manifest, the software citation and the Colors component's description.
+- Raised the Grasshopper components' `compas_cem` requirement to the current version and added it to `bump-my-version`, so every release raises it, with `test_component_headers` to catch a stale header. Rhino upgrades the library only when the requirement rises above the version it holds, so under the 0.9.1 plugin a Rhino holding 0.9.0 kept it and Info reported v0.9.0.
 - Switched the license metadata to PEP 639: an SPDX `license = "MIT"` and `license-files = ["LICENSE", "AUTHORS.md"]` replace the `license` table and the `License ::` classifier, which setuptools deprecates and stops supporting in builds from 2027-02-18. The build now requires setuptools 77.0.3, as `jax_fdm` does: 77.0 added the fields, 77.0.0 and 77.0.2 have no files on PyPI, and 77.0.3 fixed their first bugs. The wheel and sdist ship the same two license files as before, which setuptools' default globs already picked up, and their metadata now reads `License-Expression: MIT`.
 
 ### Removed

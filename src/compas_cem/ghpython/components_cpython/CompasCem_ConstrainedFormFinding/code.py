@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Generate a form diagram in static equilibrium such that it meets user-defined goals.
 """

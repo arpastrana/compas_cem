@@ -93,6 +93,12 @@ filename = "src/compas_cem/__init__.py"
 search = "{current_version}"
 replace = "{new_version}"
 
+# Rhino upgrades the library only when the components' requirement rises above the installed version.
+[[tool.bumpversion.files]]
+glob = "src/compas_cem/ghpython/components_cpython/*/code.py"
+search = "# r: compas_cem>={current_version}"
+replace = "# r: compas_cem>={new_version}"
+
 [[tool.bumpversion.files]]
 filename = "CHANGELOG.md"
 search = "Unreleased"

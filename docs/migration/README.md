@@ -2037,14 +2037,17 @@ recorded yet. For each new component:
 - a folder under `components_cpython/` with `code.py` and a `metadata.json`
   holding a fresh static `instanceGuid`. Renaming keeps the GUID, so placed
   components survive (§16.2);
+- a header at the current version;
 - an `icon.tex` on its group's tile, rendered with `invoke build-icons
   --component <folder>`;
 - a `CHANGELOG.md` line.
 
-If a component starts needing library code newer than 0.9.0, its header must
-move with it. Bump first and run `update-gh-header` after (§16.7), and test with
-a local package (§17.5 step 2), since the header cannot resolve before PyPI has
-the release.
+The header moves with every release, since Rhino upgrades the library only when
+the requirement rises above the version it holds. A `bump-my-version` entry
+rewrites every header in the bump commit, and `test_component_headers`, which
+`invoke release` runs first, fails on any header not at the current version;
+`invoke update-gh-header` resets them. A component that needs unreleased library
+code is tested with a local package (§17.5 step 2).
 
 To test a local build in Rhino: `invoke build-cpython-ghuser-components`, then
 `invoke yakerize`; copy the `.yak` alone into `dist/yak_source/`; then, with

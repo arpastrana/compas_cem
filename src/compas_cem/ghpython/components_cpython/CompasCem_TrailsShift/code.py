@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Shift the starting sequence of a selection of trails in a topology diagram.
 """

@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Import a COMPAS CEM topology diagram from a JSON file.
 """
