@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.1
 """
-Get the lengths and forces of the edges in a form diagram.
+Get the signed forces of the edges in a form diagram.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ import Grasshopper
 import System
 
 
-class EdgeResultsComponent(Grasshopper.Kernel.GH_ScriptInstance):
+class EdgeForcesComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(
         self,
         form: Any,
@@ -21,7 +21,6 @@ class EdgeResultsComponent(Grasshopper.Kernel.GH_ScriptInstance):
             return
 
         edge_keys = edge_keys or list(form.edges())
-        lengths = [form.edge_length_2(edge) for edge in edge_keys]
         forces = [form.edge_force(edge) for edge in edge_keys]
 
-        return lengths, forces
+        return forces

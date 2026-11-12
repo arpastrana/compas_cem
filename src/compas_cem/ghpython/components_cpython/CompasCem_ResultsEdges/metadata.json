@@ -1,9 +1,9 @@
 {
-    "name": "Edge Forces and Lengths (COMPAS CEM)",
-    "nickname": "EdgeForcesLengths",
+    "name": "Edge Forces (COMPAS CEM)",
+    "nickname": "EdgeForces",
     "category": "COMPAS CEM",
     "subcategory": "07_Results",
-    "description": "Get the lengths and the forces of the edges in a form diagram.",
+    "description": "Get the signed forces of the edges in a form diagram.",
     "exposure": 4,
     "instanceGuid": "f26015fd-0131-4864-b670-89edb8dbb85a",
 
@@ -21,13 +21,8 @@
         ],
         "outputParameters": [
             {
-                "name": "lengths",
-                "description": "The edge lengths.",
-                "optional": false
-            },
-            {
                 "name": "forces",
-                "description": "The edge forces.",
+                "description": "The signed edge forces: negative in compression, positive in tension.",
                 "optional": false
             }
         ]
