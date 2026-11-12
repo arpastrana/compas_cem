@@ -9,11 +9,16 @@
 
     "ghpython": {
         "inputParameters": [
-             {
+            {
+                "name": "read",
+                "description": "Reads the form diagram from the JSON file when True. The component outputs nothing while it is False.",
+                "typeHintID": "bool"
+            },
+            {
                 "name": "filepath",
                 "description": "The full filepath to the JSON file that stores the diagram. Do not forget to add the extension .json to the filename.",
-                 "typeHintID": "str"
-             }
+                "typeHintID": "str"
+            }
         ],
         "outputParameters": [
             {

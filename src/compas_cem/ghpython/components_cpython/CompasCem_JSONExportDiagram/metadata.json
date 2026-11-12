@@ -9,20 +9,25 @@
 
     "ghpython": {
         "inputParameters": [
-             {
+            {
+                "name": "export",
+                "description": "Writes the diagram to the JSON file when True.",
+                "typeHintID": "bool"
+            },
+            {
                 "name": "diagram",
                 "description": "A COMPAS CEM diagram."
-             },
-             {
+            },
+            {
                 "name": "filepath",
                 "description": "The full filepath of where to save the diagram as a JSON file. Do not forget to add the extension .json to the filename.",
-                 "typeHintID": "str"
-             }
+                "typeHintID": "str"
+            }
         ],
         "outputParameters": [
             {
                 "name": "data",
-                "description": "The exported JSON representation of the diagram."
+                "description": "The JSON representation of the diagram, output only on the run that writes the file."
             }
         ]
     }

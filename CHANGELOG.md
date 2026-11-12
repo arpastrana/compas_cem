@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Added a toggle as the first input of the JSON components: `read` on Import Topology Diagram and Import Form Diagram, `export` on Export Diagram, so a file is read or written only on demand. While it is off, the components output nothing; Export Diagram outputs `data` only on the run that writes the file. `import` is a Python keyword, so it cannot name an input.
 - Made the bounds of the eight Grasshopper parameter components absolute: they now set `is_absolute=True`, since bounds relative to the start value were hard to read. Components already placed in a definition keep their relative bounds. Corrected the node key description of the three load parameter components, which named an origin node where any loaded node applies.
 - Added a `state` input under `line` to the Trail Edge and Deviation Edge components. Its sign sets tension (positive) or compression (negative), the components take only the absolute value of `length` and `force`, and a zero `state` raises a warning. Trail Edge takes either a `length` or a `plane`, with a warning when both are connected; with a plane, `state` is not needed, because the plane's position sets the state.
 - Corrected the `TrailEdge` docstring and the Trail Edge `plane` description, which said a plane keeps the length's sign. The solver replaces the signed length with the distance to the plane, so the plane's position sets the state, and the length applies only if the trail runs parallel to the plane.
