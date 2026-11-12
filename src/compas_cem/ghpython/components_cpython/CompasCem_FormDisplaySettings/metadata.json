@@ -30,6 +30,16 @@
                 "typeHintID": "float"
             },
             {
+                "name": "radius_min",
+                "description": "The pipe radius in model units of the edge with the smallest absolute force, when Draw Form thickens the edges. Defaults to 0.01.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "radius_max",
+                "description": "The pipe radius in model units of the edge with the largest absolute force, when Draw Form thickens the edges, and the radius of the thickened nodes. Defaults to 0.1.",
+                "typeHintID": "float"
+            },
+            {
                 "name": "show_labels",
                 "description": "Whether to label every drawn edge with its force in the viewport. The labels do not bake. Defaults to False.",
                 "typeHintID": "bool"

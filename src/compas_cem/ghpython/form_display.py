@@ -12,6 +12,7 @@ from compas.geometry import midpoint_point_point
 from compas.geometry import scale_vector
 from compas.geometry import subtract_vectors
 
+from compas_cem import ARROW_BODYWIDTH
 from compas_cem import COLORS
 
 __all__ = [
@@ -20,6 +21,7 @@ __all__ = [
     "StyledLine",
     "StyledPoint",
     "TextLabel",
+    "edge_radii",
     "edge_widths",
     "form_drawing",
     "reaction_shifts",
@@ -41,6 +43,13 @@ class FormDisplaySettings:
         The width in pixels of the edge with the smallest absolute force.
     width_max :
         The width in pixels of the edge with the largest absolute force.
+    radius_min :
+        The pipe radius in model units of the edge with the smallest absolute
+        force, when the edges are thickened into pipes.
+    radius_max :
+        The pipe radius in model units of the edge with the largest absolute
+        force, when the edges are thickened into pipes. It is also the radius
+        of the thickened nodes, so a node covers every pipe meeting it.
     show_labels :
         Whether to label every drawn edge with its force.
 
@@ -54,34 +63,46 @@ class FormDisplaySettings:
     force_scale: float = 1.0
     width_min: float = 1.0
     width_max: float = 8.0
+    radius_min: float = 0.01
+    radius_max: float = 0.1
     show_labels: bool = False
 
     def __post_init__(self):
-        if not 0.0 < self.width_min <= self.width_max:
-            message = "The edge widths need 0 < width_min <= width_max, got {} and {}."
-            raise ValueError(message.format(self.width_min, self.width_max))
+        bounds = {
+            "width": (self.width_min, self.width_max),
+            "radius": (self.radius_min, self.radius_max),
+        }
+        for name, (low, high) in bounds.items():
+            if not 0.0 < low <= high:
+                message = "The edge {0}s need 0 < {0}_min <= {0}_max, got {1} and {2}."
+                raise ValueError(message.format(name, low, high))
 
 
 class StyledPoint(NamedTuple):
     """
-    A point to draw, with its color.
+    A point to draw, with its color and its sphere radius in model units when
+    thickened.
     """
 
     point: list[float]
     color: tuple[int, int, int]
+    radius: float
 
 
 class StyledLine(NamedTuple):
     """
-    A line to draw, with its color, its width in pixels and whether it ends in an
-    arrowhead.
+    A line to draw, with its color, its width in pixels, its pipe radius in
+    model units, whether it ends in an arrowhead, and how far a thickened
+    arrow moves along its own direction to clear the sphere of its node.
     """
 
     start: list[float]
     end: list[float]
     color: tuple[int, int, int]
     width: float
+    radius: float
     is_arrow: bool
+    offset: float = 0.0
 
 
 class TextLabel(NamedTuple):
@@ -131,20 +152,28 @@ def form_drawing(form, node_keys, edge_keys, settings):
     Notes
     -----
     Every node is colored by whether it is a support, so the support nodes are
-    drawn twice, once among the nodes and once on their own.
+    drawn twice, once among the nodes and once on their own. A load arrow
+    always ends at its node, so its head touches the node it loads; a reaction
+    ends at its support only when it pushes into it.
     """
     nodes = list(form.nodes()) if node_keys is None else list(node_keys)
     edges = list(form.edges()) if edge_keys is None else list(edge_keys)
     supports = [node for node in nodes if form.is_node_support(node)]
 
-    node_points = [_styled_node(form, node) for node in nodes]
-    support_points = [_styled_node(form, node) for node in supports]
+    sphere_radius = settings.radius_max
+    node_points = [_styled_node(form, node, sphere_radius) for node in nodes]
+    support_points = [_styled_node(form, node, sphere_radius) for node in supports]
 
     widths = edge_widths(form, settings.width_min, settings.width_max)
-    edge_lines = [_styled_edge(form, edge, widths[tuple(edge)]) for edge in edges]
+    radii = edge_radii(form, settings.radius_min, settings.radius_max)
+    edge_lines = []
+    for edge in edges:
+        key = tuple(edge)
+        line = _styled_edge(form, edge, widths[key], radii[key])
+        edge_lines.append(line)
 
-    no_shifts = {node: False for node in nodes}
-    loads = _force_lines(form, nodes, "load", no_shifts, settings)
+    load_shifts = {node: True for node in nodes}
+    loads = _force_lines(form, nodes, "load", load_shifts, settings)
     shifts = reaction_shifts(form, nodes)
     reactions = _force_lines(form, nodes, "support_force", shifts, settings)
 
@@ -189,19 +218,52 @@ def edge_widths(form, width_min, width_max):
     drawing. When every force has the same magnitude, every edge takes the
     largest width, as the plotter does.
     """
+    return _spread_by_force(form, width_min, width_max)
+
+
+def edge_radii(form, radius_min, radius_max):
+    """
+    The pipe radius to thicken every edge of a form diagram with.
+
+    Parameters
+    ----------
+    form :
+        The form diagram.
+    radius_min :
+        The radius of the edge with the smallest absolute force.
+    radius_max :
+        The radius of the edge with the largest absolute force.
+
+    Returns
+    -------
+    radii :
+        A mapping of every edge to its radius.
+
+    Notes
+    -----
+    The radii follow the same linear spread over the absolute edge forces as
+    the widths do.
+    """
+    return _spread_by_force(form, radius_min, radius_max)
+
+
+def _spread_by_force(form, value_min, value_max):
+    """
+    Spread two bounds linearly over the absolute edge forces of a diagram.
+    """
     forces = {edge: fabs(form.edge_force(edge)) for edge in form.edges()}
     force_low = min(forces.values())
     force_high = max(forces.values())
     force_range = force_high - force_low
 
-    widths = {}
+    values = {}
     for edge, force in forces.items():
         ratio = 1.0
         if force_range > 0.0:
             ratio = (force - force_low) / force_range
-        widths[edge] = (1.0 - ratio) * width_min + ratio * width_max
+        values[edge] = (1.0 - ratio) * value_min + ratio * value_max
 
-    return widths
+    return values
 
 
 def reaction_shifts(form, nodes):
@@ -241,17 +303,17 @@ def reaction_shifts(form, nodes):
     return shifts
 
 
-def _styled_node(form, node):
+def _styled_node(form, node, radius):
     """
     Style a node, colored by whether it is a support.
     """
     color_name = "node_support" if form.is_node_support(node) else "node"
     point = form.node_coordinates(node)
 
-    return StyledPoint(point=point, color=COLORS[color_name])
+    return StyledPoint(point=point, color=COLORS[color_name], radius=radius)
 
 
-def _styled_edge(form, edge, width):
+def _styled_edge(form, edge, width, radius):
     """
     Style an edge, colored by the sign of its force.
     """
@@ -271,6 +333,7 @@ def _styled_edge(form, edge, width):
         end=end,
         color=COLORS[color_name],
         width=width,
+        radius=radius,
         is_arrow=False,
     )
 
@@ -302,10 +365,15 @@ def _force_lines(form, nodes, color_name, shifts, settings):
     Notes
     -----
     The arrows are drawn halfway between the edge width bounds, so they stay
-    readable next to the edges without following any one force.
+    readable next to the edges without following any one force. Thickened,
+    their shaft radius is `ARROW_BODYWIDTH` of their length, as jax_fdm
+    draws them, and they move along their own direction by the radius of the
+    node spheres: back when they end at the node, ahead when they start at it,
+    so neither end hides inside the sphere.
     """
     names = ["qx", "qy", "qz"] if color_name == "load" else ["rx", "ry", "rz"]
     width = 0.5 * (settings.width_min + settings.width_max)
+    clearance = settings.radius_max
 
     lines = []
     for node in nodes:
@@ -317,16 +385,21 @@ def _force_lines(form, nodes, color_name, shifts, settings):
         point = form.node_coordinates(node)
         start = point
         end = add_vectors(point, scaled)
+        offset = clearance
         if shifts[node]:
             start = subtract_vectors(point, scaled)
             end = point
+            offset = -clearance
+        radius = ARROW_BODYWIDTH * length_vector(scaled)
 
         line = StyledLine(
             start=start,
             end=end,
             color=COLORS[color_name],
             width=width,
+            radius=radius,
             is_arrow=True,
+            offset=offset,
         )
         lines.append(line)
 

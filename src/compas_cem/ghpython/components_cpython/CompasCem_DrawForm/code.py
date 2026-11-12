@@ -23,6 +23,7 @@ class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
         node_keys: System.Collections.Generic.List[int],
         edge_keys: System.Collections.Generic.List[object],
         settings: Any,
+        thicken: bool | None,
     ) -> Any:
         self.preview = None
 
@@ -38,7 +39,7 @@ class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
         settings = settings or FormDisplaySettings()
 
         drawing = form_drawing(form, node_keys, edge_keys, settings)
-        self.preview = FormPreview(drawing)
+        self.preview = FormPreview(drawing, bool(thicken))
 
         outputs = (
             self.preview.node_objects,
@@ -59,7 +60,18 @@ class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if ghenv.Component.Attributes.Selected:  # noqa: F821
             selected_color = args.WireColour_Selected
 
-        preview.draw_wires(args.Display, args.Viewport, selected_color)
+        preview.draw_wires(args.Display, selected_color)
+
+    def DrawViewportMeshes(self, args):
+        preview = getattr(self, "preview", None)
+        if preview is None:
+            return
+
+        selected_material = None
+        if ghenv.Component.Attributes.Selected:  # noqa: F821
+            selected_material = args.ShadeMaterial_Selected
+
+        preview.draw_meshes(args.Display, selected_material)
 
     def get_ClippingBox(self):
         preview = getattr(self, "preview", None)

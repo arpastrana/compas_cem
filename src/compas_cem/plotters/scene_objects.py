@@ -1,13 +1,12 @@
 from math import copysign
 from math import fabs
+from math import hypot
 from math import pi
 
 from compas.colors import Color
 from compas.colors import ColorMap
 from compas.geometry import Line
-from compas.geometry import Point
 from compas.geometry import Rotation
-from compas.geometry import Vector
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
 from compas.geometry import normalize_vector
@@ -18,7 +17,12 @@ from compas.tolerance import TOL
 from compas_plotter.scene import GraphObject
 from compas_plotter.scene.plotterobject import to_rgb
 from matplotlib.collections import LineCollection
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import FancyArrow
 
+from compas_cem import ARROW_BODYWIDTH_2D
+from compas_cem import ARROW_HEADPORTION_2D
+from compas_cem import ARROW_HEADWIDTH_2D
 from compas_cem import COLORS
 from compas_cem.diagrams import FormDiagram
 from compas_cem.diagrams import TopologyDiagram
@@ -253,10 +257,17 @@ class DiagramPlotterObject(GraphObject):
             its own axis.
         tol :
             The smallest force magnitude worth drawing.
+
+        Notes
+        -----
+        The arrows take the 2D proportions of jax_fdm's plotter, as fractions of
+        each arrow's length in the plane, and clear the node markers by their
+        radius. They are batched into one collection drawn above the diagram.
         """
         diagram = self.diagram
         radius = self._node_radius()
 
+        patches = []
         for node in nodes:
             vector = diagram.node_attributes(node, attr_names)
             length = length_vector(vector)
@@ -275,10 +286,39 @@ class DiagramPlotterObject(GraphObject):
             gap_vector = scale_vector(normalize_vector(vector), gap)
             start, end = translate_points([start, end], gap_vector)
 
-            start = Point(*start)
-            force = Vector.from_start_end(start, end)
+            dx = end[0] - start[0]
+            dy = end[1] - start[1]
+            length_2d = hypot(dx, dy)
+            if not length_2d:
+                continue
 
-            self.plotter.add(force, point=start, color=color)
+            body_width = ARROW_BODYWIDTH_2D * length_2d
+            head_length = ARROW_HEADPORTION_2D * length_2d
+            head_width = ARROW_HEADWIDTH_2D * length_2d
+            arrow = FancyArrow(
+                start[0],
+                start[1],
+                dx,
+                dy,
+                width=body_width,
+                head_length=head_length,
+                head_width=head_width,
+                length_includes_head=True,
+                lw=0.0,
+            )
+            patches.append(arrow)
+
+        if not patches:
+            return
+
+        collection = PatchCollection(
+            patches,
+            facecolor=to_rgb(color),
+            edgecolor="none",
+            zorder=5000,
+        )
+        self.axes.add_collection(collection)
+        self._mpl_objects.append(collection)
 
     # ==========================================================================
     # Labels
@@ -456,6 +496,11 @@ class FormPlotterObject(DiagramPlotterObject):
     def draw_forces(self):
         """
         Draw the loads and the reaction forces of the form diagram.
+
+        Notes
+        -----
+        A load arrow always ends at its node, so its head touches the node it
+        loads; a reaction ends at its support only when it pushes into it.
         """
         nodes = list(self.form.nodes())
 
@@ -466,7 +511,7 @@ class FormPlotterObject(DiagramPlotterObject):
                 scale=self.load_scale,
                 color=self.load_color,
                 tol=self.load_tol,
-                shift={node: False for node in nodes},
+                shift={node: True for node in nodes},
             )
 
         if self.show_reactions:

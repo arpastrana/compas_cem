@@ -2059,11 +2059,13 @@ Package Manager.
 Draw Form draws its own colored preview, since Grasshopper's preview ignores
 per-item color. Its outputs are Rhino 8 model objects carrying color and plot
 weight, with their default preview switched off on every solve, so baking goes
-through a Data parameter. Next: a pipe mode for Draw Form, then Draw Topology
-with its own settings component. To check a component against unreleased
-library code without installing it, drive Rhino with `rhinocode` on a copy
-whose header is removed and whose code puts `src` first on `sys.path`; the
-Grasshopper editor must be shown, or nothing previews.
+through a Data parameter; `thicken` swaps points and lines for sphere, pipe and
+arrow meshes. Every engine draws arrows with jax_fdm's proportions, kept in
+`compas_cem`'s `ARROW_*` constants. Next: Draw Topology with its own settings
+component. To check a component
+against unreleased library code without installing it, drive Rhino with
+`rhinocode` on a copy whose header is removed and whose code puts `src` first
+on `sys.path`; the Grasshopper editor must be shown, or nothing previews.
 
 ### 18.6 Still open
 

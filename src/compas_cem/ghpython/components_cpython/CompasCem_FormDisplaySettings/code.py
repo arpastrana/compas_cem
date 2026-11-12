@@ -19,6 +19,8 @@ class FormDisplaySettingsComponent(Grasshopper.Kernel.GH_ScriptInstance):
         force_scale: float | None,
         width_min: float | None,
         width_max: float | None,
+        radius_min: float | None,
+        radius_max: float | None,
         show_labels: bool | None,
     ) -> Any:
         values = {
@@ -26,6 +28,8 @@ class FormDisplaySettingsComponent(Grasshopper.Kernel.GH_ScriptInstance):
             "force_scale": force_scale,
             "width_min": width_min,
             "width_max": width_max,
+            "radius_min": radius_min,
+            "radius_max": radius_max,
             "show_labels": show_labels,
         }
         given = {name: value for name, value in values.items() if value is not None}

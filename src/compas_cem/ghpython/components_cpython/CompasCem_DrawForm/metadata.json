@@ -27,32 +27,37 @@
             {
                 "name": "settings",
                 "description": "The display settings from Form Display Settings. Defaults to its default settings."
+            },
+            {
+                "name": "thicken",
+                "description": "Whether to thicken the nodes into spheres, the edges into pipes and the loads and reaction forces into solid arrows, sized by the settings' radii. Every output then holds meshes instead of points and lines. Defaults to False.",
+                "typeHintID": "bool"
             }
         ],
         "outputParameters": [
             {
                 "name": "nodes",
-                "description": "The nodes of the diagram as points, white or green at a support. Bakes with their colors.",
+                "description": "The nodes of the diagram as points, white or green at a support, or as spheres when thickened. Bakes with their colors.",
                 "optional": false
             },
             {
                 "name": "support_nodes",
-                "description": "The support nodes of the diagram as green points. Bakes with their colors.",
+                "description": "The support nodes of the diagram as green points, or as spheres when thickened. Bakes with their colors.",
                 "optional": false
             },
             {
                 "name": "edges",
-                "description": "The edges of the diagram as lines, red in tension and blue in compression, wider as their force grows. Bakes with their colors and plot weights.",
+                "description": "The edges of the diagram as lines, red in tension and blue in compression, wider as their force grows, or as pipe meshes when thickened. Bakes with their colors, and lines with their plot weights.",
                 "optional": false
             },
             {
                 "name": "loads",
-                "description": "The applied loads as green arrows. Bakes as lines with their colors and plot weights; the arrowheads show in the viewport only.",
+                "description": "The applied loads as green arrows: lines, or arrow meshes when thickened. Bakes with their colors; lines bake with their plot weights and without their arrowheads.",
                 "optional": false
             },
             {
                 "name": "reactions",
-                "description": "The reaction forces at the supports as gray arrows. Bakes as lines with their colors and plot weights; the arrowheads show in the viewport only.",
+                "description": "The reaction forces at the supports as gray arrows: lines, or arrow meshes when thickened. Bakes with their colors; lines bake with their plot weights and without their arrowheads.",
                 "optional": false
             }
         ]

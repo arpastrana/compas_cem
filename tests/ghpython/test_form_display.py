@@ -1,7 +1,9 @@
 import pytest
 
-from compas.geometry import add_vectors
+from compas.geometry import distance_point_point
+from compas.geometry import subtract_vectors
 
+from compas_cem import ARROW_BODYWIDTH
 from compas_cem import COLORS
 from compas_cem.equilibrium import static_equilibrium
 from compas_cem.ghpython import FormDisplaySettings
@@ -46,6 +48,8 @@ def test_settings_defaults():
     assert settings.force_scale == 1.0
     assert settings.width_min == 1.0
     assert settings.width_max == 8.0
+    assert settings.radius_min == 0.01
+    assert settings.radius_max == 0.1
     assert settings.show_labels is False
 
 
@@ -56,6 +60,17 @@ def test_settings_reject_bad_widths(width_min, width_max):
     """
     with pytest.raises(ValueError, match="width_min"):
         FormDisplaySettings(width_min=width_min, width_max=width_max)
+
+
+@pytest.mark.parametrize(
+    "radius_min, radius_max", [(0.5, 0.2), (0.0, 0.2), (-0.1, 0.2)]
+)
+def test_settings_reject_bad_radii(radius_min, radius_max):
+    """
+    Checks that the radius bounds must be positive and ordered.
+    """
+    with pytest.raises(ValueError, match="radius_min"):
+        FormDisplaySettings(radius_min=radius_min, radius_max=radius_max)
 
 
 # ==============================================================================
@@ -88,6 +103,21 @@ def test_edge_widths_spread_by_force(chain_form):
     assert widths[(0, 1)] == pytest.approx(1.0)
     assert widths[(1, 2)] == pytest.approx(5.0)
     assert widths[(2, 3)] == pytest.approx(3.0)
+
+
+def test_edge_radii_spread_by_force(chain_form):
+    """
+    Checks that the pipe radii spread over the forces as the widths do.
+    """
+    forces = {(0, 1): 1.0, (1, 2): -3.0, (2, 3): 2.0}
+    for edge, force in forces.items():
+        chain_form.edge_attribute(edge, "force", force)
+    settings = FormDisplaySettings(radius_min=0.1, radius_max=0.5)
+
+    drawing = form_drawing(chain_form, None, None, settings)
+    radii = [line.radius for line in drawing.edges]
+
+    assert radii == [pytest.approx(0.1), pytest.approx(0.5), pytest.approx(0.3)]
 
 
 def test_edge_widths_equal_forces(chain_form):
@@ -147,18 +177,21 @@ def test_node_selection(strut_form):
 # ==============================================================================
 
 
-def test_load_arrow_starts_at_node(strut_form):
+@pytest.mark.parametrize("form_name, node", [("strut_form", 1), ("chain_form", 0)])
+def test_load_arrow_ends_at_node(form_name, node, request):
     """
-    Checks that a load arrow starts at its node and follows the scaled load.
+    Checks that a load arrow follows the scaled load and ends at its node,
+    whatever the force in its edges.
     """
+    form = request.getfixturevalue(form_name)
     settings = FormDisplaySettings(force_scale=2.0)
-    drawing = form_drawing(strut_form, None, None, settings)
+    drawing = form_drawing(form, None, None, settings)
     (load,) = drawing.loads
-    node_xyz = strut_form.node_coordinates(1)
-    scaled = [2.0 * value for value in strut_form.node_load(1)]
+    node_xyz = form.node_coordinates(node)
+    scaled = [2.0 * value for value in form.node_load(node)]
 
-    assert load.start == pytest.approx(node_xyz)
-    assert load.end == pytest.approx(add_vectors(node_xyz, scaled))
+    assert load.start == pytest.approx(subtract_vectors(node_xyz, scaled))
+    assert load.end == pytest.approx(node_xyz)
     assert load.color == COLORS["load"]
     assert load.is_arrow
 
@@ -184,6 +217,22 @@ def test_reaction_unshifted_in_tension(chain_form):
     assert reaction.start == pytest.approx(chain_form.node_coordinates(3))
 
 
+def test_arrows_clear_node_spheres(chain_form):
+    """
+    Checks that arrows move off their node by the sphere radius: back when they
+    end at it, ahead when they start at it.
+    """
+    settings = FormDisplaySettings(radius_min=0.1, radius_max=0.5)
+
+    drawing = form_drawing(chain_form, None, None, settings)
+    (load,) = drawing.loads
+    (reaction,) = drawing.reactions
+
+    assert load.offset == pytest.approx(-0.5)
+    assert reaction.offset == pytest.approx(0.5)
+    assert {point.radius for point in drawing.nodes} == {0.5}
+
+
 def test_forces_below_minimum_are_skipped(strut_form):
     """
     Checks that loads and reactions smaller than force_min are not drawn.
@@ -195,15 +244,19 @@ def test_forces_below_minimum_are_skipped(strut_form):
     assert drawing.reactions == []
 
 
-def test_force_arrows_take_middle_width(strut_form):
+def test_force_arrow_sizes(strut_form):
     """
-    Checks that the force arrows are drawn halfway between the width bounds.
+    Checks that the force arrows sit halfway between the width bounds and that
+    their body radius is the jax_fdm fraction of their length.
     """
-    settings = FormDisplaySettings(width_min=2.0, width_max=6.0)
+    settings = FormDisplaySettings(width_min=2.0, width_max=6.0, force_scale=3.0)
     drawing = form_drawing(strut_form, None, None, settings)
     arrows = drawing.loads + drawing.reactions
+    lengths = [distance_point_point(arrow.start, arrow.end) for arrow in arrows]
+    radii = [pytest.approx(ARROW_BODYWIDTH * length) for length in lengths]
 
     assert {arrow.width for arrow in arrows} == {4.0}
+    assert [arrow.radius for arrow in arrows] == radii
 
 
 # ==============================================================================

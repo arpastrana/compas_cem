@@ -123,9 +123,14 @@ class DiagramObject(GraphObject):
         -------
         lines :
             One Rhino line per drawn load.
+
+        Notes
+        -----
+        A load ends at its node, so the head of the line touches the node it
+        loads, as in every other drawing of the diagram.
         """
         nodes = list(self.diagram.nodes()) if nodes is None else list(nodes)
-        shift = {node: False for node in nodes}
+        shift = {node: True for node in nodes}
 
         return self._draw_forces(
             nodes=nodes,

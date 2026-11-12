@@ -39,8 +39,30 @@ COLORS = {
     "auxiliary_trail": (255, 155, 15),  # orange
 }
 
+# Arrow proportions as fractions of the arrow length, as jax_fdm draws them in 3D
+ARROW_HEADPORTION = 0.12
+ARROW_HEADWIDTH = 0.04
+ARROW_BODYWIDTH = 0.012
+# The 2D proportions of jax_fdm's plotter; widths are full widths, as matplotlib takes
+ARROW_HEADPORTION_2D = 0.2
+ARROW_HEADWIDTH_2D = 0.08
+ARROW_BODYWIDTH_2D = 0.024
+
 # TODO: add static equilibrium plugin
 # The plotter, viewer and Grasshopper scene objects register themselves when
 # their package is imported, so no plugin module is declared here.
 
-__all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]
+__all__ = [
+    "HOME",
+    "DATA",
+    "DOCS",
+    "TEMP",
+    "JSON_DATA",
+    "COLORS",
+    "ARROW_HEADPORTION",
+    "ARROW_HEADWIDTH",
+    "ARROW_BODYWIDTH",
+    "ARROW_HEADPORTION_2D",
+    "ARROW_HEADWIDTH_2D",
+    "ARROW_BODYWIDTH_2D",
+]

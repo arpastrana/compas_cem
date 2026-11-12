@@ -2,17 +2,24 @@ from math import copysign
 from math import fabs
 
 from compas.colors import Color
-from compas.geometry import Vector
+from compas.geometry import Cone
+from compas.geometry import Cylinder
+from compas.geometry import Frame
+from compas.geometry import Plane
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
 from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
+from compas.geometry import subtract_vectors
 from compas.geometry import translate_points
 from compas.scene import register
 from compas.tolerance import TOL
 from compas_viewer.scene import GraphObject
 from compas_viewer.scene import Tag
 
+from compas_cem import ARROW_BODYWIDTH
+from compas_cem import ARROW_HEADPORTION
+from compas_cem import ARROW_HEADWIDTH
 from compas_cem import COLORS
 from compas_cem.diagrams import FormDiagram
 from compas_cem.diagrams import TopologyDiagram
@@ -30,6 +37,40 @@ def _color(name):
     Look a package color up as a COMPAS color.
     """
     return Color.from_rgb255(*COLORS[name])
+
+
+def _arrow_shapes(start, end):
+    """
+    The cylinder body and the cone head of an arrow from a start to an end.
+
+    Notes
+    -----
+    The head takes `ARROW_HEADPORTION` of the length, its radius is
+    `ARROW_HEADWIDTH` of the length, and the body's radius `ARROW_BODYWIDTH`.
+    A cylinder is centered on its frame and a cone stands on its frame's
+    origin, so the body's frame sits halfway along the body.
+    """
+    vector = subtract_vectors(end, start)
+    length = length_vector(vector)
+    axis = normalize_vector(vector)
+    head_length = ARROW_HEADPORTION * length
+    body_length = length - head_length
+    body_radius = ARROW_BODYWIDTH * length
+    head_radius = ARROW_HEADWIDTH * length
+
+    body_offset = scale_vector(axis, 0.5 * body_length)
+    head_offset = scale_vector(axis, body_length)
+    body_center = add_vectors(start, body_offset)
+    head_base = add_vectors(start, head_offset)
+    body_plane = Plane(body_center, axis)
+    head_plane = Plane(head_base, axis)
+    body_frame = Frame.from_plane(body_plane)
+    head_frame = Frame.from_plane(head_plane)
+
+    body = Cylinder(body_radius, body_length, frame=body_frame)
+    head = Cone(head_radius, head_length, frame=head_frame)
+
+    return body, head
 
 
 class DiagramObject(GraphObject):
@@ -222,13 +263,17 @@ class DiagramObject(GraphObject):
     def draw_loads(self):
         """
         Draw the loads applied to the nodes as arrows.
+
+        Notes
+        -----
+        A load arrow ends at its node, so its head touches the node it loads.
         """
         self._draw_force_vectors(
             attr_names=self.load_attrs,
             scale=self.load_scale,
             tol=self.load_tol,
             color=self.loadcolor,
-            shift={node: False for node in self.diagram.nodes()},
+            shift={node: True for node in self.diagram.nodes()},
         )
 
     def draw_residuals(self):
@@ -294,6 +339,11 @@ class DiagramObject(GraphObject):
         shift :
             A mapping of nodes to whether the arrow is shifted one length along
             its own axis.
+
+        Notes
+        -----
+        Every arrow is a cylinder body and a cone head with the 3D proportions
+        of jax_fdm, as fractions of the arrow's length.
         """
         diagram = self.diagram
 
@@ -310,8 +360,9 @@ class DiagramObject(GraphObject):
                 gap = scale_vector(normalize_vector(vector), -length_vector(scaled))
                 start, end = translate_points([start, end], gap)
 
-            arrow = Vector.from_start_end(start, end)
-            self.add(arrow, anchor=start, linecolor=color, facecolor=color)
+            body, head = _arrow_shapes(start, end)
+            self.add(body, facecolor=color, show_lines=False, u=8)
+            self.add(head, facecolor=color, show_lines=False, u=8)
 
     def _residual_shifts(self):
         """
