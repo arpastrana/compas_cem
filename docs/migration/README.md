@@ -1,9 +1,9 @@
 # compas_cem modernization plan
 
-Status, 2026-11-10: **Phases 0, 1, 2 and 5 are complete and merged into `main`**
-(PRs #16 to #19). Phases 3 and 4 not started. Target release **0.9.0**,
-deliberately breaking and not yet tagged. **§17 is the current handover**, and
-§17.5 the release sequence.
+Status, 2026-11-11: **Phases 0, 1, 2 and 5 are complete**, and **0.9.0 is
+released** on PyPI and the Rhino package server. Phases 3 and 4 not started.
+**§18 is the current handover**: 0.9.1 ships the component icons, and 0.9.2
+the component changes.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
@@ -1910,3 +1910,142 @@ path, because jax cannot install on Rhino's Python 3.9. That path calls a JAX
 solver, so it needs a new entry point when it lands, not the deleted nlopt one.
 
 Next: once this lands, §17.5 step 1.
+
+## 18. Handover 2026-11-11: 0.9.0 released, icons merged, 0.9.1 next
+
+Written 2026-11-11. This section is the current handover and supersedes §17.1.
+
+### 18.1 Where things stand
+
+| item | state |
+| --- | --- |
+| `main` | clean at `6c4eaa16`, PR #33 merged; build (14 cells) and docs green |
+| version | 0.9.0 in the repository, on PyPI, on the yak server, and the docs' `latest` |
+| open issues | #21, the Grasshopper examples, and #1, from 2020 |
+| open pull requests | none |
+| secrets | `PYPI`, a 2021 API token that uploaded 0.9.0; `YAK_TOKEN`, replaced 2026-11-11 |
+| Rhino | a local build of 0.9.0 with the new icons, installed with the yak CLI |
+
+Branches besides `main` and `gh-pages`: `component-icons` is merged and can be
+deleted, locally and on the remote. `autograd` is stale (§17.1). §17.1 kept
+`gh-pages-sphinx-backup` until the 0.9.0 docs deployed and checked out, which
+they have, so it can go too.
+
+### 18.2 How 0.9.0 shipped
+
+§17.5 ran as planned, except for the yak push.
+
+1. `631f9fb4` bumped to 0.9.0 and tagged `v0.9.0`, redone once the release
+   workflow gained its yak step (PRs #29 and #30).
+2. Every component group ran in Grasshopper on Rhino 8 from a local package
+   source. Rebuilding `bridge_2d.ghx` is still open under #21.
+3. The tag published the wheel and sdist to PyPI and the GitHub release, and
+   `docs.yml` deployed 0.9.0 as `latest`. The yak push failed with a 401.
+   `YAK_TOKEN` was regenerated with `yak login --ci` and accepted by `yak owner
+   list compas_cem`, and 0.9.0 was pushed to the yak server by hand from macOS.
+   A clean install from the Package Manager then worked in Rhino 8.
+
+The cause of the 401 is unsettled: the old secret's value, or the deprecated
+`yak.exe` URL that `compas_invocations2` 1.3.0 downloads. The upstream fix,
+`compas_invocations2` PR #18, is merged but unreleased; revisit on 2026-12-01
+with `uv lock --upgrade-package compas-invocations2`. The 0.9.1 tag is the first
+CI push with the new secret. If it fails again, do not rerun the release job,
+which would try to recreate the GitHub release and the PyPI upload; build the
+package with `invoke build-cpython-ghuser-components` and `invoke yakerize`,
+then push `dist/yak_package/*.yak` by hand after `yak login`.
+
+The 0.9.0 page on PyPI shows a broken header animation. `f84cad57` shrank it
+under the image proxy's limit, so it should render from 0.9.1 on.
+
+### 18.3 The component icons
+
+PR #33 replaced the CEM logo that all 38 components shared with an icon each;
+Info keeps the logo, on a neutral tile.
+
+- **Sources.** Each component folder holds `icon.tex` beside `icon.png`, and
+  `components_cpython/icon_style.tex` holds the palette, the group tiles and the
+  shared styles. `invoke build-icons [--component <folder>]` renders them with
+  `pdflatex` and `pdftocairo`, then adds the drop shadow with Pillow. The PNGs
+  are committed, so CI and the release never need LaTeX. The componentizer
+  iterates directories only, so `icon_style.tex` at the root is ignored.
+- **Language.** A 24 px canvas whose tile spans pixels 2 to 21, lit from the
+  upper left and framed in a dark shade of its group's color, after the
+  Grasshopper icon guide. Edges are 2 px, dark gray in topology and blue or red
+  in a form, and deviation edges are dashed. Nodes are white with a dark gray
+  outline; colored shapes are outlined in a darker shade of their fill. Colors
+  come from `compas_cem.COLORS`; the khaki Results tile is the one exception.
+- **Tiles by toolbar group.** Info and Serialization `\neutraltile`, Elements
+  `\elementstile`, Boundary Conditions `\supporttile`, Diagrams
+  `\diagramstile`, Equilibrium and Constrained Form-Finding `\formfindingtile`,
+  goals `\goaltile`, parameters `\parametertile`, Results `\resultstile`,
+  Visualization `\visualizationtile`.
+- **Checking a build.** A `.ghuser` is a raw deflate archive, so inflate it to
+  compare its `icon.png`; a byte search finds nothing, as with the GUIDs (§17.5).
+
+The yak package name stays `compas_cem`, decided 2026-11-11. Yak names allow no
+spaces and have no display name, and the first upload fixed the case. To show
+`COMPAS_CEM` instead, McNeel can recase the existing package, which keeps the
+update path; a new package name would make existing users reinstall by hand.
+
+### 18.4 Releasing 0.9.1 as is
+
+Decided 2026-11-11: 0.9.1 ships the icons and the other `Unreleased` changes,
+and the component changes wait for 0.9.2.
+
+1. Merge this section first, in a pull request labeled `no changelog`.
+   `bump-my-version` refuses a modified tracked file, though it ignores the
+   untracked `examples/ghpython/dome_test.*`.
+2. Leave the component headers at `compas_cem>=0.9.0`, and do not run
+   `update-gh-header`. 0.9.1 changes no code the components import, so a Rhino
+   that already holds 0.9.0 needs no new download.
+3. Run `uv run invoke release patch` from a terminal, since it asks before
+   pushing. It formats `src` and `tests`, runs the tests, and bumps with
+   `bump-my-version`, which rewrites the version, turns `Unreleased` into a
+   dated `[0.9.1]`, commits `Bump version to 0.9.1` and tags `v0.9.1`. It then
+   builds the sdist and wheel as a check, commits an empty `Unreleased` for
+   0.9.2, runs `clean`, and on `y` pushes the tags and then `main`.
+4. On the tag, `release.yml` runs the build matrix, then on `windows-latest`
+   uploads to PyPI, creates the GitHub release from the changelog, and pushes
+   to yak. `docs.yml` deploys 0.9.1 as `latest`.
+5. Check the PyPI page and its animation, the GitHub release, the yak server,
+   and the docs' version selector.
+6. In Rhino, update the local build to the public 0.9.1 from the Package
+   Manager, restart, and confirm the icons.
+
+Rehearsed 2026-11-11 in a clone pushing to a local bare repository: every step
+passed, the hooks included. `clean` deletes `build/` and `dist/` outright, so
+local files to keep go in `temp/`, the template's ignored scratch folder. The
+build warns that the `License ::` classifier and the `license` table are
+deprecated, with builds that use them unsupported from 2027-02-18; the fix is
+an SPDX `license = "MIT"` with `license-files`, on `setuptools>=77`.
+
+### 18.5 Then 0.9.2: the components
+
+Existing components are to be adjusted and a few added; the list is not
+recorded yet. For each new component:
+
+- a folder under `components_cpython/` with `code.py` and a `metadata.json`
+  holding a fresh static `instanceGuid`. Renaming keeps the GUID, so placed
+  components survive (§16.2);
+- an `icon.tex` on its group's tile, rendered with `invoke build-icons
+  --component <folder>`;
+- a `CHANGELOG.md` line.
+
+If a component starts needing library code newer than 0.9.0, its header must
+move with it. Bump first and run `update-gh-header` after (§16.7), and test with
+a local package (§17.5 step 2), since the header cannot resolve before PyPI has
+the release.
+
+To test a local build in Rhino: `invoke build-cpython-ghuser-components`, then
+`invoke yakerize`; copy the `.yak` alone into `dist/yak_source/`; then, with
+Rhino's CLI at `/Applications/Rhino 8.app/Contents/Resources/bin/yak`, run `yak
+uninstall compas_cem` and `yak install --source dist/yak_source compas_cem
+<version>`, and restart Rhino. Undo it the same way, reinstalling from the
+Package Manager.
+
+### 18.6 Still open
+
+- #21: the five Grasshopper definitions must be rebuilt by hand (§16.8).
+- `compas_invocations2` on 2026-12-01 (§18.2).
+- Phases 3 and 4, gated on publishing `jax_cem` (§17.6), and the alignment work
+  deferred in §13.6.
