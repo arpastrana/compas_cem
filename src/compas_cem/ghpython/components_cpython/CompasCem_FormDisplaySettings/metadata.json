@@ -1,0 +1,46 @@
+{
+    "name": "Form Display Settings (COMPAS CEM)",
+    "nickname": "FormSettings",
+    "category": "COMPAS CEM",
+    "subcategory": "08_Visualization",
+    "description": "Set how Draw Form draws a form diagram.",
+    "exposure": 2,
+    "instanceGuid": "646ef119-12dd-48ba-8a75-23ecd72495ee",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "force_min",
+                "description": "The smallest load or reaction force magnitude to draw. Defaults to 1e-3.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "force_scale",
+                "description": "The factor to scale the loads and the reaction forces by. Defaults to 1.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "width_min",
+                "description": "The width in pixels of the edge with the smallest absolute force. Defaults to 1.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "width_max",
+                "description": "The width in pixels of the edge with the largest absolute force. Defaults to 8.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "show_labels",
+                "description": "Whether to label every drawn edge with its force in the viewport. The labels do not bake. Defaults to False.",
+                "typeHintID": "bool"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "settings",
+                "description": "The display settings for Draw Form.",
+                "optional": false
+            }
+        ]
+    }
+}

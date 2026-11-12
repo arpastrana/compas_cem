@@ -2056,6 +2056,15 @@ uninstall compas_cem` and `yak install --source dist/yak_source compas_cem
 <version>`, and restart Rhino. Undo it the same way, reinstalling from the
 Package Manager.
 
+Draw Form draws its own colored preview, since Grasshopper's preview ignores
+per-item color. Its outputs are Rhino 8 model objects carrying color and plot
+weight, with their default preview switched off on every solve, so baking goes
+through a Data parameter. Next: a pipe mode for Draw Form, then Draw Topology
+with its own settings component. To check a component against unreleased
+library code without installing it, drive Rhino with `rhinocode` on a copy
+whose header is removed and whose code puts `src` first on `sys.path`; the
+Grasshopper editor must be shown, or nothing previews.
+
 ### 18.6 Still open
 
 - #21: the five Grasshopper definitions must be rebuilt by hand (§16.8).
