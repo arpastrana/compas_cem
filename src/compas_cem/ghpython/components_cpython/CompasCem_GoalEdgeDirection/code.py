@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.1
+# r: compas_cem>=0.10.0
 """
 Align the direction of a trail or a deviation edge with a target vector.
 """

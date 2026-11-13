@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.1
+# r: compas_cem>=0.10.0
 """
 Get the signed forces of the edges in a form diagram.
 """

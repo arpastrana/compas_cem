@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.1
+# r: compas_cem>=0.10.0
 """
 Find a form diagram in static equilibrium that best meets the goals, by optimizing the parameters.
 """

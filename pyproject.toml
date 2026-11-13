@@ -83,7 +83,7 @@ doctest_optionflags = [
 environments = ["python_version >= '3.11'"]
 
 [tool.bumpversion]
-current_version = "0.9.1"
+current_version = "0.10.0"
 message = "Bump version to {new_version}"
 commit = true
 tag = true

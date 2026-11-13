@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.1
+# r: compas_cem>=0.10.0
 """
 Draw a topology diagram in color, with its deviation edges dashed and its loaded nodes crossed. The outputs are Rhino model objects: a Model Object or Data parameter keeps their colors and plot weights, a Line, Curve or Point parameter only their geometry. Press bake to add the drawing to the Rhino document.
 """

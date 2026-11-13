@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.1
+# r: compas_cem>=0.10.0
 """
 Shift the starting sequence of a selection of trails in a topology diagram, or align every trail so that as many deviation edges as possible are direct.
 """
