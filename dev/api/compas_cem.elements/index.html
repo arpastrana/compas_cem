@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The Combinatorial Equilibrium Modeling (CEM) framework for COMPAS.">
+        <meta name="description" content="The combinatorial equilibrium method (CEM) for COMPAS.">
       
       
         <meta name="author" content="Rafael Pastrana">
@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/logo/compas_cem_icon.svg">
       <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.8.1">
     
     
@@ -106,8 +106,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://arpastrana.github.io/compas_cem/" title="COMPAS CEM" class="md-header__button md-logo" aria-label="COMPAS CEM" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo/compas_cem_icon.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -244,8 +243,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="https://arpastrana.github.io/compas_cem/" title="COMPAS CEM" class="md-nav__button md-logo" aria-label="COMPAS CEM" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo/compas_cem_icon.svg" alt="logo">
 
     </a>
     COMPAS CEM
@@ -2263,8 +2261,9 @@ length.</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p>A plane overrides the absolute length of the edge, but the sign of the
-length is preserved, so the combinatorial state survives the intersection.</p>
+  <p>A plane overrides the signed length: the trail ends where it meets the plane,
+so the plane's position sets the combinatorial state. The length applies only
+if the trail runs parallel to the plane.</p>
 <p>TODO: add an explicit combinatorial state to the signature of the constructor.</p>
 </details>
 
@@ -2276,11 +2275,11 @@ length is preserved, so the combinatorial state survives the intersection.</p>
 
                   <details class="mkdocstrings-source">
                     <summary>Source code in <code>src/compas_cem/elements/trail.py</code></summary>
-                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#compas_cem.elements.TrailEdge--source--__codelineno-0-32">32</a></span>
-<span class="normal"><a href="#compas_cem.elements.TrailEdge--source--__codelineno-0-33">33</a></span>
-<span class="normal"><a href="#compas_cem.elements.TrailEdge--source--__codelineno-0-34">34</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="compas_cem.elements.TrailEdge--source--__span-0-32"><a id="compas_cem.elements.TrailEdge--source--__codelineno-0-32" name="compas_cem.elements.TrailEdge--source--__codelineno-0-32"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="compas_cem.elements.TrailEdge--source--__span-0-33"><a id="compas_cem.elements.TrailEdge--source--__codelineno-0-33" name="compas_cem.elements.TrailEdge--source--__codelineno-0-33"></a>    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"length"</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"trail"</span><span class="p">,</span> <span class="s2">"plane"</span><span class="p">:</span> <span class="n">plane</span><span class="p">}</span>
-</span><span id="compas_cem.elements.TrailEdge--source--__span-0-34"><a id="compas_cem.elements.TrailEdge--source--__codelineno-0-34" name="compas_cem.elements.TrailEdge--source--__codelineno-0-34"></a>    <span class="nb">super</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#compas_cem.elements.TrailEdge--source--__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#compas_cem.elements.TrailEdge--source--__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#compas_cem.elements.TrailEdge--source--__codelineno-0-35">35</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="compas_cem.elements.TrailEdge--source--__span-0-33"><a id="compas_cem.elements.TrailEdge--source--__codelineno-0-33" name="compas_cem.elements.TrailEdge--source--__codelineno-0-33"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="compas_cem.elements.TrailEdge--source--__span-0-34"><a id="compas_cem.elements.TrailEdge--source--__codelineno-0-34" name="compas_cem.elements.TrailEdge--source--__codelineno-0-34"></a>    <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"length"</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"trail"</span><span class="p">,</span> <span class="s2">"plane"</span><span class="p">:</span> <span class="n">plane</span><span class="p">}</span>
+</span><span id="compas_cem.elements.TrailEdge--source--__span-0-35"><a id="compas_cem.elements.TrailEdge--source--__codelineno-0-35" name="compas_cem.elements.TrailEdge--source--__codelineno-0-35"></a>    <span class="nb">super</span><span class="p">(</span><span class="n">TrailEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
                   </details>
 
