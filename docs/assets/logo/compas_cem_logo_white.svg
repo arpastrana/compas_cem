@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+<rect width="1000" height="1000" rx="100.00" fill="#ffffff"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M648.98 446.99 L818.56 349.08 L818.56 650.92 L740.80 606.03 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M528.58 655.53 L712.22 655.53 L789.98 700.42 L528.58 851.34 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M528.58 148.66 L789.98 299.58 L620.40 397.48 L528.58 238.45 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M588.06 482.16 L612.19 468.23 L695.79 613.04 L528.58 613.04 L528.58 585.18 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M440.52 432.66 L416.40 418.73 L500.00 273.92 L583.60 418.73 L559.48 432.66 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M456.95 475.15 L543.05 475.15 L500.00 549.71 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M471.42 585.18 L471.42 613.04 L304.21 613.04 L387.81 468.23 L411.94 482.16 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M471.42 655.53 L471.42 851.34 L210.02 700.42 L287.78 655.53 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M210.02 299.58 L471.42 148.66 L471.42 238.45 L379.60 397.48 Z"/>
+<path fill="#d8e9f4" fill-rule="evenodd" d="M181.44 650.92 L181.44 349.08 L351.02 446.99 L259.20 606.03 Z"/>
+<path fill="#e3064b" fill-rule="evenodd" d="M135.50 710.44 L135.50 289.56 L500.00 79.11 L864.50 289.56 L864.50 710.44 L500.00 920.89 Z M170.21 690.40 L500.00 880.80 L829.79 690.40 L829.79 309.60 L500.00 119.20 L170.21 309.60 Z"/>
+<path fill="#0c77b8" fill-rule="evenodd" d="M482.64 241.45 L482.64 129.22 L500.00 119.20 L517.36 129.22 L517.36 241.45 L732.59 614.24 L732.59 614.24 L829.79 670.36 L829.79 690.40 L812.43 700.42 L715.23 644.31 L715.23 644.31 L284.77 644.31 L284.77 644.31 L187.57 700.42 L170.21 690.40 L170.21 670.36 L267.41 614.24 L267.41 614.24 Z M500.00 251.47 L284.77 624.26 L715.23 624.26 Z M420.16 473.94 L393.43 458.51 L410.78 428.45 L437.51 443.88 L437.51 443.88 L562.49 443.88 L589.22 428.45 L606.57 458.51 L579.84 473.94 L517.36 582.17 L517.36 582.17 L517.36 613.04 L482.64 613.04 L482.64 582.17 L482.64 582.17 L420.16 473.94 Z M437.51 463.92 L500.00 572.15 L562.49 463.92 Z M373.99 407.20 L356.63 437.27 L170.21 329.64 L170.21 309.60 L187.57 299.58 Z M482.64 655.53 L517.36 655.53 L517.36 870.78 L500.00 880.80 L482.64 870.78 Z M643.37 437.27 L626.01 407.20 L812.43 299.58 L829.79 309.60 L829.79 329.64 Z"/>
+<circle cx="579.84" cy="453.90" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="847.14" cy="299.58" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="732.59" cy="634.28" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="847.14" cy="700.42" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="420.16" cy="453.90" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="152.86" cy="299.58" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="500.00" cy="592.19" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="500.00" cy="900.85" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="500.00" cy="231.43" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="500.00" cy="99.15" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="267.41" cy="634.28" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+<circle cx="152.86" cy="700.42" r="21.24" fill="#ffffff" stroke="#323232" stroke-width="7.22"/>
+</svg>

@@ -27,6 +27,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.patches import Circle  # noqa: E402
+from matplotlib.patches import FancyBboxPatch  # noqa: E402
 from matplotlib.patches import PathPatch  # noqa: E402
 from matplotlib.path import Path as MplPath  # noqa: E402
 from shapely.geometry import GeometryCollection  # noqa: E402
@@ -49,6 +50,9 @@ DARK_GROUND = (31, 34, 40)
 MITRE = {"join_style": "mitre", "mitre_limit": 5.0}
 # The trail-to-triangle corner angle halved, for equilateral triangles.
 HALF_ANGLE = math.radians(30.0)
+# A white backing leaves a tenth of the logo's width around it, its corners rounded by a fifth.
+BACKING_MARGIN = 1.1
+BACKING_ROUNDING = 0.2
 
 
 def mix_colors(color, base, amount):
@@ -104,13 +108,15 @@ class LogoShapes(NamedTuple):
 
 class LogoFile(NamedTuple):
     """
-    One file to write: its tier, ground mode, format and pixel size.
+    One file to write: its tier, ground mode, format, pixel size, and whether
+    it sits on a white rounded square instead of a transparent background.
     """
 
     name: str
     tier: str
     mode: str
     size: int
+    has_backing: bool = False
 
 
 TIERS = {
@@ -122,6 +128,7 @@ TIERS = {
 FILES = [
     LogoFile("compas_cem_logo.svg", "thin", "light", 1000),
     LogoFile("compas_cem_logo_dark.svg", "thin", "dark", 1000),
+    LogoFile("compas_cem_logo_white.svg", "thin", "light", 1000, True),
     LogoFile("compas_cem_logo_regular.svg", "regular", "light", 1000),
     LogoFile("compas_cem_logo_regular_dark.svg", "regular", "dark", 1000),
     LogoFile("compas_cem_icon.svg", "icon", "light", 1000),
@@ -131,9 +138,11 @@ FILES = [
     LogoFile("compas_cem_logo_512.png", "thin", "light", 512),
     LogoFile("compas_cem_logo_dark_1024.png", "thin", "dark", 1024),
     LogoFile("compas_cem_logo_dark_512.png", "thin", "dark", 512),
+    LogoFile("compas_cem_logo_white_128.png", "thin", "light", 128, True),
     LogoFile("compas_cem_logo_regular_128.png", "regular", "light", 128),
     LogoFile("compas_cem_logo_regular_dark_128.png", "regular", "dark", 128),
     LogoFile("compas_cem_icon_64.png", "icon", "light", 64),
+    LogoFile("compas_cem_icon_white_64.png", "icon", "light", 64, True),
     LogoFile("compas_cem_icon_32.png", "icon", "light", 32),
     LogoFile("compas_cem_icon_24.png", "icon", "light", 24),
 ]
@@ -364,6 +373,29 @@ def logo_extent(style):
     return extent
 
 
+def canvas_extent(style, logo_file):
+    """
+    The half-width of a logo file's canvas, in radius units.
+
+    Parameters
+    ----------
+    style :
+        The logo tier.
+    logo_file :
+        The file to write.
+
+    Returns
+    -------
+    extent :
+        The logo's own half-width, widened by the margin of a white backing.
+    """
+    extent = logo_extent(style)
+    if logo_file.has_backing:
+        extent = BACKING_MARGIN * extent
+
+    return extent
+
+
 def hex_color(rgb):
     """
     A color as a hex string.
@@ -415,9 +447,10 @@ def svg_path(polygons, scale, offset):
     return data
 
 
-def svg_document(shapes, style, mode, size):
+def svg_document(shapes, style, logo_file):
     """
-    A logo as an SVG document with a transparent background.
+    A logo as an SVG document, on a transparent background or a white rounded
+    square.
 
     Parameters
     ----------
@@ -425,20 +458,28 @@ def svg_document(shapes, style, mode, size):
         The logo shapes.
     style :
         The logo tier.
-    mode :
-        `"light"` or `"dark"`, the ground the logo sits on.
-    size :
-        The width and height of the view box in pixels.
+    logo_file :
+        The file the document is for, which sets its ground mode, view box size
+        and backing.
 
     Returns
     -------
     document :
         The SVG markup.
     """
-    scale = size / (2.0 * logo_extent(style))
+    size = logo_file.size
+    extent = canvas_extent(style, logo_file)
+    scale = size / (2.0 * extent)
     offset = size / 2.0
     elements = []
-    for shape, color in fill_layers(shapes, mode):
+    if logo_file.has_backing:
+        corner = BACKING_ROUNDING * extent * scale
+        backing = (
+            f'<rect width="{size}" height="{size}" rx="{corner:.2f}" fill="#ffffff"/>'
+        )
+        elements.append(backing)
+
+    for shape, color in fill_layers(shapes, logo_file.mode):
         parts = polygon_parts(shape)
         data = svg_path(parts, scale, offset)
         element = f'<path fill="{hex_color(color)}" fill-rule="evenodd" d="{data}"/>'
@@ -464,9 +505,10 @@ def svg_document(shapes, style, mode, size):
     return document
 
 
-def draw_figure(shapes, style, mode, size):
+def draw_figure(shapes, style, logo_file):
     """
-    A logo as a matplotlib figure with a transparent background.
+    A logo as a matplotlib figure, on a transparent background or a white
+    rounded square.
 
     Parameters
     ----------
@@ -474,19 +516,38 @@ def draw_figure(shapes, style, mode, size):
         The logo shapes.
     style :
         The logo tier.
-    mode :
-        `"light"` or `"dark"`, the ground the logo sits on.
-    size :
-        The width and height in pixels at one dot per pixel.
+    logo_file :
+        The file the figure is for, which sets its ground mode, pixel size and
+        backing.
 
     Returns
     -------
     figure :
-        The figure, sized one inch at `size` dots per inch.
+        The figure, sized one inch at the file's pixel size in dots per inch.
+
+    Notes
+    -----
+    A transparent icon shows the host's background through its gaps, so on a
+    dark interface it reads as the dark logo. The white backing keeps the light
+    logo light everywhere.
     """
-    figure = plt.figure(figsize=(1.0, 1.0), dpi=size)
+    figure = plt.figure(figsize=(1.0, 1.0), dpi=logo_file.size)
     axes = figure.add_axes((0.0, 0.0, 1.0, 1.0))
-    for shape, color in fill_layers(shapes, mode):
+    extent = canvas_extent(style, logo_file)
+    if logo_file.has_backing:
+        corner = f"round,pad=0,rounding_size={BACKING_ROUNDING * extent}"
+        origin = (-extent, -extent)
+        backing = FancyBboxPatch(
+            origin,
+            2.0 * extent,
+            2.0 * extent,
+            boxstyle=corner,
+            facecolor="white",
+            edgecolor="none",
+        )
+        axes.add_patch(backing)
+
+    for shape, color in fill_layers(shapes, logo_file.mode):
         face = [channel / 255.0 for channel in color]
         for polygon in polygon_parts(shape):
             vertices = []
@@ -509,7 +570,6 @@ def draw_figure(shapes, style, mode, size):
         axes.add_patch(outer)
         axes.add_patch(inner)
 
-    extent = logo_extent(style)
     axes.set_xlim(-extent, extent)
     axes.set_ylim(-extent, extent)
     axes.set_aspect("equal")
@@ -533,12 +593,14 @@ def write_logo(form, logo_file):
     shapes = logo_shapes(form, style)
     path = OUTPUT_FOLDER / logo_file.name
     if path.suffix == ".svg":
-        document = svg_document(shapes, style, logo_file.mode, logo_file.size)
+        document = svg_document(shapes, style, logo_file)
         path.write_text(document)
         return
 
-    figure = draw_figure(shapes, style, logo_file.mode, logo_file.size)
-    figure.savefig(path, dpi=logo_file.size, transparent=True)
+    figure = draw_figure(shapes, style, logo_file)
+    # A PDF carries no creation date, so rebuilding an unchanged logo changes no file.
+    metadata = {"CreationDate": None} if path.suffix == ".pdf" else None
+    figure.savefig(path, dpi=logo_file.size, transparent=True, metadata=metadata)
     plt.close(figure)
 
 

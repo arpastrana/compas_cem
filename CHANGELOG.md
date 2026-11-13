@@ -11,7 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed the Rhino Package Manager icon to the thin logo with its nodes and filled cells, on a white rounded square, at 128 px, in place of the bare icon weight: the nodes mark CEM form-finding, the white square keeps the light logo light on a dark interface, where a transparent icon read as the dark one, and a larger image stays sharp on high-density screens. The Package Manager takes the icon from the newest version on the server, so it shows from the next release on.
+- Changed the docs header logo to the thin logo with its nodes and filled cells, on a white rounded square built into the image, and drew it at 32 px instead of 24 px, where its nodes resolve; the logo button's padding shrank to keep the header height. The favicon became the icon on the same white square, so it shows on dark browser tabs too.
+
 ### Removed
+
+- Removed the logo from the docs home page, as from the README, since it was too large there.
 
 ## [0.10.0] 2026-11-12
 
