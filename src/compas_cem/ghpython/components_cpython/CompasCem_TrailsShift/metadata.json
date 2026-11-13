@@ -3,7 +3,7 @@
     "nickname": "ShiftTrails",
     "category": "COMPAS CEM",
     "subcategory": "04_Diagrams",
-    "description": "Shift the starting sequence of a selection of trails in a topology diagram.",
+    "description": "Shift the starting sequence of a selection of trails in a topology diagram, or align every trail so that as many deviation edges as possible are direct.",
     "exposure": 16,
     "instanceGuid": "a36161fe-4bb4-4f13-83f4-d9bc8c4d4a08",
 
@@ -15,21 +15,26 @@
             },
             {
                 "name": "origin_node_keys",
-                "description": "The keys of the origin nodes in the trails to modify.",
+                "description": "The keys of the origin nodes of the trails to shift. Leave unconnected when auto_align is on.",
                 "scriptParamAccess": "list",
                 "typeHintID": "int"
             },
             {
                 "name": "sequences",
-                "description": "The new starting sequences.",
+                "description": "The new starting sequence of every trail to shift. The last sequence repeats for the remaining trails. Leave unconnected when auto_align is on.",
                 "scriptParamAccess": "list",
                 "typeHintID": "int"
+            },
+            {
+                "name": "auto_align",
+                "description": "Whether to shift every trail so that as many deviation edges as possible are direct, so that the topology solves in a single iteration. Between every pair of linked trails, the shift most of their edges agree on wins, and every group of linked trails starts again at sequence 0. Edges that no shift makes direct stay indirect, with a warning. Defaults to False.",
+                "typeHintID": "bool"
             }
         ],
         "outputParameters": [
             {
                 "name": "topology",
-                "description": "A COMPAS CEM topology diagram."
+                "description": "A copy of the topology diagram with its trails shifted."
             }
         ]
     }
