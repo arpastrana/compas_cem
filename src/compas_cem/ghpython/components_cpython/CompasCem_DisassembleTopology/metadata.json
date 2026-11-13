@@ -15,7 +15,7 @@
             },
             {
                 "name": "filter_auxiliary",
-                "description": "Leaves the auxiliary trails, their edges and their support nodes out of every output when True, their origin nodes stay. Defaults to False.",
+                "description": "Whether to leave the auxiliary trails, their edges and their support nodes out of every output; their origin nodes stay. Defaults to False.",
                 "typeHintID": "bool"
             }
         ],

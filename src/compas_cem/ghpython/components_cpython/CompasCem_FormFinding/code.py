@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.1
 """
-Generate a form diagram in static equilibrium.
+Find a form diagram in static equilibrium.
 """
 
 from __future__ import annotations

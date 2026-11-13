@@ -3,7 +3,7 @@
     "nickname": "NodeLoadYParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Set the Y parameter of an node load as an optimization parameter.",
+    "description": "Set the Y component of a node load as an optimization parameter.",
     "exposure": 8,
     "instanceGuid": "dea93571-e86e-4976-b7b5-4b17f6ea17d7",
 

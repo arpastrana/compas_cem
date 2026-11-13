@@ -3,7 +3,7 @@
     "nickname": "NodeLoadZParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Set the Z parameter of an node load as an optimization parameter.",
+    "description": "Set the Z component of a node load as an optimization parameter.",
     "exposure": 8,
     "instanceGuid": "eb189543-99a8-49c8-9d43-b62afb302580",
 

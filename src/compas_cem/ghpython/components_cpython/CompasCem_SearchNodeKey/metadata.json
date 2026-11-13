@@ -3,7 +3,7 @@
     "nickname": "SearchNodeKey",
     "category": "COMPAS CEM",
     "subcategory": "02_Elements",
-    "description": "Search a node key in a topology or a form diagram with a point.",
+    "description": "Search for a node key in a topology or a form diagram with a point.",
     "exposure": 8,
     "instanceGuid": "e2a81576-e35e-4d12-82a0-6da4cfe52909",
 
@@ -22,7 +22,7 @@
         "outputParameters": [
             {
                 "name": "node_key",
-                "description": "The found node key.",
+                "description": "The node key in the diagram.",
                 "optional": false
             }
         ]

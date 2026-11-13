@@ -13,13 +13,16 @@ from compas_rhino.conversions import point_to_rhino
 from compas_cem import ARROW_HEADPORTION
 from compas_cem import ARROW_HEADWIDTH
 from compas_cem import COLORS
+from compas_cem.ghpython.diagram_display import StyledLine
 
 __all__ = ["FormPreview", "TopologyPreview"]
 
 # Millimeters per pixel at 96 dpi, so Print Display shows baked lines at their preview width.
 PLOT_WEIGHT_PER_PIXEL = 25.4 / 96.0
 NODE_DIAMETER = 8.0
-PIPE_SIDES = 8
+# Rhino's arrowhead on a force line, in pixels: four per pixel of line width, at least twelve.
+HEAD_PIXELS_PER_WIDTH = 4.0
+HEAD_PIXELS_MIN = 12.0
 # Five pixels on, three off: Rhino reads only the low byte of a line pattern.
 DASH_PATTERN = 0x1F1F1F1F
 
@@ -27,15 +30,14 @@ DASH_PATTERN = 0x1F1F1F1F
 class PreviewLine(NamedTuple):
     """
     A Rhino line to draw, with its color, its width in whole pixels, whether
-    it is dashed, and for a force its arrowhead and the material that shades it.
+    it is dashed, and whether it draws a force with an arrowhead.
     """
 
     line: object
     color: object
     width: int
     is_dashed: bool
-    head_mesh: object
-    material: object
+    is_arrow: bool
 
 
 class FormPreview:
@@ -49,6 +51,8 @@ class FormPreview:
     is_thickened :
         Whether the nodes are spheres, the edges pipes and the forces solid
         arrows, all meshes, rather than points and lines.
+    thick_sides :
+        The number of faces around every thickened pipe, arrow and sphere.
 
     Attributes
     ----------
@@ -79,19 +83,25 @@ class FormPreview:
     arrowheads of force lines: Rhino 8 model objects drop curve decorations.
     """
 
-    def __init__(self, drawing, is_thickened=False):
+    def __init__(self, drawing, is_thickened=False, thick_sides=8):
         document = Rhino.RhinoDoc.ActiveDoc
         styled_lines = drawing.edges + drawing.loads + drawing.reactions
+        self._drawing = drawing
+        self._is_thickened = is_thickened
+        self._thick_sides = thick_sides
 
         self._lines = []
         self._points = []
         self._meshes = []
         if is_thickened:
-            node_meshes = [_sphere_mesh(item) for item in drawing.nodes]
-            support_meshes = [_sphere_mesh(item) for item in drawing.support_nodes]
-            edge_meshes = [_pipe_mesh(item) for item in drawing.edges]
-            load_meshes = [_arrow_mesh(item) for item in drawing.loads]
-            reaction_meshes = [_arrow_mesh(item) for item in drawing.reactions]
+            sides = thick_sides
+            node_meshes = [_sphere_mesh(item, sides) for item in drawing.nodes]
+            support_meshes = [
+                _sphere_mesh(item, sides) for item in drawing.support_nodes
+            ]
+            edge_meshes = [_pipe_mesh(item, sides) for item in drawing.edges]
+            load_meshes = [_arrow_mesh(item, sides) for item in drawing.loads]
+            reaction_meshes = [_arrow_mesh(item, sides) for item in drawing.reactions]
 
             self.node_objects = _model_meshes(document, drawing.nodes, node_meshes)
             self.support_objects = _model_meshes(
@@ -141,8 +151,8 @@ class FormPreview:
 
         Notes
         -----
-        An arrowhead is the cone of a thickened arrow, shaded here rather than
-        in the mesh pass so it shows in wireframe views too.
+        A force line ends in Rhino's own arrowhead, sized on screen, as
+        Grasshopper draws a vector.
         """
         _draw_wires(display, self._lines, self._points, self._labels, selected_color)
 
@@ -161,6 +171,42 @@ class FormPreview:
         for mesh, material in self._meshes:
             shade = material if selected_material is None else selected_material
             display.DrawMeshShaded(mesh, shade)
+
+    def bake(self, document):
+        """
+        Add what the preview draws to a Rhino document, one sublayer per
+        category under `COMPAS CEM::Form`.
+
+        Parameters
+        ----------
+        document :
+            The Rhino document to bake into.
+
+        Returns
+        -------
+        ids :
+            The ids of the baked objects.
+
+        Notes
+        -----
+        Lines bake with their colors and plot weights, and force lines with an
+        arrowhead; thickened meshes bake with their colors. The support nodes,
+        which repeat nodes, and the labels are not baked.
+        """
+        drawing = self._drawing
+        groups = [
+            ("Nodes", drawing.nodes),
+            ("Edges", drawing.edges),
+            ("Loads", drawing.loads),
+            ("Reactions", drawing.reactions),
+        ]
+        if self._is_thickened:
+            records = _mesh_records(groups, self._thick_sides)
+        else:
+            records = _line_records(groups)
+        ids = _bake_records(document, "COMPAS CEM::Form", records)
+
+        return ids
 
 
 class TopologyPreview:
@@ -207,6 +253,7 @@ class TopologyPreview:
 
     def __init__(self, drawing):
         document = Rhino.RhinoDoc.ActiveDoc
+        self._drawing = drawing
 
         self.node_objects = [_model_point(document, item) for item in drawing.nodes]
         self.origin_objects = [
@@ -258,6 +305,200 @@ class TopologyPreview:
             line_color = item.color if selected_color is None else selected_color
             display.DrawLine(item.line, line_color, item.width)
 
+    def bake(self, document):
+        """
+        Add what the preview draws to a Rhino document, one sublayer per
+        category under `COMPAS CEM::Topology`.
+
+        Parameters
+        ----------
+        document :
+            The Rhino document to bake into.
+
+        Returns
+        -------
+        ids :
+            The ids of the baked objects.
+
+        Notes
+        -----
+        Lines bake with their colors and plot weights, and deviation edges with
+        Rhino's dashed linetype. The origin and support nodes, which repeat
+        nodes, the trails, which repeat trail edges, and the labels are not
+        baked.
+        """
+        drawing = self._drawing
+        groups = [
+            ("Nodes", drawing.nodes),
+            ("Trail Edges", drawing.trail_edges),
+            ("Deviation Edges", drawing.deviation_edges),
+            ("Loads", drawing.loads),
+        ]
+        records = _line_records(groups)
+        ids = _bake_records(document, "COMPAS CEM::Topology", records)
+
+        return ids
+
+
+class BakeRecord(NamedTuple):
+    """
+    A Rhino object to bake: its sublayer, its geometry and attributes, and
+    whether it takes the dashed linetype.
+    """
+
+    sublayer: str
+    geometry: object
+    attributes: object
+    is_dashed: bool
+
+
+def _line_records(groups):
+    """
+    The bake records of styled points and lines, grouped by sublayer: points
+    with their colors, lines with their colors and plot weights, force lines
+    with an arrowhead.
+    """
+    records = []
+    for sublayer, items in groups:
+        for item in items:
+            if isinstance(item, StyledLine):
+                geometry = _line_curve(item)
+                attributes = _weighted_attributes(item.color, item.width)
+                if item.is_arrow:
+                    decoration = Rhino.DocObjects.ObjectDecoration.EndArrowhead
+                    attributes.ObjectDecoration = decoration
+                is_dashed = item.is_dashed
+            else:
+                geometry = _point_geometry(item)
+                attributes = _object_attributes(item.color)
+                is_dashed = False
+            record = BakeRecord(sublayer, geometry, attributes, is_dashed)
+            records.append(record)
+
+    return records
+
+
+def _mesh_records(groups, sides):
+    """
+    The bake records of thickened nodes, edges and forces, grouped by sublayer,
+    as meshes with their colors.
+    """
+    records = []
+    for sublayer, items in groups:
+        for item in items:
+            if not isinstance(item, StyledLine):
+                mesh = _sphere_mesh(item, sides)
+            elif item.is_arrow:
+                mesh = _arrow_mesh(item, sides)
+            else:
+                mesh = _pipe_mesh(item, sides)
+            if mesh is None:
+                continue
+            attributes = _object_attributes(item.color)
+            record = BakeRecord(sublayer, mesh, attributes, False)
+            records.append(record)
+
+    return records
+
+
+def _bake_records(document, root, records):
+    """
+    Add bake records to a Rhino document as one undo step, each on its
+    sublayer of the root layer, and return their ids.
+    """
+    undo_record = document.BeginUndoRecord("Bake COMPAS CEM")
+    layer_indices = {}
+    materials = {}
+    dashed_index = None
+
+    ids = []
+    for record in records:
+        if record.sublayer not in layer_indices:
+            path = "{}::{}".format(root, record.sublayer)
+            layer_indices[record.sublayer] = _layer_index(document, path)
+        attributes = record.attributes
+        attributes.LayerIndex = layer_indices[record.sublayer]
+        if record.is_dashed:
+            if dashed_index is None:
+                dashed_index = _dashed_linetype(document)
+            attributes.LinetypeSource = (
+                Rhino.DocObjects.ObjectLinetypeSource.LinetypeFromObject
+            )
+            attributes.LinetypeIndex = dashed_index
+        if isinstance(record.geometry, Rhino.Geometry.Mesh):
+            color = attributes.ObjectColor
+            if color.ToArgb() not in materials:
+                materials[color.ToArgb()] = _color_material(document, color)
+            attributes.RenderMaterial = materials[color.ToArgb()]
+        object_id = document.Objects.Add(record.geometry, attributes)
+        ids.append(object_id)
+
+    document.EndUndoRecord(undo_record)
+    document.Views.Redraw()
+
+    return ids
+
+
+def _color_material(document, color):
+    """
+    The render material of a color in a document, named after the color's hex
+    code and created if the document has none by that name.
+
+    Notes
+    -----
+    Rendered views shade a mesh with its render material, not its display
+    color, so a baked mesh needs one to keep its color there.
+    """
+    name = "COMPAS CEM #{:02X}{:02X}{:02X}".format(color.R, color.G, color.B)
+    for content in document.RenderMaterials:
+        if content.Name == name:
+            return content
+
+    material = Rhino.DocObjects.Material()
+    material.Name = name
+    material.DiffuseColor = color
+    render_material = Rhino.Render.RenderMaterial.CreateBasicMaterial(
+        material, document
+    )
+    render_material.Name = name
+    document.RenderMaterials.Add(render_material)
+
+    return render_material
+
+
+def _layer_index(document, path):
+    """
+    The index of a nested layer, given by its full path, created level by level
+    if it is missing.
+    """
+    names = path.split("::")
+    parent_id = System.Guid.Empty
+    index = -1
+    for depth in range(len(names)):
+        partial_path = "::".join(names[: depth + 1])
+        index = document.Layers.FindByFullPath(partial_path, -1)
+        if index < 0:
+            layer = Rhino.DocObjects.Layer()
+            layer.Name = names[depth]
+            layer.ParentLayerId = parent_id
+            index = document.Layers.Add(layer)
+        parent_id = document.Layers[index].Id
+
+    return index
+
+
+def _dashed_linetype(document):
+    """
+    The index of Rhino's dashed linetype in a document, after loading Rhino's
+    standard linetypes if the document has none by that name.
+    """
+    index = document.Linetypes.Find("Dashed")
+    if index < 0:
+        document.Linetypes.LoadDefaultLinetypes()
+        index = document.Linetypes.Find("Dashed")
+
+    return index
+
 
 def _draw_wires(display, lines, points, labels, selected_color):
     """
@@ -267,9 +508,6 @@ def _draw_wires(display, lines, points, labels, selected_color):
     stroke_color = System.Drawing.Color.FromArgb(*COLORS["edge"])
     dot_color = System.Drawing.Color.White
     style = Rhino.Display.PointStyle.RoundSimple
-    selected_material = None
-    if selected_color is not None:
-        selected_material = Rhino.Display.DisplayMaterial(selected_color)
 
     for item in lines:
         line_color = item.color if selected_color is None else selected_color
@@ -277,10 +515,9 @@ def _draw_wires(display, lines, points, labels, selected_color):
             display.DrawPatternedLine(item.line, line_color, DASH_PATTERN, item.width)
         else:
             display.DrawLine(item.line, line_color, item.width)
-        if item.head_mesh is None:
-            continue
-        shade = item.material if selected_material is None else selected_material
-        display.DrawMeshShaded(item.head_mesh, shade)
+        if item.is_arrow:
+            head_pixels = max(HEAD_PIXELS_MIN, HEAD_PIXELS_PER_WIDTH * item.width)
+            display.DrawArrow(item.line, line_color, head_pixels, 0.0)
 
     for point, color in points:
         fill_color = color if selected_color is None else selected_color
@@ -307,7 +544,6 @@ def _bounding_box(lines, meshes, points, labels):
     The box that holds every preview line, mesh, node and label.
     """
     box_meshes = [mesh for mesh, _ in meshes]
-    box_meshes += [item.head_mesh for item in lines if item.head_mesh]
 
     corners = System.Collections.Generic.List[Rhino.Geometry.Point3d]()
     for item in lines:
@@ -330,7 +566,7 @@ def _bounding_box(lines, meshes, points, labels):
     return clipping_box
 
 
-def _arrow_head(line):
+def _arrow_head(line, sides):
     """
     The cone of an arrowhead at the end of a line and the point where its base
     meets the shaft.
@@ -350,51 +586,52 @@ def _arrow_head(line):
     backward = -direction
     plane = Rhino.Geometry.Plane(line.To, backward)
     cone = Rhino.Geometry.Cone(plane, head_length, head_radius)
-    head_mesh = Rhino.Geometry.Mesh.CreateFromCone(cone, 1, PIPE_SIDES, True)
+    head_mesh = Rhino.Geometry.Mesh.CreateFromCone(cone, 1, sides, True)
 
     return head_mesh, base
 
 
-def _sphere_mesh(item):
+def _sphere_mesh(item, sides):
     """
     Mesh a styled point as a sphere of its radius.
     """
     center = point_to_rhino(item.point)
     sphere = Rhino.Geometry.Sphere(center, item.radius)
-    sphere_mesh = Rhino.Geometry.Mesh.CreateFromSphere(
-        sphere, PIPE_SIDES, PIPE_SIDES // 2
-    )
+    sphere_mesh = Rhino.Geometry.Mesh.CreateFromSphere(sphere, sides, sides // 2)
 
     return sphere_mesh
 
 
-def _pipe_mesh(item):
+def _pipe_mesh(item, sides):
     """
-    Mesh a styled line as a capped pipe of its radius, or `None` if it has no
-    length.
+    Mesh a styled line as a capped pipe of its radius, shortened at both ends
+    by its trim, or `None` if nothing of it is left.
 
     Notes
     -----
-    A fresh cylinder per line costs as much as transforming a copy of one unit
-    cylinder, since calling into Rhino dominates either way.
+    The trim ends a pipe where its rim meets the node sphere. A fresh cylinder
+    per line costs as much as transforming a copy of one unit cylinder, since
+    calling into Rhino dominates either way.
     """
     start = point_to_rhino(item.start)
     end = point_to_rhino(item.end)
     line = Rhino.Geometry.Line(start, end)
-    if line.Length <= 0.0:
+    pipe_length = line.Length - 2.0 * item.trim
+    if pipe_length <= 0.0:
         return None
 
-    plane = Rhino.Geometry.Plane(start, line.Direction)
+    direction = line.Direction
+    direction.Unitize()
+    pipe_start = start + direction * item.trim
+    plane = Rhino.Geometry.Plane(pipe_start, direction)
     circle = Rhino.Geometry.Circle(plane, item.radius)
-    cylinder = Rhino.Geometry.Cylinder(circle, line.Length)
-    pipe_mesh = Rhino.Geometry.Mesh.CreateFromCylinder(
-        cylinder, 1, PIPE_SIDES, True, True
-    )
+    cylinder = Rhino.Geometry.Cylinder(circle, pipe_length)
+    pipe_mesh = Rhino.Geometry.Mesh.CreateFromCylinder(cylinder, 1, sides, True, True)
 
     return pipe_mesh
 
 
-def _arrow_mesh(item):
+def _arrow_mesh(item, sides):
     """
     Mesh a styled line as a solid arrow: a cylinder body and a cone head, or
     `None` if it has no length.
@@ -417,15 +654,13 @@ def _arrow_mesh(item):
     start = line_start + shift
     end = line_end + shift
     arrow_line = Rhino.Geometry.Line(start, end)
-    head_mesh, base = _arrow_head(arrow_line)
+    head_mesh, base = _arrow_head(arrow_line, sides)
 
     body_plane = Rhino.Geometry.Plane(start, direction)
     body_circle = Rhino.Geometry.Circle(body_plane, item.radius)
     body_length = start.DistanceTo(base)
     body_cylinder = Rhino.Geometry.Cylinder(body_circle, body_length)
-    arrow = Rhino.Geometry.Mesh.CreateFromCylinder(
-        body_cylinder, 1, PIPE_SIDES, True, True
-    )
+    arrow = Rhino.Geometry.Mesh.CreateFromCylinder(body_cylinder, 1, sides, True, True)
     arrow.Append(head_mesh)
 
     return arrow
@@ -462,29 +697,21 @@ def _system_color(rgb):
 
 def _preview_line(item):
     """
-    Convert a styled line into a line to preview; a force line stops at the
-    base of its arrowhead.
+    Convert a styled line into a line to preview.
     """
     start = point_to_rhino(item.start)
     end = point_to_rhino(item.end)
     line = Rhino.Geometry.Line(start, end)
     color = _system_color(item.color)
     width = max(1, int(round(item.width)))
-
-    head_mesh = None
-    material = None
-    if item.is_arrow and line.Length > 0.0:
-        head_mesh, base = _arrow_head(line)
-        line = Rhino.Geometry.Line(start, base)
-        material = Rhino.Display.DisplayMaterial(color)
+    is_arrow = item.is_arrow and line.Length > 0.0
 
     preview_line = PreviewLine(
         line=line,
         color=color,
         width=width,
         is_dashed=item.is_dashed,
-        head_mesh=head_mesh,
-        material=material,
+        is_arrow=is_arrow,
     )
 
     return preview_line
@@ -520,13 +747,33 @@ def _object_attributes(rgb):
     return attributes
 
 
-def _model_point(document, item):
+def _point_geometry(item):
     """
-    Wrap a styled point as a model object that bakes with its color.
+    Convert a styled point into a Rhino point object.
     """
-    attributes = _object_attributes(item.color)
     location = point_to_rhino(item.point)
     point = Rhino.Geometry.Point(location)
+
+    return point
+
+
+def _line_curve(item):
+    """
+    Convert a styled line into a Rhino line curve.
+    """
+    start = point_to_rhino(item.start)
+    end = point_to_rhino(item.end)
+    curve = Rhino.Geometry.LineCurve(start, end)
+
+    return curve
+
+
+def _model_point(document, item):
+    """
+    Wrap a styled point as a model object that carries its color.
+    """
+    attributes = _object_attributes(item.color)
+    point = _point_geometry(item)
     model_object = Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, point)
 
     return model_object
@@ -534,13 +781,11 @@ def _model_point(document, item):
 
 def _model_line(document, item):
     """
-    Wrap a styled line as a model object that bakes with its color and its
-    plot weight.
+    Wrap a styled line as a model object that carries its color and its plot
+    weight.
     """
     attributes = _weighted_attributes(item.color, item.width)
-    start = point_to_rhino(item.start)
-    end = point_to_rhino(item.end)
-    curve = Rhino.Geometry.LineCurve(start, end)
+    curve = _line_curve(item)
     model_object = Grasshopper.Rhinoceros.Model.ModelObject(document, attributes, curve)
 
     return model_object

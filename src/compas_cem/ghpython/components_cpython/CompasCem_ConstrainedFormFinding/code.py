@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.1
 """
-Generate a form diagram in static equilibrium such that it meets user-defined goals.
+Find a form diagram in static equilibrium that best meets the goals, by optimizing the parameters.
 """
 
 from __future__ import annotations

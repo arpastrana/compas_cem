@@ -3,7 +3,7 @@
     "nickname": "NodeLoadXParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Set the X parameter of an node load as an optimization parameter.",
+    "description": "Set the X component of a node load as an optimization parameter.",
     "exposure": 8,
     "instanceGuid": "8ca1c264-8edc-49f5-9336-a1a52b9f8f75",
 

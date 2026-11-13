@@ -11,7 +11,7 @@
         "inputParameters": [
             {
                 "name": "export",
-                "description": "Writes the diagram to the JSON file when True.",
+                "description": "Whether to write the diagram to the JSON file.",
                 "typeHintID": "bool"
             },
             {

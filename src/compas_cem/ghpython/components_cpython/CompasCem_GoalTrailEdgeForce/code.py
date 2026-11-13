@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.1
 """
-Make the force on a trail edge to reach a prescribed value.
+Make the force of a trail edge reach a target value.
 """
 
 from __future__ import annotations

@@ -37,6 +37,8 @@ __all__ = [
 
 # The pixel width of every topology edge, trail and load cross.
 TOPOLOGY_WIDTH = 2.0
+# Free nodes are light gray rather than white, so they show against a white background.
+NODE_TINT = (200, 200, 200)
 
 
 @dataclass(frozen=True)
@@ -47,9 +49,10 @@ class FormDisplaySettings:
     Parameters
     ----------
     force_min :
-        The smallest load or reaction force magnitude worth drawing.
-    force_scale :
-        The factor to scale the loads and the reaction forces by.
+        The smallest load or reaction force magnitude worth drawing, or the
+        smallest component when the forces are decomposed.
+    arrow_scale :
+        The factor that turns a load or reaction force into its arrow length.
     width_min :
         The width in pixels of the edge with the smallest absolute force.
     width_max :
@@ -61,22 +64,36 @@ class FormDisplaySettings:
         The pipe radius in model units of the edge with the largest absolute
         force, when the edges are thickened into pipes. It is also the radius
         of the thickened nodes, so a node covers every pipe meeting it.
+    thick_sides :
+        The number of faces around every thickened pipe, arrow and node sphere.
+    show_loads :
+        Whether to draw the loads.
+    show_reactions :
+        Whether to draw the reaction forces.
     show_labels :
         Whether to label every drawn edge with its force.
+    decompose :
+        Whether to draw every load and reaction force as its x, y and z
+        components, an arrow each, rather than as one arrow.
 
     Notes
     -----
     The settings are a dataclass rather than a named tuple, because Grasshopper
-    unpacks a tuple output into its items.
+    unpacks a tuple output into its items. Draw Form sets the visibility
+    toggles and `decompose` from its own inputs.
     """
 
     force_min: float = 1e-3
-    force_scale: float = 1.0
+    arrow_scale: float = 1.0
     width_min: float = 1.0
     width_max: float = 8.0
     radius_min: float = 0.01
     radius_max: float = 0.1
+    thick_sides: int = 8
+    show_loads: bool = True
+    show_reactions: bool = True
     show_labels: bool = False
+    decompose: bool = True
 
     def __post_init__(self):
         bounds = {
@@ -88,6 +105,10 @@ class FormDisplaySettings:
                 template = "The edge {0}s need 0 < {0}_min <= {0}_max, got {1} and {2}."
                 message = template.format(name, low, high)
                 raise ValueError(message)
+        if self.thick_sides < 3:
+            template = "A thickened mesh needs at least 3 sides, got {}."
+            message = template.format(self.thick_sides)
+            raise ValueError(message)
 
 
 class StyledPoint(NamedTuple):
@@ -105,8 +126,8 @@ class StyledLine(NamedTuple):
     """
     A line to draw, with its color, its width in pixels, its pipe radius in
     model units, whether it ends in an arrowhead, how far a thickened arrow
-    moves along its own direction to clear the sphere of its node, and whether
-    it is dashed.
+    moves along its own direction to clear the sphere of its node, whether it
+    is dashed, and how far a thickened pipe stops short of each end.
     """
 
     start: list[float]
@@ -117,6 +138,7 @@ class StyledLine(NamedTuple):
     is_arrow: bool
     offset: float = 0.0
     is_dashed: bool = False
+    trim: float = 0.0
 
 
 class StyledPolyline(NamedTuple):
@@ -187,7 +209,7 @@ def form_drawing(form, node_keys, edge_keys, settings):
     -------
     drawing :
         The styled nodes, support nodes, edges, loads, reaction forces, and the
-        edge labels when the settings show them.
+        edge labels. A category the settings hide is empty.
 
     Notes
     -----
@@ -210,13 +232,18 @@ def form_drawing(form, node_keys, edge_keys, settings):
     edge_lines = []
     for edge in edges:
         key = tuple(edge)
-        line = _styled_edge(form, edge, widths[key], radii[key])
+        line = _styled_edge(form, edge, widths[key], radii[key], sphere_radius)
         edge_lines.append(line)
 
-    load_shifts = {node: True for node in nodes}
-    loads = _force_lines(form, nodes, "load", load_shifts, settings)
-    shifts = reaction_shifts(form, nodes)
-    reactions = _force_lines(form, nodes, "support_force", shifts, settings)
+    loads = []
+    if settings.show_loads:
+        load_shifts = {node: True for node in nodes}
+        loads = _force_lines(form, nodes, "load", load_shifts, settings)
+
+    reactions = []
+    if settings.show_reactions:
+        shifts = reaction_shifts(form, nodes)
+        reactions = _force_lines(form, nodes, "support_force", shifts, settings)
 
     labels = []
     if settings.show_labels:
@@ -369,17 +396,25 @@ def _styled_node(form, node, radius):
     """
     Style a node, colored by whether it is a support.
     """
-    color_name = "node_support" if form.is_node_support(node) else "node"
+    color = COLORS["node_support"] if form.is_node_support(node) else NODE_TINT
     point = form.node_coordinates(node)
-    styled_point = StyledPoint(point=point, color=COLORS[color_name], radius=radius)
+    styled_point = StyledPoint(point=point, color=color, radius=radius)
 
     return styled_point
 
 
-def _styled_edge(form, edge, width, radius):
+def _styled_edge(form, edge, width, radius, sphere_radius):
     """
-    Style an edge, colored by the sign of its force.
+    Style an edge, colored by the sign of its force, whose thickened pipe stops
+    one sphere radius short of each end node.
+
+    Notes
+    -----
+    A sphere is meshed with flat faces inside its true surface, so a pipe whose
+    rim met the true sphere would poke through the mesh; one full sphere radius
+    keeps every pipe outside it.
     """
+    trim = sphere_radius
     force = form.edge_force(edge)
     color_name = "edge"
     if force < 0.0:
@@ -397,6 +432,7 @@ def _styled_edge(form, edge, width, radius):
         width=width,
         radius=radius,
         is_arrow=False,
+        trim=trim,
     )
 
     return styled_line
@@ -430,9 +466,11 @@ def _force_lines(form, nodes, color_name, shifts, settings):
     -----
     The arrows are drawn halfway between the edge width bounds, so they stay
     readable next to the edges without following any one force. Thickened,
-    their shaft radius is `ARROW_BODYWIDTH` of their length, and they move along their own direction by the radius of the
-    node spheres: back when they end at the node, ahead when they start at it,
-    so neither end hides inside the sphere.
+    their shaft radius is `ARROW_BODYWIDTH` of their length, and they move
+    along their own direction by the radius of the node spheres: back when
+    they end at the node, ahead when they start at it, so neither end hides
+    inside the sphere. Decomposed, every component at least as large as the
+    smallest force to draw gets its own arrow, placed by the same rules.
     """
     names = ["qx", "qy", "qz"] if color_name == "load" else ["rx", "ry", "rz"]
     width = 0.5 * (settings.width_min + settings.width_max)
@@ -441,32 +479,47 @@ def _force_lines(form, nodes, color_name, shifts, settings):
     lines = []
     for node in nodes:
         vector = form.node_attributes(node, names)
-        if length_vector(vector) < settings.force_min:
-            continue
-
-        scaled = scale_vector(vector, settings.force_scale)
         point = form.node_coordinates(node)
-        start = point
-        end = add_vectors(point, scaled)
-        offset = clearance
-        if shifts[node]:
-            start = subtract_vectors(point, scaled)
-            end = point
-            offset = -clearance
-        radius = ARROW_BODYWIDTH * length_vector(scaled)
+        for component in _force_components(vector, settings.decompose):
+            if length_vector(component) < settings.force_min:
+                continue
 
-        line = StyledLine(
-            start=start,
-            end=end,
-            color=COLORS[color_name],
-            width=width,
-            radius=radius,
-            is_arrow=True,
-            offset=offset,
-        )
-        lines.append(line)
+            scaled = scale_vector(component, settings.arrow_scale)
+            start = point
+            end = add_vectors(point, scaled)
+            offset = clearance
+            if shifts[node]:
+                start = subtract_vectors(point, scaled)
+                end = point
+                offset = -clearance
+            radius = ARROW_BODYWIDTH * length_vector(scaled)
+
+            line = StyledLine(
+                start=start,
+                end=end,
+                color=COLORS[color_name],
+                width=width,
+                radius=radius,
+                is_arrow=True,
+                offset=offset,
+            )
+            lines.append(line)
 
     return lines
+
+
+def _force_components(vector, decompose):
+    """
+    The vectors to draw for a force: its x, y and z components when
+    decomposed, or the force itself.
+    """
+    if not decompose:
+        return [vector]
+
+    x, y, z = vector
+    components = [[x, 0.0, 0.0], [0.0, y, 0.0], [0.0, 0.0, z]]
+
+    return components
 
 
 def _force_label(form, edge):
@@ -562,13 +615,13 @@ def _topology_node(topology, node):
     """
     Style a topology node, colored by whether it is a support or an origin.
     """
-    color_name = "node"
+    color = NODE_TINT
     if topology.is_node_support(node):
-        color_name = "node_support"
+        color = COLORS["node_support"]
     elif topology.is_node_origin(node):
-        color_name = "node_origin"
+        color = COLORS["node_origin"]
     point = topology.node_coordinates(node)
-    styled_point = StyledPoint(point=point, color=COLORS[color_name], radius=0.0)
+    styled_point = StyledPoint(point=point, color=color, radius=0.0)
 
     return styled_point
 

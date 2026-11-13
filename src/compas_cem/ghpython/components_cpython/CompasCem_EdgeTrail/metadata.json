@@ -16,7 +16,7 @@
             },
             {
                 "name": "state",
-                "description": "The force state of the edge: positive for tension, negative for compression. Only its sign is used, and it must be nonzero. Not needed with a plane, whose position sets the state.",
+                "description": "The force state of the edge: positive for tension, negative for compression. Only its sign is used, and it must be nonzero. Optional with a plane: the topology then records it, for drawing and for a trail that never meets the plane, while the solver ends the trail at the plane.",
                 "typeHintID": "float"
             },
             {
@@ -26,7 +26,7 @@
             },
             {
                 "name": "plane",
-                "description": "A plane that ends the edge where its trail meets it, instead of a length. The plane's position sets the force state.",
+                "description": "A plane that ends the edge where its trail meets it, instead of a length. The plane's position sets the force state the solver finds.",
                 "typeHintID": "plane"
             }
         ],

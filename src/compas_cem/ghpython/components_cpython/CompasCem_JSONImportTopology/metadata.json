@@ -3,7 +3,7 @@
     "nickname": "TopologyDiagramFromJSON",
     "category": "COMPAS CEM",
     "subcategory": "09_Serialization",
-    "description": "Create a COMPAS CEM topology diagram from JSON file.",
+    "description": "Import a COMPAS CEM topology diagram from a JSON file.",
     "exposure": 4,
     "instanceGuid": "6aaafb0f-8a01-4ae5-874b-a1fbac4071ef",
 
@@ -11,7 +11,7 @@
         "inputParameters": [
             {
                 "name": "read",
-                "description": "Reads the topology diagram from the JSON file when True. The component outputs nothing while it is False.",
+                "description": "Whether to read the topology diagram from the JSON file. Nothing comes out while it is False.",
                 "typeHintID": "bool"
             },
             {

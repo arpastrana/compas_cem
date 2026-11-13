@@ -23,7 +23,7 @@
             },
             {
                 "name": "color_edge",
-                "description": "The color for a regular edge.",
+                "description": "The color for an edge without force.",
                 "optional": false
             },
             {
@@ -53,12 +53,12 @@
             },
             {
                 "name": "color_trail",
-                "description": "The color to paint a trail.",
+                "description": "The color for a trail.",
                 "optional": false
             },
             {
                 "name": "color_auxiliary_trail",
-                "description": "The color to paint an auxiliary trail.",
+                "description": "The color for an auxiliary trail.",
                 "optional": false
             }
         ]

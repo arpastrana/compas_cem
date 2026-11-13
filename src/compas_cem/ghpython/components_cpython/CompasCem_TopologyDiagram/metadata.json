@@ -31,7 +31,7 @@
             },
             {
                 "name": "add_auxiliary_trails",
-                "description": "Append auxiliary trails to the free nodes of the topology diagram. Defaults to False.",
+                "description": "Whether to append auxiliary trails to the free nodes of the topology diagram. Defaults to False.",
                 "typeHintID": "bool"
             }
         ],

@@ -9,6 +9,7 @@ from compas_cem.equilibrium import static_equilibrium
 from compas_cem.ghpython import FormDisplaySettings
 from compas_cem.ghpython import edge_widths
 from compas_cem.ghpython import form_drawing
+from compas_cem.ghpython.diagram_display import NODE_TINT
 
 # ==============================================================================
 # Fixtures
@@ -40,17 +41,21 @@ def chain_form(tension_chain):
 
 def test_settings_defaults():
     """
-    Checks the default display settings, labels off.
+    Checks the default display settings, forces shown and labels off.
     """
     settings = FormDisplaySettings()
 
     assert settings.force_min == 1e-3
-    assert settings.force_scale == 1.0
+    assert settings.arrow_scale == 1.0
     assert settings.width_min == 1.0
     assert settings.width_max == 8.0
     assert settings.radius_min == 0.01
     assert settings.radius_max == 0.1
+    assert settings.show_loads is True
+    assert settings.show_reactions is True
     assert settings.show_labels is False
+    assert settings.decompose is True
+    assert settings.thick_sides == 8
 
 
 @pytest.mark.parametrize("width_min, width_max", [(5.0, 2.0), (0.0, 2.0), (-1.0, 2.0)])
@@ -155,7 +160,7 @@ def test_support_nodes_are_green(strut_form):
     drawing = form_drawing(strut_form, None, None, FormDisplaySettings())
     colors = [point.color for point in drawing.nodes]
 
-    assert colors == [COLORS["node_support"], COLORS["node"]]
+    assert colors == [COLORS["node_support"], NODE_TINT]
     assert [point.color for point in drawing.support_nodes] == [COLORS["node_support"]]
 
 
@@ -184,7 +189,7 @@ def test_load_arrow_ends_at_node(form_name, node, request):
     whatever the force in its edges.
     """
     form = request.getfixturevalue(form_name)
-    settings = FormDisplaySettings(force_scale=2.0)
+    settings = FormDisplaySettings(arrow_scale=2.0)
     drawing = form_drawing(form, None, None, settings)
     (load,) = drawing.loads
     node_xyz = form.node_coordinates(node)
@@ -244,12 +249,34 @@ def test_forces_below_minimum_are_skipped(strut_form):
     assert drawing.reactions == []
 
 
+def test_hidden_loads_keep_reactions(strut_form):
+    """
+    Checks that hiding the loads empties them and leaves the reactions drawn.
+    """
+    settings = FormDisplaySettings(show_loads=False)
+    drawing = form_drawing(strut_form, None, None, settings)
+
+    assert drawing.loads == []
+    assert len(drawing.reactions) == 1
+
+
+def test_hidden_reactions_keep_loads(strut_form):
+    """
+    Checks that hiding the reactions empties them and leaves the loads drawn.
+    """
+    settings = FormDisplaySettings(show_reactions=False)
+    drawing = form_drawing(strut_form, None, None, settings)
+
+    assert drawing.reactions == []
+    assert len(drawing.loads) == 1
+
+
 def test_force_arrow_sizes(strut_form):
     """
     Checks that the force arrows sit halfway between the width bounds and that
     their body radius is `ARROW_BODYWIDTH` of their length.
     """
-    settings = FormDisplaySettings(width_min=2.0, width_max=6.0, force_scale=3.0)
+    settings = FormDisplaySettings(width_min=2.0, width_max=6.0, arrow_scale=3.0)
     drawing = form_drawing(strut_form, None, None, settings)
     arrows = drawing.loads + drawing.reactions
     lengths = [distance_point_point(arrow.start, arrow.end) for arrow in arrows]
@@ -288,3 +315,65 @@ def test_labels_show_edge_forces(strut_form):
 
     assert label.text == "{:.2f}".format(force)
     assert label.point == pytest.approx(midpoint)
+
+
+# ==============================================================================
+# Decomposition
+# ==============================================================================
+
+
+def test_decompose_splits_forces(strut_form):
+    """
+    Checks that a decomposed load becomes one axis-aligned arrow per nonzero
+    component, each ending at the node, and one arrow otherwise.
+    """
+    strut_form.node_attributes(1, ["qx", "qy", "qz"], [1.0, -2.0, 0.0])
+    node_xyz = strut_form.node_coordinates(1)
+
+    split = form_drawing(strut_form, None, None, FormDisplaySettings())
+    whole = form_drawing(strut_form, None, None, FormDisplaySettings(decompose=False))
+    vectors = [subtract_vectors(load.end, load.start) for load in split.loads]
+
+    assert vectors == [pytest.approx([1.0, 0.0, 0.0]), pytest.approx([0.0, -2.0, 0.0])]
+    assert all(load.end == pytest.approx(node_xyz) for load in split.loads)
+    assert len(whole.loads) == 1
+
+
+def test_decompose_skips_small_components(strut_form):
+    """
+    Checks that a component smaller than force_min is not drawn.
+    """
+    strut_form.node_attributes(1, ["qx", "qy", "qz"], [0.0005, -2.0, 0.0])
+    drawing = form_drawing(strut_form, None, None, FormDisplaySettings())
+
+    assert len(drawing.loads) == 1
+
+
+# ==============================================================================
+# Thickening
+# ==============================================================================
+
+
+def test_settings_reject_few_thick_sides():
+    """
+    Checks that a thickened mesh needs at least three sides.
+    """
+    with pytest.raises(ValueError, match="at least 3 sides"):
+        FormDisplaySettings(thick_sides=2)
+
+
+def test_edges_trim_by_sphere_radius(chain_form):
+    """
+    Checks that every edge's thickened pipe stops one sphere radius short of
+    its nodes, whatever its own radius, and that the forces carry no trim.
+    """
+    forces = {(0, 1): 1.0, (1, 2): 3.0, (2, 3): 2.0}
+    for edge, force in forces.items():
+        chain_form.edge_attribute(edge, "force", force)
+    settings = FormDisplaySettings(radius_min=0.05, radius_max=0.2)
+
+    drawing = form_drawing(chain_form, None, None, settings)
+    arrows = drawing.loads + drawing.reactions
+
+    assert [line.trim for line in drawing.edges] == [0.2, 0.2, 0.2]
+    assert {arrow.trim for arrow in arrows} == {0.0}

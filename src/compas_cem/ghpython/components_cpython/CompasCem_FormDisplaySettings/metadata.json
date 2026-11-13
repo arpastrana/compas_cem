@@ -11,12 +11,12 @@
         "inputParameters": [
             {
                 "name": "force_min",
-                "description": "The smallest load or reaction force magnitude to draw. Defaults to 1e-3.",
+                "description": "The smallest load or reaction force magnitude to draw, or the smallest component when Draw Form decomposes the forces. Defaults to 1e-3.",
                 "typeHintID": "float"
             },
             {
-                "name": "force_scale",
-                "description": "The factor to scale the loads and the reaction forces by. Defaults to 1.",
+                "name": "arrow_scale",
+                "description": "The factor that turns a load or reaction force into its arrow length. Defaults to 1.",
                 "typeHintID": "float"
             },
             {
@@ -40,9 +40,9 @@
                 "typeHintID": "float"
             },
             {
-                "name": "show_labels",
-                "description": "Whether to label every drawn edge with its force in the viewport. The labels do not bake. Defaults to False.",
-                "typeHintID": "bool"
+                "name": "thick_sides",
+                "description": "The number of faces around every pipe, arrow and node sphere when Draw Form thickens the drawing. At least 3. Defaults to 8.",
+                "typeHintID": "int"
             }
         ],
         "outputParameters": [

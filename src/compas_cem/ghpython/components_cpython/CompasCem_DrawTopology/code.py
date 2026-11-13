@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.1
 """
-Draw a topology diagram.
+Draw a topology diagram in color, with its deviation edges dashed and its loaded nodes crossed. The outputs are Rhino model objects: a Model Object or Data parameter keeps their colors and plot weights, a Line, Curve or Point parameter only their geometry. Press bake to add the drawing to the Rhino document.
 """
 
 from __future__ import annotations
@@ -22,6 +22,7 @@ class DrawTopologyComponent(Grasshopper.Kernel.GH_ScriptInstance):
         node_keys: System.Collections.Generic.List[int],
         edge_keys: System.Collections.Generic.List[object],
         show_labels: bool | None,
+        bake: bool | None,
     ) -> Any:
         self.preview = None
 
@@ -37,6 +38,12 @@ class DrawTopologyComponent(Grasshopper.Kernel.GH_ScriptInstance):
 
         drawing = topology_drawing(topology, node_keys, edge_keys, bool(show_labels))
         self.preview = TopologyPreview(drawing)
+
+        if bake:
+            baked_ids = self.preview.bake(Rhino.RhinoDoc.ActiveDoc)
+            remark = Grasshopper.Kernel.GH_RuntimeMessageLevel.Remark
+            message = "Baked {} objects.".format(len(baked_ids))
+            ghenv.Component.AddRuntimeMessage(remark, message)  # noqa: F821
 
         outputs = (
             self.preview.node_objects,

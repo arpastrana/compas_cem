@@ -3,7 +3,7 @@
     "nickname": "ReactionForceGoal",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Make the reaction force on a trail edge to meet a target force vector.",
+    "description": "Make the reaction force at a support node reach a target force vector.",
     "exposure": 4,
     "instanceGuid": "1a2cf867-1abd-41c8-87e6-c70d13d7f77e",
 

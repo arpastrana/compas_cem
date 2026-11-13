@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.1
 """
-Create a trail edge from a rhino line.
+Create a trail edge from a line.
 """
 
 from __future__ import annotations
@@ -35,12 +35,20 @@ class TrailEdgeComponent(Grasshopper.Kernel.GH_ScriptInstance):
             ghenv.Component.AddRuntimeMessage(warning, message)
             return
 
+        if state == 0.0:
+            message = "The state must be nonzero: positive for tension, negative for compression."
+            ghenv.Component.AddRuntimeMessage(warning, message)
+            return
+
         edge_line = line_to_compas(line)
 
         if plane is not None:
-            # The plane's position sets the state; the unit length applies only if the trail never meets it.
+            # The state signs the unit length, which the trail takes only if it never meets the plane.
             target_plane = plane_to_compas(plane)
-            trail_edge = TrailEdge.from_line(edge_line, length=1.0, plane=target_plane)
+            unit_length = 1.0 if state is None else copysign(1.0, state)
+            trail_edge = TrailEdge.from_line(
+                edge_line, length=unit_length, plane=target_plane
+            )
             return trail_edge
 
         if length is None:
@@ -50,11 +58,6 @@ class TrailEdgeComponent(Grasshopper.Kernel.GH_ScriptInstance):
 
         if state is None:
             message = "Connect a state to sign the length: positive for tension, negative for compression."
-            ghenv.Component.AddRuntimeMessage(warning, message)
-            return
-
-        if state == 0.0:
-            message = "The state must be nonzero: positive for tension, negative for compression."
             ghenv.Component.AddRuntimeMessage(warning, message)
             return
 

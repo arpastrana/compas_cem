@@ -1,6 +1,6 @@
 # r: compas_cem>=0.9.1
 """
-Search for an edge key in a topology or a form diagram using a line.
+Search for an edge key in a topology or a form diagram with a line.
 """
 
 from __future__ import annotations

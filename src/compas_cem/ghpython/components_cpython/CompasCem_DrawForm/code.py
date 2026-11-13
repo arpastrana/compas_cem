@@ -1,10 +1,11 @@
 # r: compas_cem>=0.9.1
 """
-Draw a form diagram.
+Draw a form diagram in color, with its loads and reaction forces as arrows. The outputs are Rhino model objects: a Model Object or Data parameter keeps their colors and plot weights, a Line, Curve or Point parameter only their geometry. Press bake to add the drawing to the Rhino document.
 """
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any
 
 import Grasshopper
@@ -22,8 +23,13 @@ class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
         form: Any,
         node_keys: System.Collections.Generic.List[int],
         edge_keys: System.Collections.Generic.List[object],
-        settings: Any,
         thicken: bool | None,
+        decompose: bool | None,
+        show_loads: bool | None,
+        show_reactions: bool | None,
+        show_labels: bool | None,
+        bake: bool | None,
+        settings: Any,
     ) -> Any:
         self.preview = None
 
@@ -37,9 +43,25 @@ class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
         node_keys = node_keys or None
         edge_keys = edge_keys or None
         settings = settings or FormDisplaySettings()
+        is_decomposed = True if decompose is None else bool(decompose)
+        are_loads_shown = True if show_loads is None else bool(show_loads)
+        are_reactions_shown = True if show_reactions is None else bool(show_reactions)
+        settings = replace(
+            settings,
+            decompose=is_decomposed,
+            show_loads=are_loads_shown,
+            show_reactions=are_reactions_shown,
+            show_labels=bool(show_labels),
+        )
 
         drawing = form_drawing(form, node_keys, edge_keys, settings)
-        self.preview = FormPreview(drawing, bool(thicken))
+        self.preview = FormPreview(drawing, bool(thicken), settings.thick_sides)
+
+        if bake:
+            baked_ids = self.preview.bake(Rhino.RhinoDoc.ActiveDoc)
+            remark = Grasshopper.Kernel.GH_RuntimeMessageLevel.Remark
+            message = "Baked {} objects.".format(len(baked_ids))
+            ghenv.Component.AddRuntimeMessage(remark, message)  # noqa: F821
 
         outputs = (
             self.preview.node_objects,

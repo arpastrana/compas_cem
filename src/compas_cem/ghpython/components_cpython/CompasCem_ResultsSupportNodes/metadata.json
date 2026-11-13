@@ -22,7 +22,7 @@
         "outputParameters": [
             {
                 "name": "reaction_forces",
-                "description": "The reaction forces at the support nodes.",
+                "description": "The reaction force vectors at the support nodes.",
                 "optional": false
             }
         ]

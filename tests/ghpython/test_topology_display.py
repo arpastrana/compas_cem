@@ -8,6 +8,7 @@ from compas.geometry import midpoint_point_point
 from compas_cem import COLORS
 from compas_cem import LOAD_CROSS_SIZE
 from compas_cem.ghpython import topology_drawing
+from compas_cem.ghpython.diagram_display import NODE_TINT
 
 # ==============================================================================
 # Fixtures
@@ -46,7 +47,7 @@ def test_nodes_colored_by_type(tower):
 
     support = COLORS["node_support"]
     origin = COLORS["node_origin"]
-    node = COLORS["node"]
+    node = NODE_TINT
     assert colors == [support, node, origin, support, node, origin]
     assert [point.color for point in drawing.origin_nodes] == [origin, origin]
     assert [point.color for point in drawing.support_nodes] == [support, support]
