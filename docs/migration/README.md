@@ -1,9 +1,8 @@
 # compas_cem modernization plan
 
-Status, 2026-11-11: **Phases 0, 1, 2 and 5 are complete**, and **0.9.0 is
-released** on PyPI and the Rhino package server. Phases 3 and 4 not started.
-**§18 is the current handover**: 0.9.1 ships the component icons, and 0.9.2
-the component changes.
+**Phases 0, 1, 2 and 5 are complete**, and **0.9.1 is released** on PyPI and
+the Rhino package server. Phases 3 and 4 not started. **§19 is the current
+handover**: 0.10.0 ships the component changes and the logo.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
@@ -1953,7 +1952,7 @@ binary. The deprecated `yak.exe` that `compas_invocations2` 1.3.0 downloads is
 a Rhino 8.35 build that reads `YAK_TOKEN`, and with a dummy token it gets the
 same `401: Auth token isn't valid` as the yak bundled with Rhino. `--ci` keys
 never expire, so a mangled copy is the likely fault. `YAK_TOKEN` was set again
-on 2026-11-12, and only the 0.9.2 tag can test it: every yak command that
+on 2026-11-12, and only the 0.10.0 tag can test it: every yak command that
 needs authentication changes the server.
 
 If the push fails again, do not rerun the release job, which would try to
@@ -2000,7 +1999,7 @@ update path; a new package name would make existing users reinstall by hand.
 ### 18.4 Releasing 0.9.1 as is
 
 Decided 2026-11-11: 0.9.1 ships the icons and the other `Unreleased` changes,
-and the component changes wait for 0.9.2.
+and the component changes wait for the next release, 0.10.0.
 
 1. Merge this section first, in a pull request labeled `no changelog`.
    `bump-my-version` refuses a modified tracked file, though it ignores the
@@ -2013,7 +2012,7 @@ and the component changes wait for 0.9.2.
    `bump-my-version`, which rewrites the version, turns `Unreleased` into a
    dated `[0.9.1]`, commits `Bump version to 0.9.1` and tags `v0.9.1`. It then
    builds the sdist and wheel as a check, commits an empty `Unreleased` for
-   0.9.2, runs `clean`, and on `y` pushes the tags and then `main`.
+   the next release, runs `clean`, and on `y` pushes the tags and then `main`.
 4. On the tag, `release.yml` runs the build matrix, then on `windows-latest`
    uploads to PyPI, creates the GitHub release from the changelog, and pushes
    to yak. `docs.yml` deploys 0.9.1 as `latest`.
@@ -2029,7 +2028,7 @@ build warns that the `License ::` classifier and the `license` table are
 deprecated, with builds that use them unsupported from 2027-02-18; the fix is
 an SPDX `license = "MIT"` with `license-files`, on `setuptools>=77`.
 
-### 18.5 Then 0.9.2: the components
+### 18.5 Then 0.10.0: the components
 
 Existing components are to be adjusted and a few added; the list is not
 recorded yet. For each new component:
@@ -2076,9 +2075,9 @@ nothing previews.
 - Phases 3 and 4, gated on publishing `jax_cem` (§17.6), and the alignment work
   deferred in §13.6.
 
-## 19. Handover: 0.9.2, the components
+## 19. Handover: 0.10.0, the components
 
-This section is the current handover. 0.9.2 is complete on `component-updates`
+This section is the current handover. 0.10.0 is complete on `component-updates`
 and waits only for its pull request and the release.
 
 ### 19.1 Where things stand
@@ -2086,13 +2085,13 @@ and waits only for its pull request and the release.
 | item | state |
 | --- | --- |
 | `main` | `9d41ec6d`, 0.9.1 released and tagged `v0.9.1` |
-| `component-updates` | 0.9.2, about 20 commits ahead of `main`, pushed; its pull request is next |
+| `component-updates` | 0.10.0, about 20 commits ahead of `main`, pushed; its pull request is next |
 | version | 0.9.1 on PyPI, the yak server and the docs' `latest` |
 | open issues | #21, the Grasshopper examples, and #1 |
-| secrets | `YAK_TOKEN` replaced after the 0.9.1 push failed; only the 0.9.2 tag tests it (§18.2) |
+| secrets | `YAK_TOKEN` replaced after the 0.9.1 push failed; only the 0.10.0 tag tests it (§18.2) |
 | Rhino | a local build of the branch: its wheel in the site-env and its yak package from `dist/yak_source` (§18.5) |
 
-### 19.2 What 0.9.2 changes
+### 19.2 What 0.10.0 changes
 
 `CHANGELOG.md` holds the detail and the reasons; in short:
 
@@ -2124,17 +2123,18 @@ and waits only for its pull request and the release.
   since Grasshopper's preview ignores per-item color, and bakes through its own
   button, since Grasshopper skips hidden outputs.
 
-### 19.4 Releasing 0.9.2
+### 19.4 Releasing 0.10.0
 
 1. Merge the pull request into `main` with a merge commit.
-2. Run `uv run invoke release patch` from a terminal (§18.4). The bump rewrites
-   every component header to `compas_cem>=0.9.2`.
+2. Run `uv run invoke release minor` from a terminal (§18.4): the changes add
+   components and inputs, so they take a minor version. The bump rewrites every
+   component header to `compas_cem>=0.10.0`.
 3. Watch the yak push, the first with the replaced `YAK_TOKEN`. On a 401, push by
    hand (§18.2) and do not rerun the release job.
 4. Check the PyPI page, the GitHub release, the docs' logo, favicon and version
    selector, and the Package Manager. The Package Manager shows the icon of the
    newest version on the server, so the new icon appears only now.
-5. In Rhino, replace the local build with 0.9.2 from the Package Manager.
+5. In Rhino, replace the local build with 0.10.0 from the Package Manager.
 
 ### 19.5 Still open
 
