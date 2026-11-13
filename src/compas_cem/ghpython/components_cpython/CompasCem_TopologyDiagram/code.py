@@ -21,19 +21,17 @@ class AssembleTopologyDiagramComponent(Grasshopper.Kernel.GH_ScriptInstance):
         loads: System.Collections.Generic.List[object],
         supports: System.Collections.Generic.List[object],
         add_auxiliary_trails: bool | None,
-        auxiliary_settings: Any,
+        auxiliary_trails_settings: Any,
     ) -> Any:
         add_auxiliary_trails = add_auxiliary_trails or False
         topology = TopologyDiagram()
 
-        if auxiliary_settings is not None:
-            topology.auxiliary_trail_length = auxiliary_settings.signed_length
-            topology.auxiliary_trail_vector = list(auxiliary_settings.vector)
+        if auxiliary_trails_settings is not None:
+            topology.auxiliary_trail_length = auxiliary_trails_settings.signed_length
+            topology.auxiliary_trail_vector = list(auxiliary_trails_settings.vector)
             if not add_auxiliary_trails:
                 remark = Grasshopper.Kernel.GH_RuntimeMessageLevel.Remark
-                message = (
-                    "The auxiliary settings apply only when add_auxiliary_trails is on."
-                )
+                message = "auxiliary_trails_settings applies only when add_auxiliary_trails is on."
                 ghenv.Component.AddRuntimeMessage(remark, message)  # noqa: F821
 
         for trail_edge in trail_edges or []:

@@ -35,7 +35,7 @@
                 "typeHintID": "bool"
             },
             {
-                "name": "auxiliary_settings",
+                "name": "auxiliary_trails_settings",
                 "description": "The length, state and direction of the auxiliary trails, from Auxiliary Trail Settings. Applies only when add_auxiliary_trails is on. Defaults to its default settings."
             }
         ],
