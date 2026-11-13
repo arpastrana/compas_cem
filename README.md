@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/assets/logo/compas_cem_logo_dark.svg">
+    <img src="https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/assets/logo/compas_cem_logo.svg" alt="COMPAS CEM logo" width="180">
+  </picture>
+</p>
+
 # COMPAS CEM
 
 [![Github Actions Build Status](https://github.com/arpastrana/compas_cem/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/arpastrana/compas_cem/actions/workflows/build.yml)

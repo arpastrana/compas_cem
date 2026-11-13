@@ -18,6 +18,8 @@ extra:
 
 theme:
   name: material
+  logo: assets/logo/compas_cem_icon.svg
+  favicon: assets/logo/compas_cem_icon.svg
   palette:
     # Palette toggle for light mode
     - scheme: default

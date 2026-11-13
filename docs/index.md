@@ -1,3 +1,8 @@
+<p align="center" markdown>
+  ![COMPAS CEM logo](assets/logo/compas_cem_logo.svg#only-light){ width="180" }
+  ![COMPAS CEM logo](assets/logo/compas_cem_logo_dark.svg#only-dark){ width="180" }
+</p>
+
 # COMPAS CEM
 
 The [combinatorial equilibrium method (CEM)](https://doi.org/10.1016/j.cad.2022.103435)
