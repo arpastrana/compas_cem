@@ -1913,7 +1913,7 @@ Next: once this lands, §17.5 step 1.
 
 ## 18. Handover 2026-11-11: 0.9.0 released, icons merged, 0.9.1 next
 
-Written 2026-11-11. This section is the current handover and supersedes §17.1.
+Written 2026-11-11. This section superseded §17.1; §19 supersedes §18.1 and §18.5.
 
 ### 18.1 Where things stand
 
@@ -2063,7 +2063,7 @@ through a Data parameter; `thicken` swaps points and lines for sphere, pipe and
 arrow meshes. Every engine draws arrows with the same proportions, kept in
 `compas_cem`'s `ARROW_*` constants, and reaction arrows keep the
 strongest-edge rule. Draw Topology follows the topology plotter: state colors,
-dashed deviation edges, load crosses, a `show_labels` toggle and no settings.
+dashed deviation edges, load crosses, a `show_keys` toggle and no settings.
 To check a component against unreleased library code without installing it,
 drive Rhino with `rhinocode` on a copy whose header is removed and whose code
 puts `src` first on `sys.path`; the Grasshopper editor must be shown, or
@@ -2073,5 +2073,72 @@ nothing previews.
 
 - #21: the five Grasshopper definitions must be rebuilt by hand (§16.8).
 - `compas_invocations2` on 2026-12-01 (§18.2).
+- Phases 3 and 4, gated on publishing `jax_cem` (§17.6), and the alignment work
+  deferred in §13.6.
+
+## 19. Handover: 0.9.2, the components
+
+This section is the current handover. 0.9.2 is complete on `component-updates`
+and waits only for its pull request and the release.
+
+### 19.1 Where things stand
+
+| item | state |
+| --- | --- |
+| `main` | `9d41ec6d`, 0.9.1 released and tagged `v0.9.1` |
+| `component-updates` | 0.9.2, about 20 commits ahead of `main`, pushed; its pull request is next |
+| version | 0.9.1 on PyPI, the yak server and the docs' `latest` |
+| open issues | #21, the Grasshopper examples, and #1 |
+| secrets | `YAK_TOKEN` replaced after the 0.9.1 push failed; only the 0.9.2 tag tests it (§18.2) |
+| Rhino | a local build of the branch: its wheel in the site-env and its yak package from `dist/yak_source` (§18.5) |
+
+### 19.2 What 0.9.2 changes
+
+`CHANGELOG.md` holds the detail and the reasons; in short:
+
+- **Build.** SPDX `license = "MIT"` with `license-files`, on `setuptools>=77.0.3`.
+  Component headers rise with every release.
+- **Elements and parameters.** Trail and Deviation Edge take a `state`, whose sign
+  sets tension or compression; a trail takes a length or a plane, never both.
+  Parameters gain `is_absolute`, with signed bounds checked at the start.
+- **Diagrams.** Shift Trails gains `auto_align`, backed by
+  `TopologyDiagram.align_trails`, which places the trails pair by pair on the gap
+  most deviation edges agree on, so braced topologies keep compact sequences.
+  Auxiliary Trail Settings sets one length, state and direction for every
+  auxiliary trail, through Assemble Topology Diagram's `auxiliary_trails_settings`.
+- **Visualization.** Draw Form draws its own colored preview and bakes through a
+  `bake` button; `thicken`, `decompose` and the `show_*` toggles sit on the
+  component, and Form Display Settings holds the numeric styling, `arrow_min`
+  first. Draw Topology follows the topology plotter, with `show_keys` and `bake`.
+- **Identity.** A logo form-found with CEM, in three weights with the same
+  force-proportional widths; `scripts/logo/build_logo.py` rebuilds every file in
+  `docs/assets/logo`. It is the docs logo, favicon and home page image, the
+  package icon and the Info icon.
+
+### 19.3 Component conventions
+
+- Inputs that are not toggles come first, then the toggles, then `bake`.
+- Toggles are verbs that name what they act on (`show_forces`, `auto_align`), and
+  a toggle flipped often stays on its component; settings components hold numbers.
+- A drawing component switches its outputs' preview off and draws them itself,
+  since Grasshopper's preview ignores per-item color, and bakes through its own
+  button, since Grasshopper skips hidden outputs.
+
+### 19.4 Releasing 0.9.2
+
+1. Merge the pull request into `main` with a merge commit.
+2. Run `uv run invoke release patch` from a terminal (§18.4). The bump rewrites
+   every component header to `compas_cem>=0.9.2`.
+3. Watch the yak push, the first with the replaced `YAK_TOKEN`. On a 401, push by
+   hand (§18.2) and do not rerun the release job.
+4. Check the PyPI page, the GitHub release, the docs' logo, favicon and version
+   selector, and the Package Manager. The Package Manager shows the icon of the
+   newest version on the server, so the new icon appears only now.
+5. In Rhino, replace the local build with 0.9.2 from the Package Manager.
+
+### 19.5 Still open
+
+- #21: the five Grasshopper definitions must be rebuilt by hand (§16.8).
+- The `compas_invocations2` revisit (§18.2).
 - Phases 3 and 4, gated on publishing `jax_cem` (§17.6), and the alignment work
   deferred in §13.6.
