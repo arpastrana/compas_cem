@@ -1,3 +1,4 @@
+import pytest
 from compas.data import json_dumps
 from compas.data import json_loads
 
@@ -44,3 +45,25 @@ def test_auxiliary_support_nodes_survive_data(tree_2d_needs_auxiliary_trails):
     assert set(loaded.auxiliary_support_nodes()) == set(
         topology.auxiliary_support_nodes()
     )
+
+
+@pytest.mark.parametrize("length", [2.0, -2.0])
+def test_auxiliary_supports_follow_vector(tree_2d_needs_auxiliary_trails, length):
+    """
+    Checks that an auxiliary support lies along the vector whatever the sign of
+    the length, and that its edge keeps the signed length.
+    """
+    topology = tree_2d_needs_auxiliary_trails
+    topology.auxiliary_trail_length = length
+    topology.auxiliary_trail_vector = [0.0, -3.0, 0.0]
+    topology.build_trails(auxiliary_trails=True)
+
+    for node, edge in topology.auxiliary_trails(keys=True):
+        u, v = edge
+        support = v if u == node else u
+        node_xyz = topology.node_coordinates(node)
+        support_xyz = topology.node_coordinates(support)
+        expected_xyz = [node_xyz[0], node_xyz[1] - 2.0, node_xyz[2]]
+
+        assert support_xyz == pytest.approx(expected_xyz)
+        assert topology.edge_attribute(edge, "length") == length

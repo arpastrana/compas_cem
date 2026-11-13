@@ -41,7 +41,7 @@ class TopologyDiagram(Diagram, MeshMixins):
         self.attributes["_trails"] = dict()
         self.attributes["_auxiliary_trails"] = dict()
         self.attributes["_aux_length"] = -1.0
-        self.attributes["_aux_vector"] = [1.0, 1.0, 1.0]
+        self.attributes["_aux_vector"] = [-1.0, -1.0, -1.0]
 
     # ==============================================================================
     # Serialization
@@ -103,12 +103,18 @@ class TopologyDiagram(Diagram, MeshMixins):
     @property
     def auxiliary_trail_vector(self):
         """
-        The default direction used to automatically create an auxiliary trail edge.
+        The direction from a node to the support of its auxiliary trail.
 
         Returns
         -------
         vector :
-            The direction the auxiliary trail edge extends in.
+            The direction the auxiliary trail edge extends in, whatever the
+            sign of its length.
+
+        Notes
+        -----
+        The vector places the auxiliary supports in the topology only: the
+        solver places each one along the residual force of its node.
         """
         return self.attributes["_aux_vector"]
 
@@ -505,7 +511,7 @@ class TopologyDiagram(Diagram, MeshMixins):
             aux_dir = normalize_vector(self.auxiliary_trail_vector)
 
             for node in unassigned:
-                aux_vector = scale_vector(aux_dir, self.auxiliary_trail_length)
+                aux_vector = scale_vector(aux_dir, abs(self.auxiliary_trail_length))
                 aux_xyz = add_vectors(self.node_coordinates(node), aux_vector)
                 aux_node = self.add_node(Node(xyz=aux_xyz))
 

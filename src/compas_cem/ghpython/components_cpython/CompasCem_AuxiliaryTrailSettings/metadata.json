@@ -1,0 +1,36 @@
+{
+    "name": "Auxiliary Trail Settings (COMPAS CEM)",
+    "nickname": "AuxTrailSettings",
+    "category": "COMPAS CEM",
+    "subcategory": "04_Diagrams",
+    "description": "Set the length, state and direction of the auxiliary trails that Assemble Topology Diagram adds.",
+    "exposure": 2,
+    "instanceGuid": "28ce272c-d481-4991-a113-4b5cfc13d0bb",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "length",
+                "description": "The length of every auxiliary trail edge, which sets how far its support lands from its node in the form. Positive. Defaults to 1.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "state",
+                "description": "The sign of the force in every auxiliary trail edge: positive for tension, negative for compression. It also sets on which side of its node the support lands in the form. Defaults to -1.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "vector",
+                "description": "The direction from every node to its auxiliary support in the topology. It only changes the topology drawing, since the solver places every support along the residual force of its node. Defaults to (-1, -1, -1).",
+                "typeHintID": "vector"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "settings",
+                "description": "The auxiliary trail settings for Assemble Topology Diagram.",
+                "optional": false
+            }
+        ]
+    }
+}

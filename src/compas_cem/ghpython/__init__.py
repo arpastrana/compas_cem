@@ -8,6 +8,7 @@ from __future__ import print_function
 
 import compas
 
+from .auxiliary_settings import *  # noqa F403
 from .diagram_display import *  # noqa F403
 
 # The scene objects and the preview import Rhino, which is importable inside

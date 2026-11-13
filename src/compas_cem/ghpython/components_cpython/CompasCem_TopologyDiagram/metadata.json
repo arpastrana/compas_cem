@@ -33,6 +33,10 @@
                 "name": "add_auxiliary_trails",
                 "description": "Whether to append auxiliary trails to the free nodes of the topology diagram. Defaults to False.",
                 "typeHintID": "bool"
+            },
+            {
+                "name": "auxiliary_settings",
+                "description": "The length, state and direction of the auxiliary trails, from Auxiliary Trail Settings. Applies only when add_auxiliary_trails is on. Defaults to its default settings."
             }
         ],
         "outputParameters": [
