@@ -1,0 +1,12 @@
+:root > * {
+  --md-primary-fg-color:        #0092d2;
+  --md-primary-fg-color--light: #0092d2;
+  --md-primary-fg-color--dark:  #0092d2;
+}
+
+/* The logo's compression blue would vanish on the blue header, so it sits on white. */
+.md-header__button.md-logo img {
+  background-color: #ffffff;
+  border-radius: 0.2rem;
+  padding: 0.1rem;
+}
