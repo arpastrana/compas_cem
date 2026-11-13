@@ -25,6 +25,10 @@
                 "scriptParamAccess": "list"
             },
             {
+                "name": "settings",
+                "description": "The display settings from Form Display Settings. Defaults to its default settings."
+            },
+            {
                 "name": "thicken",
                 "description": "Whether to thicken the nodes into spheres, the edges into pipes and the loads and reaction forces into solid arrows, sized by the settings' radii. Every output then holds meshes instead of points and lines. Defaults to False.",
                 "typeHintID": "bool"
@@ -45,18 +49,19 @@
                 "typeHintID": "bool"
             },
             {
-                "name": "show_labels",
+                "name": "show_forces",
                 "description": "Whether to label every drawn edge with its force in the viewport. The labels do not bake. Defaults to False.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "show_keys",
+                "description": "Whether to label every drawn node with its key and every drawn edge with its key as u-v in the viewport. With show_forces on too, an edge label reads u-v: force. The labels do not bake. Defaults to False.",
                 "typeHintID": "bool"
             },
             {
                 "name": "bake",
                 "description": "Whether to add the drawing to the Rhino document. Wire a Button, so every press bakes once: lines with their colors, plot weights and the arrowheads of the forces, and thickened meshes with their colors, each category on its own sublayer of COMPAS CEM::Form. The labels do not bake.",
                 "typeHintID": "bool"
-            },
-            {
-                "name": "settings",
-                "description": "The display settings from Form Display Settings. Defaults to its default settings."
             }
         ],
         "outputParameters": [

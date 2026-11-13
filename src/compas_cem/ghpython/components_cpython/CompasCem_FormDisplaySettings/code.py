@@ -15,7 +15,7 @@ from compas_cem.ghpython import FormDisplaySettings
 class FormDisplaySettingsComponent(Grasshopper.Kernel.GH_ScriptInstance):
     def RunScript(
         self,
-        force_min: float | None,
+        arrow_min: float | None,
         arrow_scale: float | None,
         width_min: float | None,
         width_max: float | None,
@@ -24,7 +24,7 @@ class FormDisplaySettingsComponent(Grasshopper.Kernel.GH_ScriptInstance):
         thick_sides: int | None,
     ) -> Any:
         values = {
-            "force_min": force_min,
+            "arrow_min": arrow_min,
             "arrow_scale": arrow_scale,
             "width_min": width_min,
             "width_max": width_max,

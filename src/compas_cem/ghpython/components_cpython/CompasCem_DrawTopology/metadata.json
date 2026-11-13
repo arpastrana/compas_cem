@@ -25,7 +25,7 @@
                 "scriptParamAccess": "list"
             },
             {
-                "name": "show_labels",
+                "name": "show_keys",
                 "description": "Whether to label the drawn nodes with their keys and the drawn edges with u-v in the viewport. The labels do not bake. Defaults to False.",
                 "typeHintID": "bool"
             },

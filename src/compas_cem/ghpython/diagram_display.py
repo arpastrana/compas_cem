@@ -48,9 +48,10 @@ class FormDisplaySettings:
 
     Parameters
     ----------
-    force_min :
-        The smallest load or reaction force magnitude worth drawing, or the
-        smallest component when the forces are decomposed.
+    arrow_min :
+        The smallest load or reaction magnitude to draw as an arrow, or the
+        smallest component when the forces are decomposed. It is compared
+        before `arrow_scale` applies, so the scale never hides an arrow.
     arrow_scale :
         The factor that turns a load or reaction force into its arrow length.
     width_min :
@@ -70,8 +71,10 @@ class FormDisplaySettings:
         Whether to draw the loads.
     show_reactions :
         Whether to draw the reaction forces.
-    show_labels :
+    show_forces :
         Whether to label every drawn edge with its force.
+    show_keys :
+        Whether to label every drawn node and edge with its key.
     decompose :
         Whether to draw every load and reaction force as its x, y and z
         components, an arrow each, rather than as one arrow.
@@ -79,11 +82,11 @@ class FormDisplaySettings:
     Notes
     -----
     The settings are a dataclass rather than a named tuple, because Grasshopper
-    unpacks a tuple output into its items. Draw Form sets the visibility
-    toggles and `decompose` from its own inputs.
+    unpacks a tuple output into its items. Draw Form sets `decompose` and the
+    visibility toggles from its own inputs.
     """
 
-    force_min: float = 1e-3
+    arrow_min: float = 1e-3
     arrow_scale: float = 1.0
     width_min: float = 1.0
     width_max: float = 8.0
@@ -92,7 +95,8 @@ class FormDisplaySettings:
     thick_sides: int = 8
     show_loads: bool = True
     show_reactions: bool = True
-    show_labels: bool = False
+    show_forces: bool = False
+    show_keys: bool = False
     decompose: bool = True
 
     def __post_init__(self):
@@ -209,14 +213,16 @@ def form_drawing(form, node_keys, edge_keys, settings):
     -------
     drawing :
         The styled nodes, support nodes, edges, loads, reaction forces, and the
-        edge labels. A category the settings hide is empty.
+        labels. A category the settings hide is empty.
 
     Notes
     -----
     Every node is colored by whether it is a support, so the support nodes are
     drawn twice, once among the nodes and once on their own. A load arrow
     always ends at its node, so its head touches the node it loads; a reaction
-    ends at its support only when it pushes into it.
+    ends at its support only when it pushes into it. An edge shown with both
+    its key and its force gets one label, `u-v: force`, so the two never
+    overlap.
     """
     nodes = list(form.nodes()) if node_keys is None else list(node_keys)
     edges = list(form.edges()) if edge_keys is None else list(edge_keys)
@@ -245,9 +251,7 @@ def form_drawing(form, node_keys, edge_keys, settings):
         shifts = reaction_shifts(form, nodes)
         reactions = _force_lines(form, nodes, "support_force", shifts, settings)
 
-    labels = []
-    if settings.show_labels:
-        labels = [_force_label(form, edge) for edge in edges]
+    labels = _form_labels(form, nodes, edges, settings)
 
     drawing = FormDrawing(
         nodes=node_points,
@@ -481,7 +485,7 @@ def _force_lines(form, nodes, color_name, shifts, settings):
         vector = form.node_attributes(node, names)
         point = form.node_coordinates(node)
         for component in _force_components(vector, settings.decompose):
-            if length_vector(component) < settings.force_min:
+            if length_vector(component) < settings.arrow_min:
                 continue
 
             scaled = scale_vector(component, settings.arrow_scale)
@@ -522,21 +526,32 @@ def _force_components(vector, decompose):
     return components
 
 
-def _force_label(form, edge):
+def _form_labels(form, nodes, edges, settings):
     """
-    Label an edge with its force at its midpoint.
+    Label the nodes with their keys, and the edges with their keys, their
+    forces, or both.
     """
-    u, v = edge
-    start = form.node_coordinates(u)
-    end = form.node_coordinates(v)
-    point = midpoint_point_point(start, end)
-    text = "{:.2f}".format(form.edge_force(edge))
-    label = TextLabel(point=point, text=text)
+    labels = []
+    if settings.show_keys:
+        labels = _node_labels(form, nodes)
 
-    return label
+    for edge in edges:
+        text_parts = []
+        if settings.show_keys:
+            key_text = _edge_key(edge)
+            text_parts.append(key_text)
+        if settings.show_forces:
+            force_text = "{:.2f}".format(form.edge_force(edge))
+            text_parts.append(force_text)
+        if text_parts:
+            text = ": ".join(text_parts)
+            label = _edge_label(form, edge, text)
+            labels.append(label)
+
+    return labels
 
 
-def topology_drawing(topology, node_keys, edge_keys, show_labels):
+def topology_drawing(topology, node_keys, edge_keys, show_keys):
     """
     Style a selection of a topology diagram for drawing.
 
@@ -549,7 +564,7 @@ def topology_drawing(topology, node_keys, edge_keys, show_labels):
         every node is drawn.
     edge_keys :
         The edges to draw. If `None`, every edge is drawn.
-    show_labels :
+    show_keys :
         Whether to label the drawn nodes and edges with their keys.
 
     Returns
@@ -593,7 +608,7 @@ def topology_drawing(topology, node_keys, edge_keys, show_labels):
     crosses = _load_crosses(topology, crossed_nodes)
 
     labels = []
-    if show_labels:
+    if show_keys:
         labels = _key_labels(topology, nodes, edges)
 
     drawing = TopologyDrawing(
@@ -758,23 +773,51 @@ def _diagram_diagonal(diagram):
     return diagonal
 
 
-def _key_labels(topology, nodes, edges):
+def _key_labels(diagram, nodes, edges):
     """
     Label the nodes with their keys and the edges with `u-v` at their midpoints.
     """
-    labels = []
-    for node in nodes:
-        point = topology.node_coordinates(node)
-        label = TextLabel(point=point, text=str(node))
+    labels = _node_labels(diagram, nodes)
+    for edge in edges:
+        text = _edge_key(edge)
+        label = _edge_label(diagram, edge, text)
         labels.append(label)
 
-    for edge in edges:
-        u, v = edge
-        start = topology.node_coordinates(u)
-        end = topology.node_coordinates(v)
-        point = midpoint_point_point(start, end)
-        text = "{}-{}".format(u, v)
+    return labels
+
+
+def _node_labels(diagram, nodes):
+    """
+    Label the nodes with their keys at their positions.
+    """
+    labels = []
+    for node in nodes:
+        point = diagram.node_coordinates(node)
+        text = str(node)
         label = TextLabel(point=point, text=text)
         labels.append(label)
 
     return labels
+
+
+def _edge_label(diagram, edge, text):
+    """
+    Place a text at the midpoint of an edge.
+    """
+    u, v = edge
+    start = diagram.node_coordinates(u)
+    end = diagram.node_coordinates(v)
+    point = midpoint_point_point(start, end)
+    label = TextLabel(point=point, text=text)
+
+    return label
+
+
+def _edge_key(edge):
+    """
+    The key of an edge written as `u-v`.
+    """
+    u, v = edge
+    key_text = "{}-{}".format(u, v)
+
+    return key_text

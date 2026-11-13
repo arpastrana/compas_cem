@@ -45,7 +45,7 @@ def test_settings_defaults():
     """
     settings = FormDisplaySettings()
 
-    assert settings.force_min == 1e-3
+    assert settings.arrow_min == 1e-3
     assert settings.arrow_scale == 1.0
     assert settings.width_min == 1.0
     assert settings.width_max == 8.0
@@ -53,7 +53,8 @@ def test_settings_defaults():
     assert settings.radius_max == 0.1
     assert settings.show_loads is True
     assert settings.show_reactions is True
-    assert settings.show_labels is False
+    assert settings.show_forces is False
+    assert settings.show_keys is False
     assert settings.decompose is True
     assert settings.thick_sides == 8
 
@@ -240,9 +241,9 @@ def test_arrows_clear_node_spheres(chain_form):
 
 def test_forces_below_minimum_are_skipped(strut_form):
     """
-    Checks that loads and reactions smaller than force_min are not drawn.
+    Checks that loads and reactions smaller than arrow_min are not drawn.
     """
-    settings = FormDisplaySettings(force_min=2.0)
+    settings = FormDisplaySettings(arrow_min=2.0)
     drawing = form_drawing(strut_form, None, None, settings)
 
     assert drawing.loads == []
@@ -304,7 +305,7 @@ def test_labels_show_edge_forces(strut_form):
     """
     Checks that every drawn edge is labeled with its force at its midpoint.
     """
-    settings = FormDisplaySettings(show_labels=True)
+    settings = FormDisplaySettings(show_forces=True)
     drawing = form_drawing(strut_form, None, None, settings)
     (label,) = drawing.labels
     (edge,) = strut_form.edges()
@@ -315,6 +316,33 @@ def test_labels_show_edge_forces(strut_form):
 
     assert label.text == "{:.2f}".format(force)
     assert label.point == pytest.approx(midpoint)
+
+
+def test_labels_show_keys(strut_form):
+    """
+    Checks that the key labels show the node keys and the edge keys as u-v.
+    """
+    settings = FormDisplaySettings(show_keys=True)
+    drawing = form_drawing(strut_form, None, None, settings)
+    texts = [label.text for label in drawing.labels]
+    node_xyz = strut_form.node_coordinates(0)
+
+    assert texts == ["0", "1", "0-1"]
+    assert drawing.labels[0].point == pytest.approx(node_xyz)
+
+
+def test_labels_join_keys_and_forces(strut_form):
+    """
+    Checks that an edge shown with its key and its force gets one label.
+    """
+    settings = FormDisplaySettings(show_forces=True, show_keys=True)
+    drawing = form_drawing(strut_form, None, None, settings)
+    (edge,) = strut_form.edges()
+    force = strut_form.edge_force(edge)
+    edge_texts = [label.text for label in drawing.labels[2:]]
+
+    assert len(drawing.labels) == 3
+    assert edge_texts == ["0-1: {:.2f}".format(force)]
 
 
 # ==============================================================================
@@ -341,7 +369,7 @@ def test_decompose_splits_forces(strut_form):
 
 def test_decompose_skips_small_components(strut_form):
     """
-    Checks that a component smaller than force_min is not drawn.
+    Checks that a component smaller than arrow_min is not drawn.
     """
     strut_form.node_attributes(1, ["qx", "qy", "qz"], [0.0005, -2.0, 0.0])
     drawing = form_drawing(strut_form, None, None, FormDisplaySettings())

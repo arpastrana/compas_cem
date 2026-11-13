@@ -21,7 +21,7 @@ class DrawTopologyComponent(Grasshopper.Kernel.GH_ScriptInstance):
         topology: Any,
         node_keys: System.Collections.Generic.List[int],
         edge_keys: System.Collections.Generic.List[object],
-        show_labels: bool | None,
+        show_keys: bool | None,
         bake: bool | None,
     ) -> Any:
         self.preview = None
@@ -36,7 +36,7 @@ class DrawTopologyComponent(Grasshopper.Kernel.GH_ScriptInstance):
         node_keys = node_keys or None
         edge_keys = edge_keys or None
 
-        drawing = topology_drawing(topology, node_keys, edge_keys, bool(show_labels))
+        drawing = topology_drawing(topology, node_keys, edge_keys, bool(show_keys))
         self.preview = TopologyPreview(drawing)
 
         if bake:

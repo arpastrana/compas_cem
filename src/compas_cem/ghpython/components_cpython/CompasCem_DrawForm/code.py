@@ -23,13 +23,14 @@ class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
         form: Any,
         node_keys: System.Collections.Generic.List[int],
         edge_keys: System.Collections.Generic.List[object],
+        settings: Any,
         thicken: bool | None,
         decompose: bool | None,
         show_loads: bool | None,
         show_reactions: bool | None,
-        show_labels: bool | None,
+        show_forces: bool | None,
+        show_keys: bool | None,
         bake: bool | None,
-        settings: Any,
     ) -> Any:
         self.preview = None
 
@@ -51,7 +52,8 @@ class DrawFormComponent(Grasshopper.Kernel.GH_ScriptInstance):
             decompose=is_decomposed,
             show_loads=are_loads_shown,
             show_reactions=are_reactions_shown,
-            show_labels=bool(show_labels),
+            show_forces=bool(show_forces),
+            show_keys=bool(show_keys),
         )
 
         drawing = form_drawing(form, node_keys, edge_keys, settings)

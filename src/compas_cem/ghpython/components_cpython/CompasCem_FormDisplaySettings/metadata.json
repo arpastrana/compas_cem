@@ -10,8 +10,8 @@
     "ghpython": {
         "inputParameters": [
             {
-                "name": "force_min",
-                "description": "The smallest load or reaction force magnitude to draw, or the smallest component when Draw Form decomposes the forces. Defaults to 1e-3.",
+                "name": "arrow_min",
+                "description": "The smallest load or reaction magnitude to draw as an arrow, or the smallest component when Draw Form decomposes the forces. It is compared before arrow_scale applies, so the scale never hides an arrow. Defaults to 1e-3.",
                 "typeHintID": "float"
             },
             {
