@@ -1,0 +1,15 @@
+% Auxiliary Trail Settings icon: the Trail Edge icon as an auxiliary trail, with a mark of its length.
+\documentclass[tikz,border=0pt]{standalone}
+\input{../icon_style}
+\begin{document}
+\begin{tikzpicture}[icon]
+\iconcanvas
+\diagramstile
+\draw[edge, cem-auxiliary-trail] (7,7) -- (17,17);
+\draw[cem-edge, line width=1bp] (11,5) -- (19,13);
+\draw[cem-edge, line width=1bp] (10,6) -- (12,4);
+\draw[cem-edge, line width=1bp] (18,14) -- (20,12);
+\path[cem support] (7,7) circle (2.25);
+\originnode{17}{17}{2.25}
+\end{tikzpicture}
+\end{document}

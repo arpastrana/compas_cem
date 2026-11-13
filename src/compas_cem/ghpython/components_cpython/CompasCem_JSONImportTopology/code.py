@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Import a COMPAS CEM topology diagram from a JSON file.
 """
@@ -14,8 +14,11 @@ from compas_cem.diagrams import TopologyDiagram
 
 
 class TopologyDiagramFromJSON(Grasshopper.Kernel.GH_ScriptInstance):
-    def RunScript(self, filepath: str | None) -> Any:
-        if not filepath:
+    def RunScript(self, read: bool | None, filepath: str | None) -> Any:
+        if not (read and filepath):
             return
 
-        return TopologyDiagram.from_json(os.path.abspath(filepath))
+        json_path = os.path.abspath(filepath)
+        topology = TopologyDiagram.from_json(json_path)
+
+        return topology

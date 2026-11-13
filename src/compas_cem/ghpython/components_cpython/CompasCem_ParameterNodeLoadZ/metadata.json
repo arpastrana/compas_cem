@@ -3,7 +3,7 @@
     "nickname": "NodeLoadZParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Set the Z parameter of an node load as an optimization parameter.",
+    "description": "Set the Z component of a node load as an optimization parameter.",
     "exposure": 8,
     "instanceGuid": "eb189543-99a8-49c8-9d43-b62afb302580",
 
@@ -11,17 +11,17 @@
         "inputParameters": [
             {
                 "name": "node_key",
-                "description": "The key of a COMPAS CEM origin node.",
+                "description": "The key of a COMPAS CEM node that carries a load.",
                 "typeHintID": "int"
             },
             {
                 "name": "bound_low",
-                "description": "The lower bound of the node optimization parameter. Its value is calculated as the initial node parameter minus the absolute value of this bound. Defaults to '-inf'.",
+                "description": "The smallest Z component the node load may take. The start value must lie between the bounds. Defaults to '-inf'.",
                 "typeHintID": "float"
             },
             {
                 "name": "bound_up",
-                "description": "The upper bound of the node optimization parameter. Its value is calculated as the initial node parameter plus the absolute value of this bound. Defaults to '+inf'.",
+                "description": "The largest Z component the node load may take. The start value must lie between the bounds. Defaults to '+inf'.",
                 "typeHintID": "float"
             }
         ],

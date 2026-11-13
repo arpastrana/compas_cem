@@ -1,9 +1,8 @@
 # compas_cem modernization plan
 
-Status, 2026-11-11: **Phases 0, 1, 2 and 5 are complete**, and **0.9.0 is
-released** on PyPI and the Rhino package server. Phases 3 and 4 not started.
-**§18 is the current handover**: 0.9.1 ships the component icons, and 0.9.2
-the component changes.
+**Phases 0, 1, 2 and 5 are complete**, and **0.9.1 is released** on PyPI and
+the Rhino package server. Phases 3 and 4 not started. **§19 is the current
+handover**: 0.10.0 ships the component changes and the logo.
 
 Written 2026-08-06. Everything marked *verified* below was tested against
 COMPAS 2.15.1 / Python 3.12 / JAX 0.10.2; everything marked *unverified* was not.
@@ -77,13 +76,13 @@ bugs, and deleted its own COMPAS bridge in favour of calling `compas_cem`'s
 What it lacks: any optimizer layer (examples hand-roll
 `scipy.optimize.minimize`), `kmax`, `callback`, and implicit differentiation.
 
-**`jax_fdm` is already on `compas>=2.15,<3.0`** with `compas_plotter>=1.0.1` and
+**The sibling force density library is already on `compas>=2.15,<3.0`** with `compas_plotter>=1.0.1` and
 `compas_viewer>=2.0`. It is a working migrated template for every layer needed
 here: `ParameterManager`, `Loss(*Error|Regularizer)`, scipy-backed optimizers with
 fused jitted `value_and_grad`, `visualization/*/scene_objects.py`, and
 `equilibrium/solvers/fixed_point.py` (`custom_vjp` + `lineax` adjoint).
 
-**formax** is the intended future: `jax_fdm` and `jax_cem` consolidating into one
+**formax** is the intended future: the force density library and `jax_cem` consolidating into one
 differentiable form-finding framework. `compas_cem` should therefore become the
 COMPAS-facing modelling + CAD layer over a **pluggable** kernel, and must not let
 kernel types leak into its public API.
@@ -150,7 +149,7 @@ Three findings, the third a trap:
 2. **`lax.while_loop` is not reverse-differentiable.** A faithful port of the
    `eta`-terminated loop gives correct values but `jax.grad` raises. The outer
    relaxation must be posed as a fixed point with implicit differentiation. This
-   is why `jax_cem` uses a checkpointed `while_loop`; `jax_fdm`'s
+   is why `jax_cem` uses a checkpointed `while_loop`; the force density library's
    `equilibrium/solvers/fixed_point.py` is the better template.
 3. **Origin nodes must be pinned to the parameter *inside* the fixed-point map.**
    A sweep never writes them, so as fixed-point variables their rows of `I − J`
@@ -177,7 +176,7 @@ ships CPython 3.13.3. Wheel ceiling on 3.9, verified against PyPI respecting
 | `autograd` | 1.8.0 | 1.9.1 |
 | `compas` | 2.15.1 | 2.15.1 |
 
-**The decisive consequence:** `lineax` caps at 0.0.7 on py3.9, but `jax_fdm`
+**The decisive consequence:** `lineax` caps at 0.0.7 on py3.9, but the force density library
 requires `lineax>=0.1.0` for the `Normal` operator used by its fixed-point
 adjoint. The implicit-differentiation machinery **cannot be installed inside
 Rhino 8 at all.** Keeping `compas.rpc.Proxy` for the JAX path is forced, not
@@ -216,11 +215,11 @@ so `self.Component`/`self.RuntimeMessages` are gone — use the injected
 
 | Decision | Choice |
 | --- | --- |
-| ruff line length | **88** (matching `jax_fdm`/`smax`, not the COMPAS template's 179). Set in `[tool.ruff]`, `[tool.ruff.lint.pycodestyle] max-doc-length`, and `.editorconfig` |
+| ruff line length | **88** (matching the force density library and `smax`, not the COMPAS template's 179). Set in `[tool.ruff]`, `[tool.ruff.lint.pycodestyle] max-doc-length`, and `.editorconfig` |
 | `Constraint` → `Goal` | **Clean break**, no deprecation aliases. Frees the name `Constraint` for genuine hard constraints later (nlopt's `add_inequality_constraint` is unused today) |
 | JAX kernel | **Dependency, not vendored.** Publish the kernel to PyPI, then `compas_cem[jax]` |
 | Dependency direction | Move `ParameterState.from_topology_diagram` and `EquilibriumStructure.from_topology_diagram` **down into `compas_cem`** so the kernel depends on `compas` only, never `compas_cem`. Breaks the cycle |
-| Parameter system | **Not** a copy of `jax_fdm`'s `ParameterManager` (which self-documents as needing refactor). equinox-native: `ravel_pytree` for flat `x` + free inverse, `eqx.partition`/`combine` for optimizable-vs-frozen, `eqx.tree_at` for injection, bounds as a same-shaped pytree |
+| Parameter system | **Not** a copy of the force density library's `ParameterManager` (which self-documents as needing refactor). equinox-native: `ravel_pytree` for flat `x` + free inverse, `eqx.partition`/`combine` for optimizable-vs-frozen, `eqx.tree_at` for injection, bounds as a same-shaped pytree |
 | Optimizer backend | **nlopt retained**, fed fused jitted `value_and_grad` |
 | formax scope | Undecided. Build the parameter system here for now, designed to be liftable |
 | Rhino | **Rhino 8 + 9 only.** Rhino 7 / IronPython dropped |
@@ -247,7 +246,7 @@ regenerate the JSON fixtures. Plus `Constraint` → `Goal` (9 classes,
 `solve_proxy` wire signature). Green against Phase 0 ground truth ends the phase.
 
 **Phase 2 — visualization.** `compas_plotter` 1.0.1 + `compas_viewer` 2.0.2,
-artists → `compas.scene` SceneObjects using `jax_fdm/visualization/*/scene_objects.py`
+artists → `compas.scene` SceneObjects using the force density library's `visualization/*/scene_objects.py`
 as the pattern, colours become `compas.colors.Color`. Fix the latent bugs found en
 route: undefined `edge` in `state_format` (`viewers/diagramobject.py:679`,
 `plotters/topologyartist.py:272`), `self.topology` on `DiagramObject`
@@ -286,7 +285,7 @@ parallel.
    shipping script components inside a `.gh` library?
 2. **Who does the kernel decoupling and PyPI release** — upstream directly, or
    prepared as a branch there once Phases 0–2 land here?
-3. **formax and the optimization layer.** If formax inherits `jax_fdm`'s goals,
+3. **formax and the optimization layer.** If formax inherits the force density library's goals,
    losses, parameters and optimizers, then Phase 4's parameter system is
    building what formax will own, and `compas_cem`'s `Optimizer` should shrink to
    a thin adapter. Currently deferred: build here, designed to be lifted.
@@ -466,7 +465,7 @@ regression. Do not chase it in Phase 1.
 ### 10.4 Phase 2 — visualization
 
 `compas.artists` no longer exists. Target `compas_plotter>=1.0.1` and
-`compas_viewer>=2.0`, and use `jax_fdm/visualization/{plotters,viewers}/scene_objects.py`
+`compas_viewer>=2.0`, and use the force density library's `visualization/{plotters,viewers}/scene_objects.py`
 as the pattern — that package is already on COMPAS 2 and solves the same problem.
 
 - **`plotters/`**: `plotter.py` is a pure passthrough wrapper; `formartist.py` and
@@ -686,7 +685,7 @@ say what to. Phase 1 first shipped a single `Diagram.add_element(element)`
 dispatching on `Node` versus `Edge`.
 
 That was **reconsidered before this branch was merged.** After an audit of the
-two sibling libraries, `jax_fdm` and `smax`, it was decided on 2026-08-07 to
+two sibling libraries, the force density library and `smax`, it was decided on 2026-08-07 to
 keep `add_node` and `add_edge` and dispatch on the type of the argument, so that
 the authoring API, the tutorials and every existing `.gh` file survive untouched. Phase 1 was
 rewritten to ship that directly, so `main` never carried `add_element`.
@@ -785,7 +784,7 @@ which parents the arrows and labels to the diagram so they show and hide with it
   `compas.scene.register`, and call `register_scene_objects()` first. compas
   auto-discovers plugins in `compas*` packages only and discovers into an empty
   registry only, so a plugin module cannot work here — this is the same
-  arrangement `jax_fdm` uses. `__all_plugins__` no longer lists
+  arrangement the force density library uses. `__all_plugins__` no longer lists
   `compas_cem.plotters.register`, which no longer exists.
 - `compas_plotter>=1.0.1` and `compas_viewer>=2.0` are runtime dependencies in
   `requirements.txt`. See §12.5.
@@ -836,7 +835,7 @@ and the two renders match.
 `compas_plotter>=1.0.1` and `compas_viewer>=2.0` were briefly parked in
 `requirements-dev.txt`, because the docs build imports those modules. It was
 settled on 2026-08-07: **both are ordinary runtime dependencies**, in
-`requirements.txt`. Unlike `jax_fdm`, which treats its backends as optional and
+`requirements.txt`. Unlike the force density library, which treats its backends as optional and
 guards them with `has_backend`, drawing a diagram is not an optional extra of
 this package.
 
@@ -944,7 +943,7 @@ thing that will move nodes in anger, and worth a regression test that
 
 ---
 
-## 13. API alignment audit: `jax_fdm`, `smax`, `compas_cem`
+## 13. API alignment audit: the force density library, `smax`, `compas_cem`
 
 Written 2026-08-07, before committing to an authoring API for 0.9.0. Nothing in
 this section is implemented. It exists so the decision is made once, with the
@@ -959,17 +958,17 @@ answer survive wanting **area loads** and **partially fixed supports** later?
 
 | | substrate | authoring | supports | loads |
 | --- | --- | --- | --- | --- |
-| `jax_fdm` | COMPAS `Graph` / `Mesh`, **mutable** | plain `add_node(x=, y=, z=)` and `add_edge(u, v)`. **No element objects, no overrides.** | `node_support(key)`, a boolean `is_support` attribute | `node_load(key, load)`, `face_load(key, load)` |
+| force density library | COMPAS `Graph` / `Mesh`, **mutable** | plain `add_node(x=, y=, z=)` and `add_edge(u, v)`. **No element objects, no overrides.** | `node_support(key)`, a boolean `is_support` attribute | `node_load(key, load)`, `face_load(key, load)` |
 | `smax` | equinox pytree, **immutable** | `Structure(nodes, elements, supports)` from lists of objects. **No `add_*` at all.** | `Support(node_id, fixity)` over `[ux, uy, uz, rx, ry, rz]`, plus `FixedSupport`, `PinnedSupport`, `RollerSupport(axis=)` | `PointLoad`, `PointMoment`, `LineLoad` under `NodeLoad` / `ElementLoad` bases, grouped by `LoadCase` |
 | `compas_cem` | COMPAS `Graph`, **mutable** | `add_node(obj)`, `add_edge(obj)`, `add_support(obj)`, `add_load(obj)` | `type == "support"` attribute | `qx`, `qy`, `qz` attributes |
 
 **`smax` is object-based because equinox pytrees are immutable.** A `Structure`
 cannot be mutated, so it must be handed complete collections at construction.
-That constraint does not exist for `compas_cem` or `jax_fdm`, both of which sit
+That constraint does not exist for `compas_cem` or the force density library, both of which sit
 on mutable COMPAS datastructures. Its constructor-from-lists shape is therefore
 a consequence of JAX and must **not** be imported here.
 
-Which makes `jax_fdm` the only meaningful comparator — and `jax_fdm` is exactly
+Which makes the force density library the only meaningful comparator — and it is exactly
 the "no element objects" design.
 
 ### 13.2 `compas_cem` already unwraps the objects
@@ -1051,9 +1050,9 @@ Note also that the `length` attribute means the **prescribed** length on a
 topology diagram and the **realized** signed length on a form diagram. One name,
 two meanings, depending on which diagram is in hand. Worth separating.
 
-### 13.6 Naming conventions to adopt from `jax_fdm`
+### 13.6 Naming conventions to adopt from the force density library
 
-`jax_fdm` never shadows a COMPAS name — `edge_length` stays geometric and
+The force density library never shadows a COMPAS name — `edge_length` stays geometric and
 untouched — and gives every domain quantity its own noun, with a singular
 get-or-set form and a plural batch form: `edge_forcedensity` / `edges_forcedensities`,
 `edge_force` / `edges_forces`, `edge_loadpath` / `edges_loadpaths`, `edge_load`,
@@ -1062,9 +1061,9 @@ get-or-set form and a plural batch form: `edge_forcedensity` / `edges_forcedensi
 | `compas_cem` today | proposed | reason |
 | --- | --- | --- |
 | `edge_length_2(edge)` | `edge_signed_length(edge, length=None)` | its own noun, no clash, get-or-set |
-| `edge_force(edge)` | `edge_force(edge, force=None)` | add the setter; then identical to `jax_fdm` |
-| `node_load(node)` | `node_load(node, load=None)` | add the setter; then identical to `jax_fdm` |
-| `support_nodes()`, `loaded_nodes()`, `origin_nodes()` | `nodes_supports()`, `nodes_loaded()`, `nodes_origins()` | entity-first plural, as `jax_fdm` does throughout |
+| `edge_force(edge)` | `edge_force(edge, force=None)` | add the setter; then identical to the force density library |
+| `node_load(node)` | `node_load(node, load=None)` | add the setter; then identical to the force density library |
+| `support_nodes()`, `loaded_nodes()`, `origin_nodes()` | `nodes_supports()`, `nodes_loaded()`, `nodes_origins()` | entity-first plural, as the force density library does throughout |
 | — | `edges_forces()`, `edges_lengths()`, `edges_signed_lengths()` | plural batch accessors, which do not exist yet |
 
 Already aligned and to be left alone: `is_node_support(key)` is identical in both.
@@ -1077,7 +1076,7 @@ the load vocabulary ever grows here, prefer `smax`'s split.
 
 They do not, and they mildly favour the object-free design.
 
-**Area loads.** The precedent is `FDMesh.face_load(key, load)` in `jax_fdm`, with
+**Area loads.** The precedent is `FDMesh.face_load(key, load)` in the force density library, with
 `px`/`py`/`pz` per face. `smax` has none yet; one would slot under `ElementLoad`.
 The obstacle here is structural: a topology diagram is a `Graph`, so there are no
 faces to carry an area load. Two routes — a mesh-backed diagram in the `FDMesh`
@@ -1087,7 +1086,7 @@ the solver only ever reads nodal loads. It is also one more attribute-writing
 method, whereas the object design would need an `AreaLoad` class for `Diagram` to
 dispatch on.
 
-**Partially fixed supports.** `jax_fdm` is boolean-only, which is inherent to
+**Partially fixed supports.** The force density library is boolean-only, which is inherent to
 FDM: a node is free or fixed. `smax` carries a full six-degree-of-freedom fixity
 because it is a stiffness solver with a real DOF space. CEM has neither —
 supports *terminate trails*, and the reaction is whatever the trail delivers.
@@ -1115,7 +1114,7 @@ dispatch on. `smax` needs those classes only because its constructor takes a
 
 Leaning, not yet committed, and **not implemented**:
 
-- Adopt the object-free authoring API, aligned to `jax_fdm`, since the two share
+- Adopt the object-free authoring API, aligned to the force density library, since the two share
   a substrate and the query API already matches. CEM's vocabulary is small and
   closed, which is the condition under which "vocabulary on the datastructure"
   stays manageable.
@@ -1363,7 +1362,7 @@ is salvageable, and this was checked rather than assumed:
 
 Set 2026-08-07 and recorded here because it decides what comes next: **complete
 the COMPAS 2 migration first.** Only afterwards tighten or change API contracts
-to align with `jax_fdm` or `smax`. The §13 audit stands as the record for when
+to align with the force density library or `smax`. The §13 audit stands as the record for when
 that time comes; §13.6's naming work is deferred, not cancelled.
 
 ### 14.3 What "complete the COMPAS 2 migration" now means
@@ -1795,7 +1794,7 @@ The 3.9 resolution lands on the §4.4 ceilings: numpy 2.0.2, scipy 1.13.1, nlopt
 
 Decided 2026-11-10, reversing §12.5. `compas_plotter` and `compas_viewer` move
 from `requirements.txt` to `requirements-viz.txt`, published as the `viz` extra,
-the name `jax_fdm` uses. Rhino installs the core package, and the viewer alone
+the name the force density library uses. Rhino installs the core package, and the viewer alone
 would drag PySide6, PyOpenGL and freetype-py into Rhino's Python for modules no
 component imports.
 
@@ -1807,7 +1806,7 @@ component imports.
 - **Both modules fail loudly without their backend.** `compas_cem.plotters` and
   `compas_cem.viewers` import it first and re-raise the `ImportError` with the
   extra's name. The import binds a private name, because both modules build
-  `__all__` from `dir()`. This differs from `jax_fdm`'s `has_backend` guard,
+  `__all__` from `dir()`. This differs from the force density library's `has_backend` guard,
   which leaves the module importable but empty; a user who imports a plotter
   wants one.
 
@@ -1913,7 +1912,7 @@ Next: once this lands, §17.5 step 1.
 
 ## 18. Handover 2026-11-11: 0.9.0 released, icons merged, 0.9.1 next
 
-Written 2026-11-11. This section is the current handover and supersedes §17.1.
+Written 2026-11-11. This section superseded §17.1; §19 supersedes §18.1 and §18.5.
 
 ### 18.1 Where things stand
 
@@ -1953,7 +1952,7 @@ binary. The deprecated `yak.exe` that `compas_invocations2` 1.3.0 downloads is
 a Rhino 8.35 build that reads `YAK_TOKEN`, and with a dummy token it gets the
 same `401: Auth token isn't valid` as the yak bundled with Rhino. `--ci` keys
 never expire, so a mangled copy is the likely fault. `YAK_TOKEN` was set again
-on 2026-11-12, and only the 0.9.2 tag can test it: every yak command that
+on 2026-11-12, and only the 0.10.0 tag can test it: every yak command that
 needs authentication changes the server.
 
 If the push fails again, do not rerun the release job, which would try to
@@ -2000,7 +1999,7 @@ update path; a new package name would make existing users reinstall by hand.
 ### 18.4 Releasing 0.9.1 as is
 
 Decided 2026-11-11: 0.9.1 ships the icons and the other `Unreleased` changes,
-and the component changes wait for 0.9.2.
+and the component changes wait for the next release, 0.10.0.
 
 1. Merge this section first, in a pull request labeled `no changelog`.
    `bump-my-version` refuses a modified tracked file, though it ignores the
@@ -2013,7 +2012,7 @@ and the component changes wait for 0.9.2.
    `bump-my-version`, which rewrites the version, turns `Unreleased` into a
    dated `[0.9.1]`, commits `Bump version to 0.9.1` and tags `v0.9.1`. It then
    builds the sdist and wheel as a check, commits an empty `Unreleased` for
-   0.9.2, runs `clean`, and on `y` pushes the tags and then `main`.
+   the next release, runs `clean`, and on `y` pushes the tags and then `main`.
 4. On the tag, `release.yml` runs the build matrix, then on `windows-latest`
    uploads to PyPI, creates the GitHub release from the changelog, and pushes
    to yak. `docs.yml` deploys 0.9.1 as `latest`.
@@ -2029,7 +2028,7 @@ build warns that the `License ::` classifier and the `license` table are
 deprecated, with builds that use them unsupported from 2027-02-18; the fix is
 an SPDX `license = "MIT"` with `license-files`, on `setuptools>=77`.
 
-### 18.5 Then 0.9.2: the components
+### 18.5 Then 0.10.0: the components
 
 Existing components are to be adjusted and a few added; the list is not
 recorded yet. For each new component:
@@ -2037,14 +2036,17 @@ recorded yet. For each new component:
 - a folder under `components_cpython/` with `code.py` and a `metadata.json`
   holding a fresh static `instanceGuid`. Renaming keeps the GUID, so placed
   components survive (§16.2);
+- a header at the current version;
 - an `icon.tex` on its group's tile, rendered with `invoke build-icons
   --component <folder>`;
 - a `CHANGELOG.md` line.
 
-If a component starts needing library code newer than 0.9.0, its header must
-move with it. Bump first and run `update-gh-header` after (§16.7), and test with
-a local package (§17.5 step 2), since the header cannot resolve before PyPI has
-the release.
+The header moves with every release, since Rhino upgrades the library only when
+the requirement rises above the version it holds. A `bump-my-version` entry
+rewrites every header in the bump commit, and `test_component_headers`, which
+`invoke release` runs first, fails on any header not at the current version;
+`invoke update-gh-header` resets them. A component that needs unreleased library
+code is tested with a local package (§17.5 step 2).
 
 To test a local build in Rhino: `invoke build-cpython-ghuser-components`, then
 `invoke yakerize`; copy the `.yak` alone into `dist/yak_source/`; then, with
@@ -2053,9 +2055,90 @@ uninstall compas_cem` and `yak install --source dist/yak_source compas_cem
 <version>`, and restart Rhino. Undo it the same way, reinstalling from the
 Package Manager.
 
+Draw Form draws its own colored preview, since Grasshopper's preview ignores
+per-item color. Its outputs are Rhino 8 model objects carrying color and plot
+weight, with their default preview switched off on every solve, so baking goes
+through a Data parameter; `thicken` swaps points and lines for sphere, pipe and
+arrow meshes. Every engine draws arrows with the same proportions, kept in
+`compas_cem`'s `ARROW_*` constants, and reaction arrows keep the
+strongest-edge rule. Draw Topology follows the topology plotter: state colors,
+dashed deviation edges, load crosses, a `show_keys` toggle and no settings.
+To check a component against unreleased library code without installing it,
+drive Rhino with `rhinocode` on a copy whose header is removed and whose code
+puts `src` first on `sys.path`; the Grasshopper editor must be shown, or
+nothing previews.
+
 ### 18.6 Still open
 
 - #21: the five Grasshopper definitions must be rebuilt by hand (§16.8).
 - `compas_invocations2` on 2026-12-01 (§18.2).
+- Phases 3 and 4, gated on publishing `jax_cem` (§17.6), and the alignment work
+  deferred in §13.6.
+
+## 19. Handover: 0.10.0, the components
+
+This section is the current handover. 0.10.0 is complete on `component-updates`
+and waits only for its pull request and the release.
+
+### 19.1 Where things stand
+
+| item | state |
+| --- | --- |
+| `main` | `9d41ec6d`, 0.9.1 released and tagged `v0.9.1` |
+| `component-updates` | 0.10.0, about 20 commits ahead of `main`, pushed; its pull request is next |
+| version | 0.9.1 on PyPI, the yak server and the docs' `latest` |
+| open issues | #21, the Grasshopper examples, and #1 |
+| secrets | `YAK_TOKEN` replaced after the 0.9.1 push failed; only the 0.10.0 tag tests it (§18.2) |
+| Rhino | a local build of the branch: its wheel in the site-env and its yak package from `dist/yak_source` (§18.5) |
+
+### 19.2 What 0.10.0 changes
+
+`CHANGELOG.md` holds the detail and the reasons; in short:
+
+- **Build.** SPDX `license = "MIT"` with `license-files`, on `setuptools>=77.0.3`.
+  Component headers rise with every release.
+- **Elements and parameters.** Trail and Deviation Edge take a `state`, whose sign
+  sets tension or compression; a trail takes a length or a plane, never both.
+  Parameters gain `is_absolute`, with signed bounds checked at the start.
+- **Diagrams.** Shift Trails gains `auto_align`, backed by
+  `TopologyDiagram.align_trails`, which places the trails pair by pair on the gap
+  most deviation edges agree on, so braced topologies keep compact sequences.
+  Auxiliary Trail Settings sets one length, state and direction for every
+  auxiliary trail, through Assemble Topology Diagram's `auxiliary_trails_settings`.
+- **Visualization.** Draw Form draws its own colored preview and bakes through a
+  `bake` button; `thicken`, `decompose` and the `show_*` toggles sit on the
+  component, and Form Display Settings holds the numeric styling, `arrow_min`
+  first. Draw Topology follows the topology plotter, with `show_keys` and `bake`.
+- **Identity.** A logo form-found with CEM, in three weights with the same
+  force-proportional widths; `scripts/logo/build_logo.py` rebuilds every file in
+  `docs/assets/logo`. It is the docs logo, favicon and home page image, the
+  package icon and the Info icon.
+
+### 19.3 Component conventions
+
+- Inputs that are not toggles come first, then the toggles, then `bake`.
+- Toggles are verbs that name what they act on (`show_forces`, `auto_align`), and
+  a toggle flipped often stays on its component; settings components hold numbers.
+- A drawing component switches its outputs' preview off and draws them itself,
+  since Grasshopper's preview ignores per-item color, and bakes through its own
+  button, since Grasshopper skips hidden outputs.
+
+### 19.4 Releasing 0.10.0
+
+1. Merge the pull request into `main` with a merge commit.
+2. Run `uv run invoke release minor` from a terminal (§18.4): the changes add
+   components and inputs, so they take a minor version. The bump rewrites every
+   component header to `compas_cem>=0.10.0`.
+3. Watch the yak push, the first with the replaced `YAK_TOKEN`. On a 401, push by
+   hand (§18.2) and do not rerun the release job.
+4. Check the PyPI page, the GitHub release, the docs' logo, favicon and version
+   selector, and the Package Manager. The Package Manager shows the icon of the
+   newest version on the server, so the new icon appears only now.
+5. In Rhino, replace the local build with 0.10.0 from the Package Manager.
+
+### 19.5 Still open
+
+- #21: the five Grasshopper definitions must be rebuilt by hand (§16.8).
+- The `compas_invocations2` revisit (§18.2).
 - Phases 3 and 4, gated on publishing `jax_cem` (§17.6), and the alignment work
   deferred in §13.6.

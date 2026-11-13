@@ -1,5 +1,6 @@
 [build-system]
-requires = ["setuptools>=66.0"]
+# setuptools 77.0 added the PEP 639 license fields and 77.0.3 fixed their first bugs
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 # ============================================================================
@@ -8,17 +9,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "compas_cem"
-description = "The Combinatorial Equilibrium Modeling framework for COMPAS"
+description = "The combinatorial equilibrium method for COMPAS"
 keywords = ["form-finding", "structural-design", "architecture", "equilibrium"]
 authors = [{ name = "Rafael Pastrana", email = "arpj@princeton.edu" }]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE", "AUTHORS.md"]
 readme = "README.md"
 requires-python = ">=3.9,<3.14"
 dynamic = ['dependencies', 'optional-dependencies', 'version']
 classifiers = [
     "Development Status :: 4 - Beta",
     "Topic :: Scientific/Engineering",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: Unix",
     "Operating System :: POSIX",
     "Operating System :: Microsoft :: Windows",
@@ -91,6 +92,12 @@ tag = true
 filename = "src/compas_cem/__init__.py"
 search = "{current_version}"
 replace = "{new_version}"
+
+# Rhino upgrades the library only when the components' requirement rises above the installed version.
+[[tool.bumpversion.files]]
+glob = "src/compas_cem/ghpython/components_cpython/*/code.py"
+search = "# r: compas_cem>={current_version}"
+replace = "# r: compas_cem>={new_version}"
 
 [[tool.bumpversion.files]]
 filename = "CHANGELOG.md"

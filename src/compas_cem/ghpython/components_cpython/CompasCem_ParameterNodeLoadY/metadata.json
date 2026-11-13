@@ -3,7 +3,7 @@
     "nickname": "NodeLoadYParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Set the Y parameter of an node load as an optimization parameter.",
+    "description": "Set the Y component of a node load as an optimization parameter.",
     "exposure": 8,
     "instanceGuid": "dea93571-e86e-4976-b7b5-4b17f6ea17d7",
 
@@ -11,17 +11,17 @@
         "inputParameters": [
             {
                 "name": "node_key",
-                "description": "The key of a COMPAS CEM origin node.",
+                "description": "The key of a COMPAS CEM node that carries a load.",
                 "typeHintID": "int"
             },
             {
                 "name": "bound_low",
-                "description": "The lower bound of the node optimization parameter. Its value is calculated as the initial node parameter minus the absolute value of this bound. Defaults to '-inf'.",
+                "description": "The smallest Y component the node load may take. The start value must lie between the bounds. Defaults to '-inf'.",
                 "typeHintID": "float"
             },
             {
                 "name": "bound_up",
-                "description": "The upper bound of the node optimization parameter. Its value is calculated as the initial node parameter plus the absolute value of this bound. Defaults to '+inf'.",
+                "description": "The largest Y component the node load may take. The start value must lie between the bounds. Defaults to '+inf'.",
                 "typeHintID": "float"
             }
         ],

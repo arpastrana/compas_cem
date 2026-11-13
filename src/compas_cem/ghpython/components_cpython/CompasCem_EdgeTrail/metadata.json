@@ -15,13 +15,18 @@
                 "typeHintID": "line"
             },
             {
+                "name": "state",
+                "description": "The force state of the edge: positive for tension, negative for compression. Only its sign is used, and it must be nonzero. Optional with a plane: the topology then records it, for drawing and for a trail that never meets the plane, while the solver ends the trail at the plane.",
+                "typeHintID": "float"
+            },
+            {
                 "name": "length",
-                "description": "The signed length of the edge. If negative, the edge is in compression. Otherwise, it is in tension. The length magnitude is ignored if a plane is supplied.",
+                "description": "The length of the edge. Only its absolute value is used. Connect either a length or a plane.",
                 "typeHintID": "float"
             },
             {
                 "name": "plane",
-                "description": "An optional plane to define the length of the trail edge relative to the projection of its start node onto the plane. The force state will be that specified by the length input parameter.",
+                "description": "A plane that ends the edge where its trail meets it, instead of a length. The plane's position sets the force state the solver finds.",
                 "typeHintID": "plane"
             }
         ],

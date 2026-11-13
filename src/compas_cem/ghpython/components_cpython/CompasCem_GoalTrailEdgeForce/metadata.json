@@ -3,7 +3,7 @@
     "nickname": "TrailEdgeForceGoal",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Make the force on a trail edge to reach a prescribed value.",
+    "description": "Make the force of a trail edge reach a target value.",
     "exposure": 4,
     "instanceGuid": "de1e28ed-deec-45d9-bde2-e4a0bdb53a95",
 

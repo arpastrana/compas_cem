@@ -21,7 +21,7 @@
             },
             {
                 "name": "weight",
-                "description": "The weight of the goal in the optimization problem. The weight of the goal in the optimization problem. Defaults to one",
+                "description": "The weight of the goal in the optimization problem. Defaults to one.",
                 "typeHintID": "float"
             }
         ],

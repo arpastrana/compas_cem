@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Set the length of a trail edge as an optimization parameter.
 """
@@ -22,4 +22,6 @@ class TrailEdgeParameterComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if not edge_key:
             return
 
-        return TrailEdgeParameter(edge_key, bound_low, bound_up)
+        parameter = TrailEdgeParameter(edge_key, bound_low, bound_up, is_absolute=True)
+
+        return parameter

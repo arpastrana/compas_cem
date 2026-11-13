@@ -1,0 +1,56 @@
+{
+    "name": "Form Display Settings (COMPAS CEM)",
+    "nickname": "FormSettings",
+    "category": "COMPAS CEM",
+    "subcategory": "08_Visualization",
+    "description": "Set how Draw Form draws a form diagram.",
+    "exposure": 2,
+    "instanceGuid": "646ef119-12dd-48ba-8a75-23ecd72495ee",
+
+    "ghpython": {
+        "inputParameters": [
+            {
+                "name": "arrow_min",
+                "description": "The smallest load or reaction magnitude to draw as an arrow, or the smallest component when Draw Form decomposes the forces. It is compared before arrow_scale applies, so the scale never hides an arrow. Defaults to 1e-3.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "arrow_scale",
+                "description": "The factor that turns a load or reaction force into its arrow length. Defaults to 1.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "width_min",
+                "description": "The width in pixels of the edge with the smallest absolute force. Defaults to 1.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "width_max",
+                "description": "The width in pixels of the edge with the largest absolute force. Defaults to 8.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "radius_min",
+                "description": "The pipe radius in model units of the edge with the smallest absolute force, when Draw Form thickens the edges. Defaults to 0.01.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "radius_max",
+                "description": "The pipe radius in model units of the edge with the largest absolute force, when Draw Form thickens the edges, and the radius of the thickened nodes. Defaults to 0.1.",
+                "typeHintID": "float"
+            },
+            {
+                "name": "thick_sides",
+                "description": "The number of faces around every pipe, arrow and node sphere when Draw Form thickens the drawing. At least 3. Defaults to 8.",
+                "typeHintID": "int"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "settings",
+                "description": "The display settings for Draw Form.",
+                "optional": false
+            }
+        ]
+    }
+}

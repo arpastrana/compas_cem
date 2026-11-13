@@ -3,7 +3,7 @@
     "nickname": "DrawTopology",
     "category": "COMPAS CEM",
     "subcategory": "08_Visualization",
-    "description": "Draw a topology diagram.",
+    "description": "Draw a topology diagram in color, with its deviation edges dashed and its loaded nodes crossed. The outputs are Rhino model objects: a Model Object or Data parameter keeps their colors and plot weights, a Line, Curve or Point parameter only their geometry. Press bake to add the drawing to the Rhino document.",
     "exposure": 2,
     "instanceGuid": "811239b8-4d26-41d6-80ba-953e2e2a7593",
 
@@ -15,7 +15,7 @@
             },
             {
                 "name": "node_keys",
-                "description": "A selection of the node keys in the diagram. Defaults to all the node keys.",
+                "description": "A selection of the node keys in the diagram, which also selects the load crosses drawn. Defaults to all the node keys.",
                 "scriptParamAccess": "list",
                 "typeHintID": "int"
             },
@@ -25,58 +25,55 @@
                 "scriptParamAccess": "list"
             },
             {
-                "name": "force_min",
-                "description": "The minimum force magnitude to plot. Defaults to 1e-3.",
-                "typeHintID": "float"
+                "name": "show_keys",
+                "description": "Whether to label the drawn nodes with their keys and the drawn edges with u-v in the viewport. The labels do not bake. Defaults to False.",
+                "typeHintID": "bool"
             },
             {
-                "name": "force_scale",
-                "description": "The scaling factor of the loads. Defaults to 1.",
-                "typeHintID": "float"
+                "name": "bake",
+                "description": "Whether to add the drawing to the Rhino document. Wire a Button, so every press bakes once: lines with their colors and plot weights, and deviation edges dashed, each category on its own sublayer of COMPAS CEM::Topology. The labels do not bake.",
+                "typeHintID": "bool"
             }
-
-
         ],
         "outputParameters": [
             {
                 "name": "nodes",
-                "description": "The nodes in the diagram as points.",
+                "description": "The nodes as points: green at a support, purple at an origin, light gray otherwise.",
                 "optional": false
             },
             {
                 "name": "origin_nodes",
-                "description": "The origin nodes in the diagram as points.",
+                "description": "The origin nodes as purple points.",
                 "optional": false
             },
             {
                 "name": "support_nodes",
-                "description": "The support nodes in the diagram as points.",
+                "description": "The support nodes as green points.",
                 "optional": false
             },
             {
                 "name": "edges",
-                "description": "The edges in the diagram as lines.",
+                "description": "The edges as lines, blue in compression and red in tension by their length or force, orange on an auxiliary trail, with the deviation edges dashed.",
                 "optional": false
             },
             {
                 "name": "trail_edges",
-                "description": "The trail edges in the diagram as lines.",
+                "description": "The trail edges as lines, colored as in edges.",
                 "optional": false
             },
             {
                 "name": "deviation_edges",
-                "description": "The deviation edges in the diagram as lines.",
+                "description": "The deviation edges as dashed lines, colored as in edges.",
                 "optional": false
             },
             {
                 "name": "trails",
-                "description": "The trails in the diagram as polylines.",
+                "description": "The trails as pink polylines, orange for an auxiliary trail.",
                 "optional": false
             },
-
             {
                 "name": "loads",
-                "description": "The applied node loads as lines.",
+                "description": "A black cross at every loaded node, as two lines each in the XY plane.",
                 "optional": false
             }
         ]

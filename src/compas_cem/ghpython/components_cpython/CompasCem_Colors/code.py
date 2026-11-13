@@ -1,6 +1,6 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
-Get the color scheme for the objects of the CEM framework.
+Get the color scheme for the objects of the CEM.
 """
 
 from __future__ import annotations

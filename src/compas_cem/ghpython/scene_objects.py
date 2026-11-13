@@ -1,5 +1,3 @@
-from math import fabs
-
 from compas.geometry import add_vectors
 from compas.geometry import length_vector
 from compas.geometry import normalize_vector
@@ -13,6 +11,7 @@ from compas_rhino.conversions import polyline_to_rhino_curve
 
 from compas_cem.diagrams import FormDiagram
 from compas_cem.diagrams import TopologyDiagram
+from compas_cem.ghpython.diagram_display import reaction_shifts
 
 __all__ = [
     "DiagramObject",
@@ -124,9 +123,14 @@ class DiagramObject(GraphObject):
         -------
         lines :
             One Rhino line per drawn load.
+
+        Notes
+        -----
+        A load ends at its node, so the head of the line touches the node it
+        loads, as in every other drawing of the diagram.
         """
         nodes = list(self.diagram.nodes()) if nodes is None else list(nodes)
-        shift = {node: False for node in nodes}
+        shift = {node: True for node in nodes}
 
         return self._draw_forces(
             nodes=nodes,
@@ -284,25 +288,10 @@ class FormDiagramObject(DiagramObject):
 
         Notes
         -----
-        A reaction is shifted when the strongest edge meeting the node is in
-        compression, so the force reads as pushing against the support rather
-        than pulling away from it. A node with no connected edge is never
-        shifted, which also keeps the strongest-edge search off an empty set.
-
-        TODO: needs a more robust check for orientation. What is wanted is to
-        know whether the force needs a full shift.
+        The rule is shared with the Draw Form preview through
+        `compas_cem.ghpython.reaction_shifts`.
         """
-        form = self.form
-
-        shifts = {}
-        for node in nodes:
-            forces = [form.edge_force(e) for e in form.node_connected_edges(node)]
-            if not forces:
-                shifts[node] = False
-                continue
-            shifts[node] = max(forces, key=lambda f: fabs(f)) < 0.0
-
-        return shifts
+        return reaction_shifts(self.form, nodes)
 
 
 class TopologyDiagramObject(DiagramObject):

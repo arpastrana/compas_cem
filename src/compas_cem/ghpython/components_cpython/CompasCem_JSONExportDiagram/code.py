@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Export a COMPAS CEM diagram and save it as a JSON file.
 """
@@ -12,11 +12,17 @@ import Grasshopper
 
 
 class DiagramToJSON(Grasshopper.Kernel.GH_ScriptInstance):
-    def RunScript(self, diagram: Any, filepath: str | None) -> Any:
-        if not (diagram and filepath):
+    def RunScript(
+        self,
+        export: bool | None,
+        diagram: Any,
+        filepath: str | None,
+    ) -> Any:
+        if not (export and diagram and filepath):
             return
 
-        diagram.to_json(os.path.abspath(filepath), pretty=True)
+        json_path = os.path.abspath(filepath)
+        diagram.to_json(json_path, pretty=True)
         json_string = diagram.to_jsonstring(pretty=True)
 
         return json_string

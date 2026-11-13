@@ -19,7 +19,7 @@ And the code repository:
 
 ```latex
 @software{compas_cem,
-    title={{COMPAS~CEM}: The {Combinatorial Equilibrium Modeling} framework for {COMPAS}},
+    title={{COMPAS~CEM}: The combinatorial equilibrium method for {COMPAS}},
     author={Pastrana, Rafael and
             Ohlbrock, Patrick Ole and
             D'Acunto, Pierluigi and

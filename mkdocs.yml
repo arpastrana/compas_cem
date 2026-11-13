@@ -1,6 +1,6 @@
 site_name: COMPAS CEM
 site_url: https://arpastrana.github.io/compas_cem/
-site_description: The Combinatorial Equilibrium Modeling (CEM) framework for COMPAS.
+site_description: The combinatorial equilibrium method (CEM) for COMPAS.
 site_author: Rafael Pastrana
 
 repo_name: arpastrana/compas_cem
@@ -18,6 +18,8 @@ extra:
 
 theme:
   name: material
+  logo: assets/logo/compas_cem_icon.svg
+  favicon: assets/logo/compas_cem_icon.svg
   palette:
     # Palette toggle for light mode
     - scheme: default

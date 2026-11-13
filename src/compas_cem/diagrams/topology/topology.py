@@ -1,3 +1,7 @@
+import heapq
+from collections import Counter
+from collections import defaultdict
+
 from compas.geometry import add_vectors
 from compas.geometry import normalize_vector
 from compas.geometry import scale_vector
@@ -37,7 +41,7 @@ class TopologyDiagram(Diagram, MeshMixins):
         self.attributes["_trails"] = dict()
         self.attributes["_auxiliary_trails"] = dict()
         self.attributes["_aux_length"] = -1.0
-        self.attributes["_aux_vector"] = [1.0, 1.0, 1.0]
+        self.attributes["_aux_vector"] = [-1.0, -1.0, -1.0]
 
     # ==============================================================================
     # Serialization
@@ -99,12 +103,18 @@ class TopologyDiagram(Diagram, MeshMixins):
     @property
     def auxiliary_trail_vector(self):
         """
-        The default direction used to automatically create an auxiliary trail edge.
+        The direction from a node to the support of its auxiliary trail.
 
         Returns
         -------
         vector :
-            The direction the auxiliary trail edge extends in.
+            The direction the auxiliary trail edge extends in, whatever the
+            sign of its length.
+
+        Notes
+        -----
+        The vector places the auxiliary supports in the topology only: the
+        solver places each one along the residual force of its node.
         """
         return self.attributes["_aux_vector"]
 
@@ -336,6 +346,89 @@ class TopologyDiagram(Diagram, MeshMixins):
             sequence_new = sequence + idx
             self.node_attribute(node, name="_k", value=sequence_new)
 
+    def align_trails(self):
+        """
+        Shift every trail so that as many deviation edges as possible are direct.
+
+        Notes
+        -----
+        A deviation edge between two trails is direct when their starting
+        sequences differ by the gap between the positions of its nodes along
+        them. Between every pair of linked trails, the gap most of their edges
+        agree on wins, and the trails are placed pair by pair, the pairs with
+        the most agreeing edges first. Every group of linked trails then shifts
+        so that its earliest trail starts at sequence 0, which discards earlier
+        shifts. When every gap can be met, no deviation edge stays indirect.
+        Otherwise, the edges that disagree with a winning gap stay indirect, as
+        does an edge between two nodes of the same trail.
+        """
+        if not self.has_trails():
+            msg = "The diagram has no trails! Run topology.build_trails() first"
+            raise ValueError(msg)
+
+        trail_links = self._trail_links()
+        trail_starts = {}
+
+        for root, _ in self.trails(keys=True):
+            if root in trail_starts:
+                continue
+
+            trail_starts[root] = 0
+            group = [root]
+            frontier = []
+            for count, origin, gap in trail_links[root]:
+                entry = (-count, origin, gap, root)
+                heapq.heappush(frontier, entry)
+
+            while frontier:
+                _, origin, gap, parent = heapq.heappop(frontier)
+                if origin in trail_starts:
+                    continue
+                trail_starts[origin] = trail_starts[parent] + gap
+                group.append(origin)
+                for count, neighbor, step in trail_links[origin]:
+                    if neighbor not in trail_starts:
+                        entry = (-count, neighbor, step, origin)
+                        heapq.heappush(frontier, entry)
+
+            group_starts = [trail_starts[origin] for origin in group]
+            start_min = min(group_starts)
+            for origin in group:
+                self.shift_trail(origin, trail_starts[origin] - start_min)
+
+    def _trail_links(self):
+        """
+        Map every trail to the trails its deviation edges reach, each with the
+        number of edges that agree on the winning gap and the gap itself.
+        """
+        trail_positions = {}
+        for origin, trail in self.trails(keys=True):
+            for position, node in enumerate(trail):
+                trail_positions[node] = (origin, position)
+
+        gap_votes = defaultdict(Counter)
+        for u, v in self.deviation_edges():
+            origin_u, position_u = trail_positions[u]
+            origin_v, position_v = trail_positions[v]
+            if origin_u == origin_v:
+                continue
+            # Order every pair one way, so both edge directions vote together.
+            if origin_u > origin_v:
+                origin_u, origin_v = origin_v, origin_u
+                position_u, position_v = position_v, position_u
+            pair = (origin_u, origin_v)
+            gap_votes[pair][position_u - position_v] += 1
+
+        trail_links = defaultdict(list)
+        for (origin_u, origin_v), votes in gap_votes.items():
+            ((gap, count),) = votes.most_common(1)
+            link_forward = (count, origin_v, gap)
+            link_backward = (count, origin_u, -gap)
+            trail_links[origin_u].append(link_forward)
+            trail_links[origin_v].append(link_backward)
+
+        return trail_links
+
     def build_trails(self, auxiliary_trails=False):
         """
         Automatically generate the trails in the topology diagram.
@@ -418,7 +511,7 @@ class TopologyDiagram(Diagram, MeshMixins):
             aux_dir = normalize_vector(self.auxiliary_trail_vector)
 
             for node in unassigned:
-                aux_vector = scale_vector(aux_dir, self.auxiliary_trail_length)
+                aux_vector = scale_vector(aux_dir, abs(self.auxiliary_trail_length))
                 aux_xyz = add_vectors(self.node_coordinates(node), aux_vector)
                 aux_node = self.add_node(Node(xyz=aux_xyz))
 
@@ -465,6 +558,25 @@ class TopologyDiagram(Diagram, MeshMixins):
             The key of the next origin node.
         """
         return self.nodes_where({"type": "_origin"})
+
+    def auxiliary_support_nodes(self):
+        """
+        Support nodes that end the auxiliary trails.
+
+        Yields
+        ------
+        support_node :
+            The key of the next support node of an auxiliary trail.
+
+        Notes
+        -----
+        The origin node of an auxiliary trail belongs to the structure, so it is
+        not yielded.
+        """
+        for edge in self.auxiliary_trails():
+            for node in edge:
+                if self.is_node_support(node):
+                    yield node
 
     # ==============================================================================
     #  Connected Edges

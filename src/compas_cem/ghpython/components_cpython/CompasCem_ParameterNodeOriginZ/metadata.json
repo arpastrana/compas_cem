@@ -16,12 +16,12 @@
             },
             {
                 "name": "bound_low",
-                "description": "The lower bound of the node optimization parameter. It is calculated as the initial node parameter minus the absolute value of this bound. Defaults to '-inf'.",
+                "description": "The smallest Z coordinate the origin node may take. The start value must lie between the bounds. Defaults to '-inf'.",
                 "typeHintID": "float"
             },
             {
                 "name": "bound_up",
-                "description": "The upper bound of the node optimization parameter. It is calculated as the initial node parameter plus the absolute value of this bound. Defaults to '+inf'.",
+                "description": "The largest Z coordinate the origin node may take. The start value must lie between the bounds. Defaults to '+inf'.",
                 "typeHintID": "float"
             }
         ],

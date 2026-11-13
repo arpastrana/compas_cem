@@ -3,7 +3,7 @@
     "nickname": "FormFinding",
     "category": "COMPAS CEM",
     "subcategory": "05_Equilibrium",
-    "description": "Find a form in static equilibrium.",
+    "description": "Find a form diagram in static equilibrium.",
     "exposure": 2,
     "instanceGuid": "1c508eee-e3e1-4010-abb4-796703f89cb0",
 
@@ -25,7 +25,7 @@
             },
             {
                 "name": "eta",
-                "description": "The convergence threshold of the form-finding algorithm. Default to 1e-6.",
+                "description": "The convergence threshold of the form-finding algorithm. Defaults to 1e-6.",
                 "typeHintID": "float"
             }
         ],

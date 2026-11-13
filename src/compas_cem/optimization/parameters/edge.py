@@ -43,6 +43,7 @@ class EdgeParameter(Parameter):
         data["_key"] = repr(self._key)
         data["_bound_up"] = self._bound_up
         data["_bound_low"] = self._bound_low
+        data["_is_absolute"] = self._is_absolute
         data["_attr_name"] = self._attr_name
 
         return data
@@ -71,5 +72,8 @@ class EdgeParameter(Parameter):
             if bound is not None:
                 bound = float(bound)
             setattr(parameter, bound_name, bound)
+
+        # Data saved before absolute bounds existed holds relative ones.
+        parameter._is_absolute = bool(data.get("_is_absolute", False))
 
         return parameter

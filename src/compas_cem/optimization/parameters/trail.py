@@ -13,8 +13,10 @@ class TrailEdgeParameter(EdgeParameter):
     Sets the length of a trail edge as an optimization parameter.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None):
-        super(TrailEdgeParameter, self).__init__(key, bound_low, bound_up)
+    def __init__(self, key=None, bound_low=None, bound_up=None, is_absolute=False):
+        super(TrailEdgeParameter, self).__init__(
+            key, bound_low, bound_up, is_absolute=is_absolute
+        )
         self._attr_name = "length"
 
 

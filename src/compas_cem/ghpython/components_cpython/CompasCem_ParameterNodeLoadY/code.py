@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Set the Y component of a node load as an optimization parameter.
 """
@@ -22,4 +22,6 @@ class NodeLoadYParameterComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if node_key is None:
             return
 
-        return NodeLoadYParameter(node_key, bound_low, bound_up)
+        parameter = NodeLoadYParameter(node_key, bound_low, bound_up, is_absolute=True)
+
+        return parameter

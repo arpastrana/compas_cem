@@ -205,6 +205,7 @@ class Optimizer(Data):
 
         # test for bad stuff before going any further
         self.check_optimization_sanity()
+        self.check_start_bounds(topology)
 
         # compose gradient and objective functions
         if grad not in ("AD", "FD"):
@@ -389,6 +390,24 @@ class Optimizer(Data):
 
         if len(self.goals) == 0:
             msg = "No goals defined. Optimization not possible."
+            raise ValueError(msg)
+
+    def check_start_bounds(self, topology):
+        """
+        Verify that every parameter starts within its bounds.
+
+        Notes
+        -----
+        NLopt rejects a start value outside the bounds with a bare error. Absolute
+        bounds can exclude the start value; relative bounds always contain it.
+        """
+        for parameter in self.parameters.values():
+            start = parameter.start_value(topology)
+            bound_low = parameter.bound_low(topology)
+            bound_up = parameter.bound_up(topology)
+            if bound_low <= start <= bound_up:
+                continue
+            msg = f"{parameter!r} starts at {start}, outside its bounds [{bound_low}, {bound_up}]."
             raise ValueError(msg)
 
     # ------------------------------------------------------------------------------

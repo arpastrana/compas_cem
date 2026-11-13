@@ -1,5 +1,5 @@
 """
-The Combinatorial Equilibrium Modeling framework for COMPAS.
+The combinatorial equilibrium method for COMPAS.
 """
 
 from __future__ import print_function
@@ -39,8 +39,33 @@ COLORS = {
     "auxiliary_trail": (255, 155, 15),  # orange
 }
 
+# Arrow proportions in 3D, as fractions of the arrow length
+ARROW_HEADPORTION = 0.12
+ARROW_HEADWIDTH = 0.04
+ARROW_BODYWIDTH = 0.012
+# Arrow proportions in 2D; widths are full widths, as matplotlib takes them
+ARROW_HEADPORTION_2D = 0.2
+ARROW_HEADWIDTH_2D = 0.08
+ARROW_BODYWIDTH_2D = 0.024
+# The reach of a load cross from its node, as a fraction of the diagram's bounding-box diagonal
+LOAD_CROSS_SIZE = 0.02
+
 # TODO: add static equilibrium plugin
 # The plotter, viewer and Grasshopper scene objects register themselves when
 # their package is imported, so no plugin module is declared here.
 
-__all__ = ["HOME", "DATA", "DOCS", "TEMP", "JSON_DATA", "COLORS"]
+__all__ = [
+    "HOME",
+    "DATA",
+    "DOCS",
+    "TEMP",
+    "JSON_DATA",
+    "COLORS",
+    "ARROW_HEADPORTION",
+    "ARROW_HEADWIDTH",
+    "ARROW_BODYWIDTH",
+    "ARROW_HEADPORTION_2D",
+    "ARROW_HEADWIDTH_2D",
+    "ARROW_BODYWIDTH_2D",
+    "LOAD_CROSS_SIZE",
+]

@@ -3,7 +3,7 @@
     "nickname": "Info",
     "category": "COMPAS CEM",
     "subcategory": "01_Info",
-    "description": "Displays info about the active version of COMPAS CEM",
+    "description": "Display information about the active COMPAS CEM version and environment.",
     "exposure": 2,
     "instanceGuid": "17d9b79c-59ec-44b5-aa85-4b1c1b8463c9",
 
@@ -12,7 +12,7 @@
         "outputParameters": [
             {
                 "name": "info",
-                "description": "COMPAS CEM info"
+                "description": "The COMPAS CEM version and environment information."
             }
         ]
     }

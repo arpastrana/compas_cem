@@ -3,7 +3,7 @@
     "nickname": "DrawForm",
     "category": "COMPAS CEM",
     "subcategory": "08_Visualization",
-    "description": "Draw a form diagram.",
+    "description": "Draw a form diagram in color, with its loads and reaction forces as arrows. The outputs are Rhino model objects: a Model Object or Data parameter keeps their colors and plot weights, a Line, Curve or Point parameter only their geometry. Press bake to add the drawing to the Rhino document.",
     "exposure": 2,
     "instanceGuid": "90db8c7c-c4d3-4f55-9c8e-1f81b3a9c15e",
 
@@ -11,11 +11,11 @@
         "inputParameters": [
             {
                 "name": "form",
-                "description": "A COMPAS CEM topology diagram."
+                "description": "A COMPAS CEM form diagram."
             },
             {
                 "name": "node_keys",
-                "description": "A selection of the node keys in the diagram. Defaults to all the node keys.",
+                "description": "A selection of the node keys in the diagram, which also selects the loads and reaction forces drawn. Defaults to all the node keys.",
                 "scriptParamAccess": "list",
                 "typeHintID": "int"
             },
@@ -25,42 +25,69 @@
                 "scriptParamAccess": "list"
             },
             {
-                "name": "force_min",
-                "description": "The smallest force magnitude to draw. Defaults to 1e-3",
-                "typeHintID": "float"
+                "name": "settings",
+                "description": "The display settings from Form Display Settings. Defaults to its default settings."
             },
             {
-                "name": "force_scale",
-                "description": "The scale of the loads and the reactions. Defaults to 1.",
-                "typeHintID": "float"
+                "name": "thicken",
+                "description": "Whether to thicken the nodes into spheres, the edges into pipes and the loads and reaction forces into solid arrows, sized by the settings' radii. Every output then holds meshes instead of points and lines. Defaults to False.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "decompose",
+                "description": "Whether to draw every load and reaction force as its x, y and z components, an arrow each, rather than as one arrow. Defaults to True.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "show_loads",
+                "description": "Whether to draw the loads. When off, the loads neither preview nor bake, and the loads output is empty. Defaults to True.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "show_reactions",
+                "description": "Whether to draw the reaction forces. When off, the reactions neither preview nor bake, and the reactions output is empty. Defaults to True.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "show_forces",
+                "description": "Whether to label every drawn edge with its force in the viewport. The labels do not bake. Defaults to False.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "show_keys",
+                "description": "Whether to label every drawn node with its key and every drawn edge with its key as u-v in the viewport. With show_forces on too, an edge label reads u-v: force. The labels do not bake. Defaults to False.",
+                "typeHintID": "bool"
+            },
+            {
+                "name": "bake",
+                "description": "Whether to add the drawing to the Rhino document. Wire a Button, so every press bakes once: lines with their colors, plot weights and the arrowheads of the forces, and thickened meshes with their colors, each category on its own sublayer of COMPAS CEM::Form. The labels do not bake.",
+                "typeHintID": "bool"
             }
-
-
         ],
         "outputParameters": [
             {
                 "name": "nodes",
-                "description": "The nodes of the diagram as points.",
+                "description": "The nodes as points, green at a support and light gray otherwise, or as spheres when thickened.",
                 "optional": false
             },
             {
                 "name": "support_nodes",
-                "description": "The support nodes of the diagram as points",
+                "description": "The support nodes as green points, or as spheres when thickened.",
                 "optional": false
             },
             {
                 "name": "edges",
-                "description": "The edges of the diagram as lines.",
+                "description": "The edges as lines, red in tension and blue in compression and wider as their force grows, or as pipes when thickened.",
                 "optional": false
             },
             {
                 "name": "loads",
-                "description": "The applied loads as lines.",
+                "description": "The loads as green arrows, one per x, y and z component when decomposed, or as solid arrows when thickened.",
                 "optional": false
             },
             {
                 "name": "reactions",
-                "description": "The reaction forces at the supports, as lines.",
+                "description": "The reaction forces as gray arrows, one per x, y and z component when decomposed, or as solid arrows when thickened.",
                 "optional": false
             }
         ]

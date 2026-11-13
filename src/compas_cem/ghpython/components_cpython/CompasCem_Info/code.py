@@ -1,6 +1,6 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
-Displays information about the active COMPAS CEM version and environment.
+Display information about the active COMPAS CEM version and environment.
 """
 
 from __future__ import annotations

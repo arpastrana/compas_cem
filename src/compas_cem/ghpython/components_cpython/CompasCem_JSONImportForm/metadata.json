@@ -3,17 +3,22 @@
     "nickname": "FormDiagramFromJSON",
     "category": "COMPAS CEM",
     "subcategory": "09_Serialization",
-    "description": "Create a COMPAS CEM form diagram from JSON file.",
+    "description": "Import a COMPAS CEM form diagram from a JSON file.",
     "exposure": 4,
     "instanceGuid": "6b424279-b3c3-41c2-aec2-c0387ce2e5d5",
 
     "ghpython": {
         "inputParameters": [
-             {
+            {
+                "name": "read",
+                "description": "Whether to read the form diagram from the JSON file. Nothing comes out while it is False.",
+                "typeHintID": "bool"
+            },
+            {
                 "name": "filepath",
                 "description": "The full filepath to the JSON file that stores the diagram. Do not forget to add the extension .json to the filename.",
-                 "typeHintID": "str"
-             }
+                "typeHintID": "str"
+            }
         ],
         "outputParameters": [
             {

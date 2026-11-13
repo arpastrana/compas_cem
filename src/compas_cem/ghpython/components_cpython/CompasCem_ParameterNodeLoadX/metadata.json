@@ -3,7 +3,7 @@
     "nickname": "NodeLoadXParameter",
     "category": "COMPAS CEM",
     "subcategory": "06_Optimization",
-    "description": "Set the X parameter of an node load as an optimization parameter.",
+    "description": "Set the X component of a node load as an optimization parameter.",
     "exposure": 8,
     "instanceGuid": "8ca1c264-8edc-49f5-9336-a1a52b9f8f75",
 
@@ -11,17 +11,17 @@
         "inputParameters": [
             {
                 "name": "node_key",
-                "description": "The key of a COMPAS CEM origin node.",
+                "description": "The key of a COMPAS CEM node that carries a load.",
                 "typeHintID": "int"
             },
             {
                 "name": "bound_low",
-                "description": "The lower bound of the node optimization parameter. Its value is calculated as the initial node parameter minus the absolute value of this bound. Defaults to '-inf'.",
+                "description": "The smallest X component the node load may take. The start value must lie between the bounds. Defaults to '-inf'.",
                 "typeHintID": "float"
             },
             {
                 "name": "bound_up",
-                "description": "The upper bound of the node optimization parameter. Its value is calculated as the initial node parameter plus the absolute value of this bound. Defaults to '+inf'.",
+                "description": "The largest X component the node load may take. The start value must lie between the bounds. Defaults to '+inf'.",
                 "typeHintID": "float"
             }
         ],

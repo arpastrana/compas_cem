@@ -1,6 +1,6 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
-Make the reaction force on a trail edge to meet a target force vector.
+Make the reaction force at a support node reach a target force vector.
 """
 
 from __future__ import annotations

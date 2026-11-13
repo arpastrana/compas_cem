@@ -1,4 +1,4 @@
-# r: compas_cem>=0.9.0
+# r: compas_cem>=0.9.1
 """
 Set the Z coordinate of an origin node as an optimization parameter.
 """
@@ -22,4 +22,8 @@ class OriginNodeZParameterComponent(Grasshopper.Kernel.GH_ScriptInstance):
         if node_key is None:
             return
 
-        return OriginNodeZParameter(node_key, bound_low, bound_up)
+        parameter = OriginNodeZParameter(
+            node_key, bound_low, bound_up, is_absolute=True
+        )
+
+        return parameter

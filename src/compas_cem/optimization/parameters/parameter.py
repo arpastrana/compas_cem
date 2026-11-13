@@ -11,14 +11,29 @@ __all__ = ["Parameter"]
 
 class Parameter(Data):
     """
-    Parametrizer.
+    A node or edge attribute that an optimizer varies.
+
+    Parameters
+    ----------
+    key :
+        The key of the node or edge to parametrize.
+    bound_low :
+        The lower bound. ``None`` leaves the parameter unbounded from below.
+    bound_up :
+        The upper bound. ``None`` leaves the parameter unbounded from above.
+    is_absolute :
+        If ``True``, the bounds are the values the parameter may take. Otherwise,
+        each bound is a distance from the start value, and its sign is ignored.
     """
 
-    def __init__(self, key=None, bound_low=None, bound_up=None, **kwargs):
+    def __init__(
+        self, key=None, bound_low=None, bound_up=None, is_absolute=False, **kwargs
+    ):
         super(Parameter, self).__init__(**kwargs)
         self._key = key
         self._bound_up = bound_up
         self._bound_low = bound_low
+        self._is_absolute = is_absolute
         self._attr_name = None
 
     def start_value(self, topology):
@@ -39,27 +54,30 @@ class Parameter(Data):
 
         Notes
         -----
-        If not set to ``None`` at instantiation, the bound is calculated as the
-        starting value of this parameter minus this absolute value of the lower bound.
-        Otherwise, it will return ``float("-inf")``.
+        An absolute bound is returned as given. A relative bound is subtracted
+        from the start value, sign ignored. Without a bound, it returns
+        ``float("-inf")``.
         """
-        if self._bound_low is not None:
-            return self.start_value(topology) - fabs(self._bound_low)
-        return float("-inf")
+        if self._bound_low is None:
+            return float("-inf")
+        if self._is_absolute:
+            return self._bound_low
+        return self.start_value(topology) - fabs(self._bound_low)
 
     def bound_up(self, topology):
         """
-        The upper bound of the edge optimization parameter.
+        The upper bound of the optimization parameter.
 
         Notes
         -----
-        If not set to ``None`` at instantiation, the bound is calculated as the
-        starting value of this parameter plus this absolute value of the upper bound.
-        Otherwise, it will return ``float("inf")``.
+        An absolute bound is returned as given. A relative bound is added to the
+        start value, sign ignored. Without a bound, it returns ``float("inf")``.
         """
-        if self._bound_up is not None:
-            return self.start_value(topology) + fabs(self._bound_up)
-        return float("inf")
+        if self._bound_up is None:
+            return float("inf")
+        if self._is_absolute:
+            return self._bound_up
+        return self.start_value(topology) + fabs(self._bound_up)
 
     def attr_name(self):
         """
@@ -69,7 +87,11 @@ class Parameter(Data):
 
     def __repr__(self):
         """ """
-        st = "{0}(key={1!r}, bound_low={2!r}, bound_up={3!r})"
+        st = "{0}(key={1!r}, bound_low={2!r}, bound_up={3!r}, is_absolute={4!r})"
         return st.format(
-            self.__class__.__name__, self._key, self._bound_low, self._bound_up
+            self.__class__.__name__,
+            self._key,
+            self._bound_low,
+            self._bound_up,
+            self._is_absolute,
         )

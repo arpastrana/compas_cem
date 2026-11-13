@@ -12,6 +12,11 @@
             {
                 "name": "topology",
                 "description": "A COMPAS CEM topology diagram."
+            },
+            {
+                "name": "filter_auxiliary",
+                "description": "Whether to leave the auxiliary trails, their edges and their support nodes out of every output; their origin nodes stay. Defaults to False.",
+                "typeHintID": "bool"
             }
         ],
         "outputParameters": [
@@ -47,17 +52,17 @@
             },
             {
                 "name": "sequence_keys",
-                "description": "The keys of the sequences in the topology diagram.",
+                "description": "The node keys in each sequence, one tuple per sequence in ascending order.",
                 "optional": false
             },
             {
                 "name": "trail_keys",
-                "description": "The keys of the trails in the topology diagram.",
+                "description": "The node keys in each trail, one tuple per trail from its origin to its support.",
                 "optional": false
             },
             {
                 "name": "auxiliary_trail_keys",
-                "description": "The keys of the auxiliary trails in the topology diagram.",
+                "description": "The edge keys of the auxiliary trails. Empty when filter_auxiliary is True.",
                 "optional": false
             }
         ]

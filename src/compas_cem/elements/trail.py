@@ -23,8 +23,9 @@ class TrailEdge(Edge):
 
     Notes
     -----
-    A plane overrides the absolute length of the edge, but the sign of the
-    length is preserved, so the combinatorial state survives the intersection.
+    A plane overrides the signed length: the trail ends where it meets the plane,
+    so the plane's position sets the combinatorial state. The length applies only
+    if the trail runs parallel to the plane.
 
     TODO: add an explicit combinatorial state to the signature of the constructor.
     """
