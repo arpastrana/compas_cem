@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../assets/logo/compas_cem_icon_white_64.png">
+      <link rel="icon" href="../assets/logo/compas_cem_glyph_blue_64.png">
       <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.8.1">
     
     
@@ -106,7 +106,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="https://arpastrana.github.io/compas_cem/" title="COMPAS CEM" class="md-header__button md-logo" aria-label="COMPAS CEM" data-md-component="logo">
       
-  <img src="../assets/logo/compas_cem_logo_white.svg" alt="logo">
+  <img src="../assets/logo/compas_cem_glyph.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -243,7 +243,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="https://arpastrana.github.io/compas_cem/" title="COMPAS CEM" class="md-nav__button md-logo" aria-label="COMPAS CEM" data-md-component="logo">
       
-  <img src="../assets/logo/compas_cem_logo_white.svg" alt="logo">
+  <img src="../assets/logo/compas_cem_glyph.svg" alt="logo">
 
     </a>
     COMPAS CEM
@@ -4471,7 +4471,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semant
 <h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">¤</a></h3>
 <ul>
 <li>Changed the Rhino Package Manager icon to the thin logo with its nodes and filled cells, on a white rounded square, at 128 px, in place of the bare icon weight: the nodes mark CEM form-finding, the white square keeps the light logo light on a dark interface, where a transparent icon read as the dark one, and a larger image stays sharp on high-density screens. The Package Manager takes the icon from the newest version on the server, so it shows from the next release on.</li>
-<li>Changed the docs header logo to the thin logo with its nodes and filled cells, on a white rounded square built into the image, and drew it at 32 px instead of 24 px, where its nodes resolve; the logo button's padding shrank to keep the header height. The favicon became the icon on the same white square, so it shows on dark browser tabs too.</li>
+<li>Changed the docs header logo to a white glyph without a tile, in the manner of the header's own icons and drawn a little over their size. The members have the icon's force-proportional widths, and the gaps where the big triangle crosses the spokes are a little wider than the icon's, so they stay open in white at that size. A one-color glyph cannot rim its nodes, so the six nodes at the hexagon's corners are dots merged into the ring, large enough to reach past it, and the inner nodes are left out, since the small triangle's would merge into one blob at header size. <code>scripts/logo/build_logo.py</code> writes it as <code>compas_cem_glyph.svg</code>. The favicon became the same glyph on a rounded square in the header's blue, which looks the same on light and dark browser tabs and matches the header.</li>
 </ul>
 <h3 id="removed">Removed<a class="headerlink" href="#removed" title="Permanent link">¤</a></h3>
 <ul>

@@ -4,11 +4,7 @@
   --md-primary-fg-color--dark:  #0092d2;
 }
 
-/* The logo shows its nodes, so it is drawn larger, with less padding to keep the header height. */
-.md-header__button.md-logo {
-  padding: 0.2rem;
-}
-
+/* The glyph sits a little over the size of the header icons. */
 .md-header__button.md-logo img {
-  height: 1.6rem;
+  height: 1.288rem;
 }
