@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed the Rhino Package Manager icon to the thin logo with its nodes and filled cells, on a white rounded square, at 128 px, in place of the bare icon weight: the nodes mark CEM form-finding, the white square keeps the light logo light on a dark interface, where a transparent icon read as the dark one, and a larger image stays sharp on high-density screens. The Package Manager takes the icon from the newest version on the server, so it shows from the next release on.
-- Changed the docs header logo to the thin logo with its nodes and filled cells, on a white rounded square built into the image, and drew it at 32 px instead of 24 px, where its nodes resolve; the logo button's padding shrank to keep the header height. The favicon became the icon on the same white square, so it shows on dark browser tabs too.
+- Changed the docs header logo to a white glyph without a tile, in the manner of the header's own icons and drawn a little over their size. The members have the icon's force-proportional widths, and the gaps where the big triangle crosses the spokes are a little wider than the icon's, so they stay open in white at that size. A one-color glyph cannot rim its nodes, so the six nodes at the hexagon's corners are dots merged into the ring, large enough to reach past it, and the inner nodes are left out, since the small triangle's would merge into one blob at header size. `scripts/logo/build_logo.py` writes it as `compas_cem_glyph.svg`. The favicon became the same glyph on a rounded square in the header's blue, which looks the same on light and dark browser tabs and matches the header.
 
 ### Removed
 

@@ -6,7 +6,9 @@ tension and blue in compression; no loads or reactions are drawn. Where two
 members cross without a node, the upper one cuts a halo of whitespace into the
 lower one. Three tiers share these proportions and differ only in weight: the
 thin mark for large and vector use, the regular mark for mid sizes, and a bare
-icon for 40 px and below.
+icon for 40 px and below. A white glyph for the docs header merges the
+members and the hexagon's nodes into one shape, and on a blue square it is
+the favicon.
 
 Run from the repository root:
 
@@ -34,6 +36,7 @@ from shapely.geometry import GeometryCollection  # noqa: E402
 from shapely.geometry import LinearRing  # noqa: E402
 from shapely.geometry import LineString  # noqa: E402
 from shapely.geometry import MultiPolygon  # noqa: E402
+from shapely.geometry import Point  # noqa: E402
 from shapely.geometry import Polygon  # noqa: E402
 from shapely.ops import unary_union  # noqa: E402
 
@@ -142,10 +145,17 @@ FILES = [
     LogoFile("compas_cem_logo_regular_128.png", "regular", "light", 128),
     LogoFile("compas_cem_logo_regular_dark_128.png", "regular", "dark", 128),
     LogoFile("compas_cem_icon_64.png", "icon", "light", 64),
-    LogoFile("compas_cem_icon_white_64.png", "icon", "light", 64, True),
     LogoFile("compas_cem_icon_32.png", "icon", "light", 32),
     LogoFile("compas_cem_icon_24.png", "icon", "light", 24),
 ]
+
+# The header glyph has the icon's weight, wider crossing gaps, and unrimmed nodes.
+GLYPH_STYLE = LogoStyle(0.12, 0.07, 0.0, 0.155, 0.0)
+GLYPH_FILE = "compas_cem_glyph.svg"
+# The favicon is the glyph on the docs header's blue, from docs/assets/css/custom.css.
+HEADER_BLUE = (0, 146, 210)
+FAVICON_FILE = "compas_cem_glyph_blue_64.png"
+FAVICON_SIZE = 64
 
 
 def ring_by_angle(form, nodes):
@@ -505,6 +515,62 @@ def svg_document(shapes, style, logo_file):
     return document
 
 
+def polygon_path(polygon):
+    """
+    A polygon with holes as a matplotlib path.
+
+    Parameters
+    ----------
+    polygon :
+        The polygon to trace.
+
+    Returns
+    -------
+    path :
+        The path, one closed subpath per ring.
+    """
+    vertices = []
+    codes = []
+    for ring in [polygon.exterior, *polygon.interiors]:
+        coords = list(ring.coords)
+        vertices.extend(coords)
+        ring_codes = [MplPath.MOVETO] + [MplPath.LINETO] * (len(coords) - 2)
+        codes.extend(ring_codes + [MplPath.CLOSEPOLY])
+    path = MplPath(vertices, codes)
+
+    return path
+
+
+def backing_patch(extent, color):
+    """
+    The rounded square a logo sits on.
+
+    Parameters
+    ----------
+    extent :
+        The half-width of the square, in radius units.
+    color :
+        The fill, as a matplotlib color.
+
+    Returns
+    -------
+    patch :
+        The square, its corners rounded by the backing rounding.
+    """
+    corner = f"round,pad=0,rounding_size={BACKING_ROUNDING * extent}"
+    origin = (-extent, -extent)
+    patch = FancyBboxPatch(
+        origin,
+        2.0 * extent,
+        2.0 * extent,
+        boxstyle=corner,
+        facecolor=color,
+        edgecolor="none",
+    )
+
+    return patch
+
+
 def draw_figure(shapes, style, logo_file):
     """
     A logo as a matplotlib figure, on a transparent background or a white
@@ -535,29 +601,13 @@ def draw_figure(shapes, style, logo_file):
     axes = figure.add_axes((0.0, 0.0, 1.0, 1.0))
     extent = canvas_extent(style, logo_file)
     if logo_file.has_backing:
-        corner = f"round,pad=0,rounding_size={BACKING_ROUNDING * extent}"
-        origin = (-extent, -extent)
-        backing = FancyBboxPatch(
-            origin,
-            2.0 * extent,
-            2.0 * extent,
-            boxstyle=corner,
-            facecolor="white",
-            edgecolor="none",
-        )
+        backing = backing_patch(extent, "white")
         axes.add_patch(backing)
 
     for shape, color in fill_layers(shapes, logo_file.mode):
         face = [channel / 255.0 for channel in color]
         for polygon in polygon_parts(shape):
-            vertices = []
-            codes = []
-            for ring in [polygon.exterior, *polygon.interiors]:
-                coords = list(ring.coords)
-                vertices.extend(coords)
-                ring_codes = [MplPath.MOVETO] + [MplPath.LINETO] * (len(coords) - 2)
-                codes.extend(ring_codes + [MplPath.CLOSEPOLY])
-            path = MplPath(vertices, codes)
+            path = polygon_path(polygon)
             patch = PathPatch(path, facecolor=face, edgecolor="none", linewidth=0.0)
             axes.add_patch(patch)
 
@@ -569,6 +619,113 @@ def draw_figure(shapes, style, logo_file):
         )
         axes.add_patch(outer)
         axes.add_patch(inner)
+
+    axes.set_xlim(-extent, extent)
+    axes.set_ylim(-extent, extent)
+    axes.set_aspect("equal")
+    axes.axis("off")
+
+    return figure
+
+
+def glyph_shape(form, style):
+    """
+    The header glyph as one shape: the members and the support nodes merged.
+
+    Parameters
+    ----------
+    form :
+        The form diagram of the logo.
+    style :
+        The glyph's weight and node radius.
+
+    Returns
+    -------
+    shape :
+        The members and the node dots as one geometry.
+
+    Notes
+    -----
+    A one-color glyph cannot rim its nodes, so a node shows only where its dot
+    reaches past the ring. The inner nodes are left out, since the small
+    triangle's would merge into one blob at header size.
+    """
+    shapes = logo_shapes(form, style)
+    supports = [form.node_coordinates(node)[:2] for node in form.support_nodes()]
+    dots = [Point(xy).buffer(style.node_radius, resolution=16) for xy in supports]
+    pieces = [shapes.tension, shapes.compression, *dots]
+    shape = unary_union(pieces)
+
+    return shape
+
+
+def glyph_document(shape, size):
+    """
+    The header glyph as an SVG document, white on a transparent background.
+
+    Parameters
+    ----------
+    shape :
+        The glyph shape.
+    size :
+        The width and height of the view box.
+
+    Returns
+    -------
+    document :
+        The SVG markup.
+
+    Notes
+    -----
+    The view box fits the shape tightly, so the glyph fills the header slot.
+    """
+    bounds = [abs(value) for value in shape.bounds]
+    extent = max(bounds)
+    scale = size / (2.0 * extent)
+    offset = size / 2.0
+    parts = polygon_parts(shape)
+    data = svg_path(parts, scale, offset)
+    element = f'<path fill="#ffffff" fill-rule="evenodd" d="{data}"/>'
+    header = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" '
+        f'width="{size}" height="{size}">'
+    )
+    lines = [header, element, "</svg>"]
+    document = "\n".join(lines) + "\n"
+
+    return document
+
+
+def glyph_figure(shape, size, backing):
+    """
+    The header glyph in white on a rounded square, as a matplotlib figure.
+
+    Parameters
+    ----------
+    shape :
+        The glyph shape.
+    size :
+        The width and height in pixels.
+    backing :
+        The color of the square, as RGB integers.
+
+    Returns
+    -------
+    figure :
+        The figure, sized one inch at `size` dots per inch.
+    """
+    bounds = [abs(value) for value in shape.bounds]
+    extent = BACKING_MARGIN * max(bounds)
+    figure = plt.figure(figsize=(1.0, 1.0), dpi=size)
+    axes = figure.add_axes((0.0, 0.0, 1.0, 1.0))
+    face = [channel / 255.0 for channel in backing]
+    square = backing_patch(extent, face)
+    axes.add_patch(square)
+
+    for polygon in polygon_parts(shape):
+        path = polygon_path(polygon)
+        patch = PathPatch(path, facecolor="white", edgecolor="none", linewidth=0.0)
+        axes.add_patch(patch)
 
     axes.set_xlim(-extent, extent)
     axes.set_ylim(-extent, extent)
@@ -613,6 +770,18 @@ def main():
     for logo_file in FILES:
         write_logo(form, logo_file)
         print(OUTPUT_FOLDER / logo_file.name)
+
+    shape = glyph_shape(form, GLYPH_STYLE)
+    document = glyph_document(shape, 1000)
+    glyph_path = OUTPUT_FOLDER / GLYPH_FILE
+    glyph_path.write_text(document)
+    print(glyph_path)
+
+    favicon = glyph_figure(shape, FAVICON_SIZE, HEADER_BLUE)
+    favicon_path = OUTPUT_FOLDER / FAVICON_FILE
+    favicon.savefig(favicon_path, dpi=FAVICON_SIZE, transparent=True)
+    plt.close(favicon)
+    print(favicon_path)
 
 
 if __name__ == "__main__":
