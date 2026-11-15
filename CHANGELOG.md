@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added the logo to the README's title, at the 40 px height of GitHub's title line and aligned to its top, which centers it on the capitals, since GitHub strips the CSS that would center it otherwise. GitHub shows the dark logo in its dark theme; PyPI drops the theme switch and shows the light one.
+
 ### Changed
 
 - Changed the Rhino Package Manager icon to the thin logo with its nodes and filled cells, on a white rounded square, at 128 px, in place of the bare icon weight: the nodes mark CEM form-finding, the white square keeps the light logo light on a dark interface, where a transparent icon read as the dark one, and a larger image stays sharp on high-density screens. The Package Manager takes the icon from the newest version on the server, so it shows from the next release on.
@@ -16,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Removed the logo from the docs home page, as from the README, since it was too large there.
+- Removed the logo from the docs home page, since it was too large there and the header already shows it beside the name.
 
 ## [0.10.0] 2026-11-12
 

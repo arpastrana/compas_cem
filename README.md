@@ -1,4 +1,10 @@
-# COMPAS CEM
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/assets/logo/compas_cem_logo_dark.svg">
+    <img src="https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/assets/logo/compas_cem_logo.svg" height="40" align="top" alt="">
+  </picture>
+  COMPAS CEM
+</h1>
 
 [![Github Actions Build Status](https://github.com/arpastrana/compas_cem/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/arpastrana/compas_cem/actions/workflows/build.yml)
 [![License](https://img.shields.io/github/license/arpastrana/compas_cem.svg)](https://github.com/arpastrana/compas_cem/blob/main/LICENSE)
