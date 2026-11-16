@@ -1,4 +1,4 @@
-# r: compas_cem>=0.10.0
+# r: compas_cem>=0.10.1
 """
 Import a COMPAS CEM form diagram from a JSON file.
 """

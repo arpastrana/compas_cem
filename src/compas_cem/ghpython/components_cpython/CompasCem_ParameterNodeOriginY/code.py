@@ -1,4 +1,4 @@
-# r: compas_cem>=0.10.0
+# r: compas_cem>=0.10.1
 """
 Set the Y coordinate of an origin node as an optimization parameter.
 """

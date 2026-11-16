@@ -1,4 +1,4 @@
-# r: compas_cem>=0.10.0
+# r: compas_cem>=0.10.1
 """
 Get reaction forces at the support nodes of a form diagram.
 """

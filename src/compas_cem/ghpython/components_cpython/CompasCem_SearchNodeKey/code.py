@@ -1,4 +1,4 @@
-# r: compas_cem>=0.10.0
+# r: compas_cem>=0.10.1
 """
 Search for a node key in a topology or a form diagram with a point.
 """

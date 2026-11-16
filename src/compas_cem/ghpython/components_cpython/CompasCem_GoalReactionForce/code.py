@@ -1,4 +1,4 @@
-# r: compas_cem>=0.10.0
+# r: compas_cem>=0.10.1
 """
 Make the reaction force at a support node reach a target force vector.
 """

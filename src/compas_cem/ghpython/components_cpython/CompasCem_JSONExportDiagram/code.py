@@ -1,4 +1,4 @@
-# r: compas_cem>=0.10.0
+# r: compas_cem>=0.10.1
 """
 Export a COMPAS CEM diagram and save it as a JSON file.
 """
