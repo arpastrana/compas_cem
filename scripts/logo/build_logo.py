@@ -1,25 +1,26 @@
 """
 Build the COMPAS CEM logo from its form-found, self-stressed form diagram.
 
-Every member becomes a band whose width is proportional to its force, red in
-tension and blue in compression; no loads or reactions are drawn. Where two
-members cross without a node, the upper one cuts a halo of whitespace into the
-lower one. Three tiers share these proportions and differ only in weight: the
-thin mark for large and vector use, the regular mark for mid sizes, and a bare
-icon for 40 px and below. A white glyph for the docs header merges the
-members and the hexagon's nodes into one shape, and on a blue square it is
-the favicon.
+Every member becomes a band whose width is proportional to its force; no loads
+or reactions are drawn. Where two members cross without a node, the upper one
+cuts a gap into the lower one. The logo is white on the blue of the COMPAS
+logo: the tension hexagon in a lighter tone, the compression members and the
+nodes solid. Two tiers share these proportions, a regular weight for 26 px and
+up and a heavier one below, where thin lines fade. Away from the blue docs
+header, the logo sits on a blue rounded tile.
 
 Run from the repository root:
 
     uv run --with shapely python scripts/logo/build_logo.py
 
-It writes SVG, PDF and transparent PNG files to docs/assets/logo.
+It writes SVG, PDF and PNG files to docs/assets/logo, and the Rhino package
+icon to the yak template.
 """
 
 from __future__ import annotations
 
 import math
+import shutil
 from pathlib import Path
 from typing import NamedTuple
 
@@ -28,7 +29,6 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.patches import Circle  # noqa: E402
 from matplotlib.patches import FancyBboxPatch  # noqa: E402
 from matplotlib.patches import PathPatch  # noqa: E402
 from matplotlib.path import Path as MplPath  # noqa: E402
@@ -38,124 +38,87 @@ from shapely.geometry import LineString  # noqa: E402
 from shapely.geometry import MultiPolygon  # noqa: E402
 from shapely.geometry import Point  # noqa: E402
 from shapely.geometry import Polygon  # noqa: E402
+from shapely.geometry.base import BaseGeometry  # noqa: E402
 from shapely.ops import unary_union  # noqa: E402
 
-from compas_cem import COLORS  # noqa: E402
 from compas_cem.diagrams import FormDiagram  # noqa: E402
 
 HERE = Path(__file__).parent
 FORM_PATH = HERE / "compas_cem_logo.json"
 OUTPUT_FOLDER = HERE.parents[1] / "docs" / "assets" / "logo"
+YAK_FOLDER = HERE.parents[1] / "src" / "compas_cem" / "ghpython" / "yak_template"
 
-WHITE = (255, 255, 255)
-NODE_RIM = (50, 50, 50)
-DARK_GROUND = (31, 34, 40)
 MITRE = {"join_style": "mitre", "mitre_limit": 5.0}
 # The trail-to-triangle corner angle halved, for equilateral triangles.
 HALF_ANGLE = math.radians(30.0)
-# A white backing leaves a tenth of the logo's width around it, its corners rounded by a fifth.
-BACKING_MARGIN = 1.1
-BACKING_ROUNDING = 0.2
-
-
-def mix_colors(color, base, amount):
-    """
-    Mix a color over a base color.
-
-    Parameters
-    ----------
-    color :
-        The color to mix in, as RGB integers.
-    base :
-        The color underneath, as RGB integers.
-    amount :
-        The share of `color`, from 0 for the base alone to 1 for the color alone.
-
-    Returns
-    -------
-    mixed :
-        The mixed color as RGB integers.
-    """
-    pairs = zip(color, base)
-    mixed = tuple(round(amount * c + (1.0 - amount) * b) for c, b in pairs)
-
-    return mixed
-
-
-CELL_LIGHT = mix_colors(COLORS["compression"], WHITE, 0.16)
-CELL_DARK = mix_colors(COLORS["compression"], DARK_GROUND, 0.30)
+# The blue of the COMPAS logo, also the docs header's in docs/assets/css/custom.css.
+BLUE = (0, 146, 210)
+# The tension hexagon's share of white over the blue.
+RING_TONE = 0.65
+# A tile leaves a tenth of the logo's width around it, its corners rounded by a fifth.
+TILE_MARGIN = 1.1
+TILE_ROUNDING = 0.2
 
 
 class LogoStyle(NamedTuple):
     """
-    The weight and details of one logo tier, in units of the support radius.
+    The weight of one logo tier, in units of the support radius.
     """
 
     width_scale: float
     cross_gap: float
-    cell_gap: float
     node_radius: float
-    node_rim: float
 
 
 class LogoShapes(NamedTuple):
     """
-    The filled shapes of a logo, ready to draw.
+    The filled members of a logo and the positions of its nodes.
     """
 
     tension: Polygon
     compression: MultiPolygon
-    cells: list[Polygon]
     nodes: list[tuple[float, float]]
+
+
+class LogoLayers(NamedTuple):
+    """
+    The two tones of a logo: the tension hexagon, and everything drawn solid.
+    """
+
+    ring: BaseGeometry
+    solid: BaseGeometry
 
 
 class LogoFile(NamedTuple):
     """
-    One file to write: its tier, ground mode, format, pixel size, and whether
-    it sits on a white rounded square instead of a transparent background.
+    One file to write: its tier, its pixel size, and whether it sits on a blue
+    tile instead of a transparent background. Its name sets the format.
     """
 
     name: str
     tier: str
-    mode: str
     size: int
-    has_backing: bool = False
+    has_tile: bool
 
 
 TIERS = {
-    "thin": LogoStyle(0.05, 0.028, 0.028, 0.062, 0.018),
-    "regular": LogoStyle(0.065, 0.03, 0.03, 0.07, 0.02),
-    "icon": LogoStyle(0.12, 0.05, 0.0, 0.0, 0.0),
+    "regular": LogoStyle(0.065, 0.035, 0.12),
+    "small": LogoStyle(0.12, 0.065, 0.155),
 }
 
 FILES = [
-    LogoFile("compas_cem_logo.svg", "thin", "light", 1000),
-    LogoFile("compas_cem_logo_dark.svg", "thin", "dark", 1000),
-    LogoFile("compas_cem_logo_white.svg", "thin", "light", 1000, True),
-    LogoFile("compas_cem_logo_regular.svg", "regular", "light", 1000),
-    LogoFile("compas_cem_logo_regular_dark.svg", "regular", "dark", 1000),
-    LogoFile("compas_cem_icon.svg", "icon", "light", 1000),
-    LogoFile("compas_cem_logo.pdf", "thin", "light", 1000),
-    LogoFile("compas_cem_icon.pdf", "icon", "light", 1000),
-    LogoFile("compas_cem_logo_1024.png", "thin", "light", 1024),
-    LogoFile("compas_cem_logo_512.png", "thin", "light", 512),
-    LogoFile("compas_cem_logo_dark_1024.png", "thin", "dark", 1024),
-    LogoFile("compas_cem_logo_dark_512.png", "thin", "dark", 512),
-    LogoFile("compas_cem_logo_white_128.png", "thin", "light", 128, True),
-    LogoFile("compas_cem_logo_regular_128.png", "regular", "light", 128),
-    LogoFile("compas_cem_logo_regular_dark_128.png", "regular", "dark", 128),
-    LogoFile("compas_cem_icon_64.png", "icon", "light", 64),
-    LogoFile("compas_cem_icon_32.png", "icon", "light", 32),
-    LogoFile("compas_cem_icon_24.png", "icon", "light", 24),
+    LogoFile("compas_cem_logo.svg", "regular", 1000, True),
+    LogoFile("compas_cem_logo.pdf", "regular", 1000, True),
+    LogoFile("compas_cem_logo_1024.png", "regular", 1024, True),
+    LogoFile("compas_cem_logo_512.png", "regular", 512, True),
+    LogoFile("compas_cem_logo_128.png", "regular", 128, True),
+    LogoFile("compas_cem_logo_small.svg", "small", 1000, True),
+    LogoFile("compas_cem_logo_small_64.png", "small", 64, True),
+    LogoFile("compas_cem_glyph.svg", "regular", 1000, False),
+    LogoFile("compas_cem_glyph_small.pdf", "small", 1000, False),
 ]
-
-# The header glyph has the icon's weight, wider crossing gaps, and unrimmed nodes.
-GLYPH_STYLE = LogoStyle(0.12, 0.07, 0.0, 0.155, 0.0)
-GLYPH_FILE = "compas_cem_glyph.svg"
-# The favicon is the glyph on the docs header's blue, from docs/assets/css/custom.css.
-HEADER_BLUE = (0, 146, 210)
-FAVICON_FILE = "compas_cem_glyph_blue_64.png"
-FAVICON_SIZE = 64
+# The Rhino Package Manager shows this file as the package icon.
+PACKAGE_ICON = "compas_cem_logo_128.png"
 
 
 def ring_by_angle(form, nodes):
@@ -225,7 +188,7 @@ def spoke_band(form, edge, origin_width, style):
 
 def logo_shapes(form, style):
     """
-    Turn the form diagram into the filled shapes of one logo tier.
+    Turn the form diagram into the filled members and nodes of one logo tier.
 
     Parameters
     ----------
@@ -237,14 +200,14 @@ def logo_shapes(form, style):
     Returns
     -------
     shapes :
-        The tension ring, the compression members, the inset cells and the
-        node positions.
+        The tension hexagon, the compression members and the node positions.
 
     Notes
     -----
     The big triangle passes over the long spokes and the corners of the small
-    triangle, so its halo trims both. Cells are what remains inside the ring
-    once every member, grown by the cell gap, is taken out.
+    triangle, so its gap trims both. The nodes are the supports and the big
+    triangle's corners; the small triangle's corners would merge into one dot
+    at icon sizes.
     """
     edges = list(form.edges())
     tension_edges = [edge for edge in edges if form.edge_force(edge) > 0]
@@ -280,38 +243,58 @@ def logo_shapes(form, style):
     trail_edges = [
         edge for edge in edges if form.edge_attribute(edge, "type") == "trail"
     ]
-    spokes_full = []
-    spokes_drawn = []
+    spokes = []
     for edge in trail_edges:
         u, v = edge
         origin = u if u in triangle_widths else v
         band = spoke_band(form, edge, triangle_widths[origin], style)
-        spokes_full.append(band)
         if origin in inner_nodes:
             band = band.difference(halo)
-        spokes_drawn.append(band)
+        spokes.append(band)
 
     small_drawn = small_triangle.difference(halo)
-    members = unary_union([big_triangle, small_drawn, *spokes_drawn])
+    members = unary_union([big_triangle, small_drawn, *spokes])
     trimmed = members.difference(ring_band)
     pieces = polygon_parts(trimmed)
     compression = MultiPolygon(pieces)
 
-    cells = []
-    if style.cell_gap > 0:
-        solid = unary_union([ring_band, big_triangle, small_triangle, *spokes_full])
-        grown = solid.buffer(style.cell_gap, **MITRE)
-        hexagon = Polygon(ring.coords)
-        free = hexagon.difference(grown)
-        cells = [piece for piece in polygon_parts(free) if piece.area > 1e-4]
-
-    nodes = []
-    if style.node_radius > 0:
-        nodes = [tuple(form.node_coordinates(node)[:2]) for node in form.nodes()]
-
-    shapes = LogoShapes(ring_band, compression, cells, nodes)
+    node_keys = [*supports, *outer_nodes]
+    nodes = [tuple(form.node_coordinates(node)[:2]) for node in node_keys]
+    shapes = LogoShapes(ring_band, compression, nodes)
 
     return shapes
+
+
+def logo_layers(shapes, style):
+    """
+    Split a logo into its two tones.
+
+    Parameters
+    ----------
+    shapes :
+        The logo shapes.
+    style :
+        The logo tier, which sets the node radius.
+
+    Returns
+    -------
+    layers :
+        The tension hexagon without its nodes, drawn in the lighter tone, and
+        the compression members with every node, drawn solid.
+
+    Notes
+    -----
+    The two layers do not overlap, so a node on the hexagon shows solid and no
+    see-through area is drawn twice.
+    """
+    dots = [Point(xy).buffer(style.node_radius, resolution=16) for xy in shapes.nodes]
+    nodes = unary_union(dots)
+    ring = shapes.tension.difference(nodes)
+    pieces = [shapes.compression, nodes]
+    solid = unary_union(pieces)
+    layers = LogoLayers(ring, solid)
+
+    return layers
 
 
 def polygon_parts(geometry) -> list[Polygon]:
@@ -339,69 +322,32 @@ def polygon_parts(geometry) -> list[Polygon]:
     return polygons
 
 
-def fill_layers(shapes, mode):
-    """
-    The filled shapes of a logo with their colors, bottom to top.
-
-    Parameters
-    ----------
-    shapes :
-        The logo shapes.
-    mode :
-        `"light"` or `"dark"`, the ground the logo sits on.
-
-    Returns
-    -------
-    layers :
-        Pairs of a shape and its RGB color.
-    """
-    cell_color = CELL_LIGHT if mode == "light" else CELL_DARK
-    layers = [(cell, cell_color) for cell in shapes.cells]
-    layers.append((shapes.tension, COLORS["tension"]))
-    layers.append((shapes.compression, COLORS["compression"]))
-
-    return layers
-
-
-def logo_extent(style):
-    """
-    The half-width of the square that holds a logo tier, in radius units.
-
-    Parameters
-    ----------
-    style :
-        The logo tier.
-
-    Returns
-    -------
-    extent :
-        The half-width, with room for the ring, its mitres and the nodes.
-    """
-    ring_reach = 0.6 * style.width_scale * math.sqrt(3.0)
-    extent = 1.0 + ring_reach + style.node_radius + 0.02
-
-    return extent
-
-
-def canvas_extent(style, logo_file):
+def canvas_extent(layers, logo_file):
     """
     The half-width of a logo file's canvas, in radius units.
 
     Parameters
     ----------
-    style :
-        The logo tier.
+    layers :
+        The logo layers.
     logo_file :
         The file to write.
 
     Returns
     -------
     extent :
-        The logo's own half-width, widened by the margin of a white backing.
+        The logo's own half-width, widened by the margin of a tile.
+
+    Notes
+    -----
+    The canvas fits the logo tightly, so a file without a tile fills its slot.
     """
-    extent = logo_extent(style)
-    if logo_file.has_backing:
-        extent = BACKING_MARGIN * extent
+    pieces = [layers.ring, layers.solid]
+    whole = unary_union(pieces)
+    bounds = [abs(value) for value in whole.bounds]
+    extent = max(bounds)
+    if logo_file.has_tile:
+        extent = TILE_MARGIN * extent
 
     return extent
 
@@ -457,20 +403,16 @@ def svg_path(polygons, scale, offset):
     return data
 
 
-def svg_document(shapes, style, logo_file):
+def svg_document(layers, logo_file):
     """
-    A logo as an SVG document, on a transparent background or a white rounded
-    square.
+    A logo as an SVG document, on a transparent background or a blue tile.
 
     Parameters
     ----------
-    shapes :
-        The logo shapes.
-    style :
-        The logo tier.
+    layers :
+        The logo layers.
     logo_file :
-        The file the document is for, which sets its ground mode, view box size
-        and backing.
+        The file the document is for, which sets its view box size and tile.
 
     Returns
     -------
@@ -478,30 +420,23 @@ def svg_document(shapes, style, logo_file):
         The SVG markup.
     """
     size = logo_file.size
-    extent = canvas_extent(style, logo_file)
+    extent = canvas_extent(layers, logo_file)
     scale = size / (2.0 * extent)
     offset = size / 2.0
     elements = []
-    if logo_file.has_backing:
-        corner = BACKING_ROUNDING * extent * scale
-        backing = (
-            f'<rect width="{size}" height="{size}" rx="{corner:.2f}" fill="#ffffff"/>'
-        )
-        elements.append(backing)
+    if logo_file.has_tile:
+        corner = TILE_ROUNDING * extent * scale
+        fill = hex_color(BLUE)
+        tile = f'<rect width="{size}" height="{size}" rx="{corner:.2f}" fill="{fill}"/>'
+        elements.append(tile)
 
-    for shape, color in fill_layers(shapes, logo_file.mode):
+    tones = [(layers.ring, RING_TONE), (layers.solid, 1.0)]
+    for shape, tone in tones:
         parts = polygon_parts(shape)
         data = svg_path(parts, scale, offset)
-        element = f'<path fill="{hex_color(color)}" fill-rule="evenodd" d="{data}"/>'
-        elements.append(element)
-
-    rim = style.node_rim * scale
-    radius = style.node_radius * scale - rim / 2.0
-    for x, y in shapes.nodes:
         element = (
-            f'<circle cx="{offset + scale * x:.2f}" cy="{offset - scale * y:.2f}" '
-            f'r="{radius:.2f}" fill="{hex_color(WHITE)}" '
-            f'stroke="{hex_color(NODE_RIM)}" stroke-width="{rim:.2f}"/>'
+            f'<path fill="#ffffff" fill-opacity="{tone:g}" fill-rule="evenodd" '
+            f'd="{data}"/>'
         )
         elements.append(element)
 
@@ -541,23 +476,23 @@ def polygon_path(polygon):
     return path
 
 
-def backing_patch(extent, color):
+def tile_patch(extent, color):
     """
-    The rounded square a logo sits on.
+    The rounded tile a logo sits on.
 
     Parameters
     ----------
     extent :
-        The half-width of the square, in radius units.
+        The half-width of the tile, in radius units.
     color :
         The fill, as a matplotlib color.
 
     Returns
     -------
     patch :
-        The square, its corners rounded by the backing rounding.
+        The tile, its corners rounded by the tile rounding.
     """
-    corner = f"round,pad=0,rounding_size={BACKING_ROUNDING * extent}"
+    corner = f"round,pad=0,rounding_size={TILE_ROUNDING * extent}"
     origin = (-extent, -extent)
     patch = FancyBboxPatch(
         origin,
@@ -571,161 +506,38 @@ def backing_patch(extent, color):
     return patch
 
 
-def draw_figure(shapes, style, logo_file):
+def draw_figure(layers, logo_file):
     """
-    A logo as a matplotlib figure, on a transparent background or a white
-    rounded square.
+    A logo as a matplotlib figure, on a transparent background or a blue tile.
 
     Parameters
     ----------
-    shapes :
-        The logo shapes.
-    style :
-        The logo tier.
+    layers :
+        The logo layers.
     logo_file :
-        The file the figure is for, which sets its ground mode, pixel size and
-        backing.
+        The file the figure is for, which sets its pixel size and tile.
 
     Returns
     -------
     figure :
         The figure, sized one inch at the file's pixel size in dots per inch.
-
-    Notes
-    -----
-    A transparent icon shows the host's background through its gaps, so on a
-    dark interface it reads as the dark logo. The white backing keeps the light
-    logo light everywhere.
     """
     figure = plt.figure(figsize=(1.0, 1.0), dpi=logo_file.size)
     axes = figure.add_axes((0.0, 0.0, 1.0, 1.0))
-    extent = canvas_extent(style, logo_file)
-    if logo_file.has_backing:
-        backing = backing_patch(extent, "white")
-        axes.add_patch(backing)
+    extent = canvas_extent(layers, logo_file)
+    if logo_file.has_tile:
+        face = [channel / 255.0 for channel in BLUE]
+        tile = tile_patch(extent, face)
+        axes.add_patch(tile)
 
-    for shape, color in fill_layers(shapes, logo_file.mode):
-        face = [channel / 255.0 for channel in color]
+    tones = [(layers.ring, RING_TONE), (layers.solid, 1.0)]
+    for shape, tone in tones:
         for polygon in polygon_parts(shape):
             path = polygon_path(polygon)
-            patch = PathPatch(path, facecolor=face, edgecolor="none", linewidth=0.0)
+            patch = PathPatch(
+                path, facecolor="white", alpha=tone, edgecolor="none", linewidth=0.0
+            )
             axes.add_patch(patch)
-
-    rim_color = [channel / 255.0 for channel in NODE_RIM]
-    for center in shapes.nodes:
-        outer = Circle(center, style.node_radius, color=rim_color, linewidth=0.0)
-        inner = Circle(
-            center, style.node_radius - style.node_rim, color="white", linewidth=0.0
-        )
-        axes.add_patch(outer)
-        axes.add_patch(inner)
-
-    axes.set_xlim(-extent, extent)
-    axes.set_ylim(-extent, extent)
-    axes.set_aspect("equal")
-    axes.axis("off")
-
-    return figure
-
-
-def glyph_shape(form, style):
-    """
-    The header glyph as one shape: the members and the support nodes merged.
-
-    Parameters
-    ----------
-    form :
-        The form diagram of the logo.
-    style :
-        The glyph's weight and node radius.
-
-    Returns
-    -------
-    shape :
-        The members and the node dots as one geometry.
-
-    Notes
-    -----
-    A one-color glyph cannot rim its nodes, so a node shows only where its dot
-    reaches past the ring. The inner nodes are left out, since the small
-    triangle's would merge into one blob at header size.
-    """
-    shapes = logo_shapes(form, style)
-    supports = [form.node_coordinates(node)[:2] for node in form.support_nodes()]
-    dots = [Point(xy).buffer(style.node_radius, resolution=16) for xy in supports]
-    pieces = [shapes.tension, shapes.compression, *dots]
-    shape = unary_union(pieces)
-
-    return shape
-
-
-def glyph_document(shape, size):
-    """
-    The header glyph as an SVG document, white on a transparent background.
-
-    Parameters
-    ----------
-    shape :
-        The glyph shape.
-    size :
-        The width and height of the view box.
-
-    Returns
-    -------
-    document :
-        The SVG markup.
-
-    Notes
-    -----
-    The view box fits the shape tightly, so the glyph fills the header slot.
-    """
-    bounds = [abs(value) for value in shape.bounds]
-    extent = max(bounds)
-    scale = size / (2.0 * extent)
-    offset = size / 2.0
-    parts = polygon_parts(shape)
-    data = svg_path(parts, scale, offset)
-    element = f'<path fill="#ffffff" fill-rule="evenodd" d="{data}"/>'
-    header = (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" '
-        f'width="{size}" height="{size}">'
-    )
-    lines = [header, element, "</svg>"]
-    document = "\n".join(lines) + "\n"
-
-    return document
-
-
-def glyph_figure(shape, size, backing):
-    """
-    The header glyph in white on a rounded square, as a matplotlib figure.
-
-    Parameters
-    ----------
-    shape :
-        The glyph shape.
-    size :
-        The width and height in pixels.
-    backing :
-        The color of the square, as RGB integers.
-
-    Returns
-    -------
-    figure :
-        The figure, sized one inch at `size` dots per inch.
-    """
-    bounds = [abs(value) for value in shape.bounds]
-    extent = BACKING_MARGIN * max(bounds)
-    figure = plt.figure(figsize=(1.0, 1.0), dpi=size)
-    axes = figure.add_axes((0.0, 0.0, 1.0, 1.0))
-    face = [channel / 255.0 for channel in backing]
-    square = backing_patch(extent, face)
-    axes.add_patch(square)
-
-    for polygon in polygon_parts(shape):
-        path = polygon_path(polygon)
-        patch = PathPatch(path, facecolor="white", edgecolor="none", linewidth=0.0)
-        axes.add_patch(patch)
 
     axes.set_xlim(-extent, extent)
     axes.set_ylim(-extent, extent)
@@ -748,13 +560,14 @@ def write_logo(form, logo_file):
     """
     style = TIERS[logo_file.tier]
     shapes = logo_shapes(form, style)
+    layers = logo_layers(shapes, style)
     path = OUTPUT_FOLDER / logo_file.name
     if path.suffix == ".svg":
-        document = svg_document(shapes, style, logo_file)
+        document = svg_document(layers, logo_file)
         path.write_text(document)
         return
 
-    figure = draw_figure(shapes, style, logo_file)
+    figure = draw_figure(layers, logo_file)
     # A PDF carries no creation date, so rebuilding an unchanged logo changes no file.
     metadata = {"CreationDate": None} if path.suffix == ".pdf" else None
     figure.savefig(path, dpi=logo_file.size, transparent=True, metadata=metadata)
@@ -763,7 +576,7 @@ def write_logo(form, logo_file):
 
 def main():
     """
-    Write every logo file.
+    Write every logo file and the Rhino package icon.
     """
     form = FormDiagram.from_json(FORM_PATH)
     OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -771,17 +584,10 @@ def main():
         write_logo(form, logo_file)
         print(OUTPUT_FOLDER / logo_file.name)
 
-    shape = glyph_shape(form, GLYPH_STYLE)
-    document = glyph_document(shape, 1000)
-    glyph_path = OUTPUT_FOLDER / GLYPH_FILE
-    glyph_path.write_text(document)
-    print(glyph_path)
-
-    favicon = glyph_figure(shape, FAVICON_SIZE, HEADER_BLUE)
-    favicon_path = OUTPUT_FOLDER / FAVICON_FILE
-    favicon.savefig(favicon_path, dpi=FAVICON_SIZE, transparent=True)
-    plt.close(favicon)
-    print(favicon_path)
+    package_icon = OUTPUT_FOLDER / PACKAGE_ICON
+    yak_icon = YAK_FOLDER / "icon.png"
+    shutil.copyfile(package_icon, yak_icon)
+    print(yak_icon)
 
 
 if __name__ == "__main__":

@@ -1,8 +1,5 @@
 <h1>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/assets/logo/compas_cem_logo_dark.svg">
-    <img src="https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/assets/logo/compas_cem_logo.svg" height="40" align="top" alt="">
-  </picture>
+  <a href="https://arpastrana.github.io/compas_cem/"><img src="https://raw.githubusercontent.com/arpastrana/compas_cem/main/docs/assets/logo/compas_cem_logo.svg" height="40" align="top" alt=""></a>
   COMPAS CEM
 </h1>
 

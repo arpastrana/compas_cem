@@ -13,12 +13,13 @@
 \definecolor{cem-trail}{RGB}{250,80,210}
 \definecolor{cem-auxiliary-trail}{RGB}{255,155,15}
 
-% Colors derived from the palette, and the Results tile color, which has no counterpart in it.
+% Colors derived from the palette, and the Results and logo tile colors, which have no counterpart in it.
 \colorlet{lens-glass}{cem-compression!15}
 \colorlet{lens-brown}{cem-auxiliary-trail!55!black}
 \colorlet{tether-dark}{cem-trail!70!black}
 \colorlet{param-dark}{cem-auxiliary-trail!60!black}
 \definecolor{tile-khaki}{RGB}{150,130,70}
+\definecolor{tile-logo}{RGB}{0,146,210}
 
 \tikzset{
   icon/.style={x=1bp, y=1bp, line cap=butt, line join=round},
@@ -80,6 +81,8 @@
 \newcommand{\resultstile}{\ctile{tile-khaki!6}{tile-khaki!13}{tile-khaki!22}{tile-khaki!65!black}}
 \newcommand{\visualizationtile}{\ctile{cem-tension!5}{cem-tension!10}{cem-tension!17}{cem-tension!65!black}}
 \newcommand{\neutraltile}{\ctile{cem-edge!1}{cem-edge!5}{cem-edge!10}{cem-edge!65!black}}
+% The logo's own tile, in the blue of the COMPAS logo, saturated where the group tiles are pale.
+\newcommand{\logotile}{\ctile{tile-logo!80}{tile-logo!90}{tile-logo}{tile-logo!65!black}}
 
 % An origin node of radius #3 at (#1,#2).
 \newcommand{\originnode}[3]{\path[cem origin] (#1,#2) circle (#3);}

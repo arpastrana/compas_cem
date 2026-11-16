@@ -9,16 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added the logo to the README's title, at the 40 px height of GitHub's title line and aligned to its top, which centers it on the capitals, since GitHub strips the CSS that would center it otherwise. GitHub shows the dark logo in its dark theme; PyPI drops the theme switch and shows the light one.
+- Added the logo to the README's title, on its blue tile at the 40 px height of GitHub's title line and aligned to its top, which centers it on the capitals, since GitHub strips the CSS that would center it otherwise. The tile carries its own background, so the logo reads the same in GitHub's light and dark themes and on PyPI. It links to the docs.
 
 ### Changed
 
-- Changed the Rhino Package Manager icon to the thin logo with its nodes and filled cells, on a white rounded square, at 128 px, in place of the bare icon weight: the nodes mark CEM form-finding, the white square keeps the light logo light on a dark interface, where a transparent icon read as the dark one, and a larger image stays sharp on high-density screens. The Package Manager takes the icon from the newest version on the server, so it shows from the next release on.
-- Changed the docs header logo to a white glyph without a tile, in the manner of the header's own icons and drawn a little over their size. The members have the icon's force-proportional widths, and the gaps where the big triangle crosses the spokes are a little wider than the icon's, so they stay open in white at that size. A one-color glyph cannot rim its nodes, so the six nodes at the hexagon's corners are dots merged into the ring, large enough to reach past it, and the inner nodes are left out, since the small triangle's would merge into one blob at header size. `scripts/logo/build_logo.py` writes it as `compas_cem_glyph.svg`. The favicon became the same glyph on a rounded square in the header's blue, which looks the same on light and dark browser tabs and matches the header.
+- Changed the logo from red and blue to white on the blue of the COMPAS logo, so one mark serves the README, the docs, the favicon, the Rhino Package Manager and the Info component. The tension hexagon is drawn at 65% white and the compression members solid, so the two forces still read apart without color. Every node at the hexagon's corners and the big triangle's corners is a solid white dot, as COMPAS draws its nodes; the small triangle's corners carry none, since their dots would merge into one at icon sizes. The lines are thinner than the red and blue logo's icon weight, near the line weight of the COMPAS logo, and their widths stay proportional to force. Off the blue docs header, the logo sits on a blue rounded tile. A regular weight serves 26 px and up, and a heavier one the favicon and the Info icon, where thin lines fade. `scripts/logo/build_logo.py` writes every file and the Rhino package icon.
+- Changed the docs header logo to the white logo without its tile, drawn a little over the size of the header's icons.
+- Changed the favicon to the heavier weight of the logo on its blue tile, which looks the same on light and dark browser tabs.
+- Changed the Rhino Package Manager icon to the logo on its blue tile at 128 px. The Package Manager takes the icon from the newest version on the server, so it shows from the next release on.
+- Changed the Info component's icon to the heavier weight of the logo on a blue tile, framed and shaded like the other component icons.
 
 ### Removed
 
 - Removed the logo from the docs home page, since it was too large there and the header already shows it beside the name.
+- Removed the red and blue logo from `docs/assets/logo`, with its regular and icon weights, its dark variants and its versions on a white tile.
 
 ## [0.10.0] 2026-11-12
 
